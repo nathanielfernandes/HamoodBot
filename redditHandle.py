@@ -7,8 +7,6 @@ import pathlib
 From dotenv import load_dotenv
 load_dotenv()
 
-print('test')
-
 CLIENTID = os.environ.get('REDDITID')
 CLIENTSECRET = os.environ.get('REDDITSECRET')
 USERAGENT = os.environ.get('USERAGENT')
