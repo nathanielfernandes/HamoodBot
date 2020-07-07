@@ -6,6 +6,9 @@ from google_images_search import GoogleImagesSearch
 from boto.s3.connection import S3Connection
 s3 = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
 
+GTOKEN = os.environ['GTOKEN']
+GUSER = os.environ['GUSER']
+
 def ImgSearch(query):
 # define search params:
     #query = formatMsg.remove(query, '(', ')', "'", ",")
