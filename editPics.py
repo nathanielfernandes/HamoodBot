@@ -22,10 +22,10 @@ def addText(imageName, fontSize, textColor, firstText, secondText, thirdText, fi
     secondText = secondText.replace('/', '\n')
     thirdText = thirdText.replace('/', '\n')
        
-    font = ImageFont.load_default()
+    fontDefault = ImageFont.load_default()
     
     image = Image.open(image)   
-    font_type = ImageFont.truetype(font, fontSize)
+    font_type = ImageFont.truetype(str(fontDefault), fontSize)
     draw = ImageDraw.Draw(image)
     draw.text(xy=(firstPos[0], firstPos[1]), text=firstText, fill=(textColor), font=font_type)
     draw.text(xy=(secondPos[0], secondPos[1]), text=secondText, fill=(textColor), font=font_type)
