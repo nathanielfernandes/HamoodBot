@@ -39,9 +39,8 @@ import editPics
 #import scrapeImage
 #import aiChat
 
-From dotenv import load_dotenv
-load_dotenv()
-
+from boto.s3.connection import S3Connection
+s3 = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
 
 if (platform.system() == 'Darwin'):
     running = 'macOS Catalina'
@@ -55,8 +54,6 @@ VR = "Hamood v8"
 
 #inv link
 #https://discord.com/api/oauth2/authorize?client_id=699510311018823680&permissions=8&scope=bot
-
-TOKEN = os.environ.get("BOTTOKEN")
 
 # Default Bot Stuff #
 description = '''Hamood is ur freind'''
