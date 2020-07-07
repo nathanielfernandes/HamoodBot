@@ -15,7 +15,7 @@ def addText(imageName, fontSize, textColor, firstText, secondText, thirdText, fi
     image = folder + '/' + imageName
     edited = folder + '/' + new
 
-    fontPath = path + '/' + 'arialbold.ttf'
+    fontPath = folder + '/' + 'arialbold.ttf'
     if ('/' in firstText) or ('/' in secondText) or ('/' in thirdText):
         fontSize -= 10
         
