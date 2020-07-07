@@ -3,5 +3,5 @@ asyncio
 Discord
 PyDictionary
 google_images_search
-cv2
 PIL
+opencv-python
