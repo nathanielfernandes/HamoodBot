@@ -3,5 +3,5 @@ asyncio
 Discord
 PyDictionary
 google_images_search
-opencv-python
+opencv-python==3.4.2.17
 pillow
