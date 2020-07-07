@@ -148,9 +148,9 @@ async def on_message(message):
     user = message.author.id
     name = bot.get_user(user)
 
-    print('|' + str(name) + ": ", end='')
-    print((message.content), end='')
-    print(' [' + str(currentDT) + '] |')
+    # print('|' + str(name) + ": ", end='')
+    # print((message.content), end='')
+    # print(' [' + str(currentDT) + '] |')
 
     #lowercases all messages received by the bot, unless it is a dm
     if ('dm' not  in message.content) and ('link' not  in message.content):
@@ -718,13 +718,13 @@ async def no(ctx, content:str):
         uno = noU.unoCard()
         await ctx.send(file=discord.File(uno))
 
-@bot.command(pass_context = True)
-# #@commands.is_owner()
-@commands.has_role("hackerman")
-async def link(ctx, website, amount=1):
-    await ctx.channel.purge(limit=1)
-    for i in range(amount):
-        webbrowser.open_new(website)
+# @bot.command(pass_context = True)
+# # #@commands.is_owner()
+# @commands.has_role("hackerman")
+# async def link(ctx, website, amount=1):
+#     await ctx.channel.purge(limit=1)
+#     for i in range(amount):
+#         webbrowser.open_new(website)
 
 @bot.command()
 async def send(ctx, mix=1):
