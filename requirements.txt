@@ -5,4 +5,3 @@ PyDictionary
 google_images_search
 opencv-python
 pillow
-boto
