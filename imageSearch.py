@@ -3,17 +3,13 @@ import formatMsg
 import pathlib
 from google_images_search import GoogleImagesSearch
 
-From dotenv import load_dotenv
-load_dotenv()
-
-TOKEN = os.environ.get('GOOGLETOKEN')
-USER = os.environ.get('GOOGLEUSER')
-
+from boto.s3.connection import S3Connection
+s3 = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
 
 def ImgSearch(query):
 # define search params:
     #query = formatMsg.remove(query, '(', ')', "'", ",")
-    gis = GoogleImagesSearch(TOKEN, USER)
+    gis = GoogleImagesSearch(GTOKEN, GUSER)
     path = os.path.dirname(os.path.realpath(__file__))
     folder = path + '/' + "tempImages"
     

@@ -4,12 +4,8 @@ import formatMsg
 import os
 import pathlib
 
-From dotenv import load_dotenv
-load_dotenv()
-
-CLIENTID = os.environ.get('REDDITID')
-CLIENTSECRET = os.environ.get('REDDITSECRET')
-USERAGENT = os.environ.get('USERAGENT')
+from boto.s3.connection import S3Connection
+s3 = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
 
 reddit = praw.Reddit(client_id=CLIENTID,
                      client_secret=CLIENTSECRET)
