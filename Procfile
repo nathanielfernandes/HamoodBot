@@ -1,1 +1,1 @@
-worker: python Hamood_v8.py
+worker: python3 Hamood_v8.py
