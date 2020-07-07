@@ -740,107 +740,107 @@ async def shrek(ctx):
 
 
 
-pollOne = -1
-pollTwo = -1
+# pollOne = -1
+# pollTwo = -1
 
-async def pollResults(time, channel, firstPoll, secondPoll):
-    delete = True
+# async def pollResults(time, channel, firstPoll, secondPoll):
+#     delete = True
     
-    global pollOne
-    global pollTwo
+#     global pollOne
+#     global pollTwo
 
-    await asyncio.sleep(time)
-    await bot.wait_until_ready()
+#     await asyncio.sleep(time)
+#     await bot.wait_until_ready()
 
-    #print('woo')
-    #print(pollOne, pollTwo)
-    totalPolls = pollOne + pollTwo
+#     #print('woo')
+#     #print(pollOne, pollTwo)
+#     totalPolls = pollOne + pollTwo
 
-    percentOne = round((pollOne / totalPolls) * 100)
-    percentTwo = round((pollTwo / totalPolls) * 100)
+#     percentOne = round((pollOne / totalPolls) * 100)
+#     percentTwo = round((pollTwo / totalPolls) * 100)
 
-    difference = abs(percentOne - percentTwo)
+#     difference = abs(percentOne - percentTwo)
 
-    singleTick = "|||||"
+#     singleTick = "|||||"
 
-    barOne = (singleTick*percentOne) + " " + str(percentOne) + "% | " + firstPoll + " | " 
-    barTwo = (singleTick*percentTwo) + " " + str(percentTwo) + "% | " + secondPoll + " | " 
+#     barOne = (singleTick*percentOne) + " " + str(percentOne) + "% | " + firstPoll + " | " 
+#     barTwo = (singleTick*percentTwo) + " " + str(percentTwo) + "% | " + secondPoll + " | " 
 
-    if percentOne > percentTwo:
-        result = '"' + firstPoll + '" won by ' + str(difference) + "% !"
-    elif percentOne < percentTwo:
-        result = '"' + secondPoll + '" won by ' + str(difference) + "% !"
-    elif percentOne == percentTwo:
-        result = "it's a tie!"
+#     if percentOne > percentTwo:
+#         result = '"' + firstPoll + '" won by ' + str(difference) + "% !"
+#     elif percentOne < percentTwo:
+#         result = '"' + secondPoll + '" won by ' + str(difference) + "% !"
+#     elif percentOne == percentTwo:
+#         result = "it's a tie!"
 
-    await channel.send("the poll results are in:" + '\n' + barOne + '\n' + barTwo + '\n' + result)
-    #await channel.send(barOne)
-  #  await channel.send(barTwo)
-    #await channel.send(result)
+#     await channel.send("the poll results are in:" + '\n' + barOne + '\n' + barTwo + '\n' + result)
+#     #await channel.send(barOne)
+#   #  await channel.send(barTwo)
+#     #await channel.send(result)
 
-    pollOne = -1
-    pollTwo = -1
+#     pollOne = -1
+#     pollTwo = -1
 
-    return delete
+#     return delete
 
 
-@bot.command(pass_context = True)
-async def poll(ctx, time:int, *content:str):
-    global pollOne
-    global pollTwo
+# @bot.command(pass_context = True)
+# async def poll(ctx, time:int, *content:str):
+#     global pollOne
+#     global pollTwo
 
-    pollOne = -1
-    pollTwo = -1
+#     pollOne = -1
+#     pollTwo = -1
 
-    done = False
-    channel = ctx.message.channel
-    time *= 60
+#     done = False
+#     channel = ctx.message.channel
+#     time *= 60
 
-    # content = formatMsg.remove(content, '(', ')', "'", ",")
+#     # content = formatMsg.remove(content, '(', ')', "'", ",")
 
-    # if 'vs.' not in content:
-    #     return
+#     # if 'vs.' not in content:
+#     #     return
 
-    # split1 = (content.find('vs.')) - 1
-    # split2 = split1 + 5
+#     # split1 = (content.find('vs.')) - 1
+#     # split2 = split1 + 5
 
-    # firstPoll = content[:split1]
-    # secondPoll = content[split2:]
+#     # firstPoll = content[:split1]
+#     # secondPoll = content[split2:]
 
-    content = formatMsg.convertList(content, True)
-    firstPoll, secondPoll = content
+#     content = formatMsg.convertList(content, True)
+#     firstPoll, secondPoll = content
     
-    await ctx.send("Option 1: "+firstPoll + '\n' + "Option 2: "+secondPoll + '\n' + "@everyone VOTE!")
-    #await ctx.send("Option 2: "+secondPoll)
-    await ctx.message.add_reaction(":one:713819687036780544")
-    await ctx.message.add_reaction(":two:713819703985963028")
-    #await ctx.send("@everyone VOTE!")
+#     await ctx.send("Option 1: "+firstPoll + '\n' + "Option 2: "+secondPoll + '\n' + "@everyone VOTE!")
+#     #await ctx.send("Option 2: "+secondPoll)
+#     await ctx.message.add_reaction(":one:713819687036780544")
+#     await ctx.message.add_reaction(":two:713819703985963028")
+#     #await ctx.send("@everyone VOTE!")
 
-    done = await pollResults(time, channel, firstPoll, secondPoll)
-    if done:
-        await ctx.message.delete()
+#     done = await pollResults(time, channel, firstPoll, secondPoll)
+#     if done:
+#         await ctx.message.delete()
 
 
-@bot.event
-async def on_raw_reaction_add(payload):
-    global pollOne
-    global pollTwo
+# @bot.event
+# async def on_raw_reaction_add(payload):
+#     global pollOne
+#     global pollTwo
 
-    if payload.emoji.name == "one":
-        pollOne += 1
-    if payload.emoji.name == "two":
-        pollTwo += 1
+#     if payload.emoji.name == "one":
+#         pollOne += 1
+#     if payload.emoji.name == "two":
+#         pollTwo += 1
 
-    #print(pollOne, pollTwo)
-@bot.event
-async def on_raw_reaction_remove(payload):
-    global pollOne
-    global pollTwo
+#     #print(pollOne, pollTwo)
+# @bot.event
+# async def on_raw_reaction_remove(payload):
+#     global pollOne
+#     global pollTwo
     
-    if payload.emoji.name == "one":
-        pollOne -= 1
-    if payload.emoji.name == "two":
-        pollTwo -= 1
+#     if payload.emoji.name == "one":
+#         pollOne -= 1
+#     if payload.emoji.name == "two":
+#         pollTwo -= 1
 
 
 @bot.command(pass_context=True)
