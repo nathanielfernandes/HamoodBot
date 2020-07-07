@@ -894,36 +894,36 @@ async def worthless(ctx, *content:str):
 #     editPics.deleteImage(meme)
 
 
-photo = ''
-save = ''
+# photo = ''
+# save = ''
 
-def editorSetup(imgName, classifier, rotation, channel):
-    global image_url
-    global image_channel
-    global path
-    global photo
-    global save
+# def editorSetup(imgName, classifier, rotation, channel):
+#     global image_url
+#     global image_channel
+#     global path
+#     global photo
+#     global save
 
-    if (image_channel == channel):
-        try:
-            editPics.deleteImage(photo)
-            editPics.deleteImage(save)
-        except Exception:
-            print("couldn't delete!")
+#     if (image_channel == channel):
+#         try:
+#             editPics.deleteImage(photo)
+#             editPics.deleteImage(save)
+#         except Exception:
+#             print("couldn't delete!")
 
-        name = editPics.randomNumber()
-        name = str(name) + '.png'#"temporaryImage1.png"
-        save = (path + '/' + "memePics" '/' + name)
+#         name = editPics.randomNumber()
+#         name = str(name) + '.png'#"temporaryImage1.png"
+#         save = (path + '/' + "memePics" '/' + name)
         
-        editPics.scrape(image_url, save)
+#         editPics.scrape(image_url, save)
 
-        photo = editPics.addFilter(save, imgName, classifier, rotation)
-    else:
-        print('channel does not match!')  
+#         photo = editPics.addFilter(save, imgName, classifier, rotation)
+#     else:
+#         print('channel does not match!')  
 
-    editPics.deleteImage(save)
+#     editPics.deleteImage(save)
 
-    return photo
+#     return photo
         
 
 # @bot.command(pass_context=True)
