@@ -45,7 +45,7 @@ TOKEN = os.environ['TOKEN']
 if (platform.system() == 'Darwin'):
     running = 'macOS Catalina'
 elif (platform.system() == 'Linux'):
-    running = 'Raspberry pi 3B+'
+    running = 'Heroku: Linux'
 
 path = os.path.dirname(os.path.realpath(__file__))
 

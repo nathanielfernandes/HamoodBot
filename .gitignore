@@ -1,3 +1,4 @@
 .env
-degub.log
+debug.log
 __pycache__
+classifiers
