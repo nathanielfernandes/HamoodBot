@@ -12,7 +12,7 @@ CLIENTSECRET = os.environ['CLIENTSECRET']
 USERAGENT = os.environ['USERAGENT']
 
 reddit = praw.Reddit(client_id=CLIENTID,
-                     client_secret=CLIENTSECRET)
+                     client_secret=CLIENTSECRET,
                      user_agent=USERAGENT)
 
 path = os.path.dirname(os.path.realpath(__file__))
