@@ -2,11 +2,11 @@ import os
 import pathlib
 
 import random
-import cv2
+#import cv2
 
 from PIL import Image, ImageDraw, ImageFont
 
-import requests
+#import requests
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -32,10 +32,10 @@ def addText(imageName, fontSize, textColor, firstText, secondText, thirdText, fi
     image.save(edited)
     return edited
 
-def scrape(imgURL, saveDir):
-    img_data = requests.get(imgURL).content
-    with open(saveDir, 'wb') as handler:
-        handler.write(img_data)
+# def scrape(imgURL, saveDir):
+#     img_data = requests.get(imgURL).content
+#     with open(saveDir, 'wb') as handler:
+#         handler.write(img_data)
 
 def randomNumber():
     char = '1234567890'
@@ -46,44 +46,44 @@ def randomNumber():
         
     return combo
 
-def getClasifier(identity):
-    folder = path + '/' + 'classifiers'
+# def getClasifier(identity):
+#     folder = path + '/' + 'classifiers'
     
-    types = ['eyes', 'faces', 'cats']
-    class_list = ["haarcascade_eye_tree_eyeglasses.xml", "haarcascade_frontalface_alt_tree.xml", "haarcascade_frontalcatface_extended.xml"]
+#     types = ['eyes', 'faces', 'cats']
+#     class_list = ["haarcascade_eye_tree_eyeglasses.xml", "haarcascade_frontalface_alt_tree.xml", "haarcascade_frontalcatface_extended.xml"]
     
-    loc = types.index(identity)
-    folder = folder + '/' + class_list[loc]
+#     loc = types.index(identity)
+#     folder = folder + '/' + class_list[loc]
 
-    return folder
+#     return folder
 
 
-def addFilter(img, filterImage, filterType, rotate):
-    folder = path + '/' + "memePics"
-    background = Image.open(img)
-    foreground = Image.open(folder + '/' + filterImage)
+# def addFilter(img, filterImage, filterType, rotate):
+#     folder = path + '/' + "memePics"
+#     background = Image.open(img)
+#     foreground = Image.open(folder + '/' + filterImage)
 
-    image = cv2.imread(img)
+#     image = cv2.imread(img)
 
-    classifier = getClasifier(filterType)
-    eye_cascade = cv2.CascadeClassifier(classifier)
+#     classifier = getClasifier(filterType)
+#     eye_cascade = cv2.CascadeClassifier(classifier)
 
-    eyes = eye_cascade.detectMultiScale(image, scaleFactor = 1.1, minNeighbors = 5)
+#     eyes = eye_cascade.detectMultiScale(image, scaleFactor = 1.1, minNeighbors = 5)
 
-    for (ex, ey, ew, eh) in eyes:
-        if rotate:
-            rt = random.randint(1, 3600)
-            foreground = foreground.rotate(rt, expand=False)
-        fore = foreground.resize((ew, eh), 0)
-        background.paste(fore, (ex, ey), fore)
+#     for (ex, ey, ew, eh) in eyes:
+#         if rotate:
+#             rt = random.randint(1, 3600)
+#             foreground = foreground.rotate(rt, expand=False)
+#         fore = foreground.resize((ew, eh), 0)
+#         background.paste(fore, (ex, ey), fore)
 
-    identity = randomNumber()
-    identity = str(identity) + '.png'
+#     identity = randomNumber()
+#     identity = str(identity) + '.png'
     
-    finalName = folder + '/' + identity
-    background.save(finalName)
+#     finalName = folder + '/' + identity
+#     background.save(finalName)
 
-    return finalName
+#     return finalName
 
 
 
