@@ -2,7 +2,7 @@ import os
 import pathlib
 
 import random
-import cv2
+import opencv
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -63,10 +63,10 @@ def addFilter(img, filterImage, filterType, rotate):
     background = Image.open(img)
     foreground = Image.open(folder + '/' + filterImage)
 
-    image = cv2.imread(img)
+    image = opencv.imread(img)
 
     classifier = getClasifier(filterType)
-    eye_cascade = cv2.CascadeClassifier(classifier)
+    eye_cascade = opencv.CascadeClassifier(classifier)
 
     eyes = eye_cascade.detectMultiScale(image, scaleFactor = 1.1, minNeighbors = 5)
 

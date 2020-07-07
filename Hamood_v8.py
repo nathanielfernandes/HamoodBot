@@ -41,14 +41,12 @@ import editPics
 
 TOKEN = os.environ['TOKEN']
 
-
 if (platform.system() == 'Darwin'):
     running = 'macOS Catalina'
 elif (platform.system() == 'Linux'):
     running = 'Raspberry pi 3B+'
 
 path = os.path.dirname(os.path.realpath(__file__))
-
 
 VR = "Hamood v8" 
 
