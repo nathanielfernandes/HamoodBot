@@ -453,7 +453,16 @@ async def bubblewrap(ctx, w=3, h=3):
 
     await ctx.send(wrap)
 
+@bot.command()
+async def repeat(ctx, *content:str):
+    """claps ur sentence"""
 
+    msg = ''
+
+    for word in content:
+        msg += word + ':clap:'
+
+    await ctx.send(msg)
 
 @bot.command()
 async def repeat(ctx, times: int, *content: str):
@@ -468,12 +477,13 @@ async def repeat(ctx, times: int, *content: str):
 
     await ctx.send(msg)
 
-
 @bot.command()
-async def echo(ctx, times: int, *content: str):
-    """Repeats a message multiple times."""
+async def echo(ctx, *content: str):
+    """echos a message."""
 
     content = formatMsg.convertList(content, False) 
+
+    times = random.randint(1,5)
 
     for i in range(times):
         await ctx.send(content)
