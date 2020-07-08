@@ -460,7 +460,7 @@ async def clap(ctx, *content:str):
     msg = ''
 
     for word in content:
-        msg += word + ':clap:'
+        msg += '***' + word + '***' + ':clap:'
 
     await ctx.send(msg)
 
