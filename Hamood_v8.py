@@ -454,7 +454,7 @@ async def bubblewrap(ctx, w=3, h=3):
     await ctx.send(wrap)
 
 @bot.command()
-async def repeat(ctx, *content:str):
+async def clap(ctx, *content:str):
     """claps ur sentence"""
 
     msg = ''
