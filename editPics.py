@@ -35,8 +35,8 @@ def addText(imageName, fontSize, textColor, firstText, secondText, thirdText, fi
     draw.text(xy=(firstPos[0], firstPos[1]), text=firstText, fill=(textColor), font=font_type, anchor=None, spacing=4, align="center", direction=None, features=None, language=None, stroke_width=4, stroke_fill=STROKECOLOR)
     draw.text(xy=(secondPos[0], secondPos[1]), text=secondText, fill=(textColor), font=font_type, anchor=None, spacing=4, align="center", direction=None, features=None, language=None, stroke_width=4, stroke_fill=STROKECOLOR)
     draw.text(xy=(thirdPos[0], thirdPos[1]), text=thirdText, fill=(textColor), font=font_type, anchor=None, spacing=4, align="center", direction=None, features=None, language=None, stroke_width=4, stroke_fill=STROKECOLOR)
-    image.show()
-    #image.save(edited)
+    #image.show()
+    image.save(edited)
     return edited
 
 # def scrape(imgURL, saveDir):
@@ -183,7 +183,7 @@ def deleteImage(file):
 #addText('worthlessImage.jpg', 180, (0,0,0), nameOne, ' ', ' ', [300, 300], [0, 0], [0, 0], 'WORTHLESS.jpg')
 #editImage('drakeImage.jpg', 80, (0,0,0), "nathan", "asdsadsad", "asdsads", [150, 525], [610, 250], [610, 850], 'DRAKE.jpg')
 
-nameOne = 'nathan is very \n smelly'
-nameTwo = 'ayan usmani'
+# nameOne = 'nathan is very \n smelly'
+# nameTwo = 'ayan usmani'
 
-addText('slapImage.jpg', 60, (255,255, 255), nameOne, nameTwo, ' ', [580, 30], [220, 250], [0,0], 'SLAP.jpg')
+# addText('slapImage.jpg', 60, (255,255, 255), nameOne, nameTwo, ' ', [580, 30], [220, 250], [0,0], 'SLAP.jpg')
