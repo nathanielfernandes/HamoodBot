@@ -470,6 +470,16 @@ async def repeat(ctx, times: int, *content: str):
 
 
 @bot.command()
+async def echo(ctx, times: int, *content: str):
+    """Repeats a message multiple times."""
+
+    content = formatMsg.convertList(content, False) 
+
+    for i in range(times):
+        await ctx.send(content)
+    
+
+@bot.command()
 async def joined(ctx, member: discord.Member):
     """Says when a member joined."""
 
