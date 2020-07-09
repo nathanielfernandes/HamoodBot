@@ -977,7 +977,7 @@ async def sortinghat(ctx):
     houses = ['Gryffindor', 'Hufflepuff', 'Slytherin', 'Ravenclaw']
     house = random.choice(houses)
     
-    await ctx.send(('{0.author.mention}, you belong to the ' + house + ' house!').format(ctx))
+    await ctx.send(('{0.author.mention}, you belong to the ***' + house + '*** house!').format(ctx))
 
 #bot.loop.create_task(bg_task())
 bot.run(TOKEN)
