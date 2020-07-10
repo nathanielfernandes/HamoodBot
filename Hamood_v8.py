@@ -187,7 +187,7 @@ async def on_message(message):
     if (profane):
         if ("hamood" in message.content):
             uno = noU.unoCard()
-            await message.channel.purge(limit=1)
+            #await message.channel.purge(limit=1)
             await message.channel.send(file=discord.File(uno))
             await message.channel.send('{0.author.mention} No U!'.format(message))
             return
@@ -727,6 +727,7 @@ async def google(ctx, *query:str):
     #query = formatMsg.remove(query, '(', ')', "'", ",")
     query = formatMsg.convertList(query, False)
     image = imageSearch.ImgSearch(query)
+    await ctx.send("This is the first result for '" + query + "':")
     await ctx.send(file=discord.File(image))
     imageSearch.deleteImage(image)
 
@@ -734,7 +735,7 @@ async def google(ctx, *query:str):
 async def no(ctx, content:str):
     """no you"""
     if (content == 'u' or content == 'you'):
-        await ctx.channel.purge(limit=1)
+        #await ctx.channel.purge(limit=1)
         uno = noU.unoCard()
         await ctx.send(file=discord.File(uno))
 
@@ -978,6 +979,7 @@ async def sortinghat(ctx):
     house = random.choice(houses)
     
     await ctx.send(('{0.author.mention}, you belong to the ***' + house + '*** house!').format(ctx))
+
 
 #bot.loop.create_task(bg_task())
 bot.run(TOKEN)
