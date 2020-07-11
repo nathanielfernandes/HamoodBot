@@ -96,7 +96,7 @@ async def version(ctx):
 @bot.command(pass_context = True)
 @commands.is_owner()
 async def logout(ctx):
-    await ctx.send("***goodbye***")
+    await ctx.send("**goodbye**")
     await bot.logout()
 
 #allows the owner of the bot to dm other users using the bot
@@ -106,8 +106,8 @@ async def logout(ctx):
 async def dm(ctx, member: discord.Member, *, content: str):
 
     await member.send(content)
-    print('Hamood#3840: ', end='')
-    print(content)
+    #print('Hamood#3840: ', end='')
+    #print(content)
 
     @bot.event
     async def on_message(message):
@@ -117,8 +117,8 @@ async def dm(ctx, member: discord.Member, *, content: str):
         if message.author.id == bot.user.id:
             return
         elif (str(name) == str(member)):
-            print(str(name) + ": ", end='')
-            print((message.content))
+            #print(str(name) + ": ", end='')
+            #print((message.content))
             
             await ctx.send(('{0.author.mention}: ' + str(message.content)).format(message))
 
@@ -141,7 +141,7 @@ async def dm(ctx, member: discord.Member, *, content: str):
 @bot.event
 async def on_message(message): 
 
-    currentDT = datetime.datetime.now()
+    #currentDT = datetime.datetime.now()
     channel = message.channel.id
     channel = str(channel)
 
@@ -206,11 +206,11 @@ async def on_message(message):
 
             if (profanity_action == 2):
                 await message.channel.purge(limit=1)
-                await message.channel.send(('***{0.author.mention} said: ||"'+message.content+'"||, ||"'+words+'"|| ' + punc +', watch your profanity!***').format(message))
+                await message.channel.send(('**{0.author.mention} said: ||"'+message.content+'"||, ||"'+words+'"|| ' + punc +', watch your profanity!**').format(message))
 
             else:
                 await message.add_reaction('❌')
-                await message.channel.send(('***{0.author.mention}, ||'+words+'|| '+punc+', watch your profanity!***').format(message))
+                await message.channel.send(('**{0.author.mention}, ||'+words+'|| '+punc+', watch your profanity!**').format(message))
             return
         
     # if (str(message.author.id) == '558518137390235708'):
@@ -274,9 +274,9 @@ async def zodiac(ctx, month1: str, day1: int, month2:str, day2: int, quick="slow
 
 
     if (quick == "slow"):
-        await ctx.send(("person 1 is a ***" + sign1 + "***, person 2 is a ***" + sign2 + "***, and they are about ***" + compatibility + "*** compatible").format(ctx))
+        await ctx.send(("person 1 is a **" + sign1 + "**, person 2 is a **" + sign2 + "**, and they are about **" + compatibility + "** compatible").format(ctx))
     else:
-        await ctx.send(('***' + sign1 + "*** and ***" + sign2 + "*** are about ***" + compatibility + "*** compatible").format(ctx))
+        await ctx.send(('**' + sign1 + "** and **" + sign2 + "** are about **" + compatibility + "** compatible").format(ctx))
 
 
 @bot.command(aliases=['clear'], pass_context=True)
@@ -355,7 +355,7 @@ async def flip(ctx):
     """flips a coin"""
     possible_responses = ['heads', 'tails']
 
-    await ctx.send('***' + (random.choice(possible_responses) + '***, ' + '{0.author.mention}').format(ctx))
+    await ctx.send('**' + (random.choice(possible_responses) + '**, ' + '{0.author.mention}').format(ctx))
 
 
 
@@ -369,7 +369,7 @@ async def pp(ctx):
         length += '='
     size = size + length + 'D'
 
-    await ctx.send(('{0.author.mention} :eggplant: size is ***' + size +'***').format(ctx))
+    await ctx.send(('{0.author.mention} :eggplant: size is **' + size +'**').format(ctx))
 
          
 
@@ -385,7 +385,7 @@ async def match(ctx, left: str, right: str):
     """match makes"""
     match = str(random.randint(0,100))
     
-    await ctx.send('***' + left + '*** and ***' + right + '*** are ***' + match + '%*** compatible')
+    await ctx.send('**' + left + '** and **' + right + '** are **' + match + '%** compatible')
     
     
 
@@ -447,7 +447,7 @@ async def bubblewrap(ctx, w=3, h=3):
     if h > 14:
         h = 14
     wrap = ''
-    w = "||***pop***||"*int(w)
+    w = "||**pop**||"*int(w)
     for i in range(h):
         wrap += w + "\n"
 
@@ -460,7 +460,7 @@ async def clap(ctx, *content:str):
     msg = ''
 
     for word in content:
-        msg += '***' + word + '***' + ':clap:'
+        msg += '**' + word + '**' + ':clap:'
 
     await ctx.send(msg)
 
@@ -546,7 +546,7 @@ async def vibecheck(ctx):
     random_word = random.choice(words)
     #possible_response = r.get_random_word()
 
-    await ctx.send((('{0.author.mention}')+' your vibe checked out to be ' + "***'"+ (random_word)+ "'***").format(ctx))
+    await ctx.send((('{0.author.mention}')+' your vibe checked out to be ' + "**'"+ (random_word)+ "'**").format(ctx))
     await ctx.message.add_reaction('✔️')
  
 @bot.command(aliases=['def'])
@@ -978,7 +978,7 @@ async def sortinghat(ctx):
     houses = ['Gryffindor', 'Hufflepuff', 'Slytherin', 'Ravenclaw']
     house = random.choice(houses)
     
-    await ctx.send(('{0.author.mention}, you belong to the ***' + house + '*** house!').format(ctx))
+    await ctx.send(('{0.author.mention}, you belong to the **' + house + '** house!').format(ctx))
 
 
 #bot.loop.create_task(bg_task())
