@@ -381,7 +381,7 @@ async def ping(ctx):
         
 
 @bot.command()
-async def match(ctx, left: str, right: str):
+async def match(ctx, *content: str):
     """match makes"""
     match = str(random.randint(0,100))
     
@@ -433,10 +433,12 @@ async def roll(ctx, dice: str):
          
 
 @bot.command(description='For when you wanna settle the score some other way')
-async def choose(ctx, *choices: str):
+async def choose(ctx, *content: str):
     """Chooses between multiple choices."""
+    content = formatMsg.convertList(content, True) 
 
-    await ctx.send(random.choice(choices))
+
+    await ctx.send(random.choice(content))
          
 
 @bot.command(aliases=["pop", "bubble"])
