@@ -384,7 +384,7 @@ async def ping(ctx):
 async def match(ctx, *content: str):
     """match makes"""
     match = str(random.randint(0,100))
-    content = formatMsg.convertList(content, False) 
+    content = formatMsg.convertList(content, True) 
     left, right = content
     await ctx.send('**' + left + '** and **' + right + '** are **' + match + '%** compatible')
     
