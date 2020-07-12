@@ -867,12 +867,15 @@ async def shrek(ctx):
 #         pollTwo -= 1
 
 
+
+
 @bot.command(pass_context=True)
 async def bonk(ctx, *content:str):
     content = formatMsg.convertList(content, True)
     nameOne, nameTwo = content
-
-    meme = editPics.addText('bonkImage.jpg', 75, (0,0,0), nameOne, nameTwo, ' ', [250, 450], [1050, 600], [0,0], 'BONK.jpg')
+    content = [[nameOne, (250, 450)], [nameTwo, (1050, 600)]]
+    
+    meme = editPics.addText('bonkImage.jpg', 75, (0,0,0), content, 'BONK.jpg')
     await ctx.send(file=discord.File(meme))
     editPics.deleteImage(meme)
 
@@ -880,8 +883,9 @@ async def bonk(ctx, *content:str):
 async def lick(ctx, *content:str):
     content = formatMsg.convertList(content, True)
     nameOne, nameTwo = content
+    content = [[nameOne, (320,220)], [nameTwo, (75,200)]]
 
-    meme = editPics.addText('lickImage.jpg', 35, (0,0,0), nameOne, nameTwo, ' ', [320, 220], [75, 200], [0,0], 'LICK.jpg')
+    meme = editPics.addText('lickImage.jpg', 35, (0,0,0), content, 'LICK.jpg')
     await ctx.send(file=discord.File(meme))
     editPics.deleteImage(meme)
 
@@ -889,8 +893,9 @@ async def lick(ctx, *content:str):
 async def slap(ctx, *content:str):
     content = formatMsg.convertList(content, True)
     nameOne, nameTwo = content
+    content = [[nameOne, (580, 30)], [nameTwo, (220, 250)]]
 
-    meme = editPics.addText('slapImage.jpg', 60, (255,255, 255), nameOne, nameTwo, ' ', [580, 30], [220, 250], [0,0], 'SLAP.jpg')
+    meme = editPics.addText('slapImage.jpg', 60, (255,255, 255), content, 'SLAP.jpg')
     await ctx.send(file=discord.File(meme))
     editPics.deleteImage(meme)
 
@@ -898,8 +903,9 @@ async def slap(ctx, *content:str):
 async def lookback(ctx, *content:str):
     content = formatMsg.convertList(content, True)
     nameOne, nameTwo, nameThree = content
+    content = [[nameOne, (120, 285)], [nameTwo, (360, 180)], [nameThree, (525, 250)]]
     
-    meme = editPics.addText('lookBackImage.jpg', 45, (0,0,0), nameOne, nameTwo, nameThree, [120, 285], [360, 180], [525, 250], 'LOOKBACK.jpg')
+    meme = editPics.addText('lookBackImage.jpg', 45, (0,0,0), content, 'LOOKBACK.jpg')
     await ctx.send(file=discord.File(meme))
     editPics.deleteImage(meme)
 
@@ -907,8 +913,9 @@ async def lookback(ctx, *content:str):
 async def worthless(ctx, *content:str):
     content = formatMsg.convertList(content, False)
     nameOne = content
+    content = [[nameOne, (300, 320)]]
 
-    meme = editPics.addText('worthlessImage.jpg', 180, (0,0,0), nameOne, ' ', ' ', [300, 300], [0, 0], [0, 0], 'WORTHLESS.jpg')
+    meme = editPics.addText('worthlessImage.jpg', 180, (0,0,0), content, 'WORTHLESS.jpg')
     await ctx.send(file=discord.File(meme))
     editPics.deleteImage(meme)
 # @bot.command(pass_context=True)
