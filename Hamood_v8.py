@@ -918,65 +918,6 @@ async def worthless(ctx, *content:str):
     meme = editPics.addText('worthlessImage.jpg', 180, (0,0,0), content, 'WORTHLESS.jpg')
     await ctx.send(file=discord.File(meme))
     editPics.deleteImage(meme)
-# @bot.command(pass_context=True)
-# async def drake(ctx, nameOne:str, nameTwo:str, nameThree:str):
-#     meme = editPics.addText('drakeImage.jpg', 80, (0,0,0), nameOne, nameTwo, nameThree, [150, 525], [610, 250], [610, 850], 'DRAKE.jpg')
-#     await ctx.send(file=discord.File(meme))
-#     editPics.deleteImage(meme)
-
-
-# photo = ''
-# save = ''
-
-# def editorSetup(imgName, classifier, rotation, channel):
-#     global image_url
-#     global image_channel
-#     global path
-#     global photo
-#     global save
-
-#     if (image_channel == channel):
-#         try:
-#             editPics.deleteImage(photo)
-#             editPics.deleteImage(save)
-#         except Exception:
-#             print("couldn't delete!")
-
-#         name = editPics.randomNumber()
-#         name = str(name) + '.png'#"temporaryImage1.png"
-#         save = (path + '/' + "memePics" '/' + name)
-        
-#         editPics.scrape(image_url, save)
-
-#         photo = editPics.addFilter(save, imgName, classifier, rotation)
-#     else:
-#         print('channel does not match!')  
-
-#     editPics.deleteImage(save)
-
-#     return photo
-        
-
-# @bot.command(pass_context=True)
-# async def googly(ctx):
-#     photo = editorSetup('googlyEye.png', 'eyes', True, str(ctx.message.channel.id))
-#     await ctx.send(("here's your googlified image, {0.author.mention}").format(ctx))
-#     await ctx.send(file=discord.File(photo))
-#     editPics.deleteImage(photo)
-
-# @bot.command(pass_context=True)
-# async def clown(ctx):
-#     photo = editorSetup('clownFace.png', 'faces', False, str(ctx.message.channel.id))
-#     await ctx.send(("here's your clowned image, {0.author.mention}").format(ctx))
-#     await ctx.send(file=discord.File(photo))
-#     editPics.deleteImage(photo)
-
-# @bot.command(pass_context=True)
-# async def sadcat(ctx):
-#     photo = editorSetup('cryingCat.png', 'cats', False, str(ctx.message.channel.id))
-#     await ctx.send(("here's your sadcat image, {0.author.mention}").format(ctx))
-#     await ctx.send(file=discord.File(photo))
-#     editPics.deleteImage(photo)
 
 @bot.command(pass_context=True)
 async def test(ctx):
@@ -990,6 +931,49 @@ async def sortinghat(ctx):
     
     await ctx.send(('{0.author.mention}, you belong to the **' + house + '** house!').format(ctx))
 
+
+def imagePrep(stuff, memeImage, size, finalName):
+    for item in stuff:
+        name = editPics.randomNumber()
+        name = str(name) + '.png'
+        save = path + '/' + "memePics" '/' + name
+        item[0]
+        editPics.scrape(item[0], save)
+        
+        pos = stuff.index(item)
+        stuff[pos][0] = save
+
+    meme = editPics.addImage(memeImage, stuff, size, finalName)
+    
+    for item in stuff:
+        editPics.deleteImage(item[0])
+
+    return meme
+
+
+@bot.command()
+async def avatar(ctx, *avamember : discord.Member):
+    for a in avamember:
+        userAvatarUrl = a.avatar_url
+        await ctx.send(userAvatarUrl)
+
+
+@bot.command()
+async def stonks(ctx, *avamember : discord.Member):
+    avatarUrls = []
+    for a in avamember:
+        userAvatarUrl = str(a.avatar_url)
+        userAvatarUrl = userAvatarUrl.replace('.webp', '.png')
+        avatarUrls.append(userAvatarUrl)
+    
+    first = avatarUrls[0]
+    content = [[first, (65, 20)]]
+
+    img = imagePrep(content, "stonksImage.jpg", (200,200), "STONKS.jpg")
+
+    await ctx.send(file=discord.File(img))
+    editPics.deleteImage(img)
+        
 
 #bot.loop.create_task(bg_task())
 bot.run(TOKEN)
