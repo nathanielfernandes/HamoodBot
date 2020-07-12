@@ -44,7 +44,7 @@ def addImage(background, imageList, size, new):
     for img in imageList:
         front = Image.open(img[0])
         front = front.resize(size)
-        back.paste(front, (img[1]), front)
+        back.paste(front, (img[1]))
 
     back.save(finalName)
     return finalName
