@@ -10,32 +10,41 @@ from PIL import Image, ImageDraw, ImageFont
 
 path = os.path.dirname(os.path.realpath(__file__))
 
-def addText(imageName, fontSize, textColor, firstText, secondText, thirdText, firstPos, secondPos, thirdPos, new):
+def addText(imageName, fontSize, textColor, imagedict, new):
     folder = path + '/' + "memePics"
     image = folder + '/' + imageName
     edited = folder + '/' + new
 
     fontPath = folder + '/' + 'arialbold.ttf'
-    if ('/' in firstText) or ('/' in secondText) or ('/' in thirdText):
-        fontSize -= 10
-
-    if textColor[0] == 255:
-        STROKECOLOR = (0,0,0)
-    elif textColor[0] == 0:
-        STROKECOLOR = (255,255,255)
-        
-    firstText = firstText.replace('/', '\n')
-    secondText = secondText.replace('/', '\n')
-    thirdText = thirdText.replace('/', '\n')
 
     image = Image.open(image)   
     font_type = ImageFont.truetype(fontPath, fontSize)
     draw = ImageDraw.Draw(image)
 
-    draw.text(xy=(firstPos[0], firstPos[1]), text=firstText, fill=(textColor), font=font_type, anchor=None, spacing=4, align="center", direction=None, features=None, language=None, stroke_width=4, stroke_fill=STROKECOLOR)
-    draw.text(xy=(secondPos[0], secondPos[1]), text=secondText, fill=(textColor), font=font_type, anchor=None, spacing=4, align="center", direction=None, features=None, language=None, stroke_width=4, stroke_fill=STROKECOLOR)
-    draw.text(xy=(thirdPos[0], thirdPos[1]), text=thirdText, fill=(textColor), font=font_type, anchor=None, spacing=4, align="center", direction=None, features=None, language=None, stroke_width=4, stroke_fill=STROKECOLOR)
-    #image.show()
+    if textColor[0] == 255:
+        STROKECOLOR = (0,0,0)
+    elif textColor[0] == 0:
+        STROKECOLOR = (255,255,255)
+
+    for img in imagedict:
+        if ('/' in img[0]):
+            fontSize -= 5
+            itext = img[0].replace('/', '\n')
+        draw.text(xy=(img[1][0], img[1][1]), text=itext, fill=(textColor), font=font_type, anchor=None, spacing=4, align="center", direction=None, features=None, language=None, stroke_width=4, stroke_fill=STROKECOLOR)
+        
+        
+    # firstText = firstText.replace('/', '\n')
+    # secondText = secondText.replace('/', '\n')
+    # thirdText = thirdText.replace('/', '\n')
+
+    # image = Image.open(image)   
+    # font_type = ImageFont.truetype(fontPath, fontSize)
+    # draw = ImageDraw.Draw(image)
+
+    # draw.text(xy=(firstPos[0], firstPos[1]), text=firstText, fill=(textColor), font=font_type, anchor=None, spacing=4, align="center", direction=None, features=None, language=None, stroke_width=4, stroke_fill=STROKECOLOR)
+    # draw.text(xy=(secondPos[0], secondPos[1]), text=secondText, fill=(textColor), font=font_type, anchor=None, spacing=4, align="center", direction=None, features=None, language=None, stroke_width=4, stroke_fill=STROKECOLOR)
+    # draw.text(xy=(thirdPos[0], thirdPos[1]), text=thirdText, fill=(textColor), font=font_type, anchor=None, spacing=4, align="center", direction=None, features=None, language=None, stroke_width=4, stroke_fill=STROKECOLOR)
+    # #image.show()
     image.save(edited)
     return edited
 
