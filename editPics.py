@@ -29,7 +29,7 @@ def addText(imageName, fontSize, textColor, imagedict, new):
     for img in imagedict:
         if ('/' in img[0]):
             fontSize -= 5
-            itext = img[0].replace('/', '\n')
+        itext = img[0].replace('/', '\n')
         draw.text(xy=(img[1][0], img[1][1]), text=itext, fill=(textColor), font=font_type, anchor=None, spacing=4, align="center", direction=None, features=None, language=None, stroke_width=4, stroke_fill=STROKECOLOR)
         
         
