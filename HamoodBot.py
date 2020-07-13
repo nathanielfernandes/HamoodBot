@@ -122,8 +122,6 @@ class Messaging(commands.Cog):
         elif message.content.startswith("marco"):
             await message.channel.send("polo")
         
-        #await bot.process_commands(message)
-
     @commands.command(aliases=['def'])
     async def define(self, ctx, word):
         """finds the definition of a word"""
@@ -136,22 +134,6 @@ class Messaging(commands.Cog):
         channel = member.guild.system_channel
         if channel is not None:
             await channel.send('Welcome {0.mention}!'.format(member))
-
-    # @commands.command()
-    # @commands.is_owner()
-    # async def dm(self, ctx, member: discord.Member, *, content: str):
-    #     self.member = member
-    #     await member.send(content)
-    #     @commands.Cog.listener()
-    #     async def on_message(self, message):
-    #         self.user = message.author.id
-    #         self.name = bot.get_user(self.user)
-
-    #         if message.author.id == bot.user.id:
-    #             return
-    #         elif (str(self.name) == str(self.member)):
-    #             await ctx.send(('{0.author.mention}: ' + str(message.content)).format(message))
-    #         #await bot.process_commands(message)
 
     @commands.command(aliases=['clear'])
     async def clean(self, ctx, amount=3):
@@ -641,82 +623,77 @@ class RedditStuff(commands.Cog):
 
 
 
+
+async def textMemePrep(ctx, text, coords, font, colour, source, final):
+    text = formatMsg.convertList(text, True)
+    for i in range(len(coords)):
+        coords[i].append(text[i])
+        
+    meme = editPics.addText(source, font, colour, coords, final)
+    await ctx.message.delete()
+    await ctx.send(file=discord.File(meme))
+    editPics.deleteImage(meme)
+
 class TextMemes(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
     @commands.command()
     async def bonk(self, ctx, *content:str):
-        content = formatMsg.convertList(content, True)
-        nameOne, nameTwo = content
-        content = [[nameOne, (250, 450)], [nameTwo, (1050, 600)]]
-        
-        meme = editPics.addText('bonkImage.jpg', 75, (0,0,0), content, 'BONK.jpg')
-        await ctx.send(file=discord.File(meme))
-        editPics.deleteImage(meme)
+        await textMemePrep(ctx, content, [[(250,450)],[(1050,600)]], 75, 'BLACK', 'bonkImage.jpg', 'BONK.jpg')
 
     @commands.command()
     async def lick(self, ctx, *content:str):
-        content = formatMsg.convertList(content, True)
-        nameOne, nameTwo = content
-        content = [[nameOne, (320,220)], [nameTwo, (75,200)]]
-
-        meme = editPics.addText('lickImage.jpg', 35, (0,0,0), content, 'LICK.jpg')
-        await ctx.send(file=discord.File(meme))
-        editPics.deleteImage(meme)
+        await textMemePrep(ctx, content, [[(320,220)],[(75,200)]], 35, 'BLACK', 'lickImage.jpg', 'LICK.jpg')
 
     @commands.command()
     async def slap(self, ctx, *content:str):
-        content = formatMsg.convertList(content, True)
-        nameOne, nameTwo = content
-        content = [[nameOne, (580, 30)], [nameTwo, (220, 250)]]
-
-        meme = editPics.addText('slapImage.jpg', 60, (255,255, 255), content, 'SLAP.jpg')
-        await ctx.send(file=discord.File(meme))
-        editPics.deleteImage(meme)
+        await textMemePrep(ctx, content, [[(580, 30)],[(220, 250)]], 60, 'WHITE', 'slapImage.jpg', 'SLAP.jpg')
 
     @commands.command()
     async def lookback(self, ctx, *content:str):
-        content = formatMsg.convertList(content, True)
-        nameOne, nameTwo, nameThree = content
-        content = [[nameOne, (120, 285)], [nameTwo, (360, 180)], [nameThree, (525, 250)]]
-        
-        meme = editPics.addText('lookBackImage.jpg', 45, (0,0,0), content, 'LOOKBACK.jpg')
-        await ctx.send(file=discord.File(meme))
-        editPics.deleteImage(meme)
+        await textMemePrep(ctx, content, [[(120, 285)],[(360, 180)],[(525, 250)]], 45, 'BLACK', 'lookBackImage.jpg', 'LOOKBACK.jpg')
 
     @commands.command()
-    async def worthless(self, ctx, *content:str):
-        content = formatMsg.convertList(content, False)
-        nameOne = content
-        content = [[nameOne, (300, 320)]]
-
-        meme = editPics.addText('worthlessImage.jpg', 180, (0,0,0), content, 'WORTHLESS.jpg')
-        await ctx.send(file=discord.File(meme))
-        editPics.deleteImage(meme)
+    async def our(self, ctx, *content:str):
+        content = list(content)
+        content[0] = 'our ' + content[0]
+        content.append(', ')
+        await textMemePrep(ctx, content, [[(325,320)], [(310,110)]], 45, 'BLACK', 'sovietImage.jpg', 'SOVIET.jpg')
 
 
 
-
-def imagePrep(stuff, memeImage, size, finalName):
-
+async def imagePrep(ctx, member, stuff, memeImage, size, finalName):
     path = os.path.dirname(os.path.realpath(__file__))
+    member = list(member)
+    member.append(ctx.author)
 
+    Urls = []
+    for a in member:
+        userAvatarUrl = str(a.avatar_url)
+        userAvatarUrl = userAvatarUrl.replace('.webp', '.png')
+        Urls.append(userAvatarUrl)
+
+    for i in range(len(stuff)):
+        stuff[i].append(Urls[i])
+    
     for item in stuff:
         name = editPics.randomNumber()
         name = str(name) + '.png'
         save = path + '/' + "memePics" '/' + name
-        item[0]
-        editPics.scrape(item[0], save)
+        editPics.scrape(item[2], save)
         
         pos = stuff.index(item)
-        stuff[pos][0] = save
+        stuff[pos][2] = save
 
     meme = editPics.addImage(memeImage, stuff, size, finalName)
     
     for item in stuff:
-        editPics.deleteImage(item[0])
-    return meme
+        editPics.deleteImage(item[2])
+    
+    await ctx.message.delete()
+    await ctx.send(file=discord.File(meme))
+    editPics.deleteImage(meme)
 
 class PfpMemes(commands.Cog):
     def __init__(self, bot):
@@ -725,20 +702,15 @@ class PfpMemes(commands.Cog):
     @commands.command()
     async def stonks(self, ctx, *avamember : discord.Member):
         """Stonks!"""
-        avatarUrls = []
-        for a in avamember:
-            userAvatarUrl = str(a.avatar_url)
-            userAvatarUrl = userAvatarUrl.replace('.webp', '.png')
-            avatarUrls.append(userAvatarUrl)
-        
-        first = avatarUrls[0]
-        content = [[first, (65, 20)]]
+        await imagePrep(ctx, avamember, [[(65, 20), 0]], "stonksImage.jpg", (200,200), "STONKS.jpg")
 
-        img = imagePrep(content, "stonksImage.jpg", (200,200), "STONKS.jpg")
-
-        await ctx.send(file=discord.File(img))
-        editPics.deleteImage(img)
+    @commands.command()
+    async def worthless(self, ctx, *avamember : discord.Member):
+        """your worthless"""
+        await imagePrep(ctx, avamember, [[(490, 235), -10]], "worthlessImage.jpg", (450,450), "WORTHLESS.jpg")
             
+
+
 
 bot.add_cog(Config(bot))
 bot.add_cog(Messaging(bot))
