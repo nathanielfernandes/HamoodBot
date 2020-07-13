@@ -152,6 +152,14 @@ class Messaging(commands.Cog):
         self.profanity_action = lvl
 
     @commands.Cog.listener()
+    async def on_message(self, message):
+        if ('dm' not in message.content):
+            message.content = message.content.lower().replace(' ', ' ')
+        if message.author.id == bot.user.id:
+            return
+        await bot.process_commands(message)
+
+    @commands.Cog.listener()
     async def on_message(self, message): 
         channel = message.channel.id
         channel = str(channel)
@@ -159,11 +167,6 @@ class Messaging(commands.Cog):
         name = bot.get_user(user)
 
         #lowercases all messages received by the bot, unless it is a dm
-        if ('dm' not in message.content):
-            message.content = message.content.lower().replace(' ', ' ')
-        # we do not want the bot to reply to itself
-        if message.author.id == bot.user.id:
-            return
         #nsfw = message.channel.is_nsfw()
         profane, badword = profanityCheck.profCheck(message.content)
         
@@ -270,12 +273,12 @@ class Messaging(commands.Cog):
             'yeah {0.author.mention}?',
             "what's up"]
         possible_replies = ["go away", "stop calling me"]
-        #member = member or ctx.author
-        #if self.last_member is None or self.last_member.id != member.id:
-        await ctx.send(random.choice(possible_responses).format(ctx))
-        #else:
-            #await ctx.send(random.choice(possible_replies).format(ctx))
-        #self.last_member = member
+        member = ctx.author
+        if self.last_member is None or self.last_member.id != member.id:
+            await ctx.send(random.choice(possible_responses).format(ctx))
+        else:
+            await ctx.send(random.choice(possible_replies).format(ctx))
+        self.last_member = member
 
     @commands.command()
     async def clap(self, ctx, *content:str):
@@ -721,7 +724,6 @@ class PfpMemes(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-
     @commands.command()
     async def stonks(self, ctx, *avamember : discord.Member):
         avatarUrls = []
