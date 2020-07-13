@@ -271,7 +271,7 @@ class Messaging(commands.Cog):
             "what's up"]
         possible_replies = ["go away", "stop calling me"]
         member = member or ctx.author
-        if self._last_member is None or self._last_member.id != member.id:
+        if self.last_member is None or self.last_member.id != member.id:
             await ctx.send(random.choice(possible_responses).format(ctx))
         else:
             await ctx.send(random.choice(possible_replies).format(ctx))
