@@ -132,10 +132,10 @@ class Config(commands.Cog):
 
 # 1 = warning message
 # 2 = automatically deletes the message and shows warning message
-self.profanity_action = 1
+profanity_action = 1
 
-@bot.event()
-async def on_message(self, message): 
+@bot.event
+async def on_message(message): 
     channel = message.channel.id
     channel = str(channel)
     user = message.author.id
