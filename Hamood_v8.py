@@ -238,7 +238,7 @@ class Messaging(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         self.user = message.author.id
-        self.name = bot.get_user(user)
+        self.name = bot.get_user(self.user)
 
         if message.author.id == bot.user.id:
             return
