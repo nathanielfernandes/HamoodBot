@@ -72,10 +72,10 @@ class Messaging(commands.Cog):
         name = bot.get_user(user)
 
         #lowercases all messages received by the bot, unless it is a dm
-        try:
-            nsfw = message.channel.is_nsfw()
-        except Exception:
-            nsfw = False
+        # try:
+        #     nsfw = message.channel.is_nsfw()
+        # except Exception:
+        #     nsfw = False
 
         profane, badword = profanityCheck.profCheck(message.content)
         
@@ -87,22 +87,22 @@ class Messaging(commands.Cog):
                 await message.channel.send('{0.author.mention} No U!'.format(message))
                 return
             else:
-                if not nsfw:
-                    if len(badword) == 1:
-                        punc = 'is a bad word'
-                    else:
-                        punc = 'are bad words'
-                    words = ''
-                    for word in badword:
-                        words += word + ', '
+               # if not nsfw:
+                if len(badword) == 1:
+                    punc = 'is a bad word'
+                else:
+                    punc = 'are bad words'
+                words = ''
+                for word in badword:
+                    words += word + ', '
 
-                    if (self.profanity_action == 2):
-                        await message.channel.purge(limit=1)
-                        await message.channel.send(('**{0.author.mention} said: ||"'+message.content+'"||, ||"'+words+'"|| ' + punc +', watch your profanity!**').format(message))
-                    else:
-                        await message.add_reaction('❌')
-                        await message.channel.send(('**{0.author.mention}, ||'+words+'|| '+punc+', watch your profanity!**').format(message))
-                    return
+                if (self.profanity_action == 2):
+                    await message.channel.purge(limit=1)
+                    await message.channel.send(('**{0.author.mention} said: ||"'+message.content+'"||, ||"'+words+'"|| ' + punc +', watch your profanity!**').format(message))
+                else:
+                    await message.add_reaction('❌')
+                    await message.channel.send(('**{0.author.mention}, ||'+words+'|| '+punc+', watch your profanity!**').format(message))
+                return
 
         elif message.content.startswith('bye'):
             await message.channel.send('goodbye {0.author.mention}'.format(message))
