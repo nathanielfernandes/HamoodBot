@@ -619,16 +619,17 @@ class RedditStuff(commands.Cog):
 
 
 async def textMemePrep(ctx, text, coords, font, colour, source, final):
+    text = list(text)
+    text.append(', ')
     text = formatMsg.convertList(text, True)
     for i in range(len(coords)):
         coords[i].append(text[i])
         
     meme = editPics.addText(source, font, colour, coords, final)
     await ctx.message.delete()
-    try:
-        await ctx.send(file=discord.File(meme))
-    except discord.Forbidden:
-        editPics.deleteImage(meme)
+    await ctx.send(file=discord.File(meme))
+    editPics.deleteImage(meme)
+
 
 class TextMemes(commands.Cog):
     def __init__(self, bot):
@@ -636,26 +637,35 @@ class TextMemes(commands.Cog):
         
     @commands.command()
     async def bonk(self, ctx, *content:str):
+        """give someone a good bonk"""
         await textMemePrep(ctx, content, [[(250,450)],[(1050,600)]], 75, 'BLACK', 'bonkImage.jpg', 'BONK.jpg')
 
     @commands.command()
     async def lick(self, ctx, *content:str):
+        """lick someone tasty"""
         await textMemePrep(ctx, content, [[(320,220)],[(75,200)]], 35, 'BLACK', 'lickImage.jpg', 'LICK.jpg')
 
     @commands.command()
     async def slap(self, ctx, *content:str):
+        """slap someone annoying"""
         await textMemePrep(ctx, content, [[(580, 30)],[(220, 250)]], 60, 'WHITE', 'slapImage.jpg', 'SLAP.jpg')
 
     @commands.command()
     async def lookback(self, ctx, *content:str):
+        """look back at it"""
         await textMemePrep(ctx, content, [[(120, 285)],[(360, 180)],[(525, 250)]], 45, 'BLACK', 'lookBackImage.jpg', 'LOOKBACK.jpg')
 
     @commands.command()
     async def our(self, ctx, *content:str):
+        """soviet bugs bunny"""
         content = list(content)
         content[0] = 'our ' + content[0]
-        content.append(', ')
         await textMemePrep(ctx, content, [[(325,320)], [(310,110)]], 45, 'BLACK', 'sovietImage.jpg', 'SOVIET.jpg')
+
+    @commands.command()
+    async def pour(self, ctx, *content:str):
+        """pour yourself a nice drink"""
+        await textMemePrep(ctx, content, [[(50,110)], [(430,60)]], 45, 'BLACK', 'coffeeImage.jpg', 'COFFEE.jpg')
 
 
 
