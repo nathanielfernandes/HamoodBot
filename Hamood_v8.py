@@ -39,19 +39,9 @@ import editPics
 
 TOKEN = os.environ['TOKEN']
 
-
-path = os.path.dirname(os.path.realpath(__file__))
-
-#inv link
-#https://discord.com/api/oauth2/authorize?client_id=699510311018823680&permissions=8&scope=bot
-
-# Default Bot Stuff #
 description = '''Hamood is ur freind'''
 
 bot = commands.Bot(command_prefix='')
-
-#used for dictionary purposes
-dictionary = PyDictionary()
 
 
 class Config(commands.Cog):
@@ -121,8 +111,8 @@ class Config(commands.Cog):
 
     @commands.command()
     async def ping(self, ctx):
-    """returns hamood's ping"""
-    await ctx.send("```xl\n'"+ ('pong! {0}'.format(bot.latency) + "'```"))
+        """returns hamood's ping"""
+        await ctx.send("```xl\n'"+ ('pong! {0}'.format(bot.latency) + "'```"))
 
     @commands.command(aliases=['addroast', 'roastadd', 'roastnew'])
     @commands.is_owner()
@@ -157,6 +147,7 @@ class Messaging(commands.Cog):
         # 1 = warning message
         # 2 = automatically deletes the message and shows warning message
         self.profanity_action = 1
+        self.dictionary = PyDictionary()
 
     @commands.command()
     @commands.is_owner()
@@ -231,7 +222,7 @@ class Messaging(commands.Cog):
     @commands.command(aliases=['def'])
     async def define(self, ctx, word):
         """finds the definition of a word"""
-        definition = dictionary.meaning(word)
+        definition = self.dictionary.meaning(word)
         definition = formatMsg.remove(definition, "{", "}", "[", "]")
         await ctx.send(str(word) + ": " + str(definition))
 
@@ -711,12 +702,12 @@ class TextMemes(commands.Cog):
 class PfpMemes(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
+        self.path = os.path.dirname(os.path.realpath(__file__))
     def imagePrep(stuff, memeImage, size, finalName):
         for item in stuff:
             name = editPics.randomNumber()
             name = str(name) + '.png'
-            save = path + '/' + "memePics" '/' + name
+            save = self.path + '/' + "memePics" '/' + name
             item[0]
             editPics.scrape(item[0], save)
             
