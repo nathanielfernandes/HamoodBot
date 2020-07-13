@@ -142,7 +142,6 @@ class Messaging(commands.Cog):
     # async def dm(self, ctx, member: discord.Member, *, content: str):
     #     self.member = member
     #     await member.send(content)
-
     #     @commands.Cog.listener()
     #     async def on_message(self, message):
     #         self.user = message.author.id
@@ -347,6 +346,7 @@ class Member(commands.Cog):
 
     @commands.command()
     async def avatar(self, ctx, *avamember : discord.Member):
+        """sends the profile picture of a tagged user"""
         for a in avamember:
             userAvatarUrl = a.avatar_url
             await ctx.send(userAvatarUrl)
@@ -387,6 +387,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def sortinghat(self, ctx):
+        """get your self sorted out"""
         houses = ['Gryffindor', 'Hufflepuff', 'Slytherin', 'Ravenclaw']
         house = random.choice(houses)
         await ctx.send(('{0.author.mention}, you belong to the **' + house + '** house!').format(ctx))
@@ -421,6 +422,7 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=['sign'])
     async def zodiac(self, ctx, month1: str, day1: int, month2:str, day2: int, quick="slow"):
+        """test your zodiac's compatibilty with another"""
         sign1 = zodiacCheck.getZodiac(month1, day1)
         sign2 = zodiacCheck.getZodiac(month2, day2)
         
@@ -528,6 +530,7 @@ class Images(commands.Cog):
 
     @commands.command(aliases=["movie time"])
     async def shrek(self, ctx):
+        """the entire shrek movie as a 90 min long gif"""
         await ctx.send("https://imgur.com/gallery/IsWDJWa")
 
 
@@ -615,7 +618,7 @@ class RedditStuff(commands.Cog):
 
     @commands.command(aliases=["dogs", "doggy", "doge"])
     async def dog(self, ctx):
-        """dog"""
+        """sends a dog post"""
         post = redditHandle.findPost('dog')
         await ctx.send(("heres a dog").format(ctx))
         await ctx.send(post.url)
@@ -721,6 +724,7 @@ class PfpMemes(commands.Cog):
         
     @commands.command()
     async def stonks(self, ctx, *avamember : discord.Member):
+        """Stonks!"""
         avatarUrls = []
         for a in avamember:
             userAvatarUrl = str(a.avatar_url)
