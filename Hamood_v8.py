@@ -36,9 +36,6 @@ import redditHandle
 import profanityCheck
 import editPics
 
-
-TOKEN = os.environ['TOKEN']
-
 description = '''Hamood is ur freind'''
 
 bot = commands.Bot(command_prefix='')
@@ -187,7 +184,7 @@ class Messaging(commands.Cog):
                 for word in badword:
                     words += word + ', '
 
-                if (profanity_action == 2):
+                if (self.profanity_action == 2):
                     await message.channel.purge(limit=1)
                     await message.channel.send(('**{0.author.mention} said: ||"'+message.content+'"||, ||"'+words+'"|| ' + punc +', watch your profanity!**').format(message))
                 else:
@@ -440,7 +437,7 @@ class Fun(commands.Cog):
         else:
             await ctx.send(('**' + sign1 + "** and **" + sign2 + "** are about **" + compatibility + "** compatible").format(ctx))
 
-    @bot.command()
+    @commands.command()
     async def match(self, ctx, *content: str):
         """match makes"""
         match = str(random.randint(0,100))
@@ -538,12 +535,12 @@ class Images(commands.Cog):
 
 
 
-class Reddit(commands.Cog):
+class RedditStuff(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
-    @commands.command(aliases=['red'])
-    async def reddit(self, ctx, redditSub='abc123'):
+
+    @commands.command(aliases=['reddit'])
+    async def red(self, ctx, redditSub='abc123'):
         """finds posts from reddit"""
         if (redditSub == "abc123"):
             redditSub = redditHandle.getSubReddit()
@@ -704,6 +701,7 @@ class PfpMemes(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.path = os.path.dirname(os.path.realpath(__file__))
+
     def imagePrep(stuff, memeImage, size, finalName):
         for item in stuff:
             name = editPics.randomNumber()
@@ -745,9 +743,10 @@ bot.add_cog(Member(bot))
 bot.add_cog(Fun(bot))
 bot.add_cog(Chance(bot))
 bot.add_cog(Images(bot))
-bot.add_cog(Reddit(bot))
+bot.add_cog(RedditStuff(bot))
 bot.add_cog(TextMemes(bot))
 bot.add_cog(PfpMemes(bot))
 
+TOKEN = os.environ['TOKEN']
 #bot.loop.create_task(bg_task())
 bot.run(TOKEN)
