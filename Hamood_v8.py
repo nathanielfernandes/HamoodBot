@@ -732,7 +732,7 @@ class PfpMemes(commands.Cog):
         first = avatarUrls[0]
         content = [[first, (65, 20)]]
 
-        img = PfpMemes.imagePrep(content, "stonksImage.jpg", (200,200), "STONKS.jpg")
+        img = imagePrep(content, "stonksImage.jpg", (200,200), "STONKS.jpg")
 
         await ctx.send(file=discord.File(img))
         editPics.deleteImage(img)
