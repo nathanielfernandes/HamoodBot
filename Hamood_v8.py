@@ -130,7 +130,74 @@ class Config(commands.Cog):
             await ctx.send((line).format(ctx))
 
 
+# 1 = warning message
+# 2 = automatically deletes the message and shows warning message
+self.profanity_action = 1
 
+@bot.event()
+async def on_message(self, message): 
+    channel = message.channel.id
+    channel = str(channel)
+    user = message.author.id
+    name = bot.get_user(user)
+
+    #lowercases all messages received by the bot, unless it is a dm
+    if ('dm' not in message.content):
+        message.content = message.content.lower().replace(' ', ' ')
+    # we do not want the bot to reply to itself
+    if message.author.id == bot.user.id:
+        return
+    #nsfw = message.channel.is_nsfw()
+    profane, badword = profanityCheck.profCheck(message.content)
+    
+    if (profane):
+        if ("hamood" in message.content):
+            uno = noU.unoCard()
+            #await message.channel.purge(limit=1)
+            await message.channel.send(file=discord.File(uno))
+            await message.channel.send('{0.author.mention} No U!'.format(message))
+            return
+        else:
+            #if not nsfw:
+            if len(badword) == 1:
+                punc = 'is a bad word'
+            else:
+                punc = 'are bad words'
+            words = ''
+            for word in badword:
+                words += word + ', '
+
+            if (profanity_action == 2):
+                await message.channel.purge(limit=1)
+                await message.channel.send(('**{0.author.mention} said: ||"'+message.content+'"||, ||"'+words+'"|| ' + punc +', watch your profanity!**').format(message))
+            else:
+                await message.add_reaction('❌')
+                await message.channel.send(('**{0.author.mention}, ||'+words+'|| '+punc+', watch your profanity!**').format(message))
+            return
+
+    elif message.content.startswith('bye'):
+        await message.channel.send('goodbye {0.author.mention}'.format(message))
+
+    elif message.content.startswith('gn'): 
+        await message.channel.send('goodnight {0.author.mention}'.format(message))
+
+    elif message.content.startswith('goodnight'): 
+        await message.channel.send('goodnight {0.author.mention}'.format(message))
+
+    elif (message.content == ('dang')):
+        await message.channel.send('{0.author.mention} you called?'.format(message))
+    
+    elif message.content.startswith("im hamood"):
+        await message.channel.send("No you're not, im hamood")
+    
+    elif message.content.startswith("im"):
+        name = message.content[2:]
+        await message.channel.send("hi" + name + ", im hamood")
+        
+    elif message.content.startswith("marco"):
+        await message.channel.send("polo")
+    
+    await bot.process_commands(message)
 
 class Messaging(commands.Cog):
     def __init__(self, bot):
@@ -140,10 +207,6 @@ class Messaging(commands.Cog):
         self.member = None
         self.name = None
         self.user = None
-
-        # 1 = warning message
-        # 2 = automatically deletes the message and shows warning message
-        self.profanity_action = 1
         self.dictionary = PyDictionary()
 
     @commands.command()
@@ -151,70 +214,7 @@ class Messaging(commands.Cog):
     async def proflevel(self, ctx, lvl:int):
         self.profanity_action = lvl
 
-    @commands.Cog.listener()
-    async def on_message(self, message): 
-        channel = message.channel.id
-        channel = str(channel)
-        user = message.author.id
-        name = bot.get_user(user)
 
-        #lowercases all messages received by the bot, unless it is a dm
-        if ('dm' not in message.content):
-            message.content = message.content.lower().replace(' ', ' ')
-        # we do not want the bot to reply to itself
-        if message.author.id == bot.user.id:
-            return
-        #nsfw = message.channel.is_nsfw()
-        profane, badword = profanityCheck.profCheck(message.content)
-        
-        if (profane):
-            if ("hamood" in message.content):
-                uno = noU.unoCard()
-                #await message.channel.purge(limit=1)
-                await message.channel.send(file=discord.File(uno))
-                await message.channel.send('{0.author.mention} No U!'.format(message))
-                return
-            else:
-                #if not nsfw:
-                if len(badword) == 1:
-                    punc = 'is a bad word'
-                else:
-                    punc = 'are bad words'
-                words = ''
-                for word in badword:
-                    words += word + ', '
-
-                if (self.profanity_action == 2):
-                    await message.channel.purge(limit=1)
-                    await message.channel.send(('**{0.author.mention} said: ||"'+message.content+'"||, ||"'+words+'"|| ' + punc +', watch your profanity!**').format(message))
-                else:
-                    await message.add_reaction('❌')
-                    await message.channel.send(('**{0.author.mention}, ||'+words+'|| '+punc+', watch your profanity!**').format(message))
-                return
-
-        elif message.content.startswith('bye'):
-            await message.channel.send('goodbye {0.author.mention}'.format(message))
-
-        elif message.content.startswith('gn'): 
-            await message.channel.send('goodnight {0.author.mention}'.format(message))
-
-        elif message.content.startswith('goodnight'): 
-            await message.channel.send('goodnight {0.author.mention}'.format(message))
-
-        elif (message.content == ('dang')):
-            await message.channel.send('{0.author.mention} you called?'.format(message))
-        
-        elif message.content.startswith("im hamood"):
-            await message.channel.send("No you're not, im hamood")
-        
-        elif message.content.startswith("im"):
-            name = message.content[2:]
-            await message.channel.send("hi" + name + ", im hamood")
-            
-        elif message.content.startswith("marco"):
-            await message.channel.send("polo")
-        
-        await bot.process_commands(message)
 
     @commands.command(aliases=['def'])
     async def define(self, ctx, word):
