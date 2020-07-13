@@ -40,97 +40,10 @@ description = '''Hamood is ur freind'''
 
 bot = commands.Bot(command_prefix='')
 
-
-class Config(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-        self.VERSION = "Hamood v9" 
-        self.currentDT = str(datetime.datetime.now())
-
-        if (platform.system() == 'Darwin'):
-            self.running = 'macOS Catalina'
-        elif (platform.system() == 'Linux'):
-            self.running = 'Heroku Linux'
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="with your feelings"))
-        print('-------------------')
-        print(('|Logged in as {0} ({0.id})|'.format(bot.user)))
-        print("|" + self.currentDT + '|')
-        print('-------------------')
-        print(self.VERSION)
-        print('-------------------')
-
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        err = getattr(error, "original", error)
-        if isinstance(err, commands.CommandNotFound):
-            return
-
-    @commands.command()
-    @commands.is_owner()
-    async def logout(self, ctx):
-        await ctx.send("**goodbye**")
-        await bot.logout()
-
-    @commands.command()
-    @commands.is_owner()
-    async def status(self, ctx, aType: str, *aName: str):
-        """changes hamoods status"""
-        aName = formatMsg.convertList(aName, False) 
-
-        if (aType== 'playing'):
-            await bot.change_presence(activity=discord.Game(name=aName))
-        elif (aType == 'listening'):
-            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=aName))
-        elif (aType == 'watching'):
-            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=aName))
-        #elif (aType == 'streaming'):
-        #   await bot.change_presence(activity=discord.Streaming(name=aName, url=my_twitch_url))
-
-    @commands.command(aliases=['inv'])
-    async def invite(self, ctx):
-        """get the invite link for this bot"""
-        await ctx.send('https://discord.com/api/oauth2/authorize?client_id=699510311018823680&permissions=8&scope=bot')
-
-    @commands.command()
-    async def version(self, ctx):
-        """sends Hamood's current version"""
-        await ctx.send(('```md\n[' + self.VERSION + ' | ' + self.currentDT + '](RUNNING ON: '+self.running+')```'))
-
-    @commands.command(aliases=['newwordadd', 'newswear','newprof'])
-    @commands.is_owner()
-    async def newprofanity(self, ctx, *newWord:str):
-        """lets you add a profane word to hamood's profanity list"""
-        newWord = profanityCheck.profAdd(newWord)
-        await ctx.send(("{0.author.mention} '||" + (newWord) + "||' was added to my profanity list").format(ctx))
-
-    @commands.command()
-    async def ping(self, ctx):
-        """returns hamood's ping"""
-        await ctx.send("```xl\n'"+ ('pong! {0}'.format(bot.latency) + "'```"))
-
-    @commands.command(aliases=['addroast', 'roastadd', 'roastnew'])
-    @commands.is_owner()
-    async def newroast(self, ctx, *roast:str):
-        """lets you add a roast to hamood's list"""
-
-        newRoast = roastHandle.addRoast(roast)
-        await ctx.send(("{0.author.mention} '" + (newRoast) + "' was added to my list of roasts").format(ctx))
-
-    @commands.command(aliases=['roastlist'])
-    @commands.is_owner()
-    async def listroast(self, ctx):
-        """lists the subreddits in its list"""
-        rlist = open(r"C:\Users\natha\Desktop\Hamood Bot\roasts.txt","r",encoding='utf-8')
-        rlist = rlist.readlines()
-        await ctx.send(("roasts in list:").format(ctx))
-        for line in rlist:
-            await ctx.send((line).format(ctx))
-
-
-
+@bot.event
+async def on_message(message):
+    message.content = message.content.lower().replace(' ', ' ')
+    await bot.process_commands(message)
 
 class Messaging(commands.Cog):
     def __init__(self, bot):
@@ -150,14 +63,6 @@ class Messaging(commands.Cog):
     @commands.is_owner()
     async def proflevel(self, ctx, lvl:int):
         self.profanity_action = lvl
-
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if ('dm' not in message.content):
-            message.content = message.content.lower().replace(' ', ' ')
-        if message.author.id == bot.user.id:
-            return
-        await bot.process_commands(message)
 
     @commands.Cog.listener()
     async def on_message(self, message): 
@@ -310,6 +215,96 @@ class Messaging(commands.Cog):
     async def test(self, ctx):
         retStr = str("```css\nThis is some colored Text```")
         await ctx.send(retStr)
+
+
+
+class Config(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.VERSION = "Hamood v9" 
+        self.currentDT = str(datetime.datetime.now())
+
+        if (platform.system() == 'Darwin'):
+            self.running = 'macOS Catalina'
+        elif (platform.system() == 'Linux'):
+            self.running = 'Heroku Linux'
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="with your feelings"))
+        print('-------------------')
+        print(('|Logged in as {0} ({0.id})|'.format(bot.user)))
+        print("|" + self.currentDT + '|')
+        print('-------------------')
+        print(self.VERSION)
+        print('-------------------')
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        err = getattr(error, "original", error)
+        if isinstance(err, commands.CommandNotFound):
+            return
+
+    @commands.command()
+    @commands.is_owner()
+    async def logout(self, ctx):
+        await ctx.send("**goodbye**")
+        await bot.logout()
+
+    @commands.command()
+    @commands.is_owner()
+    async def status(self, ctx, aType: str, *aName: str):
+        """changes hamoods status"""
+        aName = formatMsg.convertList(aName, False) 
+
+        if (aType== 'playing'):
+            await bot.change_presence(activity=discord.Game(name=aName))
+        elif (aType == 'listening'):
+            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=aName))
+        elif (aType == 'watching'):
+            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=aName))
+        #elif (aType == 'streaming'):
+        #   await bot.change_presence(activity=discord.Streaming(name=aName, url=my_twitch_url))
+
+    @commands.command(aliases=['inv'])
+    async def invite(self, ctx):
+        """get the invite link for this bot"""
+        await ctx.send('https://discord.com/api/oauth2/authorize?client_id=699510311018823680&permissions=8&scope=bot')
+
+    @commands.command()
+    async def version(self, ctx):
+        """sends Hamood's current version"""
+        await ctx.send(('```md\n[' + self.VERSION + ' | ' + self.currentDT + '](RUNNING ON: '+self.running+')```'))
+
+    @commands.command(aliases=['newwordadd', 'newswear','newprof'])
+    @commands.is_owner()
+    async def newprofanity(self, ctx, *newWord:str):
+        """lets you add a profane word to hamood's profanity list"""
+        newWord = profanityCheck.profAdd(newWord)
+        await ctx.send(("{0.author.mention} '||" + (newWord) + "||' was added to my profanity list").format(ctx))
+
+    @commands.command()
+    async def ping(self, ctx):
+        """returns hamood's ping"""
+        await ctx.send("```xl\n'"+ ('pong! {0}'.format(bot.latency) + "'```"))
+
+    @commands.command(aliases=['addroast', 'roastadd', 'roastnew'])
+    @commands.is_owner()
+    async def newroast(self, ctx, *roast:str):
+        """lets you add a roast to hamood's list"""
+
+        newRoast = roastHandle.addRoast(roast)
+        await ctx.send(("{0.author.mention} '" + (newRoast) + "' was added to my list of roasts").format(ctx))
+
+    @commands.command(aliases=['roastlist'])
+    @commands.is_owner()
+    async def listroast(self, ctx):
+        """lists the subreddits in its list"""
+        rlist = open(r"C:\Users\natha\Desktop\Hamood Bot\roasts.txt","r",encoding='utf-8')
+        rlist = rlist.readlines()
+        await ctx.send(("roasts in list:").format(ctx))
+        for line in rlist:
+            await ctx.send((line).format(ctx))
 
 
 
