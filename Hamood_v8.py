@@ -750,5 +750,4 @@ bot.add_cog(TextMemes(bot))
 bot.add_cog(PfpMemes(bot))
 
 TOKEN = os.environ['TOKEN']
-#bot.loop.create_task(bg_task())
 bot.run(TOKEN)
