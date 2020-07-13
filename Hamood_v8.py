@@ -270,12 +270,12 @@ class Messaging(commands.Cog):
             'yeah {0.author.mention}?',
             "what's up"]
         possible_replies = ["go away", "stop calling me"]
-        member = member or ctx.author
-        if self.last_member is None or self.last_member.id != member.id:
-            await ctx.send(random.choice(possible_responses).format(ctx))
-        else:
-            await ctx.send(random.choice(possible_replies).format(ctx))
-        self.last_member = member
+        #member = member or ctx.author
+        #if self.last_member is None or self.last_member.id != member.id:
+        await ctx.send(random.choice(possible_responses).format(ctx))
+        #else:
+            #await ctx.send(random.choice(possible_replies).format(ctx))
+        #self.last_member = member
 
     @commands.command()
     async def clap(self, ctx, *content:str):
@@ -730,7 +730,7 @@ class PfpMemes(commands.Cog):
         first = avatarUrls[0]
         content = [[first, (65, 20)]]
 
-        img = imagePrep(content, "stonksImage.jpg", (200,200), "STONKS.jpg")
+        img = PfpMemes.imagePrep(content, "stonksImage.jpg", (200,200), "STONKS.jpg")
 
         await ctx.send(file=discord.File(img))
         editPics.deleteImage(img)
