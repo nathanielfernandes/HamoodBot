@@ -697,28 +697,30 @@ class TextMemes(commands.Cog):
 
 
 
+def imagePrep(stuff, memeImage, size, finalName):
+
+    path = os.path.dirname(os.path.realpath(__file__))
+
+    for item in stuff:
+        name = editPics.randomNumber()
+        name = str(name) + '.png'
+        save = path + '/' + "memePics" '/' + name
+        item[0]
+        editPics.scrape(item[0], save)
+        
+        pos = stuff.index(item)
+        stuff[pos][0] = save
+
+    meme = editPics.addImage(memeImage, stuff, size, finalName)
+    
+    for item in stuff:
+        editPics.deleteImage(item[0])
+    return meme
+
 class PfpMemes(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.path = os.path.dirname(os.path.realpath(__file__))
-
-    def imagePrep(stuff, memeImage, size, finalName):
-        for item in stuff:
-            name = editPics.randomNumber()
-            name = str(name) + '.png'
-            save = self.path + '/' + "memePics" '/' + name
-            item[0]
-            editPics.scrape(item[0], save)
-            
-            pos = stuff.index(item)
-            stuff[pos][0] = save
-
-        meme = editPics.addImage(memeImage, stuff, size, finalName)
-        
-        for item in stuff:
-            editPics.deleteImage(item[0])
-        return meme
-
+    
     @commands.command()
     async def stonks(self, ctx, *avamember : discord.Member):
         avatarUrls = []
