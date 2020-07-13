@@ -720,8 +720,8 @@ class PfpMemes(commands.Cog):
         """your worthless"""
         await imagePrep(ctx, avamember, [[(490, 235), -10]], "worthlessImage.jpg", (450,450), "WORTHLESS.jpg")
             
-    @commands.command(aliases=['neat'])
-    async def prettyneat(self, ctx, *avamember : discord.Member):
+    @commands.command()
+    async def neat(self, ctx, *avamember : discord.Member):
         """your pretty neat ;)"""
         await imagePrep(ctx, avamember, [[(16, 210), 0]], "neatImage.jpg", (270,270), "NEAT.jpg")
 
