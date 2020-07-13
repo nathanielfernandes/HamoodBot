@@ -235,16 +235,16 @@ class Messaging(commands.Cog):
         self.member = member
         await member.send(content)
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        self.user = message.author.id
-        self.name = bot.get_user(self.user)
+        @commands.Cog.listener()
+        async def on_message(self, message):
+            self.user = message.author.id
+            self.name = bot.get_user(self.user)
 
-        if message.author.id == bot.user.id:
-            return
-        elif (str(self.name) == str(self.member)):
-            await ctx.send(('{0.author.mention}: ' + str(message.content)).format(message))
-        #await bot.process_commands(message)
+            if message.author.id == bot.user.id:
+                return
+            elif (str(self.name) == str(self.member)):
+                await ctx.send(('{0.author.mention}: ' + str(message.content)).format(message))
+            #await bot.process_commands(message)
 
     @commands.command(aliases=['clear'])
     async def clean(self, ctx, amount=3):
