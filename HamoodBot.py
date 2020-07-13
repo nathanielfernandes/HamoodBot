@@ -199,6 +199,7 @@ class Messaging(commands.Cog):
 
 
 
+
 class Config(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -281,12 +282,14 @@ class Config(commands.Cog):
     @commands.is_owner()
     async def listroast(self, ctx):
         """lists the subreddits in its list"""
-        rlist = open(r"C:\Users\natha\Desktop\Hamood Bot\roasts.txt","r",encoding='utf-8')
-        rlist = rlist.readlines()
+        path = os.path.dirname(os.path.realpath(__file__))
+        path += '/' + "roasts.txt"
+        rlist = open((path),"r",encoding='utf-8')
         await ctx.send(("roasts in list:").format(ctx))
+        roasts = ''
         for line in rlist:
-            await ctx.send((line).format(ctx))
-
+            roasts += line
+        await ctx.send((roasts).format(ctx))
 
 
 
@@ -518,6 +521,10 @@ class Images(commands.Cog):
 
 
 
+async def redditPrep(ctx, subRedd):
+    post = redditHandle.findPost(subRedd)
+    await ctx.send(post.url)
+
 class RedditStuff(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -527,10 +534,8 @@ class RedditStuff(commands.Cog):
         """finds posts from reddit"""
         if (redditSub == "abc123"):
             redditSub = redditHandle.getSubReddit()
-        post = redditHandle.findPost(redditSub)
         await ctx.send(("here's your post from the '" + redditSub + "' subreddit {0.author.mention}").format(ctx))
-        await ctx.send(post.url)
-
+        await redditPrep(ctx, redditSub)
 
     @commands.command(aliases=['addreddit', 'redditadd', 'redditnew'])
     @commands.is_owner()
@@ -543,67 +548,57 @@ class RedditStuff(commands.Cog):
     @commands.is_owner()
     async def listreddit(self, ctx):
         """lists the subreddits in its list"""
-        list = open(r"C:\Users\natha\Desktop\Hamood Bot\subreddits.txt","r",encoding='utf-8')
-        list = list.readlines()
+        path = os.path.dirname(os.path.realpath(__file__))
+        path += '/' + "subreddits.txt"
+        rlist = open((path),"r",encoding='utf-8')
+        rlist = rlist.readlines()
         await ctx.send(("subReddits in list:").format(ctx))
-        for line in list:
+        for line in rlist:
             await ctx.send((line).format(ctx))
+        subReddits = ''
+        for line in rlist:
+            subReddits += line
+        await ctx.send((subReddits).format(ctx))
 
     @commands.command(aliases=['memes'])
     async def meme(self, ctx):
         """sends a meme"""
-        post = redditHandle.findPost('memes')
-        await ctx.send(("here's your meme {0.author.mention}").format(ctx))
-        await ctx.send(post.url)
+        await redditPrep(ctx, 'memes')
 
     @commands.command(aliases=['cats', 'noura'])
     async def cat(self, ctx):
         """sends a cat pic"""
-        post = redditHandle.findPost('cats')
-        await ctx.send(("here's your cat, {0.author.mention}").format(ctx))
-        await ctx.send(post.url)   
+        await redditPrep(ctx, 'cats')
 
     @commands.command(aliases=['curse'])
     async def cursed(self, ctx):
         """finds posts from r/cursedimages"""
-        post = redditHandle.findPost('cursedimages')
-        await ctx.send(("here's your cursed image, {0.author.mention}").format(ctx))
-        await ctx.send(post.url)
+        await redditPrep(ctx, 'cursedimages')
 
     @commands.command(aliases=['blur'])
     async def blursed(self, ctx):
         """finds posts from r/blursedimages"""
-        post = redditHandle.findPost('blursedimages')
-        await ctx.send(("here's your blursed image, {0.author.mention}").format(ctx))
-        await ctx.send(post.url)
+        await redditPrep(ctx, 'blursedimages')
 
     @commands.command(aliases=['bless'])
     async def blessed(self, ctx):
         """finds posts from r/Blessed_Images"""
-        post = redditHandle.findPost('Blessed_Images')
-        await ctx.send(("here's your blessed image, {0.author.mention}").format(ctx))
-        await ctx.send(post.url)      
+        await redditPrep(ctx, 'Blesses_Images')
 
     @commands.command(aliases=['dark'])
     async def darkhumor(self, ctx):
         """finds posts from r/DarkHumorAndMemes"""
-        post = redditHandle.findPost('DarkHumorAndMemes')
-        await ctx.send(("here's your dark meme, {0.author.mention}").format(ctx))
-        await ctx.send(post.url)
+        await redditPrep(ctx, 'DarkHumorAndMemes')
 
     @commands.command(aliases=['pizza', 'time', 'pizza time', 'ayan'])
     async def pizzatime(self, ctx):
         """its pizza time!"""
-        post = redditHandle.findPost('raimimemes')
-        await ctx.send(("its pizza time, {0.author.mention}").format(ctx))
-        await ctx.send(post.url)  
+        await redditPrep(ctx, 'raimimemes')
 
     @commands.command(aliases=["dogs", "doggy", "doge"])
     async def dog(self, ctx):
         """sends a dog post"""
-        post = redditHandle.findPost('dog')
-        await ctx.send(("heres a dog").format(ctx))
-        await ctx.send(post.url)
+        await redditPrep(ctx, 'dog')
 
     @commands.command()
     async def spam(self, ctx, redditSub='random', amount='2'):
@@ -615,11 +610,7 @@ class RedditStuff(commands.Cog):
         for i in range(amount):
             if (redditSub == "random"):
                 redditSub = redditHandle.getSubReddit()
-
-            post = redditHandle.findPost(redditSub)
-            
-            await ctx.send(("here's your post from the '" + redditSub + "' subreddit {0.author.mention}").format(ctx))
-            await ctx.send(post.url)
+            await redditPrep(ctx, redditSub)
 
 
 
@@ -660,6 +651,8 @@ class TextMemes(commands.Cog):
         content[0] = 'our ' + content[0]
         content.append(', ')
         await textMemePrep(ctx, content, [[(325,320)], [(310,110)]], 45, 'BLACK', 'sovietImage.jpg', 'SOVIET.jpg')
+
+
 
 
 
