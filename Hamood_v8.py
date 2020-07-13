@@ -347,8 +347,8 @@ class Member(commands.Cog):
 
     @commands.command()
     async def joined(self, ctx, member: discord.Member):
-    """Says when a member joined the server"""
-    await ctx.send('```md\n# ' + ('{0.name} joined in {0.joined_at}'.format(member)) + ' #```')
+        """Says when a member joined the server"""
+        await ctx.send('```md\n# ' + ('{0.name} joined in {0.joined_at}'.format(member)) + ' #```')
 
     @commands.command()
     async def avatar(self, ctx, *avamember : discord.Member):
