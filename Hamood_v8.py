@@ -540,7 +540,8 @@ class Images(commands.Cog):
 
 class Reddit(commands.Cog):
     def __init__(self, bot):
-
+        self.bot = bot
+        
     @commands.command(aliases=['red'])
     async def reddit(self, ctx, redditSub='abc123'):
         """finds posts from reddit"""
