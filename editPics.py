@@ -22,16 +22,18 @@ def addText(imageName, fontSize, textColor, imagedict, new):
     font_type = ImageFont.truetype(fontPath, fontSize)
     draw = ImageDraw.Draw(image)
 
-    if textColor[0] == 255:
-        STROKECOLOR = (0,0,0)
-    elif textColor[0] == 0:
+    if textColor == 'BLACK':
+        textColor = (0,0,0)
         STROKECOLOR = (255,255,255)
+    elif textColor == 'WHITE':
+        textColor = (255,255,255)
+        STROKECOLOR = (0,0,0)
 
     for img in imagedict:
-        if ('/' in img[0]):
+        if ('/' in img[1]):
             fontSize -= 5
-        itext = img[0].replace('/', '\n')
-        draw.text(xy=(img[1][0], img[1][1]), text=itext, fill=(textColor), font=font_type, anchor=None, spacing=4, align="center", direction=None, features=None, language=None, stroke_width=4, stroke_fill=STROKECOLOR)
+        itext = img[1].replace('/', '\n')
+        draw.text(xy=(img[0][0], img[0][1]), text=itext, fill=(textColor), font=font_type, anchor=None, spacing=4, align="center", direction=None, features=None, language=None, stroke_width=4, stroke_fill=STROKECOLOR)
         
     image.save(edited)
     return edited
@@ -42,10 +44,12 @@ def addImage(background, imageList, size, new):
     finalName = folder + '/' + new
     
     for img in imageList:
-        front = Image.open(img[0])
+        front = Image.open(img[2])
         front = front.resize(size)
-        back.paste(front, (img[1]))
-
+        front.putalpha(255)
+        front = front.rotate(img[1], expand=1).resize(size)
+        back.paste(front, (img[0]), front)
+        
     back.save(finalName)
     return finalName
 
