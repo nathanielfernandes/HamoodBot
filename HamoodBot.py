@@ -71,11 +71,10 @@ class Messaging(commands.Cog):
         user = message.author.id
         name = bot.get_user(user)
 
-        #lowercases all messages received by the bot, unless it is a dm
-        # try:
-        #     nsfw = message.channel.is_nsfw()
-        # except Exception:
-        #     nsfw = False
+        try:
+            nsfw = message.channel.is_nsfw()
+        except Exception:
+            nsfw = False
 
         profane, badword = profanityCheck.profCheck(message.content)
         
@@ -87,22 +86,22 @@ class Messaging(commands.Cog):
                 await message.channel.send('{0.author.mention} No U!'.format(message))
                 return
             else:
-               # if not nsfw:
-                if len(badword) == 1:
-                    punc = 'is a bad word'
-                else:
-                    punc = 'are bad words'
-                words = ''
-                for word in badword:
-                    words += word + ', '
+                if not nsfw:
+                    if len(badword) == 1:
+                        punc = 'is a bad word'
+                    else:
+                        punc = 'are bad words'
+                    words = ''
+                    for word in badword:
+                        words += word + ', '
 
-                if (self.profanity_action == 2):
-                    await message.channel.purge(limit=1)
-                    await message.channel.send(('**{0.author.mention} said: ||"'+message.content+'"||, ||"'+words+'"|| ' + punc +', watch your profanity!**').format(message))
-                else:
-                    await message.add_reaction('❌')
-                    await message.channel.send(('**{0.author.mention}, ||'+words+'|| '+punc+', watch your profanity!**').format(message))
-                return
+                    if (self.profanity_action == 2):
+                        await message.channel.purge(limit=1)
+                        await message.channel.send(('**{0.author.mention} said: ||"'+message.content+'"||, ||"'+words+'"|| ' + punc +', watch your profanity!**').format(message))
+                    else:
+                        await message.add_reaction('❌')
+                        await message.channel.send(('**{0.author.mention}, ||'+words+'|| '+punc+', watch your profanity!**').format(message))
+                    return
 
         elif message.content.startswith('bye'):
             await message.channel.send('goodbye {0.author.mention}'.format(message))
@@ -626,8 +625,10 @@ async def textMemePrep(ctx, text, coords, font, colour, source, final):
         
     meme = editPics.addText(source, font, colour, coords, final)
     await ctx.message.delete()
-    await ctx.send(file=discord.File(meme))
-    editPics.deleteImage(meme)
+    try:
+        await ctx.send(file=discord.File(meme))
+    except discord.Forbidden:
+        editPics.deleteImage(meme)
 
 class TextMemes(commands.Cog):
     def __init__(self, bot):
@@ -689,8 +690,11 @@ async def imagePrep(ctx, member, stuff, memeImage, size, finalName):
         editPics.deleteImage(item[2])
     
     await ctx.message.delete()
-    await ctx.send(file=discord.File(meme))
-    editPics.deleteImage(meme)
+
+    try:
+        await ctx.send(file=discord.File(meme))
+    except discord.Forbidden:
+        editPics.deleteImage(meme)
 
 class PfpMemes(commands.Cog):
     def __init__(self, bot):
@@ -706,6 +710,15 @@ class PfpMemes(commands.Cog):
         """your worthless"""
         await imagePrep(ctx, avamember, [[(490, 235), -10]], "worthlessImage.jpg", (450,450), "WORTHLESS.jpg")
             
+    @commands.command(aliases=['neat'])
+    async def prettyneat(self, ctx, *avamember : discord.Member):
+        """your pretty neat ;)"""
+        await imagePrep(ctx, avamember, [[(16, 210), 0]], "neatImage.jpg", (270,270), "NEAT.jpg")
+
+    @commands.command()
+    async def grab(self, ctx, *avamember : discord.Member):
+        """GRAB"""
+        await imagePrep(ctx, avamember, [[(25, 265), 0]], "grabImage.jpg", (150,150), "GRAB.jpg")
 
 
 
