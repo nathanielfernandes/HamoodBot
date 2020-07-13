@@ -62,11 +62,11 @@ class Config(commands.Cog):
         print(self.VERSION)
         print('-------------------')
 
-    # @commands.Cog.listener()
-    # async def on_command_error(self, ctx, error):
-    #     err = getattr(error, "original", error)
-    #     if isinstance(err, commands.CommandNotFound):
-    #         return
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        err = getattr(error, "original", error)
+        if isinstance(err, commands.CommandNotFound):
+            return
 
     @commands.command()
     @commands.is_owner()
@@ -229,22 +229,22 @@ class Messaging(commands.Cog):
         if channel is not None:
             await channel.send('Welcome {0.mention}!'.format(member))
 
-    # @commands.command()
-    # @commands.is_owner()
-    # async def dm(self, ctx, member: discord.Member, *, content: str):
-    #     self.member = member
-    #     await member.send(content)
+    @commands.command()
+    @commands.is_owner()
+    async def dm(self, ctx, member: discord.Member, *, content: str):
+        self.member = member
+        await member.send(content)
 
-    # @commands.Cog.listener()
-    # async def on_message(self, message):
-    #     self.user = message.author.id
-    #     self.name = bot.get_user(self.user)
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        self.user = message.author.id
+        self.name = bot.get_user(self.user)
 
-    #     if message.author.id == bot.user.id:
-    #         return
-    #     elif (str(self.name) == str(self.member)):
-    #         await ctx.send(('{0.author.mention}: ' + str(message.content)).format(message))
-    #     await bot.process_commands(message)
+        if message.author.id == bot.user.id:
+            return
+        elif (str(self.name) == str(self.member)):
+            await ctx.send(('{0.author.mention}: ' + str(message.content)).format(message))
+        #await bot.process_commands(message)
 
     @commands.command(aliases=['clear'])
     async def clean(self, ctx, amount=3):
@@ -733,7 +733,7 @@ class PfpMemes(commands.Cog):
         first = avatarUrls[0]
         content = [[first, (65, 20)]]
 
-        img = PfpMemes.imagePrep(content, "stonksImage.jpg", (200,200), "STONKS.jpg")
+        img = imagePrep(content, "stonksImage.jpg", (200,200), "STONKS.jpg")
 
         await ctx.send(file=discord.File(img))
         editPics.deleteImage(img)
