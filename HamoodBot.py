@@ -731,6 +731,54 @@ class PfpMemes(commands.Cog):
         await imagePrep(ctx, avamember, [[(25, 265), 0]], "grabImage.jpg", (150,150), "GRAB.jpg")
 
 
+@bot.command()
+@commands.is_owner()
+async def disable(ctx, _cog_:str):
+    if _cog_ == 'config':
+        bot.remove_cog(Config(bot))
+    elif _cog_ == 'messaging':
+        bot.remove_cog(Messaging(bot))
+    elif _cog_ == 'math':
+        bot.remove_cog(Math(bot))
+    elif _cog_ == 'member':
+        bot.remove_cog(Member(bot))
+    elif _cog_ == 'fun':
+        bot.remove_cog(Fun(bot))
+    elif _cog_ == 'chance':
+        bot.remove_cog(Chance(bot))
+    elif _cog_ == 'images':
+        bot.remove_cog(Images(bot))
+    elif _cog_ == 'redditstuff':
+        bot.remove_cog(RedditStuff(bot))
+    elif _cog_ == 'textmemes':
+        bot.remove_cog(TextMemes(bot))
+    elif _cog_ == 'pfpmemes':
+        bot.remove_cog(PfpMemes(bot))
+
+@bot.command()
+@commands.is_owner()
+async def enable(ctx, _cog_:str):
+    if _cog_ == 'config':
+        bot.add_cog(Config(bot))
+    elif _cog_ == 'messaging':
+        bot.add_cog(Messaging(bot))
+    elif _cog_ == 'math':
+        bot.add_cog(Math(bot))
+    elif _cog_ == 'member':
+        bot.add_cog(Member(bot))
+    elif _cog_ == 'fun':
+        bot.add_cog(Fun(bot))
+    elif _cog_ == 'chance':
+        bot.add_cog(Chance(bot))
+    elif _cog_ == 'images':
+        bot.add_cog(Images(bot))
+    elif _cog_ == 'redditstuff':
+        bot.add_cog(RedditStuff(bot))
+    elif _cog_ == 'textmemes':
+        bot.add_cog(TextMemes(bot))
+    elif _cog_ == 'pfpmemes':
+        bot.add_cog(PfpMemes(bot))
+
 
 bot.add_cog(Config(bot))
 bot.add_cog(Messaging(bot))
