@@ -719,7 +719,7 @@ class RedditStuff(commands.Cog):
 
 
 
-async def textMemePrep(ctx, text, coords, font, colour, source, final, wrap=12):
+async def textMemePrep(ctx, text, coords, font, colour, source, wrap=12):
     async with ctx.typing():
         text = list(text)
         text.append(', ')
@@ -733,8 +733,11 @@ async def textMemePrep(ctx, text, coords, font, colour, source, final, wrap=12):
 
         for i in range(len(coords)):
             coords[i].append(text[i])
-            
-        meme = editPics.addText(source, font, colour, coords, final)
+        
+        name = editPics.randomNumber()
+        name = str(name) + '.jpg'
+
+        meme = editPics.addText(source, font, colour, coords, name)
         await ctx.message.delete()
         await ctx.send(file=discord.File(meme))
         editPics.deleteImage(meme)
@@ -747,40 +750,40 @@ class TextMemes(commands.Cog):
     @commands.command()
     async def bonk(self, ctx, *content:str):
         """give someone a good bonk"""
-        await textMemePrep(ctx, content, [[(250,450)],[(1050,600)]], 75, 'BLACK', 'bonkImage.jpg', 'BONK.jpg')
+        await textMemePrep(ctx, content, [[(250,450)],[(1050,600)]], 75, 'BLACK', 'bonkImage.jpg')
 
     @commands.command()
     async def lick(self, ctx, *content:str):
         """lick someone tasty"""
-        await textMemePrep(ctx, content, [[(320,220)],[(75,200)]], 35, 'BLACK', 'lickImage.jpg', 'LICK.jpg')
+        await textMemePrep(ctx, content, [[(320,220)],[(75,200)]], 35, 'BLACK', 'lickImage.jpg')
 
     @commands.command()
     async def slap(self, ctx, *content:str):
         """slap someone annoying"""
-        await textMemePrep(ctx, content, [[(580, 30)],[(220, 250)]], 60, 'WHITE', 'slapImage.jpg', 'SLAP.jpg')
+        await textMemePrep(ctx, content, [[(580, 30)],[(220, 250)]], 60, 'WHITE', 'slapImage.jpg')
 
     @commands.command()
     async def lookback(self, ctx, *content:str):
         """look back at it"""
-        await textMemePrep(ctx, content, [[(120, 285)],[(360, 180)],[(525, 250)]], 30, 'BLACK', 'lookBackImage.jpg', 'LOOKBACK.jpg', 14)
+        await textMemePrep(ctx, content, [[(120, 285)],[(360, 180)],[(525, 250)]], 30, 'BLACK', 'lookBackImage.jpg', 14)
 
     @commands.command()
     async def our(self, ctx, *content:str):
         """soviet bugs bunny"""
         content = list(content)
         content[0] = 'our ' + content[0]
-        await textMemePrep(ctx, content, [[(325,320)], [(310,110)]], 45, 'BLACK', 'sovietImage.jpg', 'SOVIET.jpg')
+        await textMemePrep(ctx, content, [[(325,320)], [(310,110)]], 45, 'BLACK', 'sovietImage.jpg')
 
     @commands.command()
     async def pour(self, ctx, *content:str):
         """pour yourself a nice drink"""
-        await textMemePrep(ctx, content, [[(50,110)], [(430,60)]], 45, 'BLACK', 'coffeeImage.jpg', 'COFFEE.jpg', 8)
+        await textMemePrep(ctx, content, [[(50,110)], [(430,60)]], 45, 'BLACK', 'coffeeImage.jpg', 8)
 
 
 
 
 
-async def imagePrep(ctx, member, stuff, memeImage, size, finalName):
+async def imagePrep(ctx, member, stuff, memeImage, size):
     path = os.path.dirname(os.path.realpath(__file__))
 
     async with ctx.typing():
@@ -799,11 +802,14 @@ async def imagePrep(ctx, member, stuff, memeImage, size, finalName):
         for item in stuff:
             name = editPics.randomNumber()
             name = str(name) + '.png'
-            save = path + '/' + "memePics" '/' + name
+            save = path + '/' + "tempImages" '/' + name
             editPics.scrape(item[2], save)
             
             pos = stuff.index(item)
             stuff[pos][2] = save
+
+        finalName = editPics.randomNumber()
+        finalName = str(finalName) + '.jpg'
 
         meme = editPics.addImage(memeImage, stuff, size, finalName)
         
@@ -824,22 +830,22 @@ class PfpMemes(commands.Cog):
     @commands.command()
     async def stonks(self, ctx, *avamember : discord.Member):
         """Stonks!"""
-        await imagePrep(ctx, avamember, [[(65, 20), 0]], "stonksImage.jpg", (200,200), "STONKS.jpg")
+        await imagePrep(ctx, avamember, [[(65, 20), 0]], "stonksImage.jpg", (200,200))
 
     @commands.command()
     async def worthless(self, ctx, *avamember : discord.Member):
         """your worthless"""
-        await imagePrep(ctx, avamember, [[(490, 235), -10]], "worthlessImage.jpg", (450,450), "WORTHLESS.jpg")
+        await imagePrep(ctx, avamember, [[(490, 235), -10]], "worthlessImage.jpg", (450,450))
             
     @commands.command()
     async def neat(self, ctx, *avamember : discord.Member):
         """your pretty neat ;)"""
-        await imagePrep(ctx, avamember, [[(16, 210), 0]], "neatImage.jpg", (270,270), "NEAT.jpg")
+        await imagePrep(ctx, avamember, [[(16, 210), 0]], "neatImage.jpg", (270,270))
 
     @commands.command()
     async def grab(self, ctx, *avamember : discord.Member):
         """GRAB"""
-        await imagePrep(ctx, avamember, [[(25, 265), 0]], "grabImage.jpg", (150,150), "GRAB.jpg")
+        await imagePrep(ctx, avamember, [[(25, 265), 0]], "grabImage.jpg", (150,150))
 
 
 

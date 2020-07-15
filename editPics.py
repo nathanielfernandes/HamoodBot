@@ -13,9 +13,11 @@ path = os.path.dirname(os.path.realpath(__file__))
 folder = path + '/' + "memePics"
 fontPath = path + '/' + 'fonts' + '/'
 
+temp = path + '/' + 'tempImages' 
+
 def addText(imageName, fontSize, textColor, imagedict, new):
     image = folder + '/' + imageName
-    edited = folder + '/' + new
+    edited = temp + '/' + new
 
     f = getFont('random')
     fontLoc = fontPath + f#'arialbold.ttf'
@@ -39,7 +41,7 @@ def addText(imageName, fontSize, textColor, imagedict, new):
 
 def makeText(content, font, font_size, colour, final):
     fontLoc = fontPath + font
-    finalName = path + '/' + 'customText' + '/' + final
+    finalName = path + '/' + 'tempImages' + '/' + final
 
     placeholderImg = Image.new('RGBA', (0, 0), (0, 0, 0, 0))
 
@@ -58,7 +60,7 @@ def makeText(content, font, font_size, colour, final):
 
 def addImage(background, imageList, size, new):
     back = Image.open(folder + '/' + background)
-    finalName = folder + '/' + new
+    finalName = temp + '/' + new
     
     for img in imageList:
         front = Image.open(img[2])
