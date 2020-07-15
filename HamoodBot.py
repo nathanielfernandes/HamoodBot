@@ -487,6 +487,7 @@ class Fun(commands.Cog):
         url = urllib.request.urlopen("https://raw.githubusercontent.com/sindresorhus/mnemonic-words/master/words.json")
         words = json.loads(url.read())
         random_word = random.choice(words)
+        await ctx.send((('{0.author.mention}')+' your vibe checked out to be:').format(ctx))
         await textPrep(ctx, random_word, 'random', 500, 'random', 100, False)
         await ctx.message.add_reaction('✔️')
 
