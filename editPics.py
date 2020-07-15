@@ -17,7 +17,8 @@ def addText(imageName, fontSize, textColor, imagedict, new):
     image = folder + '/' + imageName
     edited = folder + '/' + new
 
-    fontLoc = fontPath + 'arialbold.ttf'
+    f = getFont('random')
+    fontLoc = fontPath + f#'arialbold.ttf'
 
     image = Image.open(image)   
     font_type = ImageFont.truetype(fontLoc, fontSize)
@@ -86,6 +87,26 @@ def randomNumber():
 def deleteImage(file):
     os.remove(file)
 
+def getFont(name):
+    fontDict = {'arial':'arialbold.ttf', 
+                    'minecraft':'Minecraft.ttf', 
+                    'undertale':'DTM-Sans.ttf', 
+                    'morty':'get_schwifty.ttf',
+                    'starwars':'Starjedi.ttf',
+                    'enchant':'minecraft-enchantment.ttf',
+                    'unknown':'unown.ttf',
+                    'pokemon':'Pokemon_Solid.ttf',
+                    'sega':'SEGA.TTF',
+                    'spongebob':'Krabby_Patty.ttf'}
+
+    if name == 'random':
+        font = random.choice(list(fontDict.values()))
+    elif name not in fontDict:
+        font = 'arial'
+    else:
+        font = fontDict[name]
+
+    return font
 
 def getColour(name):
     colourDict = {'aliceblue': (240, 248, 255, 255),

@@ -270,23 +270,7 @@ async def textPrep(ctx, text, font, font_size, colour, wrap=80, upper=False):
         if text == ():
             return
 
-        fontDict = {'arial':'arialbold.ttf', 
-                    'minecraft':'Minecraft.ttf', 
-                    'undertale':'DTM-Sans.ttf', 
-                    'morty':'get_schwifty.ttf',
-                    'starwars':'Starjedi.ttf',
-                    'enchant':'minecraft-enchantment.ttf',
-                    'unknown':'unown.ttf',
-                    'pokemon':'Pokemon_Solid.ttf',
-                    'sega':'SEGA.TTF',
-                    'spongebob':'Krabby_Patty.ttf'}
-
-        if font == 'random':
-            font = random.choice(list(fontDict.values()))
-        elif font not in fontDict:
-            font = 'arial'
-        else:
-            font = fontDict[font]
+        font = editPics.getFont(font)
 
         colour = editPics.getColour(colour)
 
@@ -495,6 +479,15 @@ class Fun(commands.Cog):
         words = json.loads(url.read())
         random_word = random.choice(words)
         await ctx.send((('{0.author.mention}')+' your vibe checked out to be ' + "**'"+ (random_word)+ "'**").format(ctx))
+        await ctx.message.add_reaction('✔️')
+
+    @commands.command()
+    async def vibecheck(self, ctx):
+        """vibechecks you"""
+        url = urllib.request.urlopen("https://raw.githubusercontent.com/sindresorhus/mnemonic-words/master/words.json")
+        words = json.loads(url.read())
+        random_word = random.choice(words)
+        await textPrep(ctx, random_word, 'random', 500, 'random', 100, True)
         await ctx.message.add_reaction('✔️')
 
     @commands.command(aliases=['roast me', 'roastme'])
