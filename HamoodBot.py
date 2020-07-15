@@ -23,7 +23,7 @@ from functools import partial
 from itertools import cycle
 from random import shuffle
 from PyDictionary import PyDictionary
-
+import textwrap
 
 #Hamood's modules
 import getFile
@@ -200,6 +200,110 @@ class Messaging(commands.Cog):
         retStr = str("```css\nThis is some colored Text```")
         await ctx.send(retStr)
 
+    @commands.command()
+    async def arial(self, ctx, *content:str):
+        """send a message in arial text"""
+        await textPrep(ctx, content, 'arial', 500, (0,0,0,255), 100, True)
+
+    @commands.command(aliases=['craft'])
+    async def minecraft(self, ctx, *content:str):
+        """send a message in minecraft text"""
+        await textPrep(ctx, content, 'minecraft', 500, (255,255,102,255), 100, True)
+
+    @commands.command(aliases=['tale'])
+    async def undertale(self, ctx, *content:str):
+        """send a message in undertale text"""
+        await textPrep(ctx, content, 'undertale', 500, (255,255,255,255), 100, True)
+
+    @commands.command(aliases=['rick'])
+    async def morty(self, ctx, *content:str):
+        """send a message in morty text"""
+        await textPrep(ctx, content, 'morty', 500, (255,255,255,255), 100, True)
+
+    @commands.command(aliases=['jedi'])
+    async def starwars(self, ctx, *content:str):
+        """send a message in starwars text"""
+        await textPrep(ctx, content, 'starwars', 500, (255,255,255,255), 100, True)
+
+    @commands.command()
+    async def enchant(self, ctx, *content:str):
+        """send a message in enchant text"""
+        await textPrep(ctx, content, 'enchant', 500, (255,255,255,255), 100, True)
+
+    @commands.command(aliases=['?'])
+    async def unknown(self, ctx, *content:str):
+        """send a message in unknown text"""
+        await textPrep(ctx, content, 'unknown', 500, (255,255,255,255), 100, True)
+
+    @commands.command(aliases=['poke'])
+    async def pokemon(self, ctx, *content:str):
+        """send a message in pokemon text"""
+        await textPrep(ctx, content, 'pokemon', 500, (255,255,255,255), 100, True)
+
+    @commands.command(aliases=['sonic'])
+    async def sega(self, ctx, *content:str):
+        """send a message in sega text"""
+        await textPrep(ctx, content, 'sega', 500, (255,255,255,255), 100, True)
+
+    @commands.command(aliases=['sponge'])
+    async def spongebob(self, ctx, *content:str):
+        """send a message in spongebob text"""
+        await textPrep(ctx, content, 'spongebob', 500, (255,255,255,255), 100, True)
+
+
+    @commands.command()
+    async def text(self, ctx, *content:str):
+        """send a message in a random font"""
+        await textPrep(ctx, content, 'random', 500, 'random', 100, True)
+
+    @commands.command()
+    async def font(self, ctx, font, colour, *content:str):
+        """send a message in a selected font and colour"""
+        await textPrep(ctx, content, font, 500, colour, 100, False)
+
+async def textPrep(ctx, text, font, font_size, colour, wrap=80, upper=False):
+    async with ctx.typing():
+        if text == ():
+            return
+
+        fontDict = {'arial':'arialbold.ttf', 
+                    'minecraft':'Minecraft.ttf', 
+                    'undertale':'DTM-Sans.ttf', 
+                    'morty':'get_schwifty.ttf',
+                    'starwars':'Starjedi.ttf',
+                    'enchant':'minecraft-enchantment.ttf',
+                    'unknown':'unown.ttf',
+                    'pokemon':'Pokemon_Solid.ttf',
+                    'sega':'SEGA.TTF',
+                    'spongebob':'Krabby_Patty.ttf'}
+
+        if font == 'random':
+            font = random.choice(list(fontDict.values()))
+        elif font not in fontDict:
+            font = 'arial'
+        else:
+            font = fontDict[font]
+
+        colour = editPics.getColour(colour)
+
+        text = formatMsg.convertList(text, False)
+        text = [text]
+        for i in range(len(text)):
+            text[i] = textwrap.wrap(text[i], width=wrap)
+            for a in range(1,len(text[i])):
+                text[i][a] = '\n' + text[i][a]
+            text[i] = formatMsg.convertList(text[i], False)
+        text = text[0]
+        if upper:
+            text = text.upper()
+
+        name = editPics.randomNumber()
+        name = str(name) + '.png'
+
+        textImg = editPics.makeText(text, font, font_size, colour, name)
+        await ctx.message.delete()
+        await ctx.send(file=discord.File(textImg))
+        editPics.deleteImage(textImg)
 
 
 
@@ -525,8 +629,9 @@ class Images(commands.Cog):
 
 
 async def redditPrep(ctx, subRedd):
-    post = redditHandle.findPost(subRedd)
-    await ctx.send(post.url)
+    async with ctx.typing():
+        post = redditHandle.findPost(subRedd)
+        await ctx.send(post.url)
 
 class RedditStuff(commands.Cog):
     def __init__(self, bot):
@@ -617,18 +722,25 @@ class RedditStuff(commands.Cog):
 
 
 
+async def textMemePrep(ctx, text, coords, font, colour, source, final, wrap=12):
+    async with ctx.typing():
+        text = list(text)
+        text.append(', ')
+        text = formatMsg.convertList(text, True)
 
-async def textMemePrep(ctx, text, coords, font, colour, source, final):
-    text = list(text)
-    text.append(', ')
-    text = formatMsg.convertList(text, True)
-    for i in range(len(coords)):
-        coords[i].append(text[i])
-        
-    meme = editPics.addText(source, font, colour, coords, final)
-    await ctx.message.delete()
-    await ctx.send(file=discord.File(meme))
-    editPics.deleteImage(meme)
+        for i in range(len(text)):
+            text[i] = textwrap.wrap(text[i], width=wrap)
+            for a in range(len(text[i])):
+                text[i][a] += '\n'
+            text[i] = formatMsg.convertList(text[i], False)
+
+        for i in range(len(coords)):
+            coords[i].append(text[i])
+            
+        meme = editPics.addText(source, font, colour, coords, final)
+        await ctx.message.delete()
+        await ctx.send(file=discord.File(meme))
+        editPics.deleteImage(meme)
 
 
 class TextMemes(commands.Cog):
@@ -653,7 +765,7 @@ class TextMemes(commands.Cog):
     @commands.command()
     async def lookback(self, ctx, *content:str):
         """look back at it"""
-        await textMemePrep(ctx, content, [[(120, 285)],[(360, 180)],[(525, 250)]], 45, 'BLACK', 'lookBackImage.jpg', 'LOOKBACK.jpg')
+        await textMemePrep(ctx, content, [[(120, 285)],[(360, 180)],[(525, 250)]], 30, 'BLACK', 'lookBackImage.jpg', 'LOOKBACK.jpg', 14)
 
     @commands.command()
     async def our(self, ctx, *content:str):
@@ -665,7 +777,7 @@ class TextMemes(commands.Cog):
     @commands.command()
     async def pour(self, ctx, *content:str):
         """pour yourself a nice drink"""
-        await textMemePrep(ctx, content, [[(50,110)], [(430,60)]], 45, 'BLACK', 'coffeeImage.jpg', 'COFFEE.jpg')
+        await textMemePrep(ctx, content, [[(50,110)], [(430,60)]], 45, 'BLACK', 'coffeeImage.jpg', 'COFFEE.jpg', 8)
 
 
 
@@ -673,38 +785,40 @@ class TextMemes(commands.Cog):
 
 async def imagePrep(ctx, member, stuff, memeImage, size, finalName):
     path = os.path.dirname(os.path.realpath(__file__))
-    member = list(member)
-    member.append(ctx.author)
 
-    Urls = []
-    for a in member:
-        userAvatarUrl = str(a.avatar_url)
-        userAvatarUrl = userAvatarUrl.replace('.webp', '.png')
-        Urls.append(userAvatarUrl)
-
-    for i in range(len(stuff)):
-        stuff[i].append(Urls[i])
-    
-    for item in stuff:
-        name = editPics.randomNumber()
-        name = str(name) + '.png'
-        save = path + '/' + "memePics" '/' + name
-        editPics.scrape(item[2], save)
+    async with ctx.typing():
+        member = list(member)
+        member.append(ctx.author)
         
-        pos = stuff.index(item)
-        stuff[pos][2] = save
+        Urls = []
+        for a in member:
+            userAvatarUrl = str(a.avatar_url)
+            userAvatarUrl = userAvatarUrl.replace('.webp', '.png')
+            Urls.append(userAvatarUrl)
 
-    meme = editPics.addImage(memeImage, stuff, size, finalName)
-    
-    for item in stuff:
-        editPics.deleteImage(item[2])
-    
-    await ctx.message.delete()
+        for i in range(len(stuff)):
+            stuff[i].append(Urls[i])
+        
+        for item in stuff:
+            name = editPics.randomNumber()
+            name = str(name) + '.png'
+            save = path + '/' + "memePics" '/' + name
+            editPics.scrape(item[2], save)
+            
+            pos = stuff.index(item)
+            stuff[pos][2] = save
 
-    try:
-        await ctx.send(file=discord.File(meme))
-    except discord.Forbidden:
-        editPics.deleteImage(meme)
+        meme = editPics.addImage(memeImage, stuff, size, finalName)
+        
+        for item in stuff:
+            editPics.deleteImage(item[2])
+        
+        await ctx.message.delete()
+
+        try:
+            await ctx.send(file=discord.File(meme))
+        except discord.Forbidden:
+            editPics.deleteImage(meme)
 
 class PfpMemes(commands.Cog):
     def __init__(self, bot):
