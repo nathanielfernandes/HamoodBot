@@ -19,7 +19,7 @@ def addText(imageName, fontSize, textColor, imagedict, new):
     image = folder + '/' + imageName
     edited = temp + '/' + new
 
-    f = getFont('random')
+    f = getFont('arial')
     fontLoc = fontPath + f#'arialbold.ttf'
 
     image = Image.open(image)   
