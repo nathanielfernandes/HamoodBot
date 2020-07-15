@@ -482,12 +482,12 @@ class Fun(commands.Cog):
         await ctx.message.add_reaction('✔️')
 
     @commands.command()
-    async def vibecheck(self, ctx):
-        """vibechecks you"""
+    async def vibe(self, ctx):
+        """vibechecks you but better"""
         url = urllib.request.urlopen("https://raw.githubusercontent.com/sindresorhus/mnemonic-words/master/words.json")
         words = json.loads(url.read())
         random_word = random.choice(words)
-        await textPrep(ctx, random_word, 'random', 500, 'random', 100, True)
+        await textPrep(ctx, random_word, 'random', 500, 'random', 100, False)
         await ctx.message.add_reaction('✔️')
 
     @commands.command(aliases=['roast me', 'roastme'])
