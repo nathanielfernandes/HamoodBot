@@ -42,8 +42,12 @@ bot = commands.Bot(command_prefix='')
 
 @bot.event
 async def on_message(message):
-    message.content = message.content.lower().replace(' ', ' ')
-    await bot.process_commands(message)
+    if message.content.startswith('font'):
+        await bot.process_commands(message)
+    else:
+        message.content = message.content.lower().replace(' ', ' ')
+        await bot.process_commands(message)
+    
 
 class Messaging(commands.Cog):
     def __init__(self, bot):
@@ -203,52 +207,52 @@ class Messaging(commands.Cog):
     @commands.command()
     async def arial(self, ctx, *content:str):
         """send a message in arial text"""
-        await textPrep(ctx, content, 'arial', 500, (0,0,0,255), 100, True)
+        await textPrep(ctx, content, 'arial', 500, 'black', 100, True)
 
     @commands.command(aliases=['craft'])
     async def minecraft(self, ctx, *content:str):
         """send a message in minecraft text"""
-        await textPrep(ctx, content, 'minecraft', 500, (255,255,102,255), 100, True)
+        await textPrep(ctx, content, 'minecraft', 500, 'yellow2', 100, True)
 
     @commands.command(aliases=['tale'])
     async def undertale(self, ctx, *content:str):
         """send a message in undertale text"""
-        await textPrep(ctx, content, 'undertale', 500, (255,255,255,255), 100, True)
+        await textPrep(ctx, content, 'undertale', 500, 'white', 100, True)
 
     @commands.command(aliases=['rick'])
     async def morty(self, ctx, *content:str):
         """send a message in morty text"""
-        await textPrep(ctx, content, 'morty', 500, (255,255,255,255), 100, True)
+        await textPrep(ctx, content, 'morty', 500, 'green1', 100, True)
 
     @commands.command(aliases=['jedi'])
     async def starwars(self, ctx, *content:str):
         """send a message in starwars text"""
-        await textPrep(ctx, content, 'starwars', 500, (255,255,255,255), 100, True)
+        await textPrep(ctx, content, 'starwars', 500, 'yellow', 100, True)
 
     @commands.command()
     async def enchant(self, ctx, *content:str):
         """send a message in enchant text"""
-        await textPrep(ctx, content, 'enchant', 500, (255,255,255,255), 100, True)
+        await textPrep(ctx, content, 'enchant', 500, 'lightgoldenrod', 100, True)
 
     @commands.command(aliases=['?'])
     async def unknown(self, ctx, *content:str):
         """send a message in unknown text"""
-        await textPrep(ctx, content, 'unknown', 500, (255,255,255,255), 100, True)
+        await textPrep(ctx, content, 'unknown', 500, 'black', 100, True)
 
     @commands.command(aliases=['poke'])
     async def pokemon(self, ctx, *content:str):
         """send a message in pokemon text"""
-        await textPrep(ctx, content, 'pokemon', 500, (255,255,255,255), 100, True)
+        await textPrep(ctx, content, 'pokemon', 500, 'steelblue2', 100, True)
 
     @commands.command(aliases=['sonic'])
     async def sega(self, ctx, *content:str):
         """send a message in sega text"""
-        await textPrep(ctx, content, 'sega', 500, (255,255,255,255), 100, True)
+        await textPrep(ctx, content, 'sega', 500, 'navy', 100, True)
 
     @commands.command(aliases=['sponge'])
     async def spongebob(self, ctx, *content:str):
         """send a message in spongebob text"""
-        await textPrep(ctx, content, 'spongebob', 500, (255,255,255,255), 100, True)
+        await textPrep(ctx, content, 'spongebob', 500, 'lightblue', 100, True)
 
 
     @commands.command()
