@@ -73,6 +73,9 @@ class Messaging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message): 
+        if message.author.id == bot.user.id:
+            return
+            
         channel = message.channel.id
         channel = str(channel)
         user = message.author.id
