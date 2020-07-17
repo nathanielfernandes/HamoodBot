@@ -99,7 +99,7 @@ def getFont(name):
                 'sega':'SEGA.TTF',
                 'spongebob':'Krabby_Patty.ttf',
                 'avenger':'AVENGEANCE_HEROIC_AVENGER_BD.ttf',
-                'sketch':'SketchComic.ttf',
+                'sketch':'SketchyComic.ttf',
                 'batman':'BATMAN.TTF'}
 
     if name == 'random':
