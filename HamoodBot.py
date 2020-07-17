@@ -42,6 +42,9 @@ bot = commands.Bot(command_prefix='')
 
 @bot.event
 async def on_message(message):
+    if message.author.id == bot.user.id:
+        return
+
     if message.content.startswith('font'):
         await bot.process_commands(message)
     else:
