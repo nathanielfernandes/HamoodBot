@@ -75,7 +75,7 @@ class Messaging(commands.Cog):
     async def on_message(self, message): 
         if message.author.id == bot.user.id:
             return
-            
+
         channel = message.channel.id
         channel = str(channel)
         user = message.author.id
@@ -210,6 +210,10 @@ class Messaging(commands.Cog):
         retStr = str("```css\nThis is some colored Text```")
         await ctx.send(retStr)
 
+
+
+class Fonts(commands.Cog):
+
     @commands.command()
     async def arial(self, ctx, *content:str):
         """send a message in arial text"""
@@ -230,20 +234,20 @@ class Messaging(commands.Cog):
         """send a message in morty text"""
         await textPrep(ctx, content, 'morty', 500, 'green1', 100, True)
 
-    @commands.command(aliases=['jedi'])
-    async def starwars(self, ctx, *content:str):
+    @commands.command()
+    async def gta(self, ctx, *content:str):
         """send a message in starwars text"""
-        await textPrep(ctx, content, 'starwars', 500, 'yellow', 100, True)
+        await textPrep(ctx, content, 'gta', 500, 'white', 100, True)
 
     @commands.command()
     async def enchant(self, ctx, *content:str):
         """send a message in enchant text"""
-        await textPrep(ctx, content, 'enchant', 500, 'lightgoldenrod', 100, True)
+        await textPrep(ctx, content, 'enchant', 500, 'minecraft-enchantment.ttf', 100, True)
 
     @commands.command(aliases=['?'])
     async def unknown(self, ctx, *content:str):
         """send a message in unknown text"""
-        await textPrep(ctx, content, 'unknown', 500, 'black', 100, True)
+        await textPrep(ctx, content, 'unown.ttf', 500, 'black', 100, True)
 
     @commands.command(aliases=['poke'])
     async def pokemon(self, ctx, *content:str):
@@ -260,6 +264,20 @@ class Messaging(commands.Cog):
         """send a message in spongebob text"""
         await textPrep(ctx, content, 'spongebob', 500, 'lightblue', 100, True)
 
+    @commands.command()
+    async def avenger(self, ctx, *content:str):
+        """sends a message in avengers text"""
+        await textPrep(ctx, content, 'avenger', 500, 'red4', 100,  True)
+
+    @commands.command()
+    async def sketch(self, ctx, *content:str):
+        """sends a message in avengers text"""
+        await textPrep(ctx, content, 'sketch', 500, 'random', 100,  True)
+
+    @commands.command()
+    async def batman(self, ctx, *content:str):
+        """sends a message in avengers text"""
+        await textPrep(ctx, content, 'batman', 500, 'black', 100,  True)
 
     @commands.command()
     async def text(self, ctx, *content:str):
@@ -271,13 +289,21 @@ class Messaging(commands.Cog):
         """send a message in a selected font and colour"""
         await textPrep(ctx, content, font, 500, colour, 100, False)
 
+
+    
+
+
 async def textPrep(ctx, text, font, font_size, colour, wrap=80, upper=False):
     async with ctx.typing():
         if text == ():
             return
 
         font = editPics.getFont(font)
-
+        
+        if (font == 'BATMAN.TTF'):
+            text.insert('[')
+            text.append(']')
+        
         colour = editPics.getColour(colour)
 
         text = formatMsg.convertList(text, False)
@@ -867,6 +893,7 @@ bot.add_cog(Images(bot))
 bot.add_cog(RedditStuff(bot))
 bot.add_cog(TextMemes(bot))
 bot.add_cog(PfpMemes(bot))
+bot.add_cog(Fonts(bot))
 
 TOKEN = os.environ['TOKEN']
 bot.run(TOKEN)

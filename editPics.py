@@ -91,20 +91,21 @@ def deleteImage(file):
 
 def getFont(name):
     fontDict = {'arial':'arialbold.ttf', 
-                    'minecraft':'Minecraft.ttf', 
-                    'undertale':'DTM-Sans.ttf', 
-                    'morty':'get_schwifty.ttf',
-                    'starwars':'Starjedi.ttf',
-                    'enchant':'minecraft-enchantment.ttf',
-                    'unknown':'unown.ttf',
-                    'pokemon':'Pokemon_Solid.ttf',
-                    'sega':'SEGA.TTF',
-                    'spongebob':'Krabby_Patty.ttf'}
+                'minecraft':'Minecraft.ttf', 
+                'undertale':'DTM-Sans.ttf', 
+                'morty':'get_schwifty.ttf',
+                'gta':'pricedow.ttf',
+                'pokemon':'Pokemon_Solid.ttf',
+                'sega':'SEGA.TTF',
+                'spongebob':'Krabby_Patty.ttf',
+                'avenger':'AVENGEANCE_HEROIC_AVENGER_BD.ttf',
+                'sketch':'SketchComic.ttf',
+                'batman':'BATMAN.TTF'}
 
     if name == 'random':
         font = random.choice(list(fontDict.values()))
     elif name not in fontDict:
-        font = 'arial'
+        font = name
     else:
         font = fontDict[name]
 
