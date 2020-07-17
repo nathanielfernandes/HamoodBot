@@ -301,6 +301,7 @@ async def textPrep(ctx, text, font, font_size, colour, wrap=80, upper=False):
         font = editPics.getFont(font)
         
         if (font == 'BATMAN.TTF'):
+            text = list(text)
             text.insert('[')
             text.append(']')
         
