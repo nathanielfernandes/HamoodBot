@@ -657,7 +657,7 @@ class Images(commands.Cog):
 async def redditPrep(ctx, subRedd):
     async with ctx.typing():
         post = redditHandle.findPost(subRedd)
-        await ctx.send(post.url)
+    await ctx.send(post.url)
 
 class RedditStuff(commands.Cog):
     def __init__(self, bot):
@@ -850,7 +850,9 @@ async def imagePrep(ctx, member, stuff, memeImage, size):
         try:
             await ctx.send(file=discord.File(meme))
         except discord.Forbidden:
-            editPics.deleteImage(meme)
+            print('could not send!')
+
+        editPics.deleteImage(meme)
 
 class PfpMemes(commands.Cog):
     def __init__(self, bot):
