@@ -1,14 +1,10 @@
 import os
 import pathlib
-
 import random
 import requests
-# import cv2
-
 from PIL import Image, ImageDraw, ImageFont
 
 # import requests
-
 path = os.path.dirname(os.path.realpath(__file__))
 folder = path + '/' + "memePics"
 fontPath = path + '/' + 'fonts' + '/'

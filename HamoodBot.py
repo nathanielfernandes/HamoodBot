@@ -1,8 +1,8 @@
-#This program is discord bot named "Hamood"
+#Hamood Bot
 #date 2020/05/2
 #@author Nathaniel Fernandes
 
-#you need to pip install a few of these 
+#dependancies
 import os
 import json
 import urllib.request
@@ -25,7 +25,7 @@ from random import shuffle
 from PyDictionary import PyDictionary
 import textwrap
 
-#Hamood's modules
+#modules that i have made for some of hamood's functions
 import getFile
 import noU
 import imageSearch
@@ -36,22 +36,24 @@ import redditHandle
 import profanityCheck
 import editPics
 
+#bot description
 description = '''Hamood is ur freind'''
 
+#the prefix the bot looks for before processing a message
 bot = commands.Bot(command_prefix='')
 
+#makes sure the Hamood does not reply to himself as well as lowercase all the messages from users
 @bot.event
 async def on_message(message):
     if message.author.id == bot.user.id:
         return
-
     if message.content.startswith('font'):
         await bot.process_commands(message)
     else:
         message.content = message.content.lower().replace(' ', ' ')
         await bot.process_commands(message)
     
-
+#Messaging cog that checks for profantiy and also provide some simple chat commands
 class Messaging(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -66,21 +68,25 @@ class Messaging(commands.Cog):
         self.profanity_action = 1
         self.dictionary = PyDictionary()
 
+    #allows the owner of hamood to temporarily change what actions hamood takes when someone uses profanity
     @commands.command()
     @commands.is_owner()
     async def proflevel(self, ctx, lvl:int):
         self.profanity_action = lvl
-
+    
+    #runs on any chat message
     @commands.Cog.listener()
     async def on_message(self, message): 
+        #checks again to make sure the bot does not reply to itself
         if message.author.id == bot.user.id:
             return
 
-        channel = message.channel.id
-        channel = str(channel)
+        #gets the the channel and user that said the message
+        channel = str(message.channel.id)
         user = message.author.id
         name = bot.get_user(user)
 
+        #
         try:
             nsfw = message.channel.is_nsfw()
         except Exception:
@@ -533,7 +539,7 @@ class Fun(commands.Cog):
         if h > 14:
             h = 14
         wrap = ''
-        w = "||**pop**||"*int(w)
+        w = "||pop||"*int(w)
         for i in range(h):
             wrap += w + "\n"
         await ctx.send(wrap)
@@ -717,12 +723,7 @@ class RedditStuff(commands.Cog):
     @commands.command(aliases=['bless'])
     async def blessed(self, ctx):
         """finds posts from r/Blessed_Images"""
-        await redditPrep(ctx, 'Blesses_Images')
-
-    @commands.command(aliases=['dark'])
-    async def darkhumor(self, ctx):
-        """finds posts from r/DarkHumorAndMemes"""
-        await redditPrep(ctx, 'DarkHumorAndMemes')
+        await redditPrep(ctx, 'Blessed_Images')
 
     @commands.command(aliases=['pizza', 'time', 'pizza time', 'ayan'])
     async def pizzatime(self, ctx):
