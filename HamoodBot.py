@@ -534,10 +534,10 @@ class Fun(commands.Cog):
     @commands.command(aliases=["pop", "bubble"])
     async def bubblewrap(self, ctx, w=3, h=3):
         """creates some bubble wrap"""
-        if w > 14:
-            w = 14
-        if h > 14:
-            h = 14
+        if w > 12:
+            w = 12
+        if h > 12:
+            h = 12
         wrap = ''
         w = "||pop||"*int(w)
         for i in range(h):
