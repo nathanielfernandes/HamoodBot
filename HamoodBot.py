@@ -35,6 +35,7 @@ import roastHandle
 import redditHandle
 import profanityCheck
 import editPics
+import stats
 
 #bot description
 description = '''Hamood is ur freind'''
@@ -218,117 +219,6 @@ class Messaging(commands.Cog):
 
 
 
-class Fonts(commands.Cog):
-
-    @commands.command()
-    async def arial(self, ctx, *content:str):
-        """send a message in arial text"""
-        await textPrep(ctx, content, 'arial', 500, 'black', 100, True)
-
-    @commands.command(aliases=['craft'])
-    async def minecraft(self, ctx, *content:str):
-        """send a message in minecraft text"""
-        await textPrep(ctx, content, 'minecraft', 500, 'yellow2', 100, True)
-
-    @commands.command(aliases=['tale'])
-    async def undertale(self, ctx, *content:str):
-        """send a message in undertale text"""
-        await textPrep(ctx, content, 'undertale', 500, 'white', 100, True)
-
-    @commands.command(aliases=['rick'])
-    async def morty(self, ctx, *content:str):
-        """send a message in morty text"""
-        await textPrep(ctx, content, 'morty', 500, 'green1', 100, True)
-
-    @commands.command()
-    async def gta(self, ctx, *content:str):
-        """send a message in starwars text"""
-        await textPrep(ctx, content, 'gta', 500, 'white', 100, True)
-
-    @commands.command()
-    async def enchant(self, ctx, *content:str):
-        """send a message in enchant text"""
-        await textPrep(ctx, content, 'enchant', 500, 'minecraft-enchantment.ttf', 100, True)
-
-    @commands.command(aliases=['?'])
-    async def unknown(self, ctx, *content:str):
-        """send a message in unknown text"""
-        await textPrep(ctx, content, 'unown.ttf', 500, 'black', 100, True)
-
-    @commands.command(aliases=['poke'])
-    async def pokemon(self, ctx, *content:str):
-        """send a message in pokemon text"""
-        await textPrep(ctx, content, 'pokemon', 500, 'steelblue2', 100, True)
-
-    @commands.command(aliases=['sonic'])
-    async def sega(self, ctx, *content:str):
-        """send a message in sega text"""
-        await textPrep(ctx, content, 'sega', 500, 'navy', 100, True)
-
-    @commands.command(aliases=['sponge'])
-    async def spongebob(self, ctx, *content:str):
-        """send a message in spongebob text"""
-        await textPrep(ctx, content, 'spongebob', 500, 'lightblue', 100, True)
-
-    @commands.command()
-    async def avenger(self, ctx, *content:str):
-        """sends a message in avengers text"""
-        await textPrep(ctx, content, 'avenger', 500, 'red4', 100,  True)
-
-    @commands.command()
-    async def sketch(self, ctx, *content:str):
-        """sends a message in avengers text"""
-        await textPrep(ctx, content, 'sketch', 500, 'random', 100,  True)
-
-    @commands.command()
-    async def batman(self, ctx, *content:str):
-        """sends a message in avengers text"""
-        await textPrep(ctx, content, 'batman', 500, 'black', 100,  True)
-
-    @commands.command()
-    async def text(self, ctx, *content:str):
-        """send a message in a random font"""
-        await textPrep(ctx, content, 'random', 500, 'random', 100, True)
-
-    @commands.command()
-    async def font(self, ctx, font, colour, *content:str):
-        """send a message in a selected font and colour"""
-        await textPrep(ctx, content, font, 500, colour, 100, False)
-
-
-    
-
-
-async def textPrep(ctx, text, font, font_size, colour, wrap=80, upper=False):
-    async with ctx.typing():
-        if text == ():
-            return
-
-        font = editPics.getFont(font)
-        
-        colour = editPics.getColour(colour)
-
-        text = formatMsg.convertList(text, False)
-        text = [text]
-        for i in range(len(text)):
-            text[i] = textwrap.wrap(text[i], width=wrap)
-            for a in range(1,len(text[i])):
-                text[i][a] = '\n' + text[i][a]
-            text[i] = formatMsg.convertList(text[i], False)
-        text = text[0]
-        if upper:
-            text = text.upper()
-
-        name = editPics.randomNumber()
-        name = str(name) + '.png'
-
-        textImg = editPics.makeText(text, font, font_size, colour, name)
-        await ctx.message.delete()
-        await ctx.send(file=discord.File(textImg))
-        editPics.deleteImage(textImg)
-
-
-
 class Config(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -385,6 +275,7 @@ class Config(commands.Cog):
     @commands.command()
     async def version(self, ctx):
         """sends Hamood's current version"""
+        self.currentDT = datetime.datetime.now()
         await ctx.send(('```md\n[' + self.VERSION + ' | ' + self.currentDT + '](RUNNING ON: '+self.running+')```'))
 
     @commands.command(aliases=['newwordadd', 'newswear','newprof'])
@@ -881,6 +772,128 @@ class PfpMemes(commands.Cog):
 
 
 
+class Fonts(commands.Cog):
+
+    @commands.command()
+    async def arial(self, ctx, *content:str):
+        """send a message in arial text"""
+        await textPrep(ctx, content, 'arial', 500, 'black', 100, True)
+
+    @commands.command(aliases=['craft'])
+    async def minecraft(self, ctx, *content:str):
+        """send a message in minecraft text"""
+        await textPrep(ctx, content, 'minecraft', 500, 'yellow2', 100, True)
+
+    @commands.command(aliases=['tale'])
+    async def undertale(self, ctx, *content:str):
+        """send a message in undertale text"""
+        await textPrep(ctx, content, 'undertale', 500, 'white', 100, True)
+
+    @commands.command(aliases=['rick'])
+    async def morty(self, ctx, *content:str):
+        """send a message in morty text"""
+        await textPrep(ctx, content, 'morty', 500, 'green1', 100, True)
+
+    @commands.command()
+    async def gta(self, ctx, *content:str):
+        """send a message in starwars text"""
+        await textPrep(ctx, content, 'gta', 500, 'white', 100, True)
+
+    @commands.command()
+    async def enchant(self, ctx, *content:str):
+        """send a message in enchant text"""
+        await textPrep(ctx, content, 'enchant', 500, 'minecraft-enchantment.ttf', 100, True)
+
+    @commands.command(aliases=['?'])
+    async def unknown(self, ctx, *content:str):
+        """send a message in unknown text"""
+        await textPrep(ctx, content, 'unown.ttf', 500, 'black', 100, True)
+
+    @commands.command(aliases=['poke'])
+    async def pokemon(self, ctx, *content:str):
+        """send a message in pokemon text"""
+        await textPrep(ctx, content, 'pokemon', 500, 'steelblue2', 100, True)
+
+    @commands.command(aliases=['sonic'])
+    async def sega(self, ctx, *content:str):
+        """send a message in sega text"""
+        await textPrep(ctx, content, 'sega', 500, 'navy', 100, True)
+
+    @commands.command(aliases=['sponge'])
+    async def spongebob(self, ctx, *content:str):
+        """send a message in spongebob text"""
+        await textPrep(ctx, content, 'spongebob', 500, 'lightblue', 100, True)
+
+    @commands.command()
+    async def avenger(self, ctx, *content:str):
+        """sends a message in avengers text"""
+        await textPrep(ctx, content, 'avenger', 500, 'red4', 100,  True)
+
+    @commands.command()
+    async def sketch(self, ctx, *content:str):
+        """sends a message in avengers text"""
+        await textPrep(ctx, content, 'sketch', 500, 'random', 100,  True)
+
+    @commands.command()
+    async def batman(self, ctx, *content:str):
+        """sends a message in avengers text"""
+        await textPrep(ctx, content, 'batman', 500, 'black', 100,  True)
+
+    @commands.command()
+    async def text(self, ctx, *content:str):
+        """send a message in a random font"""
+        await textPrep(ctx, content, 'random', 500, 'random', 100, True)
+
+    @commands.command()
+    async def font(self, ctx, font, colour, *content:str):
+        """send a message in a selected font and colour"""
+        await textPrep(ctx, content, font, 500, colour, 100, False)
+
+async def textPrep(ctx, text, font, font_size, colour, wrap=80, upper=False):
+    async with ctx.typing():
+        if text == ():
+            return
+
+        font = editPics.getFont(font)
+        
+        colour = editPics.getColour(colour)
+
+        text = formatMsg.convertList(text, False)
+        text = [text]
+        for i in range(len(text)):
+            text[i] = textwrap.wrap(text[i], width=wrap)
+            for a in range(1,len(text[i])):
+                text[i][a] = '\n' + text[i][a]
+            text[i] = formatMsg.convertList(text[i], False)
+        text = text[0]
+        if upper:
+            text = text.upper()
+
+        name = editPics.randomNumber()
+        name = str(name) + '.png'
+
+        textImg = editPics.makeText(text, font, font_size, colour, name)
+        await ctx.message.delete()
+        await ctx.send(file=discord.File(textImg))
+        editPics.deleteImage(textImg)
+
+
+class Statistics(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command()
+    async def covid(self, ctx, country):
+        """gets the latest covid 19 statistics"""
+
+        info = stats.covid_info(country)
+        date = str(datetime.datetime.now())
+        msg = ''
+        for i, j in info.items():
+            msg += i + ' : **' + j + '**' + '\n'
+        await ctx.send("As of **" + date[:10] + "**: \n" + msg)
+
+
 
 bot.add_cog(Config(bot))
 bot.add_cog(Messaging(bot))
@@ -893,6 +906,8 @@ bot.add_cog(RedditStuff(bot))
 bot.add_cog(TextMemes(bot))
 bot.add_cog(PfpMemes(bot))
 bot.add_cog(Fonts(bot))
+bot.add_cog(Fonts(bot))
+
 
 TOKEN = os.environ['TOKEN']
 bot.run(TOKEN)
