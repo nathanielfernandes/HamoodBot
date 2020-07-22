@@ -883,7 +883,7 @@ class Statistics(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def covid(self, ctx, country):
+    async def covid(self, ctx, country=None):
         """gets the latest covid 19 statistics"""
 
         info = stats.covid_info(country)
