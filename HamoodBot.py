@@ -881,9 +881,10 @@ async def textPrep(ctx, text, font, font_size, colour, wrap=80, upper=False):
 class Statistics(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
+    
     @commands.command()
     async def covid(self, ctx, country=None):
+
         """gets the latest covid 19 statistics"""
 
         info = stats.covid_info(country)
@@ -891,7 +892,12 @@ class Statistics(commands.Cog):
         msg = ''
         for i, j in info.items():
             msg += i + ' : **' + j + '**' + '\n'
-        await ctx.send("As of **" + date[:10] + "**: \n" + msg)
+        
+        if country == None:
+            await ctx.send("As of **" + date[:10] + "**: \n" + msg)
+        else:  
+            await ctx.send("As of **" + date[:10] + "** in **" + str(country) + "**: \n" + msg)
+
 
 
 
