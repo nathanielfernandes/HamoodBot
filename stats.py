@@ -3,7 +3,7 @@ import requests
 
 def covid_info(country):
     url = "https://www.worldometers.info/coronavirus/"
-    if country == None:
+    if country == ():
         url = url
     else:
         url = "https://www.worldometers.info/coronavirus/country/" + str(country) + "/"
