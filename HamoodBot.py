@@ -906,7 +906,7 @@ bot.add_cog(RedditStuff(bot))
 bot.add_cog(TextMemes(bot))
 bot.add_cog(PfpMemes(bot))
 bot.add_cog(Fonts(bot))
-bot.add_cog(Fonts(bot))
+bot.add_cog(Statistics(bot))
 
 
 TOKEN = os.environ['TOKEN']
