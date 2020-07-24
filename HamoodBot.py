@@ -903,7 +903,7 @@ class Errors(commands.Cog):
             'tag':'@someone to tag them, however you must have the role "IT" to do this',
             'bubblewrap':'use the format "bubblewrap <width> <height>"',
             'zodiac':'enter the two dates in the format "zodiac <mmm> <dd> <mmm> <dd>"',
-            'match':'use the format "<person1>, <person2>"',
+            'match':'use the format "match <person1>, <person2>"',
             'roll':'using the format <NdN>',
             'choose':'type what things you want me to choose from sperated by commas',
             'google':'you need to type what you want to search up',
