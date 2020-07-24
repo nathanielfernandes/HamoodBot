@@ -939,8 +939,10 @@ class Errors(commands.Cog):
             'covid':'type a name of a country to get its specific stats'
         }
 
-        if str(ctx.command) in error_solutions:
+        try:
             await ctx.send(('{0.author.mention}', error_solutions[str(ctx.command)]).format(ctx))
+        except Exception:
+            print('error')
 
 
 
