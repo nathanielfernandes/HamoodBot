@@ -963,7 +963,7 @@ class Errors(commands.Cog):
 
 
 
-
+bot.add_cog(Errors(bot))
 bot.add_cog(Config(bot))
 bot.add_cog(Messaging(bot))
 bot.add_cog(Math(bot))
