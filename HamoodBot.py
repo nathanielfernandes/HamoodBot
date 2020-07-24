@@ -940,7 +940,7 @@ class Errors(commands.Cog):
         }
 
         try:
-            await ctx.send(('{0.author.mention}', error_solutions[str(ctx.command)]).format(ctx))
+            await ctx.send(('{0.author.mention}' + error_solutions[str(ctx.command)] + '').format(ctx))
         except Exception:
             print('error')
 
