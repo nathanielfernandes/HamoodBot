@@ -41,18 +41,8 @@ import stats
 description = '''Hamood is ur freind'''
 
 #the prefix the bot looks for before processing a message
-bot = commands.Bot(command_prefix='')
+bot = commands.Bot(command_prefix='', case_insensitive=True)
 
-#makes sure the Hamood does not reply to himself as well as lowercase all the messages from users
-@bot.event
-async def on_message(message):
-    if message.author.id == bot.user.id:
-        return
-    if message.content.startswith('font'):
-        await bot.process_commands(message)
-    else:
-        message.content = message.content.lower().replace(' ', ' ')
-        await bot.process_commands(message)
     
 #Messaging cog that checks for profantiy and also provide some simple chat commands
 class Messaging(commands.Cog):
@@ -183,7 +173,7 @@ class Messaging(commands.Cog):
         if self.last_member is None or self.last_member.id != member.id:
             await ctx.send(random.choice(possible_responses).format(ctx))
         else:
-            await ctx.send(random.choice(possible_replies).format(ctx))
+            await ctx.send(random.choice(possible_replies))
         self.last_member = member
 
     @commands.command()
@@ -240,12 +230,6 @@ class Config(commands.Cog):
         print(self.VERSION)
         print('-------------------')
 
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        err = getattr(error, "original", error)
-        if isinstance(err, commands.CommandNotFound):
-            return
-
     @commands.command()
     @commands.is_owner()
     async def logout(self, ctx):
@@ -276,7 +260,7 @@ class Config(commands.Cog):
     async def version(self, ctx):
         """sends Hamood's current version"""
         self.currentDT = datetime.datetime.now()
-        await ctx.send(('```md\n[' + self.VERSION + ' | ' + self.currentDT + '](RUNNING ON: '+self.running+')```'))
+        await ctx.send(('```md\n[{} | {}](RUNNING ON: {})```').format(self.VERSION, self.currentDT, self.running))
 
     @commands.command(aliases=['newwordadd', 'newswear','newprof'])
     @commands.is_owner()
@@ -440,17 +424,13 @@ class Fun(commands.Cog):
         """test your zodiac's compatibilty with another"""
         sign1 = zodiacCheck.getZodiac(month1, day1)
         sign2 = zodiacCheck.getZodiac(month2, day2)
-        
-        if (sign1 == True) or (sign2 == True):
-            await ctx.send("enter two dates in the format <mmm dd mmm dd>")
-            return
 
         compatibility = zodiacCheck.getCompatibility(sign1, sign2)
 
         if (quick == "slow"):
-            await ctx.send(("person 1 is a **" + sign1 + "**, person 2 is a **" + sign2 + "**, and they are about **" + compatibility + "** compatible").format(ctx))
+            await ctx.send(("person 1 is a **{}**, person 2 is a **{}**, and they are about **{}** compatible").format(sign1, sign2, compatibility))
         else:
-            await ctx.send(('**' + sign1 + "** and **" + sign2 + "** are about **" + compatibility + "** compatible").format(ctx))
+            await ctx.send(('**{}** and **{}** are about **{}** compatible').format(sign1, sign2, compatibility))
 
     @commands.command()
     async def match(self, ctx, *content: str):
@@ -458,7 +438,7 @@ class Fun(commands.Cog):
         match = str(random.randint(0,100))
         content = formatMsg.convertList(content, True) 
         left, right = content
-        await ctx.send('**' + left + '** and **' + right + '** are **' + match + '%** compatible')
+        await ctx.send(('**{}** and **{}** are **{}%** compatible').format(left, right, match))
 
 
 
@@ -495,11 +475,7 @@ class Chance(commands.Cog):
     @commands.command(aliases=['dice'])
     async def roll(self, ctx, dice: str):
         """Rolls a dice in NdN format."""
-        try:
-            rolls, limit = map(int, dice.split('d'))
-        except Exception:
-            await ctx.send('Format has to be in NdN!')
-            return
+        rolls, limit = map(int, dice.split('d'))
         result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
         await ctx.send(result)
 
@@ -777,79 +753,79 @@ class Fonts(commands.Cog):
     @commands.command()
     async def arial(self, ctx, *content:str):
         """send a message in arial text"""
-        await textPrep(ctx, content, 'arial', 500, 'black', 100, True)
+        await textPrep(ctx, content, 'arial', 500, 'black', 100)
 
     @commands.command(aliases=['craft'])
     async def minecraft(self, ctx, *content:str):
         """send a message in minecraft text"""
-        await textPrep(ctx, content, 'minecraft', 500, 'yellow2', 100, True)
+        await textPrep(ctx, content, 'minecraft', 500, 'yellow2', 100)
 
     @commands.command(aliases=['tale'])
     async def undertale(self, ctx, *content:str):
         """send a message in undertale text"""
-        await textPrep(ctx, content, 'undertale', 500, 'white', 100, True)
+        await textPrep(ctx, content, 'undertale', 500, 'white', 100)
 
     @commands.command(aliases=['rick'])
     async def morty(self, ctx, *content:str):
         """send a message in morty text"""
-        await textPrep(ctx, content, 'morty', 500, 'green1', 100, True)
+        await textPrep(ctx, content, 'morty', 500, 'green1', 100)
 
     @commands.command()
     async def gta(self, ctx, *content:str):
         """send a message in starwars text"""
-        await textPrep(ctx, content, 'gta', 500, 'white', 100, True)
+        await textPrep(ctx, content, 'gta', 500, 'white', 100)
 
     @commands.command()
     async def enchant(self, ctx, *content:str):
         """send a message in enchant text"""
-        await textPrep(ctx, content, 'enchant', 500, 'minecraft-enchantment.ttf', 100, True)
+        await textPrep(ctx, content, 'enchant', 500, 'minecraft-enchantment.ttf', 100)
 
     @commands.command(aliases=['?'])
     async def unknown(self, ctx, *content:str):
         """send a message in unknown text"""
-        await textPrep(ctx, content, 'unown.ttf', 500, 'black', 100, True)
+        await textPrep(ctx, content, 'unown.ttf', 500, 'black', 100)
 
     @commands.command(aliases=['poke'])
     async def pokemon(self, ctx, *content:str):
         """send a message in pokemon text"""
-        await textPrep(ctx, content, 'pokemon', 500, 'steelblue2', 100, True)
+        await textPrep(ctx, content, 'pokemon', 500, 'steelblue2', 100)
 
     @commands.command(aliases=['sonic'])
     async def sega(self, ctx, *content:str):
         """send a message in sega text"""
-        await textPrep(ctx, content, 'sega', 500, 'navy', 100, True)
+        await textPrep(ctx, content, 'sega', 500, 'navy', 100)
 
     @commands.command(aliases=['sponge'])
     async def spongebob(self, ctx, *content:str):
         """send a message in spongebob text"""
-        await textPrep(ctx, content, 'spongebob', 500, 'lightblue', 100, True)
+        await textPrep(ctx, content, 'spongebob', 500, 'lightblue', 100)
 
     @commands.command()
     async def avenger(self, ctx, *content:str):
         """sends a message in avengers text"""
-        await textPrep(ctx, content, 'avenger', 500, 'red4', 100,  True)
+        await textPrep(ctx, content, 'avenger', 500, 'red4', 100)
 
     @commands.command()
     async def sketch(self, ctx, *content:str):
         """sends a message in avengers text"""
-        await textPrep(ctx, content, 'sketch', 500, 'random', 100,  True)
+        await textPrep(ctx, content, 'sketch', 500, 'random', 100)
 
     @commands.command()
     async def batman(self, ctx, *content:str):
         """sends a message in avengers text"""
-        await textPrep(ctx, content, 'batman', 500, 'black', 100,  True)
+        await textPrep(ctx, content, 'batman', 500, 'black', 100)
 
     @commands.command()
     async def text(self, ctx, *content:str):
         """send a message in a random font"""
-        await textPrep(ctx, content, 'random', 500, 'random', 100, True)
+        await textPrep(ctx, content, 'random', 500, 'random', 100)
 
     @commands.command()
     async def font(self, ctx, font, colour, *content:str):
         """send a message in a selected font and colour"""
-        await textPrep(ctx, content, font, 500, colour, 100, False)
+        await textPrep(ctx, content, font, 500, colour, 100)
 
-async def textPrep(ctx, text, font, font_size, colour, wrap=80, upper=False):
+async def textPrep(ctx, text, font, font_size, colour, wrap=80):
     async with ctx.typing():
         if text == ():
             return
@@ -866,8 +842,6 @@ async def textPrep(ctx, text, font, font_size, colour, wrap=80, upper=False):
                 text[i][a] = '\n' + text[i][a]
             text[i] = formatMsg.convertList(text[i], False)
         text = text[0]
-        if upper:
-            text = text.upper()
 
         name = editPics.randomNumber()
         name = str(name) + '.png'
@@ -879,12 +853,12 @@ async def textPrep(ctx, text, font, font_size, colour, wrap=80, upper=False):
 
 
 class Statistics(commands.Cog):
+    
     def __init__(self, bot):
         self.bot = bot
     
     @commands.command()
     async def covid(self, ctx, country=None):
-
         """gets the latest covid 19 statistics"""
 
         info = stats.covid_info(country)
@@ -897,6 +871,95 @@ class Statistics(commands.Cog):
             await ctx.send("As of **" + date[:10] + "**: \n" + msg)
         else:  
             await ctx.send("As of **" + date[:10] + "** in **" + str(country) + "**: \n" + msg)
+
+
+class Errors(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        err = getattr(error, "original", error)
+        if isinstance(err, commands.CommandNotFound):
+            return
+
+        error_solutions = {
+            'proflevel':'owner command',
+            'define':'you did not specify a word to define',
+            'clean':'specify the amount of messages you want to clean (max=20)',
+            'clap':'you need to type a message for me to add claps',
+            'repeat':'use the format "repeat <number of repititions> <your message>"',
+            'echo':'you need to type a message for me to echo it',
+            'status':'owner command',
+            'newprofanity':'owner command',
+            'newroast':'owner command',
+            'listroast':'owner command',
+            'add':'use the format "add <first number> <second number>"',
+            'multiply':'use the format "multiply <first number> <second number>"',
+            'subtract':'use the format "subtract <first number> <second number>"',
+            'divide':'use the format "divide <first number> <second number>"',
+            'joined':'@someone or urself to see when they joined',
+            'avatar':'@someone or urself to see their pfp',
+            'tag':'@someone to tag them, however you must have the role "IT" to do this',
+            'bubblewrap':'use the format "bubblewrap <width> <height>"',
+            'zodiac':'enter the two dates in the format "zodiac <mmm> <dd> <mmm> <dd>"',
+            'roll':'using the format <NdN>',
+            'choose':'type what things you want me to choose from sperated by commas',
+            'google':'you need to type what you want to search up',
+            'no u':'no u!',
+            'send':'owner command',
+            'newreddit':'owner command',
+            'listreddit':'owner command',
+            'spam':'use the format <subreddit> <number of spams>',
+            'bonk':'use the format "bonk <person1>, <person2>"',
+            'lick':'use the format "lick <person1>, <person2>"',
+            'slap':'use the format "slap <person1>, <person2>"',
+            'lookback':'use the format "lookback <person1>, <person2>, <person3>"',
+            'our':'use the format "our <message>, <communist person>"',
+            'pour':'use the format "bonk <message>, <person>"',
+            'stonks':'@someone or yourself',
+            'worthless':'@someone or yourself',
+            'neat':'@someone or yourself',
+            'grab':'@someone or yourself',
+            'arial':'you need to type a message!',
+            'minecraft':'you need to type a message!',
+            'undertale':'you need to type a message!',
+            'morty':'you need to type a message!',
+            'gta':'you need to type a message!',
+            'enchant':'you need to type a message!',
+            'unknown':'you need to type a message!',
+            'pokemon':'you need to type a message!',
+            'sega':'you need to type a message!',
+            'spongebob':'you need to type a message!',
+            'avenger':'you need to type a message!',
+            'sketch':'you need to type a message!',
+            'batman':'you need to type a message!',
+            'text':'you need to type a message!',
+            'font':'use the format"font <fontname> <colour> <message>"',
+            'covid':'type a name of a country to get its specific stats'
+        }
+
+        if str(ctx.command) in error_solutions:
+            await ctx.send(('{0.author.mention}', error_solutions[str(ctx.command)]).format(ctx))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
