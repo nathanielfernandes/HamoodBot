@@ -635,7 +635,7 @@ async def textMemePrep(ctx, text, coords, font, colour, source, wrap=12):
         name = str(name) + '.jpg'
 
         meme = editPics.addText(source, font, colour, coords, name)
-        await ctx.message.delete()
+        #await ctx.message.delete()
         await ctx.send(file=discord.File(meme))
         editPics.deleteImage(meme)
 
@@ -713,7 +713,7 @@ async def imagePrep(ctx, member, stuff, memeImage, size):
         for item in stuff:
             editPics.deleteImage(item[2])
         
-        await ctx.message.delete()
+        #await ctx.message.delete()
 
         try:
             await ctx.send(file=discord.File(meme))
@@ -847,7 +847,7 @@ async def textPrep(ctx, text, font, font_size, colour, wrap=80):
         name = str(name) + '.png'
 
         textImg = editPics.makeText(text, font, font_size, colour, name)
-        await ctx.message.delete()
+        #await ctx.message.delete()
         await ctx.send(file=discord.File(textImg))
         editPics.deleteImage(textImg)
 
