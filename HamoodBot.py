@@ -397,7 +397,7 @@ class Fun(commands.Cog):
         words = json.loads(url.read())
         random_word = random.choice(words)
         await ctx.send((('{0.author.mention}')+' your vibe checked out to be:').format(ctx))
-        await textPrep(ctx, (random_word, ' '), 'random', 500, 'random', 100, False)
+        await textPrep(ctx, (random_word, ' '), 'random', 500, 'random', 100)
         await ctx.message.add_reaction('✔️')
 
     @commands.command(aliases=['roast me', 'roastme'])
