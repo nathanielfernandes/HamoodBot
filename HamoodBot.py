@@ -943,7 +943,7 @@ class Errors(commands.Cog):
         try:
             await ctx.send(error_solutions[str(ctx.command)])
         except Exception:
-            await ctx.send('error')
+            print('error')
 
 
 
