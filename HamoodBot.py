@@ -460,6 +460,9 @@ class Images(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+        path = os.path.dirname(os.path.realpath(__file__))
+        imageFeatures.deleteImage((path + '/' + 'tempImages' + '/' + "placeholder.txt"))
+
     @commands.command()
     async def google(self, ctx, *query:str):
         """googles an image"""
