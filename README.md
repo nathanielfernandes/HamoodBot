@@ -1,2 +1,2 @@
 # HamoodBot
- A simple discord.py bot
+ A discord I made while I was bored during the quarantine.
