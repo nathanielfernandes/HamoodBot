@@ -1,5 +1,4 @@
 import os
-import formatMsg
 import pathlib
 from google_images_search import GoogleImagesSearch
 
@@ -7,8 +6,7 @@ GTOKEN = os.environ['GTOKEN']
 GUSER = os.environ['GUSER']
 
 def ImgSearch(query):
-# define search params:
-    #query = formatMsg.remove(query, '(', ')', "'", ",")
+    # define search params:
     gis = GoogleImagesSearch(GTOKEN, GUSER)
     path = os.path.dirname(os.path.realpath(__file__))
     folder = path + '/' + "tempImages"
@@ -28,7 +26,4 @@ def ImgSearch(query):
     file = folder + '/' + file[0]
 
     return file
-
-def deleteImage(file):
-    os.remove(file)
 

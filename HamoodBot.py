@@ -26,16 +26,12 @@ from PyDictionary import PyDictionary
 import textwrap
 
 #modules that i have made for some of hamood's functions
-import getFile
-import noU
 import imageSearch
 import zodiacCheck
-import formatMsg
-import roastHandle
-import redditHandle
-import profanityCheck
-import editPics
-import stats
+import redditSearch
+import messageFeatures
+import imageFeatures
+import webScraping
 
 #bot description
 description = '''Hamood is ur freind'''
@@ -83,11 +79,11 @@ class Messaging(commands.Cog):
         except Exception:
             nsfw = False
 
-        profane, badword = profanityCheck.profCheck(message.content)
+        profane, badword = messageFeatures.profCheck(message.content)
         
         if (profane):
             if ("hamood" in message.content):
-                uno = noU.unoCard()
+                uno = imageFeatures.unoCard()
                 #await message.channel.purge(limit=1)
                 await message.channel.send(file=discord.File(uno))
                 await message.channel.send('{0.author.mention} No U!'.format(message))
@@ -136,7 +132,7 @@ class Messaging(commands.Cog):
     async def define(self, ctx, word):
         """finds the definition of a word"""
         definition = self.dictionary.meaning(word)
-        definition = formatMsg.remove(definition, "{", "}", "[", "]")
+        definition = messageFeatures.remove(definition, "{", "}", "[", "]")
         await ctx.send(str(word) + ": " + str(definition))
 
     @commands.Cog.listener()
@@ -188,7 +184,7 @@ class Messaging(commands.Cog):
     async def repeat(self, ctx, times: int, *content: str):
         """Repeats a message multiple times."""
         msg = ''
-        content = formatMsg.convertList(content, False) 
+        content = messageFeatures.convertList(content, False) 
         for i in range(times):
             msg += content + '\n'
         await ctx.send(msg)
@@ -196,7 +192,7 @@ class Messaging(commands.Cog):
     @commands.command()
     async def echo(self, ctx, *content: str):
         """echos a message."""
-        content = formatMsg.convertList(content, False) 
+        content = messageFeatures.convertList(content, False) 
         times = random.randint(1,5)
         for i in range(times):
             await ctx.send(content)
@@ -212,7 +208,7 @@ class Messaging(commands.Cog):
 class Config(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.VERSION = "Hamood v9" 
+        self.VERSION = "Hamood v11" 
         self.currentDT = str(datetime.datetime.now())
 
         if (platform.system() == 'Darwin'):
@@ -240,7 +236,7 @@ class Config(commands.Cog):
     @commands.is_owner()
     async def status(self, ctx, aType: str, *aName: str):
         """changes hamoods status"""
-        aName = formatMsg.convertList(aName, False) 
+        aName = messageFeatures.convertList(aName, False) 
 
         if (aType== 'playing'):
             await bot.change_presence(activity=discord.Game(name=aName))
@@ -262,38 +258,10 @@ class Config(commands.Cog):
         self.currentDT = datetime.datetime.now()
         await ctx.send(('```md\n[{} | {}](RUNNING ON: {})```').format(self.VERSION, self.currentDT, self.running))
 
-    @commands.command(aliases=['newwordadd', 'newswear','newprof'])
-    @commands.is_owner()
-    async def newprofanity(self, ctx, *newWord:str):
-        """lets you add a profane word to hamood's profanity list"""
-        newWord = profanityCheck.profAdd(newWord)
-        await ctx.send(("{0.author.mention} '||" + (newWord) + "||' was added to my profanity list").format(ctx))
-
     @commands.command()
     async def ping(self, ctx):
         """returns hamood's ping"""
         await ctx.send("```xl\n'"+ ('pong! {0}'.format(bot.latency) + "'```"))
-
-    @commands.command(aliases=['addroast', 'roastadd', 'roastnew'])
-    @commands.is_owner()
-    async def newroast(self, ctx, *roast:str):
-        """lets you add a roast to hamood's list"""
-
-        newRoast = roastHandle.addRoast(roast)
-        await ctx.send(("{0.author.mention} '" + (newRoast) + "' was added to my list of roasts").format(ctx))
-
-    @commands.command(aliases=['roastlist'])
-    @commands.is_owner()
-    async def listroast(self, ctx):
-        """lists the subreddits in its list"""
-        path = os.path.dirname(os.path.realpath(__file__))
-        path += '/' + "roasts.txt"
-        rlist = open((path),"r",encoding='utf-8')
-        await ctx.send(("roasts in list:").format(ctx))
-        roasts = ''
-        for line in rlist:
-            roasts += line
-        await ctx.send((roasts).format(ctx))
 
 
 
@@ -403,7 +371,7 @@ class Fun(commands.Cog):
     @commands.command(aliases=['roast me', 'roastme'])
     async def roast(self, ctx):
         """roasts you"""
-        roast = roastHandle.getRoast()
+        roast = messageFeatures.getRoast()
         await ctx.send(('{0.author.mention}  ' + roast).format(ctx))
 
     @commands.command(aliases=["pop", "bubble"])
@@ -436,7 +404,7 @@ class Fun(commands.Cog):
     async def match(self, ctx, *content: str):
         """match makes"""
         match = str(random.randint(0,100))
-        content = formatMsg.convertList(content, True) 
+        content = messageFeatures.convertList(content, True) 
         left, right = content
         await ctx.send(('**{}** and **{}** are **{}%** compatible').format(left, right, match))
 
@@ -482,7 +450,7 @@ class Chance(commands.Cog):
     @commands.command(description='For when you wanna settle the score some other way')
     async def choose(self, ctx, *content: str):
         """Chooses between multiple choices."""
-        content = formatMsg.convertList(content, True) 
+        content = messageFeatures.convertList(content, True) 
         await ctx.send(random.choice(content))
 
 
@@ -495,29 +463,19 @@ class Images(commands.Cog):
     @commands.command()
     async def google(self, ctx, *query:str):
         """googles an image"""
-        query = formatMsg.convertList(query, False)
+        query = messageFeatures.convertList(query, False)
         image = imageSearch.ImgSearch(query)
         await ctx.send("This is the first result for '" + query + "':")
         await ctx.send(file=discord.File(image))
-        imageSearch.deleteImage(image)
+        imageFeatures.deleteImage(image)
 
     @commands.command()
     async def no(self, ctx, content:str):
         """no you"""
         if (content == 'u' or content == 'you'):
             #await ctx.channel.purge(limit=1)
-            uno = noU.unoCard()
+            uno = imageFeatures.unoCard()
             await ctx.send(file=discord.File(uno))
-
-    @commands.command()
-    @commands.is_owner()
-    async def send(self, ctx, mix=1):
-        """sends something special ;)"""
-        await ctx.channel.purge(limit=1)
-        if mix <= 0:
-            mix = 1
-        content = getFile.getMedia(mix)
-        await ctx.send(file=discord.File(content))
 
     @commands.command(aliases=["movie time"])
     async def shrek(self, ctx):
@@ -529,7 +487,7 @@ class Images(commands.Cog):
 
 async def redditPrep(ctx, subRedd):
     async with ctx.typing():
-        post = redditHandle.findPost(subRedd)
+        post = redditSearch.findPost(subRedd)
     await ctx.send(post.url)
 
 class RedditStuff(commands.Cog):
@@ -540,32 +498,9 @@ class RedditStuff(commands.Cog):
     async def red(self, ctx, redditSub='abc123'):
         """finds posts from reddit"""
         if (redditSub == "abc123"):
-            redditSub = redditHandle.getSubReddit()
+            redditSub = redditSearch.getSubReddit()
         await ctx.send(("here's your post from the '" + redditSub + "' subreddit {0.author.mention}").format(ctx))
         await redditPrep(ctx, redditSub)
-
-    @commands.command(aliases=['addreddit', 'redditadd', 'redditnew'])
-    @commands.is_owner()
-    async def newreddit(self, ctx, sub:str):
-        """lets you add a subreddit to the list"""
-        sub = redditHandle.addSubReddit(sub)
-        await ctx.send(("{0.author.mention} '" + (sub) + "' was added to the subReddit list").format(ctx))
-
-    @commands.command(aliases=['redditlist'])
-    @commands.is_owner()
-    async def listreddit(self, ctx):
-        """lists the subreddits in its list"""
-        path = os.path.dirname(os.path.realpath(__file__))
-        path += '/' + "subreddits.txt"
-        rlist = open((path),"r",encoding='utf-8')
-        rlist = rlist.readlines()
-        await ctx.send(("subReddits in list:").format(ctx))
-        for line in rlist:
-            await ctx.send((line).format(ctx))
-        subReddits = ''
-        for line in rlist:
-            subReddits += line
-        await ctx.send((subReddits).format(ctx))
 
     @commands.command(aliases=['memes'])
     async def meme(self, ctx):
@@ -611,7 +546,7 @@ class RedditStuff(commands.Cog):
         amount = int(amount)
         for i in range(amount):
             if (redditSub == "random"):
-                redditSub = redditHandle.getSubReddit()
+                redditSub = redditSearch.getSubReddit()
             await redditPrep(ctx, redditSub)
 
 
@@ -620,24 +555,24 @@ async def textMemePrep(ctx, text, coords, font, colour, source, wrap=12):
     async with ctx.typing():
         text = list(text)
         text.append(', ')
-        text = formatMsg.convertList(text, True)
+        text = messageFeatures.convertList(text, True)
 
         for i in range(len(text)):
             text[i] = textwrap.wrap(text[i], width=wrap)
             for a in range(len(text[i])):
                 text[i][a] += '\n'
-            text[i] = formatMsg.convertList(text[i], False)
+            text[i] = messageFeatures.convertList(text[i], False)
 
         for i in range(len(coords)):
             coords[i].append(text[i])
         
-        name = editPics.randomNumber()
+        name = imageFeatures.randomNumber()
         name = str(name) + '.jpg'
 
-        meme = editPics.addText(source, font, colour, coords, name)
+        meme = imageFeatures.addText(source, font, colour, coords, name)
         #await ctx.message.delete()
         await ctx.send(file=discord.File(meme))
-        editPics.deleteImage(meme)
+        imageFeatures.deleteImage(meme)
 
 
 class TextMemes(commands.Cog):
@@ -697,21 +632,21 @@ async def imagePrep(ctx, member, stuff, memeImage, size):
             stuff[i].append(Urls[i])
         
         for item in stuff:
-            name = editPics.randomNumber()
+            name = imageFeatures.randomNumber()
             name = str(name) + '.png'
             save = path + '/' + "tempImages" '/' + name
-            editPics.scrape(item[2], save)
+            webScraping.scrape.scrape(item[2], save)
             
             pos = stuff.index(item)
             stuff[pos][2] = save
 
-        finalName = editPics.randomNumber()
+        finalName = imageFeatures.randomNumber()
         finalName = str(finalName) + '.jpg'
 
-        meme = editPics.addImage(memeImage, stuff, size, finalName)
+        meme = imageFeatures.addImage(memeImage, stuff, size, finalName)
         
         for item in stuff:
-            editPics.deleteImage(item[2])
+            imageFeatures.deleteImage(item[2])
         
         #await ctx.message.delete()
 
@@ -720,7 +655,7 @@ async def imagePrep(ctx, member, stuff, memeImage, size):
         except discord.Forbidden:
             print('could not send!')
 
-        editPics.deleteImage(meme)
+        imageFeatures.deleteImage(meme)
 
 class PfpMemes(commands.Cog):
     def __init__(self, bot):
@@ -830,26 +765,26 @@ async def textPrep(ctx, text, font, font_size, colour, wrap=80):
         if text == ():
             return
 
-        font = editPics.getFont(font)
+        font = imageFeatures.getFont(font)
         
-        colour = editPics.getColour(colour)
+        colour = imageFeatures.getColour(colour)
 
-        text = formatMsg.convertList(text, False)
+        text = messageFeatures.convertList(text, False)
         text = [text]
         for i in range(len(text)):
             text[i] = textwrap.wrap(text[i], width=wrap)
             for a in range(1,len(text[i])):
                 text[i][a] = '\n' + text[i][a]
-            text[i] = formatMsg.convertList(text[i], False)
+            text[i] = messageFeatures.convertList(text[i], False)
         text = text[0]
 
-        name = editPics.randomNumber()
+        name = imageFeatures.randomNumber()
         name = str(name) + '.png'
 
-        textImg = editPics.makeText(text, font, font_size, colour, name)
+        textImg = imageFeatures.makeText(text, font, font_size, colour, name)
         #await ctx.message.delete()
         await ctx.send(file=discord.File(textImg))
-        editPics.deleteImage(textImg)
+        imageFeatures.deleteImage(textImg)
 
 
 class Statistics(commands.Cog):
@@ -861,7 +796,7 @@ class Statistics(commands.Cog):
     async def covid(self, ctx, country=None):
         """gets the latest covid 19 statistics"""
 
-        info = stats.covid_info(country)
+        info = webScraping.covid_info(country)
         date = str(datetime.datetime.now())
         msg = ''
         for i, j in info.items():
@@ -873,75 +808,24 @@ class Statistics(commands.Cog):
             await ctx.send("As of **" + date[:10] + "** in **" + str(country) + "**: \n" + msg)
 
 
+
 class Errors(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+        path = os.path.dirname(os.path.realpath(__file__))
+        file = path + '/' + 'textFiles' + '/' + "errors.txt"
+
+        self.error_solutions = messageFeatures.convert_to_dict(file)
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         err = getattr(error, "original", error)
         if isinstance(err, commands.CommandNotFound):
             return
-
-        error_solutions = {
-            'proflevel':'owner command',
-            'define':'you did not specify a word to define',
-            'clean':'specify the amount of messages you want to clean (max=20)',
-            'clap':'you need to type a message for me to add claps',
-            'repeat':'use the format "repeat <number of repititions> <your message>"',
-            'echo':'you need to type a message for me to echo it',
-            'status':'owner command',
-            'newprofanity':'owner command',
-            'newroast':'owner command',
-            'listroast':'owner command',
-            'add':'use the format "add <first number> <second number>"',
-            'multiply':'use the format "multiply <first number> <second number>"',
-            'subtract':'use the format "subtract <first number> <second number>"',
-            'divide':'use the format "divide <first number> <second number>"',
-            'joined':'@someone or urself to see when they joined',
-            'avatar':'@someone or urself to see their pfp',
-            'tag':'@someone to tag them, however you must have the role "IT" to do this',
-            'bubblewrap':'use the format "bubblewrap <width> <height>"',
-            'zodiac':'enter the two dates in the format "zodiac <mmm> <dd> <mmm> <dd>"',
-            'match':'use the format "match <person1>, <person2>"',
-            'roll':'using the format <NdN>',
-            'choose':'type what things you want me to choose from sperated by commas',
-            'google':'you need to type what you want to search up',
-            'no u':'no u!',
-            'send':'owner command',
-            'newreddit':'owner command',
-            'listreddit':'owner command',
-            'spam':'use the format <subreddit> <number of spams>',
-            'bonk':'use the format "bonk <person1>, <person2>"',
-            'lick':'use the format "lick <person1>, <person2>"',
-            'slap':'use the format "slap <person1>, <person2>"',
-            'lookback':'use the format "lookback <person1>, <person2>, <person3>"',
-            'our':'use the format "our <message>, <communist person>"',
-            'pour':'use the format "bonk <message>, <person>"',
-            'stonks':'@someone or yourself',
-            'worthless':'@someone or yourself',
-            'neat':'@someone or yourself',
-            'grab':'@someone or yourself',
-            'arial':'you need to type a message!',
-            'minecraft':'you need to type a message!',
-            'undertale':'you need to type a message!',
-            'morty':'you need to type a message!',
-            'gta':'you need to type a message!',
-            'enchant':'you need to type a message!',
-            'unknown':'you need to type a message!',
-            'pokemon':'you need to type a message!',
-            'sega':'you need to type a message!',
-            'spongebob':'you need to type a message!',
-            'avenger':'you need to type a message!',
-            'sketch':'you need to type a message!',
-            'batman':'you need to type a message!',
-            'text':'you need to type a message!',
-            'font':'use the format"font <fontname> <colour> <message>"',
-            'covid':'type a name of a country to get its specific stats'
-        }
-
+        
         try:
-            await ctx.send(error_solutions[str(ctx.command)])
+            await ctx.send(self.error_solutions[str(ctx.command)])
         except Exception:
             print('error')
 
