@@ -1,4 +1,4 @@
+.DS_Store
 .env
-debug.log
 __pycache__
-classifiers
+debug.log
