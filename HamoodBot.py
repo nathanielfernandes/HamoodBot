@@ -66,7 +66,7 @@ class Messaging(commands.Cog):
             return
 
         #gets the the channel and user that said the message
-        channel = str(message.channel.id)
+        #channel = str(message.channel.id)
         user = message.author.id
         name = bot.get_user(user)
 
@@ -247,6 +247,12 @@ class Config(commands.Cog):
     async def invite(self, ctx):
         """get the invite link for this bot"""
         await ctx.send('https://discord.com/api/oauth2/authorize?client_id=699510311018823680&permissions=8&scope=bot')
+
+    @commands.command(aliases=['repo'])
+    async def github(self, ctx):
+        """sends the link to Hamood's github repository"""
+        await ctx.send('https://github.com/nathanielfernandes/HamoodBot')
+
 
     @commands.command()
     async def version(self, ctx):
