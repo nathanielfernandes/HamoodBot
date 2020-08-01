@@ -61,8 +61,6 @@ def getZodiac(month, day):
             result = 'Pisces'
         else:
             result = 'Aquarius'
-    else:
-        result = True
     return result
 
 # Subprogram to determine compatibility

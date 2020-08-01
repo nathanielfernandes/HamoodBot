@@ -1,2 +1,2 @@
 # HamoodBot
- A discord I made while I was bored during the quarantine.
+ A discord bot I made while I was bored during the quarantine.
