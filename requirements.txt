@@ -3,3 +3,4 @@ asyncio
 Discord
 google_images_search
 pillow
+bs4
