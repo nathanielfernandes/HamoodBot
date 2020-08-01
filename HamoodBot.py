@@ -7,7 +7,6 @@ import os
 import json
 import urllib.request
 import platform
-import webbrowser
 import datetime
 import random
 import math
@@ -633,7 +632,7 @@ async def imagePrep(ctx, member, stuff, memeImage, size):
             name = imageFeatures.randomNumber()
             name = str(name) + '.png'
             save = path + '/' + "tempImages" '/' + name
-            webScraping.scrape.scrape(item[2], save)
+            webScraping.scrape(item[2], save)
             
             pos = stuff.index(item)
             stuff[pos][2] = save
