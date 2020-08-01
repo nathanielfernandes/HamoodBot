@@ -6,7 +6,6 @@ GTOKEN = os.environ['GTOKEN']
 GUSER = os.environ['GUSER']
 
 def ImgSearch(query):
-    # define search params:
     gis = GoogleImagesSearch(GTOKEN, GUSER)
     path = os.path.dirname(os.path.realpath(__file__))
     folder = path + '/' + "tempImages"

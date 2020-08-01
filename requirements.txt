@@ -1,6 +1,5 @@
 praw
 asyncio
 Discord
-PyDictionary
 google_images_search
 pillow

@@ -22,7 +22,6 @@ from discord.utils import get
 from functools import partial
 from itertools import cycle
 from random import shuffle
-from PyDictionary import PyDictionary
 import textwrap
 
 #modules that i have made for some of hamood's functions
@@ -53,7 +52,6 @@ class Messaging(commands.Cog):
         # 1 = warning message
         # 2 = automatically deletes the message and shows warning message
         self.profanity_action = 1
-        self.dictionary = PyDictionary()
 
     #allows the owner of hamood to temporarily change what actions hamood takes when someone uses profanity
     @commands.command()
@@ -128,12 +126,12 @@ class Messaging(commands.Cog):
         elif message.content.startswith("marco"):
             await message.channel.send("polo")
         
-    @commands.command(aliases=['def'])
-    async def define(self, ctx, word):
-        """finds the definition of a word"""
-        definition = self.dictionary.meaning(word)
-        definition = messageFeatures.remove(definition, "{", "}", "[", "]")
-        await ctx.send(str(word) + ": " + str(definition))
+    # @commands.command(aliases=['def'])
+    # async def define(self, ctx, word):
+    #     """finds the definition of a word"""
+    #     definition = self.dictionary.meaning(word)
+    #     definition = messageFeatures.remove(definition, "{", "}", "[", "]")
+    #     await ctx.send(str(word) + ": " + str(definition))
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -202,7 +200,6 @@ class Messaging(commands.Cog):
     async def test(self, ctx):
         retStr = str("```css\nThis is some colored Text```")
         await ctx.send(retStr)
-
 
 
 class Config(commands.Cog):
@@ -314,6 +311,8 @@ class Member(commands.Cog):
 class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.url = urllib.request.urlopen("https://raw.githubusercontent.com/sindresorhus/mnemonic-words/master/words.json")
+        self.words = json.loads(self.url.read())
 
     @commands.command()
     @commands.has_role("IT")
@@ -352,18 +351,14 @@ class Fun(commands.Cog):
     @commands.command()
     async def vibecheck(self, ctx):
         """vibechecks you"""
-        url = urllib.request.urlopen("https://raw.githubusercontent.com/sindresorhus/mnemonic-words/master/words.json")
-        words = json.loads(url.read())
-        random_word = random.choice(words)
+        random_word = random.choice(self.words)
         await ctx.send((('{0.author.mention}')+' your vibe checked out to be ' + "**'"+ (random_word)+ "'**").format(ctx))
         await ctx.message.add_reaction('✔️')
 
     @commands.command()
     async def vibe(self, ctx):
         """vibechecks you but better"""
-        url = urllib.request.urlopen("https://raw.githubusercontent.com/sindresorhus/mnemonic-words/master/words.json")
-        words = json.loads(url.read())
-        random_word = random.choice(words)
+        random_word = random.choice(self.words)
         await ctx.send((('{0.author.mention}')+' your vibe checked out to be:').format(ctx))
         await textPrep(ctx, (random_word, ' '), 'random', 500, 'random', 100)
         await ctx.message.add_reaction('✔️')
