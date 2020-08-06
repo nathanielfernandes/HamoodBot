@@ -34,9 +34,8 @@ async def logout(ctx):
 
 @bot.command()
 @commands.is_owner()
-"""Owner Command"""
 async def status(ctx, aType: str, *, aName: commands.clean_content):
-    """changes hamoods status"""
+        """Owner Command"""
     if (aType== 'playing'):
         await bot.change_presence(activity=discord.Game(name=aName))
     elif (aType == 'listening'):
