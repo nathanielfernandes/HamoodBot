@@ -27,12 +27,14 @@ async def on_ready():
 
 @bot.command()
 @commands.is_owner()
+"""Owner Command"""
 async def logout(ctx):
     await ctx.send("**goodbye**")
     await bot.logout()
 
 @bot.command()
 @commands.is_owner()
+"""Owner Command"""
 async def status(ctx, aType: str, *, aName: commands.clean_content):
     """changes hamoods status"""
     if (aType== 'playing'):
@@ -46,6 +48,7 @@ async def status(ctx, aType: str, *, aName: commands.clean_content):
 
 @bot.command()
 @commands.is_owner()
+"""Owner Command"""
 async def reload(ctx, cog):
     try:
         bot.unload_extension(f"cogs.{cog}")
@@ -57,6 +60,7 @@ async def reload(ctx, cog):
 
 @bot.command()
 @commands.is_owner()
+"""Owner Command"""
 async def unload(ctx, cog):
     try:
         bot.unload_extension(f"cogs.{cog}")
@@ -67,6 +71,7 @@ async def unload(ctx, cog):
 
 @bot.command()
 @commands.is_owner()
+"""Owner Command"""
 async def load(ctx, cog):
     try:
         bot.load_extension(f"cogs.{cog}")

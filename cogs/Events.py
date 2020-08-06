@@ -9,7 +9,7 @@ sys.path.insert(1, path)
 import message_functions
 import image_functions
 
-class Events(commands.Cog):
+class Events(commands.Cog): 
     """Handles Any Discord Events"""
     def __init__(self, bot):
         self.bot = bot
