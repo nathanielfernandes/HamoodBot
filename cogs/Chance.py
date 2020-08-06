@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 class Chance(commands.Cog):
+    """Take a Chance"""
     def __init__(self, bot):
         self.bot = bot
         self.possible_responses = [

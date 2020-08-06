@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 
 class User(commands.Cog):
+    """Get a User's Information"""
     def __init__(self, bot):
         self.bot = bot
         self.url = urllib.request.urlopen("https://raw.githubusercontent.com/sindresorhus/mnemonic-words/master/words.json")

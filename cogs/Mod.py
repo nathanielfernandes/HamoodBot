@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 class Mod(commands.Cog):
+    """Server Moderation"""
     def __init__(self, bot):
         self.bot = bot
         # 1 = warning message

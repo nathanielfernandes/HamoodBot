@@ -11,6 +11,7 @@ import image_functions
 
 #Messaging cog that checks for profantiy and also provide some simple chat commands
 class General(commands.Cog):
+    """General Commands"""
     def __init__(self, bot):
         self.bot = bot
         self.last_member = None
@@ -58,8 +59,7 @@ class General(commands.Cog):
     @commands.command()
     async def echo(self, ctx, *, content: commands.clean_content):
         """echos a message."""
-        times = random.randint(1,5)
-        for i in range(times):
+        for i in range(random.randint(1,5)):
             await ctx.send(content)
 
     @commands.command()

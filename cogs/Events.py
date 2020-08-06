@@ -10,6 +10,7 @@ import message_functions
 import image_functions
 
 class Events(commands.Cog):
+    """Handles Any Discord Events"""
     def __init__(self, bot):
         self.bot = bot
         self.responses = {
@@ -86,9 +87,9 @@ class Events(commands.Cog):
                 await ctx.send(self.error_solutions[str(ctx.command)])
             except Exception:
                 print('error')
-
         #raise error
 
+   
 
 def setup(bot):
     bot.add_cog(Events(bot))  

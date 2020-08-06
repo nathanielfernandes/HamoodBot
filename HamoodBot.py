@@ -15,6 +15,8 @@ description = '''Hamood is ur freind'''
 #the prefix the bot looks for before processing a message
 bot = commands.Bot(command_prefix='', case_insensitive=True)
 
+
+
 @bot.event
 async def on_ready():
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="with your feelings"))
@@ -85,10 +87,11 @@ for cog in os.listdir("./cogs"):
 
 try:
     TOKEN = os.environ['TOKEN']
-except KeyError:
     os.remove(os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/tempImages/placeholder.txt')
+except KeyError:
     from dotenv import load_dotenv
     load_dotenv()
     TOKEN = os.environ.get("BOTTOKEN")
 
 bot.run(TOKEN)
+

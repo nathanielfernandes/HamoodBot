@@ -9,6 +9,7 @@ sys.path.insert(1, path)
 import reddit_functions
 
 class Reddit(commands.Cog):
+    """Get Reddit Posts"""
     def __init__(self, bot):
         self.bot = bot
         

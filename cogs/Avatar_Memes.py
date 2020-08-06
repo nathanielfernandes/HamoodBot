@@ -10,6 +10,7 @@ import image_functions
 import web_scraping
 
 class Avatar_Memes(commands.Cog):
+    """Custom Avatar Memes"""
     def __init__(self, bot):
         self.bot = bot
         

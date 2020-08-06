@@ -10,7 +10,7 @@ import web_scraping
 import image_search
 
 class Web(commands.Cog):
-    
+    """Information Scraped From The Web"""
     def __init__(self, bot):
         self.bot = bot
     

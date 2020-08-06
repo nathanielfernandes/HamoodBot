@@ -10,6 +10,7 @@ sys.path.insert(1, path)
 import image_functions
 
 class Fonts(commands.Cog):
+    """Send Messages With Cool Fonts"""
     def __init__(self, bot):
         self.bot = bot
 

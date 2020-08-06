@@ -14,6 +14,7 @@ import message_functions
 
 
 class Fun(commands.Cog):
+    """Random Fun Commands"""
     def __init__(self, bot):
         self.bot = bot
         self.url = urllib.request.urlopen("https://raw.githubusercontent.com/sindresorhus/mnemonic-words/master/words.json")
