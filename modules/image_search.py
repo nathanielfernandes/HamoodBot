@@ -2,13 +2,19 @@ import os
 import pathlib
 from google_images_search import GoogleImagesSearch
 
-GTOKEN = os.environ['GTOKEN']
-GUSER = os.environ['GUSER']
+try:
+    GTOKEN = os.environ['GTOKEN']
+    GUSER = os.environ['GUSER']
+except KeyError:
+    from dotenv import load_dotenv
+    load_dotenv()
+    GTOKEN = os.environ.get("GOOGLETOKEN")
+    GUSER = os.environ.get("GOOGLEUSER")
+    
 
 def ImgSearch(query):
     gis = GoogleImagesSearch(GTOKEN, GUSER)
-    path = os.path.dirname(os.path.realpath(__file__))
-    folder = path + '/' + "tempImages"
+    folder = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/tempImages'
     
     _search_params = {
         'q': query,

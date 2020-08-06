@@ -25,7 +25,7 @@ def covid_info(country):
     except Exception:
         info = {'Total Cases':'ERROR', 'Recovered Cases':'ERROR', 'Total Deaths':'ERROR'}
 
-    return info
+    return url, info
 
 def scrape(imgURL, saveDir):
     img_data = requests.get(imgURL).content

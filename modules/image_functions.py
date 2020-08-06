@@ -1,16 +1,14 @@
 import os
 import pathlib
 import random
-import messageFeatures
+import message_functions
 from PIL import Image, ImageDraw, ImageFont
 
-
-# import requests
 path = os.path.dirname(os.path.realpath(__file__))
-folder = path + '/' + "memePics"
-fontPath = path + '/' + 'fonts' + '/'
+folder = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/memePics'
+fontPath = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/fonts/'
 
-temp = path + '/' + 'tempImages' 
+temp = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/tempImages'
 
 def addText(imageName, fontSize, textColor, imagedict, new):
     image = folder + '/' + imageName
@@ -38,7 +36,7 @@ def addText(imageName, fontSize, textColor, imagedict, new):
 
 def makeText(content, font, font_size, colour, final):
     fontLoc = fontPath + font
-    finalName = path + '/' + 'tempImages' + '/' + final
+    finalName = temp + final
 
     placeholderImg = Image.new('RGBA', (0, 0), (0, 0, 0, 0))
 
@@ -70,8 +68,7 @@ def addImage(background, imageList, size, new):
     return finalName
 
 def unoCard():
-    path = os.path.dirname(os.path.realpath(__file__))
-    folder = path + '/' + "unoCards"
+    folder = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/memePics/unoCards'
     
     mix = random.randint(0,3)
     card = os.listdir(folder)
@@ -87,14 +84,10 @@ def randomNumber():
         
     return combo
 
-def deleteImage(file):
-    os.remove(file)
-
 def getFont(name):
-    path = os.path.dirname(os.path.realpath(__file__))
-    file = path + '/' + 'textFiles' + '/' + "fonts.txt"
+    file = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/textFiles/fonts.txt'
 
-    fontDict = messageFeatures.convert_to_dict(file)
+    fontDict = message_functions.convert_to_dict(file)
 
     if name == 'random':
         font = random.choice(list(fontDict.values()))
@@ -106,10 +99,9 @@ def getFont(name):
     return font
 
 def getColour(name):
-    path = os.path.dirname(os.path.realpath(__file__))
-    file = path + '/' + 'textFiles' + '/' + "colours.txt"
+    file = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/textFiles/colours.txt'
     
-    colourDict = messageFeatures.convert_to_dict(file)
+    colourDict = message_functions.convert_to_dict(file)
 
     if name == 'random':
         colour = random.choice(list(colourDict.values()))
@@ -120,15 +112,3 @@ def getColour(name):
 
     return colour
 
-
-# def getcolort():
-#     path = os.path.dirname(os.path.realpath(__file__))
-#     file = path + '/' + 'textFiles' + '/' + "colours.txt"
-#     with open(file,"r",encoding='utf-8') as f:
-#         colours = f.read()
-#     colourDict = ast.literal_eval(colours)
-
-#     colour = random.choice(list(colourDict.values()))
-#     print(colour)
-
-# getcolort()

@@ -47,5 +47,6 @@
     'batman':'you need to type a message!',
     'text':'you need to type a message!',
     'font':'use the format"font <fontname> <colour> <message>"',
-    'covid':'type a name of a country to get its specific stats'
+    'covid':'type a name of a country to get its specific stats',
+    'userinfo':'@someone or urself to see their info'
 }
