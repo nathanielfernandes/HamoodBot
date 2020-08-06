@@ -92,5 +92,10 @@ These commands are organized alphabetically from thier corresponding [Cog](https
 - ``covid [country]`` gets the latest covid 19 statistics
 - ``google [image]`` googles an image
 
+## Screenshots
+![level1](https://cdn.discordapp.com/attachments/699770186227646465/741028512609206282/unknown.png)
+![level2](https://cdn.discordapp.com/attachments/699770186227646465/741038530767093821/unknown.png)
+![level3](https://cdn.discordapp.com/attachments/699770186227646465/741028185029738627/unknown.png)
+![level4](https://cdn.discordapp.com/attachments/699770186227646465/741038792810430545/unknown.png)
 
 
