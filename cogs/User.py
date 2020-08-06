@@ -1,9 +1,14 @@
+import random
+import urllib.request
+import json
 import discord
 from discord.ext import commands
 
 class User(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot = self.bot
+        self.url = urllib.request.urlopen("https://raw.githubusercontent.com/sindresorhus/mnemonic-words/master/words.json")
+        self.words = json.loads(self.url.read())
 
     @commands.command()
     async def joined(self, ctx, member: discord.Member = None):
@@ -59,7 +64,9 @@ class User(commands.Cog):
         embed.add_field(name=f"Roles ({len(roles)})", value=" ".join([role.mention for role in roles]))
         embed.add_field(name="Top role:", value=member.top_role.mention)
 
-        embed.add_field(name="Bot?", value=member.bot)
+        embed.add_field(name="Bot:", value=member.bot)
+
+        embed.add_field(name="Vibe:", value=random.choice(self.words))
 
         await ctx.send(embed=embed)
 
