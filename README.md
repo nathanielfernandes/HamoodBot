@@ -20,7 +20,7 @@ Hamood can find and send posts from your favourite subreddits.
 ### Public host
 You can add Hamood to your discord server with this link [here](https://discord.com/api/oauth2/authorize?client_id=699510311018823680&permissions=8&scope=bot).
 ### Self-hosting
-Grab the [files](https://github.com/nathanielfernandes/HamoodBot) install Hamood's [dependancies](https://github.com/nathanielfernandes/HamoodBot/blob/master/requirements.txt) Then, create a Discord Bot Application [here](https://discord.com/developers/applications/) and create a [.env](https://pypi.org/project/python-dotenv/) file containing your Bot's Token. The discord.py [documentation](https://discordpy.readthedocs.io/en/latest/ext/commands/cogs.html) can help with any issues.
+Grab the latest [files](https://github.com/nathanielfernandes/HamoodBot) and pip install Hamood's [dependancies](https://github.com/nathanielfernandes/HamoodBot/blob/master/requirements.txt) Then, create a Discord Bot Application [here](https://discord.com/developers/applications/) and create a [.env](https://pypi.org/project/python-dotenv/) file containing your Bot's Token. The discord.py [documentation](https://discordpy.readthedocs.io/en/latest/ext/commands/cogs.html) can help with any issues.
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Feel free to create a fork and use the code for any noncommercial purposes.
 
