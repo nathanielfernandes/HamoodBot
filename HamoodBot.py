@@ -27,8 +27,8 @@ async def on_ready():
 
 @bot.command()
 @commands.is_owner()
-"""Owner Command"""
 async def logout(ctx):
+    """Owner Command"""
     await ctx.send("**goodbye**")
     await bot.logout()
 
@@ -48,8 +48,8 @@ async def status(ctx, aType: str, *, aName: commands.clean_content):
 
 @bot.command()
 @commands.is_owner()
-"""Owner Command"""
 async def reload(ctx, cog):
+    """Owner Command"""
     try:
         bot.unload_extension(f"cogs.{cog}")
         bot.load_extension(f"cogs.{cog}")
@@ -60,8 +60,8 @@ async def reload(ctx, cog):
 
 @bot.command()
 @commands.is_owner()
-"""Owner Command"""
 async def unload(ctx, cog):
+    """Owner Command"""
     try:
         bot.unload_extension(f"cogs.{cog}")
         await ctx.send(f"{cog} got unloaded")
@@ -71,8 +71,8 @@ async def unload(ctx, cog):
 
 @bot.command()
 @commands.is_owner()
-"""Owner Command"""
 async def load(ctx, cog):
+    """Owner Command"""
     try:
         bot.load_extension(f"cogs.{cog}")
         await ctx.send(f"{cog} got loaded")
