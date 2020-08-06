@@ -4,8 +4,7 @@ import random
 import ast
 
 def profCheck(content):
-    path = os.path.dirname(os.path.realpath(__file__))
-    file = path + '/' + 'textFiles' + '/' + "profanity.txt"
+    file = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/textFiles/profanity.txt'
 
     lst = []
     lst.append(content)
@@ -37,8 +36,7 @@ def profCheck(content):
 
 
 def getRoast():
-    path = os.path.dirname(os.path.realpath(__file__))
-    file = path + '/' + 'textFiles' + '/' + "roasts.txt"
+    file = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/textFiles/roasts.txt'
 
     roast_list = []
     roasts = open(file,"r",encoding='utf-8')
@@ -48,19 +46,6 @@ def getRoast():
         roast_list.append(line)
     roast = (random.choice(roast_list))
     return roast
-
-
-#formatMsg
-def remove(content, *useless: str):
-    for char in useless:
-        content = (str(content)).replace(char, '')
-    return content
-
-def convertList(_list, _split=False):
-    string = ' '.join(_list)
-    if _split:
-        string = string.split(', ')
-    return string
 
 
 def convert_to_dict(file):
