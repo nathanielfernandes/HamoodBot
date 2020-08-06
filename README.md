@@ -6,7 +6,7 @@ Hamood is a Discord bot written with [discord.py](https://github.com/Rapptz/disc
 I decided to create Hamood as a fun qurantine project to learn new skills.
 Hamood's name and profile picture is an inside joke based off the [Yotube](https://knowyourmeme.com/memes/yotube) kid meme.
 
-## Highlight Features
+## Highlighted Features
 ### Covid-19 Statistics ``New!``
 Hamood can send the latest Covid-19 statistics of any country from [worldometer](https://www.worldometers.info/coronavirus/).
 ### Automatic Profanity Dectection
