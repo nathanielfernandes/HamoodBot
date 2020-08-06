@@ -16,6 +16,9 @@ class Reddit(commands.Cog):
     async def redditPrep(self, ctx, subRedd):
         async with ctx.typing():
             member = ctx.author
+            if str(ctx.command) not in ['red', 'spam']:
+                is_image = True
+                post = reddit_functions.findPost(subRedd)
             is_image = False
             while not is_image:
                 post = reddit_functions.findPost(subRedd)
