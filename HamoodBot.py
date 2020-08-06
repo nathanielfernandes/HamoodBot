@@ -86,6 +86,7 @@ for cog in os.listdir("./cogs"):
 try:
     TOKEN = os.environ['TOKEN']
 except KeyError:
+    os.remove(os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/tempImages/placeholder.txt')
     from dotenv import load_dotenv
     load_dotenv()
     TOKEN = os.environ.get("BOTTOKEN")
