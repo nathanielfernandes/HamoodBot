@@ -42,7 +42,7 @@ class About(commands.Cog):
         try:
             if not cog:
                 """Cog listing.  What more?"""
-                halp=discord.Embed(title='Command Categories', description='Use `help <category>` to find out more about them!')
+                halp=discord.Embed(title='Command Categories', description='Use `help <category>` to find out more about them!\nIf you want to know how to use a specific command\njust send it alone and I will help.')
                 halp.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
                 cogs_desc = ''
                 for x in self.bot.cogs:
@@ -75,10 +75,8 @@ class About(commands.Cog):
                                 found = True
                     if not found:
                         """Reminds you if that category doesn't exist."""
-                        halp = discord.Embed(title='Error!',description='How do you even use "'+cog[0]+'"?',color=discord.Color.red())
+                        halp = discord.Embed(title='Error!',description=f'How do you even use {cog[0]}',color=discord.Color.red())
                         halp.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-                    else:
-                        await ctx.message.add_reaction(emoji='✉')
                     await ctx.message.author.send('',embed=halp)
         except:
             await ctx.send("Excuse me, I can't send embeds.")
