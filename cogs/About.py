@@ -36,6 +36,9 @@ class About(commands.Cog):
         """returns hamood's ping"""
         await ctx.send(f"```xl\n'pong! {self.bot.latency}```")
 
+        
+    #This help command was Written by Jared Newsom (AKA Jared M.F.)!#
+    #https://gist.github.com/StudioMFTechnologies/ad41bfd32b2379ccffe90b0e34128b8b
     @commands.command()
     async def help(self,ctx,*cog):
         """Gets all cogs and commands of Hamood"""
