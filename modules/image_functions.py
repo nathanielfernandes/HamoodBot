@@ -9,7 +9,6 @@ folder = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '
 fontPath = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/fonts/'
 
 temp = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/tempImages'
-
 def addText(imageName, fontSize, textColor, imagedict, new):
     image = folder + '/' + imageName
     edited = temp + '/' + new
@@ -36,7 +35,7 @@ def addText(imageName, fontSize, textColor, imagedict, new):
 
 def makeText(content, font, font_size, colour, final):
     fontLoc = fontPath + font
-    finalName = temp + final
+    finalName = temp + '/' + final
 
     placeholderImg = Image.new('RGBA', (0, 0), (0, 0, 0, 0))
 

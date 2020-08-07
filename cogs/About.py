@@ -14,11 +14,29 @@ class About(commands.Cog):
             self.running = 'macOS Catalina'
         elif (platform.system() == 'Linux'):
             self.running = 'Heroku Linux'
+        else:
+            self.running = "?"
+
+    @commands.command()
+    async def info(self, ctx):
+        """``info`` About Hamood"""
+        embed = discord.Embed(title="Hamood", description="Hamood is a Discord bot written with **discord.py** that has a variety of helpful and fun functions.")
+        embed.add_field(name="Background", value="Hamood was created as a fun qurantine project to learn new skills. Hamood's name and profile picture is an inside joke based off the **Yotube** kid meme.", inline = False)
+        embed.add_field(name="Highlighted Features", value="**• Covid-19 Satistics** `New!`\nHamood can send the latest Covid-19 statistics of any country from worldometer\n**• Profanity Detection**\nHamood calls out anyone that uses profane words\n**• Custom Text Generated Memes**\nYou can generate custom memes with your own text with the meme templates Hamood has.\n**• Reddit Posts**\nHamood can find and send posts from your favourite subreddits.", inline=False)
+        embed.add_field(name="Add him to your server", value=f"https://bit.ly/2XD2YPN\nHamood is current in **{len(self.bot.guilds)}** servers.")
+        embed.add_field(name="Source Code", value='https://github.com/nathanielfernandes/HamoodBot')
+        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/699510311018823680/bcb476ebfc7c8765a4f673615143996d.webp?size=1024")
+        embed.set_footer(text="created by **Nathaniel Fernandes**", icon_url='https://cdn.discordapp.com/attachments/699770186227646465/741388960227655790/k70up0p0ozz21.png')
+        await ctx.send(embed=embed)
 
     @commands.command(aliases=['inv'])
     async def invite(self, ctx):
         """``invite`` get the invite link for this bot"""
-        await ctx.send('https://discord.com/api/oauth2/authorize?client_id=699510311018823680&permissions=8&scope=bot')
+        embed = discord.Embed(title="Invite Hamood to your server clicking here!", description="Click the **hyperlink** above to invite Hamood.", color=ctx.author.color, url='https://discord.com/api/oauth2/authorize?client_id=699510311018823680&permissions=8&scope=bot')
+        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/699510311018823680/bcb476ebfc7c8765a4f673615143996d.webp?size=1024")
+        embed.add_field(name=f"Hamood is currently in **{len(self.bot.guilds)}** servers", value='make it one more!')
+        await ctx.send(embed=embed)
+
 
     @commands.command(aliases=['repo'])
     async def github(self, ctx):
@@ -37,7 +55,7 @@ class About(commands.Cog):
         await ctx.send(f"```xl\n'pong! {self.bot.latency}```")
 
         
-    #This help command was Written by Jared Newsom (AKA Jared M.F.)!#
+    #This help command was Written by Jared Newsom (AKA Jared M.F.)!
     #https://gist.github.com/StudioMFTechnologies/ad41bfd32b2379ccffe90b0e34128b8b
     @commands.command()
     async def help(self,ctx,*cog):

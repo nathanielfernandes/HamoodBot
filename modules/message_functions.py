@@ -1,10 +1,12 @@
 import os 
-import pathlib
 import random
 import ast
 
+file = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/textFiles/profanity.txt'
+badWords = open(file,"r",encoding='utf-8')
+badWords = badWords.readlines()
+
 def profCheck(content):
-    file = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/textFiles/profanity.txt'
 
     lst = []
     lst.append(content)
@@ -15,9 +17,6 @@ def profCheck(content):
     profane = False
 
     badword = []
-    
-    badWords = open(file,"r",encoding='utf-8')
-    badWords = badWords.readlines()
 
     for line in badWords:
         profanity_list.append(line)

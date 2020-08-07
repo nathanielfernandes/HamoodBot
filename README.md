@@ -9,7 +9,7 @@ Hamood's name and profile picture is an inside joke based off the [Yotube](https
 ## Highlighted Features
 ### Covid-19 Statistics ``New!``
 Hamood can send the latest Covid-19 statistics of any country from [worldometer](https://www.worldometers.info/coronavirus/).
-### Automatic Profanity Dectection
+### Profanity Dectection
 Hamood calls out anyone that uses profane words
 ### Custom Text Generated Memes
 You can generate custom memes with your own text with the meme templates Hamood has.
