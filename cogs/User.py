@@ -13,13 +13,13 @@ class User(commands.Cog):
 
     @commands.command()
     async def joined(self, ctx, member: discord.Member = None):
-        """Says when a member joined the server"""
+        """``joined [@user]`` says when a member joined the server"""
         member = ctx.author if not member else member
         await ctx.send(f'```md\n# {member.name} joined in {member.joined_at} #```')
 
     @commands.command()
     async def avatar(self, ctx, member : discord.Member = None):
-        """sends the profile picture of a tagged user"""
+        """``avatar [@user]`` sends the profile picture of a tagged user"""
         member = ctx.author if not member else member
         
         embed = discord.Embed(colour=member.color, timestamp=ctx.message.created_at)
@@ -31,7 +31,7 @@ class User(commands.Cog):
     
     @commands.command()
     async def roles(self, ctx, member : discord.Member = None):
-        """lists the roles of a tagged user"""
+        """``roles [@user]`` lists the roles of a tagged user"""
         member = ctx.author if not member else member
         roles = [role for role in member.roles]
 
@@ -46,7 +46,7 @@ class User(commands.Cog):
 
     @commands.command()
     async def userinfo(self, ctx, member: discord.Member = None):
-        """sends allot of server user info"""
+        """``userinfo [@user]`` sends allot of server info on a user"""
 
         member = ctx.author if not member else member
         roles = [role for role in member.roles]

@@ -40,33 +40,33 @@ class Text_Memes(commands.Cog):
 
     @commands.command()
     async def bonk(self, ctx, *, content: commands.clean_content):
-        """give someone a good bonk"""
+        """``bonk [text1], [text2]`` adds your own text to the 'bonk' meme format"""
         await self.textMemePrep(ctx, content, [[(250,450)],[(1050,600)]], 75, 'BLACK', 'bonkImage.jpg')
 
     @commands.command()
     async def lick(self, ctx, *, content: commands.clean_content):
-        """lick someone tasty"""
+        """``lick [text1], [text2]`` adds your own text to the 'lick' meme format"""
         await self.textMemePrep(ctx, content, [[(320,220)],[(75,200)]], 35, 'BLACK', 'lickImage.jpg')
 
     @commands.command()
     async def slap(self, ctx, *, content: commands.clean_content):
-        """slap someone annoying"""
+        """``slap [text1], [text2]`` adds your own text to the 'slap' meme format"""
         await self.textMemePrep(ctx, content, [[(580, 30)],[(220, 250)]], 60, 'WHITE', 'slapImage.jpg')
 
     @commands.command()
     async def lookback(self, ctx, *, content: commands.clean_content):
-        """look back at it"""
+        """``lookback[text1], [text2], [text3]`` adds your own text to the 'lookback' meme format"""
         await self.textMemePrep(ctx, content, [[(120, 285)],[(360, 180)],[(525, 250)]], 30, 'BLACK', 'lookBackImage.jpg', 14)
 
     @commands.command()
     async def our(self, ctx, *, content: commands.clean_content):
-        """soviet bugs bunny"""
+        """``our [text1], [text2]`` adds your own text to the 'our' meme format"""
         content = 'our ' + content + ',  '
         await self.textMemePrep(ctx, content, [[(325,320)], [(310,110)]], 45, 'BLACK', 'sovietImage.jpg')
 
     @commands.command()
     async def pour(self, ctx, *, content: commands.clean_content):
-        """pour yourself a nice drink"""
+        """``pour [text1], [text2]``adds your own text to the 'pour' meme format"""
         await self.textMemePrep(ctx, content, [[(50,110)], [(430,60)]], 45, 'BLACK', 'coffeeImage.jpg', 8)
 
 

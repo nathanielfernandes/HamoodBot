@@ -23,25 +23,25 @@ class Chance(commands.Cog):
 
     @commands.command(aliases= ['8ball','does','would','should','could','can','do','will','is','am i'])
     async def eightball(self, ctx):
-        """Hamood shakes his magic 8ball"""
+        """``eightball`` Hamood shakes his magic 8ball"""
         await ctx.send(f"{random.choice(self.possible_responses)}, {ctx.author.mention}")
 
     @commands.command(aliases=['coin'])
     async def flip(self, ctx): 
-        """flips a coin"""
+        """``flip`` flips a coin"""
         possible_responses = ['heads', 'tails']
         await ctx.send(f'**{random.choice(possible_responses)}**, {ctx.author.mention}')
 
     @commands.command(aliases=['dice'])
     async def roll(self, ctx, dice: str):
-        """Rolls a dice in NdN format."""
+        """``roll [NdN]`` Rolls a dice in NdN format."""
         rolls, limit = map(int, dice.split('d'))
         result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
         await ctx.send(result)
 
     @commands.command(description='For when you wanna settle the score some other way')
     async def choose(self, ctx, *, content: commands.clean_content):
-        """Chooses between multiple choices."""
+        """``choose [choice1], [choice2], [choice3]`` Chooses between multiple choices."""
         content = content.split(', ')
         await ctx.send(random.choice(content))
 

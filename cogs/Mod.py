@@ -18,21 +18,21 @@ class Mod(commands.Cog):
     @commands.command()
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason="No reason"):
-        """kicks a tagged member"""
+        """``kick [@user]`` kicks a tagged member"""
         await member.kick(reason=reason)
         await ctx.send(f"{member.mention} was kicked by {ctx.author.mention}. [{reason}]")
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason="No reason"):
-        """bans a tagged member"""
+        """``ban [@user]`` bans a tagged member"""
         await member.ban(reason=reason)
         await ctx.send(f"{member.mention} was kicked by {ctx.author.mention}. [{reason}]")
 
     @commands.command(aliases=['clear'])
     @commands.has_permissions(manage_messages=True)
     async def clean(self, ctx, amount=1):
-        """deletes chat messages"""
+        """``clean`` deletes chat messages"""
         amount = int(amount) + 1
         if amount > 20:
             amount = 20

@@ -38,7 +38,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def pp(self, ctx):
-        """returns your pp size"""
+        """``pp`` returns your pp size"""
         size = '8'
         length =  ''
         for i in range(random.randint(0,50)):
@@ -48,21 +48,21 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def sortinghat(self, ctx):
-        """get your self sorted out"""
+        """``sortinghat`` sorts you to one of the Hogwarts houses"""
         houses = ['Gryffindor', 'Hufflepuff', 'Slytherin', 'Ravenclaw']
         house = random.choice(houses)
         await ctx.send(f'{ctx.author.mention}, you belong to the **{house}** house!')
 
     @commands.command()
     async def vibecheck(self, ctx):
-        """vibechecks you"""
+        """``vibecheck`` vibechecks you"""
         random_word = random.choice(self.words)
         await ctx.send(f"{ctx.author.mention} your vibe checked out to be **{random_word}**")
         await ctx.message.add_reaction('✔️')
 
     @commands.command()
     async def vibe(self, ctx):
-        """vibechecks you but better"""
+        """``vibe`` vibechecks you but better"""
         fonts = self.bot.get_cog('Fonts')
         random_word = random.choice(self.words)
         await ctx.send(f'{ctx.author.mention} your vibe checked out to be:')
@@ -71,13 +71,13 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=['roast me', 'roastme'])
     async def roast(self, ctx):
-        """roasts you"""
+        """``roast`` roasts/insults you"""
         roast = message_functions.getRoast()
         await ctx.send(f'{ctx.author.mention} {roast}')
 
     @commands.command(aliases=["pop", "bubble"])
     async def bubblewrap(self, ctx, w=3, h=3):
-        """creates some bubble wrap"""
+        """``bubblewrap [height] [width]`` makes bubblewrap"""
         if w > 12:
             w = 12
         if h > 12:
@@ -90,7 +90,7 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=['sign'])
     async def zodiac(self, ctx, month1: str, day1: int, month2:str, day2: int, quick="slow"):
-        """test your zodiac's compatibilty with another"""
+        """``zodiac [mmm] [dd] [mmm] [dd]`` lets you test your zodiac's compatibilty with another"""
         sign1 = zodiac.getZodiac(month1, day1)
         sign2 = zodiac.getZodiac(month2, day2)
 
@@ -103,7 +103,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def match(self, ctx, *, content: commands.clean_content):
-        """match makes"""
+        """``match [person1] [person2]`` randomly gives a match percentage between two people"""
         match = str(random.randint(0,100))
         content = content.split(', ')
         left, right = content

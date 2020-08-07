@@ -16,7 +16,7 @@ class Web(commands.Cog):
     
     @commands.command()
     async def covid(self, ctx, country=None):
-        """gets the latest covid 19 statistics"""
+        """``covid [country]`` gets the latest covid 19 statistics"""
 
         url, info = web_scraping.covid_info(country)
         msg = ''
@@ -34,7 +34,7 @@ class Web(commands.Cog):
 
     @commands.command()
     async def google(self, ctx, *, query: commands.clean_content):
-        """googles an image"""
+        """``google [image]`` googles an image"""
         image = image_search.ImgSearch(query)
         await ctx.send(f"This is the first result for **'{query}'**:")
         await ctx.send(file=discord.File(image))

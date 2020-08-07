@@ -16,22 +16,22 @@ class Avatar_Memes(commands.Cog):
         
     @commands.command()
     async def stonks(self, ctx, *avamember : discord.Member):
-        """Stonks!"""
+        """``stonks [@user]`` adds a tagged discord avatar to the 'stonks' meme"""
         await imagePrep(ctx, avamember, [[(65, 20), 0]], "stonksImage.jpg", (200,200))
 
     @commands.command()
     async def worthless(self, ctx, *avamember : discord.Member):
-        """your worthless"""
+        """``worthless [@user]`` adds a tagged discord avatar to the 'this is worthless' meme"""
         await imagePrep(ctx, avamember, [[(490, 235), -10]], "worthlessImage.jpg", (450,450))
             
     @commands.command()
     async def neat(self, ctx, *avamember : discord.Member):
-        """your pretty neat ;)"""
+        """``neat [@user]`` adds a tagged discord avatar to the 'this is pretty neat' meme"""
         await imagePrep(ctx, avamember, [[(16, 210), 0]], "neatImage.jpg", (270,270))
 
     @commands.command()
     async def grab(self, ctx, *avamember : discord.Member):
-        """GRAB"""
+        """``grab [@user]`` adds a tagged discord avatar to the 'grab' meme"""
         await imagePrep(ctx, avamember, [[(25, 265), 0]], "grabImage.jpg", (150,150))
 
 

@@ -26,13 +26,13 @@ class General(commands.Cog):
 
     @commands.command(aliases=['hello','hi','hey', 'yo'])
     async def greet(self, ctx):
-        """greets the user"""
+        """``greet`` greets the user"""
         
         await ctx.send(f"{random.choice(self.possible_responses)} {ctx.author.mention}")
 
     @commands.command()
     async def hamood(self, ctx):
-        """calls hamood"""    
+        """``hamood`` calls hamood"""    
         member = ctx.author
         if self.last_member is None or self.last_member.id != member.id:
             await ctx.send(random.choice(self.replies).format(ctx))
@@ -42,7 +42,7 @@ class General(commands.Cog):
 
     @commands.command()
     async def clap(self, ctx, *content:str):
-        """claps ur sentence"""
+        """``clap [msg]`` adds clap emojis to your sentence"""
         msg = ''
         for word in content:
             msg += '**' + word + '**' + ':clap:'
@@ -50,7 +50,7 @@ class General(commands.Cog):
 
     @commands.command()
     async def repeat(self, ctx, times: int, *, content: commands.clean_content):
-        """Repeats a message multiple times."""
+        """``repeat [msg]`` repeats your message multiple times"""
         msg = ''
         for i in range(times):
             msg += content + '\n'
@@ -58,13 +58,13 @@ class General(commands.Cog):
 
     @commands.command()
     async def echo(self, ctx, *, content: commands.clean_content):
-        """echos a message."""
+        """``echo [msg]`` echos your message a random amount of times"""
         for i in range(random.randint(1,5)):
             await ctx.send(content)
 
     @commands.command()
     async def no(self, ctx, content:str):
-        """no you"""
+        """``no u`` sends an uno reverse card"""
         if (content == 'u' or content == 'you'):
             #await ctx.channel.purge(limit=1)
             uno = image_functions.unoCard()
@@ -72,7 +72,7 @@ class General(commands.Cog):
 
     @commands.command(aliases=["movie time"])
     async def shrek(self, ctx):
-        """the entire shrek movie as a 90 min long gif"""
+        """``shrek`` sends the entire shrek movie as a 90 min long gif"""
         await ctx.send("https://imgur.com/gallery/IsWDJWa")
 
 

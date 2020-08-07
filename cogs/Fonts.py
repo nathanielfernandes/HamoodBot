@@ -43,77 +43,77 @@ class Fonts(commands.Cog):
 
     @commands.command()
     async def arial(self, ctx, *, content: commands.clean_content):
-        """send a message in arial text"""
+        """``arial [msg]`` send a message in a arial font"""
         await self.textPrep(ctx, content, 'arial', 500, 'black', 100)
 
     @commands.command(aliases=['craft'])
     async def minecraft(self, ctx, *, content: commands.clean_content):
-        """send a message in minecraft text"""
+        """``minecraft [msg]`` send a message in a minecraft font"""
         await self.textPrep(ctx, content, 'minecraft', 500, 'yellow2', 100)
 
     @commands.command(aliases=['tale'])
     async def undertale(self, ctx, *, content: commands.clean_content):
-        """send a message in undertale text"""
+        """``undertale [msg]`` send a message in a undertale font"""
         await self.textPrep(ctx, content, 'undertale', 500, 'white', 100)
 
     @commands.command(aliases=['rick'])
     async def morty(self, ctx, *, content: commands.clean_content):
-        """send a message in morty text"""
+        """``morty [msg]`` send a message in a morty font"""
         await self.textPrep(ctx, content, 'morty', 500, 'green1', 100)
 
     @commands.command()
     async def gta(self, ctx, *, content: commands.clean_content):
-        """send a message in starwars text"""
+        """``gta [msg]`` send a message in a gta font"""
         await self.textPrep(ctx, content, 'gta', 500, 'white', 100)
 
     @commands.command()
     async def enchant(self, ctx, *, content: commands.clean_content):
-        """send a message in enchant text"""
+        """``enchant [msg]`` send a message in a enchant font"""
         await self.textPrep(ctx, content, 'enchant', 500, 'minecraft-enchantment.ttf', 100)
 
     @commands.command(aliases=['?'])
     async def unknown(self, ctx, *, content: commands.clean_content):
-        """send a message in unknown text"""
+        """``unknown [msg]`` send a message in a unknown font"""
         await self.textPrep(ctx, content, 'unown.ttf', 500, 'black', 100)
 
     @commands.command(aliases=['poke'])
     async def pokemon(self, ctx, *, content: commands.clean_content):
-        """send a message in pokemon text"""
+        """``pokemon [msg]`` send a message in a pokemon font"""
         await self.textPrep(ctx, content, 'pokemon', 500, 'steelblue2', 100)
 
     @commands.command(aliases=['sonic'])
     async def sega(self, ctx, *, content: commands.clean_content):
-        """send a message in sega text"""
+        """``sega [msg]`` send a message in a sega font"""
         await self.textPrep(ctx, content, 'sega', 500, 'navy', 100)
 
     @commands.command(aliases=['sponge'])
     async def spongebob(self, ctx, *, content: commands.clean_content):
-        """send a message in spongebob text"""
+        """``spongebob [msg]`` send a message in a spongebob font"""
         await self.textPrep(ctx, content, 'spongebob', 500, 'lightblue', 100)
 
     @commands.command()
     async def avenger(self, ctx, *, content: commands.clean_content):
-        """sends a message in avengers text"""
+        """``avenger [msg]`` send a message in a avenger font"""
         await self.textPrep(ctx, content, 'avenger', 500, 'red4', 100)
 
     @commands.command()
     async def sketch(self, ctx, *, content: commands.clean_content):
-        """sends a message in avengers text"""
+        """``sketch [msg]`` send a message in a sketch font"""
         await self.textPrep(ctx, content, 'sketch', 500, 'random', 100)
 
     @commands.command()
     async def batman(self, ctx, *, content: commands.clean_content):
-        """sends a message in avengers text"""
+        """``batman [msg]`` send a message in a batman font"""
         await self.textPrep(ctx, content, 'batman', 500, 'black', 100)
 
     @commands.command()
     async def text(self, ctx, *, content: commands.clean_content):
-        """send a message in a random font"""
+        """``text [msg]`` send a message in a random font"""
         await self.textPrep(ctx, content, 'random', 500, 'random', 100)
 
     @commands.command()
     async def font(self, ctx, font, colour, *, content: commands.clean_content):
-        """send a message in a selected font and colour"""
+        """``font [font] [colour] [msg]`` send a message in a selected font and colour"""
         await self.textPrep(ctx, content, font, 500, colour, 100)
 
 
