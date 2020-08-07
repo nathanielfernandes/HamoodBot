@@ -54,13 +54,13 @@ class About(commands.Cog):
                         cmds_desc += ('{} - {}'.format(y.name,y.help)+'\n')
                 halp.add_field(name='Uncatergorized Commands',value=cmds_desc[0:len(cmds_desc)-1],inline=False)
                 await ctx.message.add_reaction(emoji='✉')
-                await ctx.message.author.send('',embed=halp)
+                await ctx.send('',embed=halp)
             else:
                 """Helps me remind you if you pass too many args."""
                 if len(cog) > 1:
                     halp = discord.Embed(title='Error!',description='That is way too many categories!',color=discord.Color.red())
                     halp.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-                    await ctx.message.author.send('',embed=halp)
+                    await ctx.send('',embed=halp)
                 else:
                     """Command listing within a Category."""
                     found = False
@@ -77,7 +77,7 @@ class About(commands.Cog):
                         """Reminds you if that category doesn't exist."""
                         halp = discord.Embed(title='Error!',description=f'How do you even use {cog[0]}',color=discord.Color.red())
                         halp.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-                    await ctx.message.author.send('',embed=halp)
+                    await ctx.send('',embed=halp)
         except:
             await ctx.send("Excuse me, I can't send embeds.")
 
