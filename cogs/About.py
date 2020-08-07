@@ -20,7 +20,7 @@ class About(commands.Cog):
     @commands.command()
     async def info(self, ctx):
         """``info`` About Hamood"""
-        embed = discord.Embed(title="Hamood", description="Hamood is a Discord bot written with **discord.py** that has a variety of helpful and fun functions.")
+        embed = discord.Embed(title="Hamood", description="Hamood is a Discord bot written with **discord.py** that has a variety of helpful and fun functions.", color=discord.Color.blue)
         embed.add_field(name="Background", value="Hamood was created as a fun qurantine project to learn new skills. Hamood's name and profile picture is an inside joke based off the **Yotube** kid meme.", inline = False)
         embed.add_field(name="Highlighted Features", value="**• Covid-19 Satistics** `New!`\nHamood can send the latest Covid-19 statistics of any country from worldometer\n**• Profanity Detection**\nHamood calls out anyone that uses profane words\n**• Custom Text Generated Memes**\nYou can generate custom memes with your own text with the meme templates Hamood has.\n**• Reddit Posts**\nHamood can find and send posts from your favourite subreddits.", inline=False)
         embed.add_field(name="Add him to your server", value=f"https://bit.ly/2XD2YPN\nHamood is current in **{len(self.bot.guilds)}** servers.")
