@@ -80,7 +80,7 @@ These commands are organized alphabetically from thier corresponding [Cog](https
 - ``bonk [text1], [text2]`` adds your own text to the 'bonk' meme format
 - ``lick [text1], [text2]`` adds your own text to the 'lick' meme format
 - ``slap [text1], [text2]`` adds your own text to the 'slap' meme format
-- ``lookback[text1], [text2], [text3]`` adds your own text to the 'lookback' meme format
+- ``lookback [text1], [text2], [text3]`` adds your own text to the 'lookback' meme format
 - ``our [text1], [text2]`` adds your own text to the 'our' meme format
 - ``pour [text1], [text2]``adds your own text to the 'pour' meme format
 ### User
