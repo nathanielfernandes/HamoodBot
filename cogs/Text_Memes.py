@@ -55,7 +55,7 @@ class Text_Memes(commands.Cog):
 
     @commands.command()
     async def lookback(self, ctx, *, content: commands.clean_content):
-        """``lookback[text1], [text2], [text3]`` adds your own text to the 'lookback' meme format"""
+        """``lookback [text1], [text2], [text3]`` adds your own text to the 'lookback' meme format"""
         await self.textMemePrep(ctx, content, [[(120, 285)],[(360, 180)],[(525, 250)]], 30, 'BLACK', 'lookBackImage.jpg', 14)
 
     @commands.command()
