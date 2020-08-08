@@ -31,7 +31,7 @@ class Reddit(commands.Cog):
         """``red [subreddit]`` finds a post from your specified subreddit"""
         if (redditSub == None):
             redditSub = reddit_functions.getSubReddit()
-        post = reddit_functions(redditSub)
+        post = reddit_functions.findPost(redditSub)
         await ctx.send(f"here's your post from the '{redditSub}' subreddit {ctx.author.mention}\n{post.url}")
 
 
