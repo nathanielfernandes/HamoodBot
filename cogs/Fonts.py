@@ -69,7 +69,7 @@ class Fonts(commands.Cog):
     @commands.command()
     async def enchant(self, ctx, *, content: commands.clean_content):
         """``enchant [msg]`` send a message in a enchant font"""
-        await self.textPrep(ctx, content, 'enchant', 500, 'minecraft-enchantment.ttf', 100)
+        await self.textPrep(ctx, content, 'minecraft-enchantment.ttf', 500, 'white', 100)
 
     @commands.command(aliases=['?'])
     async def unknown(self, ctx, *, content: commands.clean_content):
