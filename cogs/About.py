@@ -26,13 +26,13 @@ class About(commands.Cog):
         embed.add_field(name="Add him to your server", value=f"https://bit.ly/2XD2YPN\nHamood is current in **{len(self.bot.guilds)}** servers.")
         embed.add_field(name="Source Code", value='https://github.com/nathanielfernandes/HamoodBot')
         embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/699510311018823680/bcb476ebfc7c8765a4f673615143996d.webp?size=1024")
-        embed.set_footer(text="created by **Nathaniel Fernandes**", icon_url='https://cdn.discordapp.com/attachments/699770186227646465/741388960227655790/k70up0p0ozz21.png')
+        embed.set_footer(text="created by Nathaniel Fernandes", icon_url='https://cdn.discordapp.com/attachments/699770186227646465/741388960227655790/k70up0p0ozz21.png')
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['inv'])
     async def invite(self, ctx):
         """``invite`` get the invite link for this bot"""
-        embed = discord.Embed(title="Invite Hamood to your server clicking here!", description="Click the **hyperlink** above to invite Hamood.", color=ctx.author.color, url='https://discord.com/api/oauth2/authorize?client_id=699510311018823680&permissions=8&scope=bot')
+        embed = discord.Embed(title="Invite Hamood to your server by clicking here!", description="Click the **hyperlink** above to invite Hamood.", color=ctx.author.color, url='https://discord.com/api/oauth2/authorize?client_id=699510311018823680&permissions=8&scope=bot')
         embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/699510311018823680/bcb476ebfc7c8765a4f673615143996d.webp?size=1024")
         embed.add_field(name=f"Hamood is currently in **{len(self.bot.guilds)}** servers", value='make it one more!')
         await ctx.send(embed=embed)

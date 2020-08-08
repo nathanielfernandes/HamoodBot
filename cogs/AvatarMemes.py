@@ -9,7 +9,7 @@ sys.path.insert(1, path)
 import image_functions
 import web_scraping
 
-class Avatar_Memes(commands.Cog):
+class AvatarMemes(commands.Cog):
     """Custom Avatar Memes"""
     def __init__(self, bot):
         self.bot = bot
@@ -79,4 +79,4 @@ async def imagePrep(ctx, member, stuff, memeImage, size):
 
 
 def setup(bot):
-    bot.add_cog(Avatar_Memes(bot))  
+    bot.add_cog(AvatarMemes(bot))  

@@ -9,7 +9,7 @@ sys.path.insert(1, path)
 
 import image_functions
 
-class Text_Memes(commands.Cog):
+class Memes(commands.Cog):
     """Custom Text Generation Memes"""
     def __init__(self, bot):
         self.bot = bot
@@ -71,4 +71,4 @@ class Text_Memes(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Text_Memes(bot))  
+    bot.add_cog(Memes(bot))  
