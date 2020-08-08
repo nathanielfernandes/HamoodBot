@@ -15,20 +15,15 @@ class Reddit(commands.Cog):
         
     async def redditPrep(self, ctx, subRedd):
         async with ctx.typing():
-            if str(ctx.command) in ['red', 'spam', 'reddit']:
-                is_image = True
+            is_image = False
+            while not is_image:
                 post = reddit_functions.findPost(subRedd)
-                await ctx.send(url=post.url)
-            else:
-                is_image = False
-                while not is_image:
-                    post = reddit_functions.findPost(subRedd)
-                    if (".jpg" in post.url) or (".jpeg" in post.url) or (".png" in post.url):
-                        is_image = True
-                embed = discord.Embed(title=f"Post from r/{subRedd}:", colour=ctx.author.color, url=post.url)
-                embed.set_image(url=post.url)
-                embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-                await ctx.send(embed=embed)
+                if (".jpg" in post.url) or (".jpeg" in post.url) or (".png" in post.url):
+                    is_image = True
+            embed = discord.Embed(title=f"Post from r/{subRedd}:", colour=ctx.author.color, url=post.url)
+            embed.set_image(url=post.url)
+            embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+            await ctx.send(embed=embed)
 
 
     @commands.command(aliases=['reddit'])
@@ -36,8 +31,9 @@ class Reddit(commands.Cog):
         """``red [subreddit]`` finds a post from your specified subreddit"""
         if (redditSub == None):
             redditSub = reddit_functions.getSubReddit()
-        #await ctx.send(f"here's your post from the '{redditSub}' subreddit {ctx.author.mention}")
-        await self.redditPrep(ctx, redditSub)
+        post = reddit_functions(redditSub)
+        await ctx.send(f"here's your post from the '{redditSub}' subreddit {ctx.author.mention}\n{post.url}")
+
 
     @commands.command(aliases=['memes'])
     async def meme(self, ctx):
