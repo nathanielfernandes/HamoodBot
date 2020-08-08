@@ -64,7 +64,7 @@ class Events(commands.Cog):
                     return
     
         elif message.content.startswith("im"):
-            await message.channel.send(f"hi {message.content[2:]}, im hamood")
+            await message.channel.send(f"hi{message.content[2:]}, im hamood")
 
         if message.content in self.responses:
             await message.channel.send(self.responses[message.content].format(message))
