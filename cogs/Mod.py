@@ -13,6 +13,7 @@ class Mod(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def proflevel(self, ctx, lvl:int):
+        """Owner Command"""
         self.profanity_action = lvl
 
     @commands.command()
@@ -37,6 +38,12 @@ class Mod(commands.Cog):
         if amount > 20:
             amount = 20
         await ctx.channel.purge(limit=amount)
+
+    @commands.command(aliases=['rename'])
+    @commands.has_permissions(manage_nicknames=True)
+    async def nickname(self, ctx, member: discord.Member = None, *, name: commands.clean_content = None):
+        await member.edit(nick=name) if (name != None) else None
+
 
 def setup(bot):
     bot.add_cog(Mod(bot))  

@@ -46,7 +46,7 @@ class User(commands.Cog):
 
     @commands.command()
     async def userinfo(self, ctx, member: discord.Member = None):
-        """``userinfo [@user]`` sends allot of server info on a user"""
+        """``userinfo [@user]`` sends allot of info on a user"""
 
         member = ctx.author if not member else member
         roles = [role for role in member.roles]

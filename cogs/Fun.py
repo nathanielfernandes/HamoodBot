@@ -20,31 +20,44 @@ class Fun(commands.Cog):
         self.url = urllib.request.urlopen("https://raw.githubusercontent.com/sindresorhus/mnemonic-words/master/words.json")
         self.words = json.loads(self.url.read())
 
-    # @commands.command()
-    # @commands.has_role("IT")
-    # async def tag(self, ctx, member: discord.Member):
-    #     """tags a user"""
-    #     victim = member
-    #     user = ctx.message.author
+    @commands.command()
+    async def tag(self, ctx, member: discord.Member):
+        """tags a user"""
+        user = ctx.message.author
+        server = ctx.guild
+        user_roles = [(str(role)) for role in user.roles]
 
-    #     if str(victim) == 'Hamood#3840':
-    #         await ctx.send(f"{ctx.author.mention}, im on time out")
-    #     elif (str(victim) == str(user)):
-    #         await ctx.send(f"{ctx.author.mention}, you can't tag yourself")
-    #     else:
-    #         await user.remove_roles(discord.utils.get(user.guild.roles, name='IT'))
-    #         await victim.add_roles(discord.utils.get(victim.guild.roles, name='IT'))
-    #         await ctx.send((f"{member} is now it!").format(ctx))
+        #adds the 'it' role if it doesnt exist
+        if 'it!' not in [(str(role)) for role in server.roles]:
+            await server.create_role(name="it!", hoist=True) and await ctx.send("The role 'it!' was created")
+
+            if 'it!' not in user_roles:
+                await user.add_roles(discord.utils.get(user.guild.roles, name='it!'))
+                await ctx.send(f"{ctx.author.mention}, you are now it!")
+
+        if 'it!' in user_roles:
+            if str(member) == "Hamood#3840":
+                await ctx.send(f"{ctx.author.mention}, im on time out")
+            elif str(member) == str(user):
+                await ctx.send(f"{ctx.author.mention}, you can't tag yourself")
+            else:
+                await user.remove_roles(discord.utils.get(user.guild.roles, name='it!'))
+                await member.add_roles(discord.utils.get(member.guild.roles, name='it!'))
+                await ctx.send((f"{member.mention} is now it!").format(ctx))
+        else:
+            await ctx.send(f"{ctx.author.mention}, you arn't it!")
+
 
     @commands.command()
-    async def pp(self, ctx):
+    async def pp(self, ctx, member: discord.Member = None):
         """``pp`` returns your pp size"""
+        member = ctx.author if not member else member
         size = '8'
         length =  ''
         for i in range(random.randint(0,50)):
             length += '='
         size = size + length + 'D'
-        await ctx.send(f'{ctx.author.mention} :eggplant: size is **{size}**')
+        await ctx.send(f'{member.mention} :eggplant: size is **{size}**')
 
     @commands.command()
     async def sortinghat(self, ctx):
@@ -54,26 +67,29 @@ class Fun(commands.Cog):
         await ctx.send(f'{ctx.author.mention}, you belong to the **{house}** house!')
 
     @commands.command()
-    async def vibecheck(self, ctx):
+    async def vibecheck(self, ctx, member: discord.Member = None):
         """``vibecheck`` vibechecks you"""
+        member = ctx.author if not member else member
         random_word = random.choice(self.words)
-        await ctx.send(f"{ctx.author.mention} your vibe checked out to be **{random_word}**")
+        await ctx.send(f"{member.mention} your vibe checked out to be **{random_word}**")
         await ctx.message.add_reaction('✔️')
 
     @commands.command()
-    async def vibe(self, ctx):
+    async def vibe(self, ctx, member: discord.Member = None):
         """``vibe`` vibechecks you but better"""
+        member = ctx.author if not member else member
         fonts = self.bot.get_cog('Fonts')
         random_word = random.choice(self.words)
-        await ctx.send(f'{ctx.author.mention} your vibe checked out to be:')
+        await ctx.send(f'{member.mention} your vibe checked out to be:')
         await fonts.textPrep(ctx, (random_word), 'random', 500, 'random', 100)
 
 
     @commands.command(aliases=['roast me', 'roastme'])
-    async def roast(self, ctx):
-        """``roast`` roasts/insults you"""
+    async def roast(self, ctx, member: discord.Member = None):
+        """``roast [person]`` roasts/insults you"""
+        member = ctx.author if not member else member
         roast = message_functions.getRoast()
-        await ctx.send(f'{ctx.author.mention} {roast}')
+        await ctx.send(f'{member.mention} {roast}')
 
     @commands.command(aliases=["pop", "bubble"])
     async def bubblewrap(self, ctx, w=3, h=3):

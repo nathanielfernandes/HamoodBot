@@ -12,10 +12,8 @@ from discord.ext import commands
 #bot description
 description = '''Hamood is ur freind'''
 
-#the prefix the bot looks for before processing a message
+#the prefix the bot looks for before processing a message/
 bot = commands.Bot(command_prefix='', case_insensitive=True)
-
-
 
 @bot.event
 async def on_ready():
