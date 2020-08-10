@@ -25,17 +25,16 @@ class Fun(commands.Cog):
         """tags a user"""
         user = ctx.message.author
         server = ctx.guild
-        user_roles = [(str(role)) for role in user.roles]
 
         #adds the 'it' role if it doesnt exist
         if 'it!' not in [(str(role)) for role in server.roles]:
             await server.create_role(name="it!", hoist=True) and await ctx.send("The role 'it!' was created")
 
-            if 'it!' not in user_roles:
+            if 'it!' not in [(str(role)) for role in user.roles]:
                 await user.add_roles(discord.utils.get(user.guild.roles, name='it!'))
                 await ctx.send(f"{ctx.author.mention}, you are now it!")
 
-        if 'it!' in user_roles:
+        if 'it!' in [(str(role)) for role in user.roles]:
             if str(member) == "Hamood#3840":
                 await ctx.send(f"{ctx.author.mention}, im on time out")
             elif str(member) == str(user):
