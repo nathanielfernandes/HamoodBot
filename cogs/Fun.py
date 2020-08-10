@@ -32,7 +32,6 @@ class Fun(commands.Cog):
 
             if 'it!' not in [(str(role)) for role in user.roles]:
                 await user.add_roles(discord.utils.get(user.guild.roles, name='it!'))
-                await ctx.send(f"{ctx.author.mention}, you are now it!")
 
         if 'it!' in [(str(role)) for role in user.roles]:
             if str(member) == "Hamood#3840":

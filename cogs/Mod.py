@@ -42,6 +42,7 @@ class Mod(commands.Cog):
     @commands.command(aliases=['rename'])
     @commands.has_permissions(manage_nicknames=True)
     async def nickname(self, ctx, member: discord.Member = None, *, name: commands.clean_content = None):
+        """``nickname [@user] [newname]`` changes the nickname of a member"""
         await member.edit(nick=name) if (name != None) else None
 
 
