@@ -29,7 +29,6 @@ class Fun(commands.Cog):
         #adds the 'it' role if it doesnt exist
         if 'it!' not in [(str(role)) for role in server.roles]:
             await server.create_role(name="it!", hoist=True) and await ctx.send("The role 'it!' was created")
-
             if 'it!' not in [(str(role)) for role in user.roles]:
                 await user.add_roles(discord.utils.get(user.guild.roles, name='it!'))
 
