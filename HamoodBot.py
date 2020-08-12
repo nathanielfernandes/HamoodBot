@@ -80,7 +80,7 @@ async def on_message(message):
     elif message.content.startswith("im"):
         await message.channel.send(f"hi{message.content[2:]}, im hamood")
 
-    if message.content in responses:
+    elif message.content in responses:
         await message.channel.send(responses[message.content].format(message))
 
     await bot.process_commands(message)
