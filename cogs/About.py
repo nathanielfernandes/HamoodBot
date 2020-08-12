@@ -55,8 +55,7 @@ class About(commands.Cog):
         await ctx.send(f"```xl\n'pong! {self.bot.latency}```")
 
         
-    #This help command was Written by Jared Newsom (AKA Jared M.F.)!
-    #https://gist.github.com/StudioMFTechnologies/ad41bfd32b2379ccffe90b0e34128b8b
+    #This help command was implemented from [https://gist.github.com/StudioMFTechnologies/ad41bfd32b2379ccffe90b0e34128b8b]
     @commands.command()
     async def help(self,ctx,*cog):
         """Gets all cogs and commands of Hamood"""
@@ -73,7 +72,7 @@ class About(commands.Cog):
                 for y in self.bot.walk_commands():
                     if not y.cog_name and not y.hidden:
                         cmds_desc += ('{} - {}'.format(y.name,y.help)+'\n')
-                halp.add_field(name='Uncatergorized Commands',value=cmds_desc[0:len(cmds_desc)-1],inline=False)
+                #halp.add_field(name='Uncatergorized Commands',value=cmds_desc[0:len(cmds_desc)-1],inline=False)
                 await ctx.message.add_reaction(emoji='✉')
                 await ctx.send('',embed=halp)
             else:

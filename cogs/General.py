@@ -24,10 +24,10 @@ class General(commands.Cog):
             "what's up"]
         self.bad_replies = ["go away", "stop calling me"]
 
-    @commands.command(aliases=['hello','hi','hey', 'yo'])
-    async def greet(self, ctx):
+
+    @commands.command(aliases=['hi','hey', 'yo'])
+    async def hello(self, ctx):
         """``greet`` greets the user"""
-        
         await ctx.send(f"{random.choice(self.possible_responses)} {ctx.author.mention}")
 
     @commands.command()
