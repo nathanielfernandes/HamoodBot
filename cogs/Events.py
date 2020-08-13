@@ -35,7 +35,7 @@ class Events(commands.Cog):
                 await ctx.send(self.error_solutions[str(ctx.command)])
             except Exception:
                 print('error')
-        #raise error
+        raise error
 
 
 def setup(bot):
