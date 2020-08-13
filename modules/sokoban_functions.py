@@ -28,7 +28,7 @@ class Soko_ban():
                 self.run_level = True
                 self.level += 1
 
-                if (self.level%3) == 0:
+                if (self.level%5) == 0:
                     self.size[0] += 1
                     self.size[1] += 1
 
@@ -53,12 +53,6 @@ class Soko_ban():
                     self.grid[(self.size[0]*y) + self.size[0]-1] = 1
 
 
-        #adds boxes
-        for i in range(self.level//2):
-            placement = random.choice(self.grid)
-            self.grid[placement] = 1
-
-
         #finds available spots for boxes
         self.box_grid = list(self.grid)
         for y in range(self.size[1]):
@@ -77,7 +71,7 @@ class Soko_ban():
 
         self.box_pos = []
         #adds boxes
-        for i in range(self.level):
+        for i in range(self.level-(self.level//2)):
             placement = random.choice(self.spots)
             self.grid[placement] = 2
             (self.spots).remove(placement)
@@ -102,7 +96,7 @@ class Soko_ban():
 
         self.goal_pos = []
         #adds goals
-        for i in range(self.level):
+        for i in range(self.level-(self.level//2)):
             placement = random.choice(self.spots)
             self.grid[placement] = 4
             (self.spots).remove(placement)
@@ -152,8 +146,11 @@ class Soko_ban():
 
             elif self.move == 'shuffle':
                 self.create_level()
-                self.player_move()
-
+                self.grid = list(self.reserve_grid)
+                self.player_pos = int(self.reserve_player)
+                self.box_pos = list(self.reserve_box)
+                self.new_player_pos = int(self.player_pos)
+                
             self.update_board()
             
 
@@ -235,34 +232,5 @@ class Soko_ban():
                 row += str(self.tempGrid[x+(self.size[0]*y)])
             row += '\n'
             self.game_grid += row
-        #print(f'Level {self.level}:') ## Remaining Boxes: {self.level - self.completed}')
-       # print(self.game_grid)
-
-# games = {}
-
-# nid = '1234'
-# nem = '2323'
-
-# name = input('-')
-
-# games[name] = Soko_ban([5,3])
-
-# name = input('-')
-
-# games[name] = Soko_ban([5,3])
-
-# while True:
-#     check = input('----')
-#     games[check].player_move()
-#     if games[check].run_level == False:
-#         games[check].game_start()
-
-# newGame = Sokoban([5,3])
-# newGame.game_start()
-# while True:
-#     newGame.draw_board()
-#     newGame.player_move()
-#     if newGame.run_level == False:
-#         newGame.draw_board()
-#         newGame.game_start()
+  
         

@@ -14,9 +14,12 @@ class Sokoban(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.games = {}
-        self.themes = [[':black_large_square:', ':white_large_square:', ':blue_square:', ':white_large_square:', ':x:', ':pensive:', ':sweat_smile:'], 
-        [':black_large_square:', ':white_square_button:', ':cheese:', ':fork_knife_plate:', ':fork_and_knife:', ":mouse:", ":mouse_three_button:"],
-        [':black_large_square:', ':red_square:', ':white_heart:', ':heart:', ':kiss:', ":kissing:", ":kissing_heart:"]]
+        self.themes = [[':black_large_square:', ':purple_square:', ':white_large_square:', ':purple_square:', ':x:', ':pensive:', ':sweat_smile:'], 
+        [':black_large_square:', ':white_large_square:', ':cheese:', ':fork_knife_plate:', ':hole:', ":mouse:", ":mouse_three_button:"],
+        [':black_large_square:', ':red_square:', ':white_heart:', ':heart:', ':kiss:', ":kissing:", ":kissing_heart:"],
+        [':black_large_square:', ':green_square:', ':carrot:', ':moon_cake:', ':hole:', ":rabbit2:", ":rabbit:"],
+        [':black_large_square:', ':orange_square:', ':shell:', ':beach:', ':beach_umbrella:', ":crab:", ":shrimp:"]]
+        
 
     @commands.command()
     async def sokoban(self, ctx):
@@ -37,11 +40,12 @@ class Sokoban(commands.Cog):
         currentGame.message = msg 
         currentGame.sprites = random.choice(self.themes)
         
+        await currentGame.message.add_reaction(u"\u2B05")
         await currentGame.message.add_reaction(u"\u2B06")
         await currentGame.message.add_reaction(u"\u2B07")
-        await currentGame.message.add_reaction(u"\u2B05")
         await currentGame.message.add_reaction(u"\u27A1")
         await currentGame.message.add_reaction(u"\U0001F504")
+        await currentGame.message.add_reaction(u"\u267B")
         await currentGame.message.add_reaction('❌')
         await currentGame.message.add_reaction(u"\U0001F440")
 
@@ -71,6 +75,9 @@ class Sokoban(commands.Cog):
                 elif (str(payload.emoji) == u"\U0001F504"):
                     currentGame.move = 'reset'
                     await currentGame.message.remove_reaction(member=currentGame.user, emoji=u"\U0001F504")
+                elif (str(payload.emoji) == u"\u267B"):
+                    currentGame.move = 'shuffle'
+                    await currentGame.message.remove_reaction(member=currentGame.user, emoji=u"\u267B")
                 elif (str(payload.emoji) == '❌'):
                     await currentGame.message.delete()
                     self.games.pop(game_id)
@@ -92,8 +99,12 @@ class Sokoban(commands.Cog):
         currentGame.draw_board()
         if currentGame.run_level == False:
             currentGame.game_start()
+            msg = f"Click Any Button To Go To Level {currentGame.level}:"
+        else:
+            msg = f"Sokoban Level {currentGame.level}:"
 
-        embed = discord.Embed(title=f"Sokoban Level {currentGame.level}:", description=f"{currentGame.game_grid}", color=discord.Color.blue())
+
+        embed = discord.Embed(title=msg, description=f"{currentGame.game_grid}", color=discord.Color.blue())
         await currentGame.message.edit(embed=embed)
 
 
