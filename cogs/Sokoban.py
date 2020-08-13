@@ -14,7 +14,12 @@ class Sokoban(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.games = {}
-        self.themes = [[':black_large_square:', ':purple_square:', ':white_large_square:', ':purple_square:', ':x:', ':pensive:', ':sweat_smile:'], 
+        self.themes = [[':black_large_square:', ':red_square:', ':white_large_square:', ':red_square:', ':x:', ':pensive:', ':sweat_smile:'],
+        [':black_large_square:', ':orange_square:', ':white_large_square:', ':orange_square:', ':x:', ':pensive:', ':sweat_smile:'],
+        [':black_large_square:', ':yellow_square:', ':white_large_square:', ':yellow_square:', ':x:', ':pensive:', ':sweat_smile:'],
+        [':black_large_square:', ':green_square:', ':white_large_square:', ':green_square:', ':x:', ':pensive:', ':sweat_smile:'],
+        [':black_large_square:', ':blue_square:', ':white_large_square:', ':blue_square:', ':x:', ':pensive:', ':sweat_smile:'],
+        [':black_large_square:', ':purple_square:', ':white_large_square:', ':purple_square:', ':x:', ':pensive:', ':sweat_smile:'], 
         [':black_large_square:', ':white_large_square:', ':cheese:', ':fork_knife_plate:', ':hole:', ":mouse:", ":mouse_three_button:"],
         [':black_large_square:', ':red_square:', ':white_heart:', ':heart:', ':kiss:', ":kissing:", ":kissing_heart:"],
         [':black_large_square:', ':green_square:', ':carrot:', ':moon_cake:', ':hole:', ":rabbit2:", ":rabbit:"],
