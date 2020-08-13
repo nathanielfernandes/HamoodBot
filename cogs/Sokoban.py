@@ -39,7 +39,8 @@ class Sokoban(commands.Cog):
         #max [9, 7]
         self.games[game_id] = sokoban_functions.Soko_ban([5,3], ctx.author, None)
 
-        msg = await ctx.send(f"{ctx.author.mention}'s Game:")
+        msg = await ctx.send(embed=discord.Embed(title='Loading... :arrows_counterclockwise:'))
+        #await ctx.send(f"{ctx.author.mention}'s Game:")
 
         currentGame = self.games[game_id]
         currentGame.message = msg 
@@ -51,9 +52,9 @@ class Sokoban(commands.Cog):
         await currentGame.message.add_reaction(u"\u27A1")
         await currentGame.message.add_reaction(u"\U0001F504")
         await currentGame.message.add_reaction(u"\u267B")
-        await currentGame.message.add_reaction('❌')
         await currentGame.message.add_reaction(u"\U0001F440")
-
+        await currentGame.message.add_reaction('❌')
+        
         await self.create_board(game_id)
 
 
@@ -88,6 +89,7 @@ class Sokoban(commands.Cog):
                     self.games.pop(game_id)
                     return
                 elif (str(payload.emoji) == u"\U0001F440"):
+                    currentGame.move = None
                     try:
                         currentGame.sprites = self.themes[self.themes.index(currentGame.sprites) + 1]
                     except Exception:
@@ -109,7 +111,11 @@ class Sokoban(commands.Cog):
             msg = f"Sokoban Level {currentGame.level}:"
 
 
-        embed = discord.Embed(title=msg, description=f"{currentGame.game_grid}", color=discord.Color.blue())
+        embed = discord.Embed(title=msg, description=f"{currentGame.game_grid}", color=currentGame.user.color)
+        embed.set_author(name=f"{currentGame.user}'s game", icon_url=currentGame.user.avatar_url)
+       # embed.set_thumbnail(url=currentGame.user.avatar_url)
+        embed.set_footer(text=f"Boxes Left: {len(currentGame.box_pos) - currentGame.completed}      Theme: {self.themes.index(currentGame.sprites) + 1}")
+        #embed.add_field(name=f"{currentGame.user.mention}")
         await currentGame.message.edit(embed=embed)
 
 
