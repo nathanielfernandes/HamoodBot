@@ -28,15 +28,17 @@ class Soko_ban():
                 self.run_level = True
                 self.level += 1
 
-                if (self.level%5) == 0:
-                    self.size[0] += 1
-                    self.size[1] += 1
+                if self.level <= 29:
+                    if (self.level%5) == 0:
+                        self.size[0] += 1
+                        self.size[1] += 1
 
             self.run_level = True
             self.create_level()
 
 
     def create_level(self):
+        check = int(self.level) if self.level <= 34 else 34
         #creates playing space
         self.grid = []
 
@@ -71,17 +73,12 @@ class Soko_ban():
 
         self.box_pos = []
         #adds boxes
-        for i in range(self.level-(self.level//2)):
+        for i in range(check-(check//2)):
             placement = random.choice(self.spots)
             self.grid[placement] = 2
             (self.spots).remove(placement)
             self.box_pos.append(placement)
 
-        #checks if level may be impossible
-        for pos in self.box_pos:
-            if (pos in self.box_pos) and (pos+1 in self.box_pos) and (pos+self.size[0] in self.box_pos) and (pos+self.size[0]+1 in self.box_pos):
-                self.create_level()
-                
         #finds empty spots
         self.spots = [] 
         for i in range(len(self.grid)):
@@ -96,7 +93,7 @@ class Soko_ban():
 
         self.goal_pos = []
         #adds goals
-        for i in range(self.level-(self.level//2)):
+        for i in range(check-(check//2)):
             placement = random.choice(self.spots)
             self.grid[placement] = 4
             (self.spots).remove(placement)
@@ -107,6 +104,11 @@ class Soko_ban():
         self.reserve_grid = list(self.grid)
         self.reserve_player = int(self.player_pos)
         self.reserve_box = list(self.box_pos)
+
+                #checks if level may be impossible
+        for pos in self.box_pos:
+            if (pos in self.box_pos) and (pos+1 in self.box_pos) and (pos+self.size[0] in self.box_pos) and (pos+self.size[0]+1 in self.box_pos):
+                self.create_level()
 
         return self.grid
     
@@ -128,9 +130,15 @@ class Soko_ban():
             elif self.move == 'right': 
                 self.new_player_pos += 1
 
-
             #resets level
-            if self.move == 'reset':
+            elif self.move == 'reset':
+                self.grid = list(self.reserve_grid)
+                self.player_pos = int(self.reserve_player)
+                self.box_pos = list(self.reserve_box)
+                self.new_player_pos = int(self.player_pos)
+
+            elif self.move == 'shuffle':
+                self.create_level()
                 self.grid = list(self.reserve_grid)
                 self.player_pos = int(self.reserve_player)
                 self.box_pos = list(self.reserve_box)
@@ -144,13 +152,6 @@ class Soko_ban():
             elif self.move == 'next':
                 self.box_pos = list(self.goal_pos)
 
-            elif self.move == 'shuffle':
-                self.create_level()
-                self.grid = list(self.reserve_grid)
-                self.player_pos = int(self.reserve_player)
-                self.box_pos = list(self.reserve_box)
-                self.new_player_pos = int(self.player_pos)
-                
             self.update_board()
             
 
@@ -208,8 +209,6 @@ class Soko_ban():
                 if box in self.goal_pos:
                     self.grid[box] = 3
                     self.completed += 1
-
-
 
             #checks if all boxes are over thier goals
             if sorted(self.box_pos) == sorted(self.goal_pos):

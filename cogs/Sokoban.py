@@ -85,18 +85,21 @@ class Sokoban(commands.Cog):
                 elif (str(payload.emoji) == u"\u267B"):
                     currentGame.move = 'shuffle'
                     await currentGame.message.remove_reaction(member=currentGame.user, emoji=u"\u267B")
-                elif (str(payload.emoji) == '❌'):
-                    await currentGame.message.delete()
-                    self.games.pop(game_id)
-                    return
                 elif (str(payload.emoji) == u"\U0001F440"):
                     currentGame.move = None
                     try:
                         currentGame.sprites = self.themes[self.themes.index(currentGame.sprites) + 1]
                     except Exception:
                         currentGame.sprites = self.themes[0]
-
                     await currentGame.message.remove_reaction(member=currentGame.user, emoji=u"\U0001F440")
+                elif (str(payload.emoji) == '❌'):
+                    await currentGame.message.delete()
+                    self.games.pop(game_id)
+                    return
+                elif (str(payload.emoji) == u"\u23E9"):
+                    currentGame.move = 'next'
+                    await currentGame.message.remove_reaction(member=currentGame.user, emoji=u"\u23E9")
+
             
                 await self.create_board(game_id)
 
