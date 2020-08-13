@@ -44,46 +44,47 @@ responses = {
 
 @bot.event
 async def on_message(message):
-        #checks again to make sure the bot does not reply to itself
-    if message.author.id == bot.user.id:
-        return
-    try:
-        nsfw = message.channel.is_nsfw()
-    except Exception:
-        nsfw = False
-
-    profane, badword = message_functions.profCheck((message.content).lower())
-    
-    if (profane):
-        if ("hamood" in message.content):
-            uno = image_functions.unoCard()
-            await message.channel.send(file=discord.File(uno))
-            await message.channel.send(f'{message.author.mention} No U!')
+    if message.guild is not None:
+            #checks again to make sure the bot does not reply to itself
+        if message.author.id == bot.user.id:
             return
-        else:
-            if not nsfw:
-                if len(badword) == 1:
-                    punc = 'is a bad word'
-                else:
-                    punc = 'are bad words'
+        try:
+            nsfw = message.channel.is_nsfw()
+        except Exception:
+            nsfw = False
 
-                badword = ', '.join(badword)
-
-                if (profanity_action == 2):
-                    await message.channel.purge(limit=1)
-                    await message.channel.send(f'**{message.author.mention} said: ||"{message.content}"||, ||"{badword}"|| {punc}, watch your profanity!**')
-                else:
-                    await message.add_reaction('❌')
-                    await message.channel.send(f'**{message.author.mention}, ||{badword}|| {punc}, watch your profanity!**')
+        profane, badword = message_functions.profCheck((message.content).lower())
+        
+        if (profane):
+            if ("hamood" in message.content):
+                uno = image_functions.unoCard()
+                await message.channel.send(file=discord.File(uno))
+                await message.channel.send(f'{message.author.mention} No U!')
                 return
+            else:
+                if not nsfw:
+                    if len(badword) == 1:
+                        punc = 'is a bad word'
+                    else:
+                        punc = 'are bad words'
 
-    elif message.content.startswith("im"):
-        await message.channel.send(f"hi{message.content[2:]}, im hamood")
+                    badword = ', '.join(badword)
 
-    elif message.content in responses:
-        await message.channel.send(responses[message.content].format(message))
+                    if (profanity_action == 2):
+                        await message.channel.purge(limit=1)
+                        await message.channel.send(f'**{message.author.mention} said: ||"{message.content}"||, ||"{badword}"|| {punc}, watch your profanity!**')
+                    else:
+                        await message.add_reaction('❌')
+                        await message.channel.send(f'**{message.author.mention}, ||{badword}|| {punc}, watch your profanity!**')
+                    return
 
-    await bot.process_commands(message)
+        elif message.content.startswith("im"):
+            await message.channel.send(f"hi{message.content[2:]}, im hamood")
+
+        elif message.content in responses:
+            await message.channel.send(responses[message.content].format(message))
+
+        await bot.process_commands(message)
 
 
 @bot.command()
