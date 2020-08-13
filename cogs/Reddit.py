@@ -27,6 +27,7 @@ class Reddit(commands.Cog):
 
 
     @commands.command(aliases=['reddit'])
+    @commands.has_permissions(embed_links=True)
     async def red(self, ctx, redditSub=None):
         """``red [subreddit]`` finds a post from your specified subreddit"""
         if (redditSub == None):
@@ -36,46 +37,54 @@ class Reddit(commands.Cog):
 
 
     @commands.command(aliases=['memes'])
+    @commands.has_permissions(embed_links=True)
     async def meme(self, ctx):
         """``meme`` quickly sends a meme from r/meme"""
         await self.redditPrep(ctx, 'memes')
 
     @commands.command(aliases=['cats', 'noura'])
+    @commands.has_permissions(embed_links=True)
     async def cat(self, ctx):
         """``cat`` quickly sends a cat from r/cats"""
         await self.redditPrep(ctx, 'cats')
 
     @commands.command(aliases=['curse'])
+    @commands.has_permissions(embed_links=True)
     async def cursed(self, ctx):
         """``cursed`` quickly sends a post from r/cursedimages"""
         await self.redditPrep(ctx, 'cursedimages')
 
     @commands.command(aliases=['blur'])
+    @commands.has_permissions(embed_links=True)
     async def blursed(self, ctx):
         """``blursed`` quickly sends a post from r/blursedimages"""
         await self.redditPrep(ctx, 'blursedimages')
 
     @commands.command(aliases=['bless'])
+    @commands.has_permissions(embed_links=True)
     async def blessed(self, ctx):
         """``blessed`` quickly sends a post from r/Blessed_Images"""
         await self.redditPrep(ctx, 'Blessed_Images')
 
     @commands.command(aliases=['pizza', 'time', 'pizza time', 'ayan'])
+    @commands.has_permissions(embed_links=True)
     async def pizzatime(self, ctx):
         """its pizza time!"""
         await self.redditPrep(ctx, 'raimimemes')
 
     @commands.command(aliases=["dogs", "doggy", "doge"])
+    @commands.has_permissions(embed_links=True)
     async def dog(self, ctx):
         """``dog`` quickly sends a dog from r/dogs"""
         await self.redditPrep(ctx, 'dog')
 
     @commands.command()
-    async def spam(self, ctx, redditSub='random', amount='2'):
+    @commands.has_permissions(embed_links=True)
+    async def spam(self, ctx, redditSub='random', amount='1'):
         """``spam [subreddit] [amount]`` sends a number of posts from a specified subreddit (max=10)"""
         amount = int(amount)
-        if amount > 10:
-            amount = 10
+        if amount > 5:
+            amount = 5
         amount = int(amount)
         for i in range(amount):
             if (redditSub == "random"):

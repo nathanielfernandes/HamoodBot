@@ -18,6 +18,7 @@ class About(commands.Cog):
             self.running = "?"
 
     @commands.command()
+    @commands.has_permissions(embed_links=True)
     async def info(self, ctx):
         """``info`` About Hamood"""
         embed = discord.Embed(title="Hamood", description="Hamood is a Discord bot written with [discord.py](https://github.com/Rapptz/discord.py) that has a variety of helpful and fun functions.", color=discord.Color.blue())
@@ -57,6 +58,7 @@ class About(commands.Cog):
         
     #This help command was implemented from [https://gist.github.com/StudioMFTechnologies/ad41bfd32b2379ccffe90b0e34128b8b]
     @commands.command()
+    @commands.has_permissions(embed_links=True)
     async def help(self,ctx,*cog):
         """Gets all cogs and commands of Hamood"""
         try:

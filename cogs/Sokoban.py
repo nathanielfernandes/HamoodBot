@@ -27,6 +27,7 @@ class Sokoban(commands.Cog):
         
 
     @commands.command()
+    @commands.has_permissions(embed_links=True)
     async def sokoban(self, ctx):
         """``sokoban`` starts a new sokoban game"""
         game_id = str(ctx.guild.id) + str(ctx.author.id)# if ctx.guild != None else str(ctx.author.id)
