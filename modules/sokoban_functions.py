@@ -12,10 +12,12 @@ class Soko_ban():
         self.completed = 0
         
         self.move = None
-
+        self.moves = 0
         #discord
+        self.theme_num = random.randint(0,7)
         self.user = user
         self.message = msg
+        self.timer = None
 
         self.game_start()
 
@@ -28,7 +30,7 @@ class Soko_ban():
                 self.run_level = True
                 self.level += 1
 
-                if self.level <= 29:
+                if self.level <= 25:
                     if (self.level%5) == 0:
                         self.size[0] += 1
                         self.size[1] += 1
@@ -123,12 +125,16 @@ class Soko_ban():
             self.last_move = ''
             if self.move == 'up': 
                 self.new_player_pos -= int(self.size[0])
+                self.moves += 1
             elif self.move == 'down': 
                 self.new_player_pos += int(self.size[0])
+                self.moves += 1
             elif self.move == 'left': 
                 self.new_player_pos -= 1
+                self.moves += 1
             elif self.move == 'right': 
                 self.new_player_pos += 1
+                self.moves += 1
 
             #resets level
             elif self.move == 'reset':
