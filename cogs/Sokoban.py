@@ -96,9 +96,7 @@ class Sokoban(commands.Cog):
                         currentGame.sprites = self.themes[currentGame.theme_num]
                         await currentGame.message.remove_reaction(member=currentGame.user, emoji=u"\U0001F440")
                     elif (str(payload.emoji) == '❌'):
-                        await currentGame.message.delete()
-                        self.games.pop(game_id)
-                        currentGame.timer.cancel()
+                        await self.create_board(game_id, True)
                         return
                     elif (str(payload.emoji) == u"\u23E9"):
                         currentGame.move = 'next'
@@ -106,41 +104,46 @@ class Sokoban(commands.Cog):
 
                     await self.create_board(game_id)
 
+
+
     async def overtime(self, gameID):
         await asyncio.sleep(600)
-        game = self.games[gameID]
-        await game.message.delete()
-        self.games.pop(gameID)
+        await self.create_board(gameID, True)
                 
 
-    async def create_board(self, gameID):
-
+    async def create_board(self, gameID, delete=False):
         currentGame = self.games[gameID]
-        currentGame.player_move()
-        currentGame.draw_board()
-        if currentGame.run_level == False:
-            currentGame.game_start()
-            msg = f"Click Any Button To Go To Level {currentGame.level}:"
-            currentGame.moves -= 1
+        if not delete:
+            currentGame.player_move()
+            currentGame.draw_board()
+            if currentGame.run_level == False:
+                currentGame.game_start()
+                msg = f"Click Any Button To Go To Level {currentGame.level}:"
+                currentGame.moves -= 1
+            else:
+                msg = f"Sokoban Level {currentGame.level}:"
+
+            embed = discord.Embed(title=msg, description=f"{currentGame.game_grid}", color=currentGame.user.color)
+            embed.set_author(name=f"{currentGame.user}'s game", icon_url=currentGame.user.avatar_url)
+            embed.add_field(name=f"{currentGame.sprites[2]} Boxes Left: {len(currentGame.box_pos) - currentGame.completed}     {currentGame.sprites[5]} Moves: {currentGame.moves}",
+            value="auto delete in 10 mins")
+
+            await currentGame.message.edit(embed=embed)
+
+            try:
+                currentGame.timer.cancel()
+            except Exception:
+                print('no game to delete')
+
+            currentGame.timer = asyncio.create_task(self.overtime(gameID))
         else:
-            msg = f"Sokoban Level {currentGame.level}:"
-
-        embed = discord.Embed(title=msg, description=f"{currentGame.game_grid}", color=currentGame.user.color)
-        embed.set_author(name=f"{currentGame.user}'s game", icon_url=currentGame.user.avatar_url)
-        # embed.set_thumbnail(url=currentGame.user.avatar_url)
-        embed.add_field(name=f"{currentGame.sprites[2]} Boxes Left: {len(currentGame.box_pos) - currentGame.completed}     {currentGame.sprites[5]} Moves: {currentGame.moves}",
-        value="------------------------------------")
-        #embed.add_field(name=f"{currentGame.user.mention}")
-        await currentGame.message.edit(embed=embed)
-
-        try:
+            embed = discord.Embed(title='Sokoban')
+            embed.set_author(name=f"{currentGame.user} made it to level {currentGame.level}!", icon_url=currentGame.user.avatar_url)
+            embed.set_footer(text="Game was deleted.")
+            await currentGame.message.clear_reactions()
+            await currentGame.message.edit(embed=embed)
             currentGame.timer.cancel()
-        except Exception:
-            print('no game to delete')
-
-        currentGame.timer = asyncio.create_task(self.overtime(gameID))
-
-
+            self.games.pop(gameID)
 
 def setup(bot):
     bot.add_cog(Sokoban(bot))  
