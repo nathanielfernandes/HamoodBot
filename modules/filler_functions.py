@@ -8,7 +8,7 @@ class Filler():
         #self.sprites = [u"\U0001F494", 	u"\U0001F497", 	u"\U0001F49B", 	u"\U0001F49A", 	u"\U0001F499", 	u"\U0001F49C", u"\u2B1B"]
         self.oneColour = []
         self.twoColour = []
-        self.turn = 1
+        self.turn = -1
         self.run_level = True
         self.sprites = [":red_square:", ":orange_square:", ":yellow_square:", ":green_square:", ":blue_square:", ":purple_square:", ':black_large_square:']
 
@@ -20,7 +20,7 @@ class Filler():
         self.fill_board()
 
         self.current_player = self.playerTwo
-        
+
     def fill_board(self):
         #creates playing space
         self.grid = []

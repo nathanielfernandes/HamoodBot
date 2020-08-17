@@ -94,7 +94,7 @@ class Filler(commands.Cog):
             if not currentGame.run_level:
                 winner = currentGame.get_winner()
                 if winner != False:
-                    msg = f"{currentGame.sprites[currentGame.current_colour]} {winner} won the game!"
+                    msg = f"{winner} won the game!"
                 else:
                     msg = "It's a draw!"
                     
