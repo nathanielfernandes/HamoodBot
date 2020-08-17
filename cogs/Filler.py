@@ -15,7 +15,7 @@ class Filler(commands.Cog):
         self.bot = bot
         self.games = {}
         self.keys = {}
-        self.emojis = [	u"\U0001F7E5", 	u"\U0001F7E7", 	u"\U0001F7E8", u"\U0001F7E9", u"\U0001F7E6"', u"\U0001F7EA"]
+        self.emojis = [u"\U0001F7E5", u"\U0001F7E7", u"\U0001F7E8", u"\U0001F7E9", u"\U0001F7E6", u"\U0001F7EA"]
     
 
 
