@@ -37,7 +37,7 @@ class Filler(commands.Cog):
     @commands.has_permissions(embed_links=True)
     async def filler(self, ctx, member: discord.Member = None):
         """``filler [@opponent]`` starts a new filler game (games auto delete if theres no input for 10 minutes)"""
-        if member == None or member.bot:  # or member == ctx.author:
+        if member == None or member.bot or member == ctx.author:
             await ctx.send("tag a user you want to play against")
             return
 
