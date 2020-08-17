@@ -15,7 +15,7 @@ class Filler(commands.Cog):
         self.bot = bot
         self.games = {}
         self.keys = {}
-        self.emojis = ['\N{LARGE RED SQUARE}', '\N{LARGE ORANGE SQUARE}', '\N{LARGE YELLOW SQUARE}','\N{LARGE GREEN SQUARE}' , '\N{LARGE BLUE SQUARE}', '\N{LARGE PURPLE SQUARE}']
+        self.emojis = [	u"\U0001F7E5", 	u"\U0001F7E7", 	u"\U0001F7E8", u"\U0001F7E9", u"\U0001F7E6"', u"\U0001F7EA"]
     
 
 
