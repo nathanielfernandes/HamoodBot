@@ -7,12 +7,12 @@ I decided to create Hamood as a fun qurantine project to learn new skills.
 Hamood's name and profile picture is an inside joke based off the [Yotube](https://knowyourmeme.com/memes/yotube) kid meme.
 
 ## Highlighted Features
+### Filler ``New``
+You can now play the popular imsg game 'Filler' with hamood
 ### Sokoban ``New!``
 You can now play Sokoban with Hamood
 ### Covid-19 Statistics ``New!``
 Hamood can send the latest Covid-19 statistics of any country from [worldometer](https://www.worldometers.info/coronavirus/).
-### Profanity Dectection
-Hamood calls out anyone that uses profane words
 ### Custom Text Generated Memes
 You can generate custom memes with your own text with the meme templates Hamood has.
 ### Reddit Posts

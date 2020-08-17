@@ -116,8 +116,8 @@ async def reload(ctx, cog):
         bot.load_extension(f"cogs.{cog}")
         await ctx.send(f"{cog} got reloaded")
     except Exception as e:
-            print(f"{cog} cannot be loaded:")
-            raise e
+        print(f"{cog} cannot be loaded:")
+        raise e
 
 @bot.command()
 @commands.is_owner()
@@ -127,8 +127,8 @@ async def unload(ctx, cog):
         bot.unload_extension(f"cogs.{cog}")
         await ctx.send(f"{cog} got unloaded")
     except Exception as e:
-            print(f"{cog} cannot be unloaded:")
-            raise e
+        print(f"{cog} cannot be unloaded:")
+        raise e
 
 @bot.command()
 @commands.is_owner()
@@ -138,8 +138,8 @@ async def load(ctx, cog):
         bot.load_extension(f"cogs.{cog}")
         await ctx.send(f"{cog} got loaded")
     except Exception as e:
-            print(f"{cog} cannot be loaded:")
-            raise e
+        print(f"{cog} cannot be loaded:")
+        raise e
 
 #loads in all cogs
 for cog in os.listdir("./cogs"):

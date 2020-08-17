@@ -32,10 +32,8 @@ class Sokoban(commands.Cog):
         """``sokoban`` starts a new sokoban game (games auto delete if theres no input for 10 minutes)"""
         game_id = str(ctx.guild.id) + str(ctx.author.id)# if ctx.guild != None else str(ctx.author.id)
         
-        try:
+        if game_id in self.games:
             await self.games[game_id].message.delete()
-        except KeyError:
-            print('new game')
 
         #max [9, 7]
         self.games[game_id] = sokoban_functions.Soko_ban([5,3], ctx.author, None)
@@ -62,7 +60,7 @@ class Sokoban(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         if payload.user_id != self.bot.user.id:
-            game_id = str(payload.guild_id) + str(payload.user_id)# if payload.guild_id != None else str(payload.user_id)
+            game_id = str(payload.guild_id) + str(payload.user_id)
             
             if game_id in self.games:
                 currentGame = self.games[game_id]
@@ -116,7 +114,7 @@ class Sokoban(commands.Cog):
         if not delete:
             currentGame.player_move()
             currentGame.draw_board()
-            if currentGame.run_level == False:
+            if not currentGame.run_level:
                 currentGame.game_start()
                 msg = f"Click Any Button To Go To Level {currentGame.level}:"
                 currentGame.moves -= 1
@@ -130,10 +128,8 @@ class Sokoban(commands.Cog):
 
             await currentGame.message.edit(embed=embed)
 
-            try:
+            if currentGame.timer:
                 currentGame.timer.cancel()
-            except Exception:
-                print('no game to delete')
 
             currentGame.timer = asyncio.create_task(self.overtime(gameID))
         else:
@@ -144,6 +140,7 @@ class Sokoban(commands.Cog):
             await currentGame.message.edit(embed=embed)
             currentGame.timer.cancel()
             self.games.pop(gameID)
+
 
 def setup(bot):
     bot.add_cog(Sokoban(bot))  
