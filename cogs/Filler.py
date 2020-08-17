@@ -24,12 +24,20 @@ class Filler(commands.Cog):
             "\U0001F7E6",
             "\U0001F7EA",
         ]
+        self.colors = [
+            discord.Color.red(),
+            discord.Color.orange(),
+            discord.Color.gold(),
+            discord.Color.green(),
+            discord.Color.blue(),
+            discord.Color.purple(),
+        ]
 
     @commands.command()
     @commands.has_permissions(embed_links=True)
     async def filler(self, ctx, member: discord.Member = None):
         """``filler [@opponent]`` starts a new filler game (games auto delete if theres no input for 10 minutes)"""
-        if member == None or member.bot or member == ctx.author:
+        if member == None or member.bot:  # or member == ctx.author:
             await ctx.send("tag a user you want to play against")
             return
 
@@ -121,7 +129,8 @@ class Filler(commands.Cog):
             if not currentGame.run_level:
                 winner = currentGame.get_winner()
                 if winner != False:
-                    msg = f"{winner} won the game!"
+                    currentGame.update_player()
+                    msg = f"{currentGame.sprites[currentGame.current_colour]} {winner} won the game!"
                 else:
                     msg = "It's a draw!"
 
@@ -139,7 +148,7 @@ class Filler(commands.Cog):
             embed = discord.Embed(
                 title=msg,
                 description=f"{currentGame.game_grid}",
-                color=currentGame.current_player.color,
+                color=self.colors[currentGame.current_colour],
             )
             # embed.set_author(name=f"| Filler |")
             embed.add_field(
