@@ -1,4 +1,3 @@
-import filler_functions
 import os
 import sys
 import asyncio
@@ -7,6 +6,8 @@ from discord.ext import commands
 
 path = os.path.split(os.getcwd())[0] + "/" + os.path.split(os.getcwd())[1] + "/modules"
 sys.path.insert(1, path)
+
+import filler_functions
 
 
 class Filler(commands.Cog):
@@ -133,10 +134,15 @@ class Filler(commands.Cog):
             if not currentGame.run_level:
                 winner = currentGame.get_winner()
                 if winner != False:
-                    currentGame.update_player()
-                    msg = f"{currentGame.sprites[currentGame.current_colour]} {winner} won the game!"
+                    if winner == currentGame.playerOne:
+                        msg = f"{currentGame.sprites[currentGame.one_pick]} {winner} won the game!"
+                        colour = self.colors[currentGame.one_pick]
+                    elif winner == currentGame.playerTwo:
+                        colour = self.colors[currentGame.two_pick]
+                        msg = f"{currentGame.sprites[currentGame.two_pick]} {winner} won the game!"
                 else:
                     msg = "It's a draw!"
+                    colour = discord.Color.default()
 
                 currentGame.timer.cancel()
                 self.games.pop(gameID)
@@ -154,11 +160,9 @@ class Filler(commands.Cog):
                     currentGame.timer.cancel()
 
                 currentGame.timer = asyncio.create_task(self.overtime(gameID))
-
+                colour = self.colors[currentGame.current_colour]
             embed = discord.Embed(
-                title=msg,
-                description=f"{currentGame.game_grid}",
-                color=self.colors[currentGame.current_colour],
+                title=msg, description=f"{currentGame.game_grid}", color=colour,
             )
             # embed.set_author(name=f"| Filler |")
             embed.add_field(
