@@ -45,6 +45,10 @@ class Filler(commands.Cog):
             await ctx.send("The member you tagged is currently in a game!")
             return
 
+        elif str(ctx.guild.id) + str(ctx.author.id) in self.keys:
+            await ctx.send("You are currently in a game!")
+            return
+
         self.keys[str(ctx.guild.id) + str(ctx.author.id)] = (
             str(ctx.guild.id) + str(ctx.author.id) + str(member.id)
         )
