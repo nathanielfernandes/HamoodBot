@@ -136,6 +136,12 @@ class Filler(commands.Cog):
 
                 currentGame.timer.cancel()
                 self.games.pop(gameID)
+                self.keys.pop(
+                    str(currentGame.server.id) + str(currentGame.playerOne.id)
+                )
+                self.keys.pop(
+                    str(currentGame.server.id) + str(currentGame.playerTwo.id)
+                )
                 await currentGame.message.clear_reactions()
             else:
                 msg = f"Filler | {currentGame.sprites[currentGame.current_colour]} {currentGame.current_player}'s Turn"
