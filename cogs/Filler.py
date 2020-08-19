@@ -167,7 +167,7 @@ class Filler(commands.Cog):
             # embed.set_author(name=f"| Filler |")
             embed.add_field(
                 name=f"{currentGame.sprites[currentGame.one_pick]} {currentGame.playerOne}: {currentGame.amountOne}       {currentGame.sprites[currentGame.two_pick]} {currentGame.playerTwo}: {currentGame.amountTwo}",
-                value="auto delete in 5 mins",
+                value="-",
             )
 
             await currentGame.message.edit(embed=embed)
