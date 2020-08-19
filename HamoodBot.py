@@ -36,7 +36,6 @@ async def on_ready():
     print("-------------------")
 
 
-profanity_action = 1
 responses = {
     "bye": "goodbye {0.author.mention}",
     "goodnight": "goodnight {0.author.mention}",
@@ -74,17 +73,10 @@ async def on_message(message):
                         punc = "are bad words"
 
                     badword = ", ".join(badword)
-
-                    if profanity_action == 2:
-                        await message.channel.purge(limit=1)
-                        await message.channel.send(
-                            f'**{message.author.mention} said: ||"{message.content}"||, ||"{badword}"|| {punc}, watch your profanity!**'
-                        )
-                    else:
-                        await message.add_reaction("❌")
-                        await message.channel.send(
-                            f"**{message.author.mention}, ||{badword}|| {punc}, watch your profanity!**"
-                        )
+                    await message.add_reaction("❌")
+                    await message.channel.send(
+                        f"**{message.author.mention}, ||{badword}|| {punc}, watch your profanity!**"
+                    )
                     return
 
         elif message.content.startswith("im"):
