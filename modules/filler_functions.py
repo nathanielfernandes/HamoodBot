@@ -141,14 +141,3 @@ class Filler:
             row += "\n"
             self.game_grid += row
 
-    # print(self.oneColour, self.twoColour)
-
-
-# game = Filler([8,7])
-# game.fill_board()
-
-# while True:
-#     game.draw_board()
-#     game.player_turn()
-#     if not game.run_level:
-#         print('ooga booga')

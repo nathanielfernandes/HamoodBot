@@ -31,6 +31,7 @@ class User(commands.Cog):
         embed.set_author(name=f"Avatar - {member}")
 
         embed.set_image(url=member.avatar_url)
+
         embed.set_footer(
             text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
         )
