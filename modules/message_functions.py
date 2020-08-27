@@ -8,11 +8,11 @@ badWords = [badword[:-1] for badword in open(file, "r", encoding="utf-8").readli
 
 def profCheck(content):
     badword = list(
-        dict.fromkeys([bad for bad in badWords if bad in content and len(bad) > 3])
+        dict.fromkeys([bad for bad in badWords if bad in content and len(bad) > 4])
     )
     badword += list(
         dict.fromkeys(
-            [bad for bad in badWords if bad in content.split() and len(bad) <= 3]
+            [bad for bad in badWords if bad in content.split() and len(bad) <= 4]
         )
     )
     profane = True if badword else False
