@@ -1,4 +1,5 @@
 import discord
+import asyncio
 from discord.ext import commands
 
 
@@ -74,9 +75,14 @@ class Mod(commands.Cog):
                     f"{member.name}'s voice channel", category=after.channel.category
                 )
                 await member.move_to(channel, reason=None)
-                await member.guild.system_channel.send(
+                msg = await member.guild.system_channel.send(
                     f"{member.name} created a temporary channel! {await channel.create_invite()}"
                 )
+                await asyncio.create_task(self.delete_invite(msg))
+
+    async def delete_invite(self, msg):
+        await asyncio.sleep(30)
+        await msg.delete()
 
 
 def setup(bot):
