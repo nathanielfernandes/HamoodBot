@@ -10,11 +10,12 @@ import random
 import discord
 from discord.ext import commands
 
-path = os.path.split(os.getcwd())[0] + "/" + os.path.split(os.getcwd())[1] + "/modules"
-sys.path.insert(1, path)
+sys.path.insert(
+    1, f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/modules"
+)
 
-import message_functions
 import image_functions
+import message_functions
 
 # bot description
 description = """Hamood is ur freind"""
@@ -176,4 +177,3 @@ except KeyError:
     TOKEN = os.environ.get("BOTTOKEN")
 
 bot.run(TOKEN)
-

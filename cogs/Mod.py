@@ -56,7 +56,10 @@ class Mod(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_channels=True)
     async def channelsetup(self, ctx):
-        await ctx.author.guild.create_voice_channel("\u2795")
+        """``channelsetup`` Creates a '+' channel which instantly creates a temporary voice channel for the user that joins it"""
+        category = await ctx.author.guild.create_category("Temporary Channels")
+        await ctx.author.guild.create_voice_channel("\u2795", category=category)
+        await ctx.send(f"{ctx.author.mention} has setup temporary channels")
 
     @commands.Cog.listener()
     @commands.has_permissions(manage_channels=True)
@@ -68,11 +71,11 @@ class Mod(commands.Cog):
         if after.channel is not None:
             if str(after.channel.name) == "\u2795":
                 channel = await member.guild.create_voice_channel(
-                    f"{member.name}'s voice channel"
+                    f"{member.name}'s voice channel", category=after.channel.category
                 )
                 await member.move_to(channel, reason=None)
                 await member.guild.system_channel.send(
-                    f"{member.name} created a temporary channel!"
+                    f"{member.name} created a temporary channel! {await channel.create_invite()}"
                 )
 
 

@@ -4,7 +4,7 @@ import asyncio
 import discord
 from discord.ext import commands
 
-path = os.path.split(os.getcwd())[0] + "/" + os.path.split(os.getcwd())[1] + "/modules"
+path = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/modules"
 sys.path.insert(1, path)
 
 import sokoban_functions
