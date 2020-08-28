@@ -86,6 +86,7 @@ class Filler(commands.Cog):
         await self.create_fill(game_id)
 
     @commands.Cog.listener()
+    @commands.has_permissions(embed_links=True)
     async def on_raw_reaction_add(self, payload):
         if payload.user_id != self.bot.user.id:
             # str(payload.guild_id) + str(payload.user_id)
