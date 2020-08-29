@@ -57,32 +57,34 @@ class Mod(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_channels=True)
     async def channelsetup(self, ctx):
-        """``channelsetup`` Creates a '+' channel which instantly creates a temporary voice channel for the user that joins it"""
-        category = await ctx.author.guild.create_category("Temporary Channels")
+        """``channelsetup`` Creates a '+' channel which instantly creates a quick voice channel for the user that joins it"""
+        category = await ctx.author.guild.create_category("Quick Channels")
         await ctx.author.guild.create_voice_channel("\u2795", category=category)
-        await ctx.send(f"{ctx.author.mention} has setup temporary channels")
+        await ctx.send(
+            f"{ctx.author.mention} has setup `quick channels` in this server"
+        )
 
     @commands.Cog.listener()
     @commands.has_permissions(manage_channels=True)
     async def on_voice_state_update(self, member, before, after):
         if before.channel is not None:
-            if str(before.channel.name) == f"{member.name}'s voice channel":
+            if str(before.channel.name) == f"{member.name}'s channel":
                 await before.channel.delete()
 
         if after.channel is not None:
             if str(after.channel.name) == "\u2795":
                 channel = await member.guild.create_voice_channel(
-                    f"{member.name}'s voice channel", category=after.channel.category
+                    f"{member.name}'s channel", category=after.channel.category
                 )
                 await member.move_to(channel, reason=None)
                 msg = await member.guild.system_channel.send(
-                    f"{member.name} created a temporary channel! {await channel.create_invite()}"
+                    f"{member.name} created a quick channel! {await channel.create_invite()}"
                 )
-                await asyncio.create_task(self.delete_invite(msg))
-
-    async def delete_invite(self, msg):
-        await asyncio.sleep(30)
-        await msg.delete()
+                await asyncio.sleep(20)
+                try:
+                    await msg.delete()
+                except discord.errors.NotFound:
+                    print("Could not delete channel!")
 
 
 def setup(bot):

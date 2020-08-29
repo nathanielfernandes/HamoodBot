@@ -165,10 +165,7 @@ for cog in os.listdir("./cogs"):
 try:
     TOKEN = os.environ["TOKEN"]
     os.remove(
-        os.path.split(os.getcwd())[0]
-        + "/"
-        + os.path.split(os.getcwd())[1]
-        + "/tempImages/placeholder.txt"
+        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages/placeholder.txt"
     )
 except KeyError:
     from dotenv import load_dotenv

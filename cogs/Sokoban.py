@@ -244,10 +244,14 @@ class Sokoban(commands.Cog):
                 icon_url=currentGame.user.avatar_url,
             )
             embed.set_footer(text="Game was deleted.")
-            await currentGame.message.clear_reactions()
-            await currentGame.message.edit(embed=embed)
             currentGame.timer.cancel()
             self.games.pop(gameID)
+
+            try:
+                await currentGame.message.clear_reactions()
+                await currentGame.message.edit(embed=embed)
+            except discord.errors.NotFound:
+                print("Could not delete Sokoban game!")
 
 
 def setup(bot):

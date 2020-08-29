@@ -177,12 +177,16 @@ class Filler(commands.Cog):
             embed = discord.Embed(title="Filler")
             embed.set_author(name="No Winner")
             embed.set_footer(text="Game was deleted.")
-            await currentGame.message.clear_reactions()
-            await currentGame.message.edit(embed=embed)
             currentGame.timer.cancel()
             self.games.pop(gameID)
             self.keys.pop(str(currentGame.server.id) + str(currentGame.playerOne.id))
             self.keys.pop(str(currentGame.server.id) + str(currentGame.playerTwo.id))
+
+            try:
+                await currentGame.message.clear_reactions()
+                await currentGame.message.edit(embed=embed)
+            except discord.errors.NotFound:
+                print("Could not delete Filler game!")
 
 
 def setup(bot):
