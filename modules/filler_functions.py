@@ -93,7 +93,7 @@ class Filler:
                 self.current_player = self.playerOne
                 for pos in self.twoColour:
                     self.grid[pos] = self.two_pick
-                    self.current_colour = self.one_picks
+                    self.current_colour = self.one_pick
 
                     if (self.grid[pos]) == (self.grid[pos - self.size[0]]):
                         if abs(pos - self.size[0]) not in self.twoColour:
