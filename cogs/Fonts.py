@@ -2,12 +2,15 @@ import os
 import sys
 import discord
 import textwrap
+import random
 from discord.ext import commands
 
-path = os.path.split(os.getcwd())[0] + "/" + os.path.split(os.getcwd())[1] + "/modules"
-sys.path.insert(1, path)
+sys.path.insert(
+    1, os.path.split(os.getcwd())[0] + "/" + os.path.split(os.getcwd())[1] + "/modules"
+)
 
 import image_functions
+import message_functions
 
 
 class Fonts(commands.Cog):
@@ -15,15 +18,33 @@ class Fonts(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.fontDict = message_functions.convert_to_dict(
+            f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/textFiles/fonts.txt"
+        )
+        self.colourDict = message_functions.convert_to_dict(
+            f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/textFiles/colours.txt"
+        )
+        self.direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
+        self.edit = image_functions.Edit(
+            None, f"{self.direct}/tempImages", f"{self.direct}/fonts",
+        )
 
     async def textPrep(self, ctx, text, font, font_size, colour, wrap=80):
         async with ctx.typing():
             if text == ():
                 return
 
-            font = image_functions.getFont(font)
+            if font == "random":
+                font = random.choice(list(self.fontDict.values()))
+            elif font in self.fontDict:
+                font = self.fontDict[font]
 
-            colour = image_functions.getColour(colour)
+            if colour == "random":
+                colour = random.choice(list(self.colourDict.values()))
+            elif colour not in self.colourDict:
+                colour = (255, 255, 255, 255)
+            else:
+                colour = self.colourDict[colour]
 
             text = [text]
             for i in range(len(text)):
@@ -33,10 +54,9 @@ class Fonts(commands.Cog):
                 text[i] = " ".join(text[i])
             text = text[0]
 
-            name = image_functions.randomNumber()
-            name = str(name) + ".png"
+            name = f"{self.edit.randomNumber()}.png"
 
-            textImg = image_functions.makeText(text, font, font_size, colour, name)
+            textImg = self.edit.makeText(text, font, font_size, colour, name)
             await ctx.message.delete()
             await ctx.send(file=discord.File(textImg))
         os.remove(textImg)

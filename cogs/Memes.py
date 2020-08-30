@@ -4,8 +4,9 @@ import discord
 import textwrap
 from discord.ext import commands
 
-path = os.path.split(os.getcwd())[0] + "/" + os.path.split(os.getcwd())[1] + "/modules"
-sys.path.insert(1, path)
+sys.path.insert(
+    1, f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/modules"
+)
 
 import image_functions
 
@@ -15,6 +16,12 @@ class Memes(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
+        self.edit = image_functions.Edit(
+            f"{self.direct}/memePics",
+            f"{self.direct}/tempImages",
+            f"{self.direct}/fonts",
+        )
 
     async def textMemePrep(self, ctx, text, coords, font, colour, source, wrap=12):
         async with ctx.typing():
@@ -30,10 +37,12 @@ class Memes(commands.Cog):
             for i in range(len(coords)):
                 coords[i].append(text[i])
 
-            name = image_functions.randomNumber()
+            name = self.edit.randomNumber()
             name = str(name) + ".jpg"
 
-            meme = image_functions.addText(source, font, colour, coords, name)
+            meme = self.edit.addText(
+                source, font, colour, coords, name, "arialbold.ttf"
+            )
             # await ctx.message.delete()
             await ctx.send(file=discord.File(meme))
         os.remove(meme)

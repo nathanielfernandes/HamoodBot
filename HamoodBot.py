@@ -1,6 +1,7 @@
-# Hamoods Bot#
+# HamoodBot#
 # date 2020/05/2
 # @author Nathaniel Fernandes
+"""HamoodBot is a multipurpose discord bot that has a variety of different fucntions"""
 
 # dependancies
 import os
@@ -18,7 +19,7 @@ import image_functions
 import message_functions
 
 # bot description
-description = """Hamood is ur freind"""
+description = """Hamood is a multipurpose discord bot"""
 
 # the prefix the bot looks for before processing a message/
 bot = commands.Bot(command_prefix="", case_insensitive=True, description=description)
@@ -41,7 +42,6 @@ responses = {
     "bye": "goodbye {0.author.mention}",
     "goodnight": "goodnight {0.author.mention}",
     "gn": "gn",
-    "im hamood": "No you're not, im hamood {0.author.mention}",
     "marco": "polo {0.author.mention}",
     "im hamood": "No your not, im hamood!",
 }
@@ -62,7 +62,9 @@ async def on_message(message):
 
         if profane:
             if "hamood" in message.content:
-                uno = image_functions.unoCard()
+                uno = image_functions.Edit().randomFile(
+                    f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/memePics/unoCards"
+                )
                 await message.channel.send(file=discord.File(uno))
                 await message.channel.send(f"{message.author.mention} No U!")
                 return
