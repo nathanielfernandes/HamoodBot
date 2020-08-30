@@ -233,7 +233,7 @@ class Sokoban(commands.Cog):
 
             await currentGame.message.edit(embed=embed)
 
-            if currentGame.timer:
+            if currentGame.timer != None:
                 currentGame.timer.cancel()
 
             currentGame.timer = asyncio.create_task(self.overtime(gameID))

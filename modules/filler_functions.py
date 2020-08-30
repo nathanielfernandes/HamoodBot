@@ -1,10 +1,11 @@
 import random
 import math
 
+import random
+import math
+
 
 class Filler:
-    """handels the Filler Imessage game"""
-
     def __init__(self, size, playerOne, playerTwo, server, msg):
         self.size = [size[0] + 2, size[1] + 2]
         # self.sprites = ['R ', 'O ', "Y ", 'G ', 'B ', "P "]
@@ -19,6 +20,7 @@ class Filler:
             ":yellow_square:",
             ":green_square:",
             ":blue_square:",
+            ":purple_square:",
             ":black_large_square:",
         ]
 
@@ -33,7 +35,7 @@ class Filler:
         self.current_player = self.playerTwo
 
     def fill_board(self):
-        """creates walled off grid"""
+        # creates playing space
         self.grid = []
         for i in range(self.size[0] * self.size[1]):
             self.grid.append(random.randint(0, 5))
@@ -64,7 +66,6 @@ class Filler:
         self.update_player()
 
     def update_player(self):
-        """updates the grid based off what the player has done"""
         if self.run_level:
             if self.turn == 1:
                 self.current_player = self.playerTwo
@@ -119,7 +120,6 @@ class Filler:
             self.run_level = False
 
     def get_winner(self):
-        """returns the winner as a player object"""
         winner = (
             self.playerOne
             if self.amountOne > self.amountTwo
@@ -130,7 +130,6 @@ class Filler:
         return winner
 
     def draw_board(self):
-        """updates the games sprite grid"""
         # sets self.sprites
         self.tempGrid = list(self.grid)
         for i in range(len(self.tempGrid)):
