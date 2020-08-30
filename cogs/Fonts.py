@@ -11,7 +11,6 @@ sys.path.insert(
 )
 
 import image_functions
-import message_functions
 
 
 class Fonts(commands.Cog):

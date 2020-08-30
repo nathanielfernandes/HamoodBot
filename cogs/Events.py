@@ -4,12 +4,6 @@ import json
 import discord
 from discord.ext import commands
 
-sys.path.insert(
-    1, f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/modules"
-)
-
-import message_functions
-
 
 class Events(commands.Cog):
     """Handles Any Discord Events"""
