@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import discord
 from discord.ext import commands
 
@@ -15,14 +16,11 @@ class Events(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
-        file = (
-            os.path.split(os.getcwd())[0]
-            + "/"
-            + os.path.split(os.getcwd())[1]
-            + "/textFiles/errors.txt"
+        self.error_solutions = json.load(
+            open(
+                f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/errors.json"
+            )
         )
-        self.error_solutions = message_functions.convert_to_dict(file)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):

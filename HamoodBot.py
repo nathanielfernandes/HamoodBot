@@ -16,7 +16,6 @@ sys.path.insert(
 )
 
 import image_functions
-import message_functions
 
 # bot description
 description = """Hamood is a multipurpose discord bot"""
@@ -46,6 +45,22 @@ responses = {
     "im hamood": "No your not, im hamood!",
 }
 
+file = f"{os.path.dirname(os.path.realpath(__file__))}/data/profanity.txt"
+badWords = [badword[:-1] for badword in open(file, "r", encoding="utf-8").readlines()]
+
+
+def profCheck(content):
+    badword = list(
+        dict.fromkeys([bad for bad in badWords if bad in content and len(bad) > 4])
+    )
+    badword += list(
+        dict.fromkeys(
+            [bad for bad in badWords if bad in content.split() and len(bad) <= 4]
+        )
+    )
+    profane = True if badword else False
+    return profane, badword
+
 
 @bot.event
 async def on_message(message):
@@ -58,12 +73,12 @@ async def on_message(message):
         except Exception:
             nsfw = False
 
-        profane, badword = message_functions.profCheck((message.content).lower())
+        profane, badword = profCheck((message.content).lower())
 
         if profane:
             if "hamood" in message.content:
                 uno = image_functions.Edit().randomFile(
-                    f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/memePics/unoCards"
+                    f"{os.path.dirname(os.path.realpath(__file__))}/memePics/unoCards"
                 )
                 await message.channel.send(file=discord.File(uno))
                 await message.channel.send(f"{message.author.mention} No U!")
@@ -82,7 +97,7 @@ async def on_message(message):
                     )
                     return
 
-        elif message.content.startswith("im"):
+        elif message.content.startswith("im "):
             await message.channel.send(f"hi{message.content[2:]}, im hamood")
 
         elif message.content in responses:

@@ -8,16 +8,6 @@ class Mod(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        # 1 = warning message
-        # 2 = automatically deletes the message and shows warning message
-        self.profanity_action = 1
-
-    # allows the owner of hamood to temporarily change what actions hamood takes when someone uses profanity
-    @commands.command()
-    @commands.is_owner()
-    async def proflevel(self, ctx, lvl: int):
-        """Owner Command"""
-        self.profanity_action = lvl
 
     @commands.command()
     @commands.has_permissions(kick_members=True)

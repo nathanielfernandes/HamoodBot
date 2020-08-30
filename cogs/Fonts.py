@@ -3,6 +3,7 @@ import sys
 import discord
 import textwrap
 import random
+import json
 from discord.ext import commands
 
 sys.path.insert(
@@ -18,12 +19,18 @@ class Fonts(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.fontDict = message_functions.convert_to_dict(
-            f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/textFiles/fonts.txt"
+
+        self.fontDict = json.load(
+            open(
+                f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/fonts.json"
+            )
         )
-        self.colourDict = message_functions.convert_to_dict(
-            f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/textFiles/colours.txt"
+        self.colourDict = json.load(
+            open(
+                f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/colours.json"
+            )
         )
+
         self.direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
         self.edit = image_functions.Edit(
             None, f"{self.direct}/tempImages", f"{self.direct}/fonts",
@@ -40,11 +47,11 @@ class Fonts(commands.Cog):
                 font = self.fontDict[font]
 
             if colour == "random":
-                colour = random.choice(list(self.colourDict.values()))
+                colour = tuple(random.choice(list(self.colourDict.values())))
             elif colour not in self.colourDict:
                 colour = (255, 255, 255, 255)
             else:
-                colour = self.colourDict[colour]
+                colour = tuple(self.colourDict[colour])
 
             text = [text]
             for i in range(len(text)):

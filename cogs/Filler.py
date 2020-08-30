@@ -11,6 +11,8 @@ import filler_functions
 
 
 class Filler(commands.Cog):
+    """Play the Filler Imessage game with an oponent"""
+
     def __init__(self, bot):
         self.bot = bot
         self.games = {}
