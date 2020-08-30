@@ -4,35 +4,36 @@ import random
 import discord
 from discord.ext import commands
 
-path = os.path.split(os.getcwd())[0] + '/' + os.path.split(os.getcwd())[1] + '/modules'
+path = os.path.split(os.getcwd())[0] + "/" + os.path.split(os.getcwd())[1] + "/modules"
 sys.path.insert(1, path)
 
 import image_functions
 
-#Messaging cog that checks for profantiy and also provide some simple chat commands
+# Messaging cog that checks for profantiy and also provide some simple chat commands
 class General(commands.Cog):
     """General Commands"""
+
     def __init__(self, bot):
         self.bot = bot
         self.last_member = None
-        self.possible_responses = ['hello', 'hi', 'hey', "what's up"]
+        self.possible_responses = ["hello", "hi", "hey", "what's up"]
         self.replies = [
-            'what do you want {0.author.mention}?',
-            'what {0.author.mention}?',
-            'huh?',
-            'yeah {0.author.mention}?',
-            "what's up"]
+            "what do you want {0.author.mention}?",
+            "what {0.author.mention}?",
+            "huh?",
+            "yeah {0.author.mention}?",
+            "what's up",
+        ]
         self.bad_replies = ["go away", "stop calling me"]
 
-
-    @commands.command(aliases=['hi','hey', 'yo'])
+    @commands.command(aliases=["hi", "hey", "yo"])
     async def hello(self, ctx):
         """``greet`` greets the user"""
         await ctx.send(f"{random.choice(self.possible_responses)} {ctx.author.mention}")
 
     @commands.command()
     async def hamood(self, ctx):
-        """``hamood`` calls hamood"""    
+        """``hamood`` calls hamood"""
         member = ctx.author
         if self.last_member is None or self.last_member.id != member.id:
             await ctx.send(random.choice(self.replies).format(ctx))
@@ -41,33 +42,35 @@ class General(commands.Cog):
         self.last_member = member
 
     @commands.command()
-    async def clap(self, ctx, *content:str):
+    async def clap(self, ctx, *content: str):
         """``clap [msg]`` adds clap emojis to your sentence"""
-        msg = ''
+        msg = ""
         for word in content:
-            msg += '**' + word + '**' + ':clap:'
+            msg += "**" + word + "**" + ":clap:"
         await ctx.send(msg)
 
     @commands.command()
     async def repeat(self, ctx, times: int, *, content: commands.clean_content):
         """``repeat [msg]`` repeats your message multiple times"""
-        msg = ''
+        msg = ""
         for i in range(times):
-            msg += content + '\n'
+            msg += content + "\n"
         await ctx.send(msg)
 
     @commands.command()
     async def echo(self, ctx, *, content: commands.clean_content):
         """``echo [msg]`` echos your message a random amount of times"""
-        for i in range(random.randint(1,5)):
+        for i in range(random.randint(1, 5)):
             await ctx.send(content)
 
     @commands.command()
-    async def no(self, ctx, content:str):
+    async def no(self, ctx, content: str):
         """``no u`` sends an uno reverse card"""
-        if (content == 'u' or content == 'you'):
-            #await ctx.channel.purge(limit=1)
-            uno = image_functions.unoCard()
+        if content == "u" or content == "you":
+            # await ctx.channel.purge(limit=1)
+            uno = image_functions.Edit().randomFile(
+                f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/memePics/unoCards"
+            )
             await ctx.send(file=discord.File(uno))
 
     @commands.command(aliases=["movie time"])
@@ -77,4 +80,4 @@ class General(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(General(bot))  
+    bot.add_cog(General(bot))

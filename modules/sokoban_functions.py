@@ -3,6 +3,8 @@ import random
 
 
 class Soko_ban:
+    """handles the sokoban game"""
+
     def __init__(self, size, user, msg):
         self.size = [size[0] + 2, size[1] + 2]
         self.grid = []
@@ -31,6 +33,7 @@ class Soko_ban:
         self.game_start()
 
     def game_start(self):
+        """sets up the levels settings"""
         self.start_game = True
 
         if self.start_game:
@@ -48,6 +51,7 @@ class Soko_ban:
             self.create_level()
 
     def create_level(self):
+        """creates the game level"""
         check = int(self.level) if self.level <= 34 else 34
         # creates playing space
         self.grid = []
@@ -126,6 +130,7 @@ class Soko_ban:
         return self.grid
 
     def player_move(self):
+        """updates the players position based on the players move"""
         if self.run_level:
             self.new_player_pos = int(self.player_pos)
 
@@ -168,7 +173,7 @@ class Soko_ban:
             self.update_board()
 
     def update_board(self):
-
+        """updates the objects on the board to their new position"""
         # checks if player is blocked by wall
         if self.grid[self.new_player_pos] != 1:
 
@@ -238,6 +243,7 @@ class Soko_ban:
                 self.draw_board()
 
     def draw_board(self):
+        """draws the board using sprites"""
         # sets self.sprites
         self.tempGrid = list(self.grid)
         for i in range(len(self.tempGrid)):
