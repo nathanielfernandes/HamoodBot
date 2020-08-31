@@ -116,7 +116,7 @@ async def logout(ctx):
 
 @bot.command()
 @commands.is_owner()
-async def status(ctx, aType: str, *, aName: commands.clean_content):
+async def status(ctx, aType: str, uRL: str, *, aName: commands.clean_content):
     """Owner Command"""
     if aType == "playing":
         await bot.change_presence(activity=discord.Game(name=aName))
@@ -129,11 +129,7 @@ async def status(ctx, aType: str, *, aName: commands.clean_content):
             activity=discord.Activity(type=discord.ActivityType.watching, name=aName)
         )
     elif aType == "streaming":
-        await bot.change_presence(
-            activity=discord.Streaming(
-                name=aName, url="https://www.twitch.tv/n7evengod"
-            )
-        )
+        await bot.change_presence(activity=discord.Streaming(name=aName, url=uRL))
 
 
 @bot.command()
