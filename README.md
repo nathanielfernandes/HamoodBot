@@ -75,7 +75,7 @@ These commands are organized alphabetically from thier corresponding [Cog](https
 - ``kick [@user]`` kicks a tagged member
 - ``ban [@user]`` bans a tagged member
 - ``clean`` deletes chat messages
-- ``channelsetup`` sets up a quick channel system in your server
+- ``quickchannel [name]`` sets up a quick channel system in your server
 ### Reddit
 - ``red [subreddit]`` finds a post from your specified subreddit
 - ``meme`` quickly sends a meme from r/meme

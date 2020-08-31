@@ -15,7 +15,7 @@ class Mod(commands.Cog):
         """``kick [@user]`` kicks a tagged member"""
         await member.kick(reason=reason)
         await ctx.send(
-            f"{member.mention} was kicked by {ctx.author.mention}. [{reason}]"
+            f"{member.mention} was kicked by {ctx.author.mention} | reason `{reason}`"
         )
 
     @commands.command()
@@ -24,7 +24,7 @@ class Mod(commands.Cog):
         """``ban [@user]`` bans a tagged member"""
         await member.ban(reason=reason)
         await ctx.send(
-            f"{member.mention} was kicked by {ctx.author.mention}. [{reason}]"
+            f"{member.mention} was kicked by {ctx.author.mention} | reason: `{reason}`"
         )
 
     @commands.command(aliases=["clear"])
@@ -46,12 +46,25 @@ class Mod(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_channels=True)
-    async def channelsetup(self, ctx):
-        """``channelsetup`` Creates a '+' channel which instantly creates a quick voice channel for the user that joins it"""
-        category = await ctx.author.guild.create_category("Quick Channels")
+    async def quickchannel(
+        self, ctx, *, name: commands.clean_content = "Quick Channels"
+    ):
+        """``quickchannel [category]`` Creates a '+' channel which instantly creates a quick voice channel for the user that joins it"""
+        category = await ctx.author.guild.create_category(name)
         await ctx.author.guild.create_voice_channel("\u2795", category=category)
         await ctx.send(
-            f"{ctx.author.mention} has setup `quick channels` in this server"
+            f"{ctx.author.mention} has setup a `quickchannel` category named `{name}`"
+        )
+
+    @commands.command()
+    @commands.has_permissions(manage_channels=True)
+    async def fullchannel(self, ctx, *, name: commands.clean_content = "No Category"):
+        """``quickchannel [category]`` Creates a text channel and a '+' voice channel under a category which instantly creates a quick voice channel for the user that joins it"""
+        category = await ctx.author.guild.create_category(name)
+        await ctx.author.guild.create_voice_channel("\u2795", category=category)
+        await ctx.author.guild.create_text_channel(name, category=category)
+        await ctx.send(
+            f"{ctx.author.mention} has setup a `fullchannel` category named `{name}`"
         )
 
     @commands.Cog.listener()
@@ -59,22 +72,15 @@ class Mod(commands.Cog):
     async def on_voice_state_update(self, member, before, after):
         if before.channel is not None:
             if str(before.channel.name) == f"{member.name}'s channel":
-                await before.channel.delete()
+                try:
+                    await before.channel.delete()
+                except discord.errors.NotFound:
+                    print("Could not delete channel!")
 
         if after.channel is not None:
             if str(after.channel.name) == "\u2795":
-                channel = await member.guild.create_voice_channel(
-                    f"{member.name}'s channel", category=after.channel.category
-                )
+                channel = await after.channel.clone(name=f"{member.name}'s channel")
                 await member.move_to(channel, reason=None)
-                msg = await member.guild.system_channel.send(
-                    f"{member.name} created a quick channel! {await channel.create_invite()}"
-                )
-                await asyncio.sleep(20)
-                try:
-                    await msg.delete()
-                except discord.errors.NotFound:
-                    print("Could not delete channel!")
 
 
 def setup(bot):
