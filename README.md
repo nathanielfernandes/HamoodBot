@@ -66,6 +66,7 @@ These commands are organized alphabetically from thier corresponding [Cog](https
 - ``echo [msg]`` echos your message a random amount of times
 - ``no u`` sends an uno reverse card
 - ``shrek`` sends the entire shrek movie as a 90 min long gif
+- ``poll [option1], [option2]..., [option6]`` create a poll with 2-6 options
 ### Math
 - ``add [number1] [number2]`` adds two numbers together
 - ``multiply [number1] [number2]`` multiplies two numbers together

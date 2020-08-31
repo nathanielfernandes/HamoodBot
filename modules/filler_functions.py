@@ -1,9 +1,6 @@
 import random
 import math
 
-import random
-import math
-
 
 class Filler:
     def __init__(self, size, playerOne, playerTwo, server, msg):
