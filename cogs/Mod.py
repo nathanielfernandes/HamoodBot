@@ -45,25 +45,34 @@ class Mod(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_channels=True)
-    async def quickchannel(
+    async def quickcategory(
         self, ctx, *, name: commands.clean_content = "Quick Channels"
     ):
-        """``quickchannel [category]`` Creates a '+' channel which instantly creates a quick voice channel for the user that joins it"""
+        """``quickcategory [category]`` Creates a '+' channel which instantly creates a quick voice channel for the user that joins it"""
         category = await ctx.author.guild.create_category(name)
         await ctx.author.guild.create_voice_channel("\u2795", category=category)
         await ctx.send(
-            f"{ctx.author.mention} has setup a `quickchannel` category named `{name}`"
+            f"{ctx.author.mention} has setup a `quickcategory` named `{name}`"
         )
 
     @commands.command()
     @commands.has_permissions(manage_channels=True)
-    async def fullchannel(self, ctx, *, name: commands.clean_content = "No Category"):
-        """``quickchannel [category]`` Creates a text channel and a '+' voice channel under a category which instantly creates a quick voice channel for the user that joins it"""
+    async def fullcategory(self, ctx, *, name: commands.clean_content = "No Category"):
+        """``fullcategory [category]`` Creates a text channel and a '+' voice channel under a category which instantly creates a quick voice channel for the user that joins it"""
         category = await ctx.author.guild.create_category(name)
         await ctx.author.guild.create_voice_channel("\u2795", category=category)
         await ctx.author.guild.create_text_channel(name, category=category)
         await ctx.send(
-            f"{ctx.author.mention} has setup a `fullchannel` category named `{name}`"
+            f"{ctx.author.mention} has setup a `fullcategory` named `{name}`"
+        )
+
+    @commands.command()
+    @commands.has_permissions(manage_channels=True)
+    async def quickchannel(self, ctx, *, name: commands.clean_content = "No Category"):
+        """``quickchannel`` Creates a '+' voice channel that creates quick voice channel for the user that joins it"""
+        await ctx.author.guild.create_voice_channel("\u2795")
+        await ctx.send(
+            f"{ctx.author.mention} has setup a `quickchannel` named `{name}`"
         )
 
     @commands.Cog.listener()
