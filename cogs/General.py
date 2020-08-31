@@ -51,11 +51,11 @@ class General(commands.Cog):
             await ctx.send("This channel aldready has a poll in progress")
             return
 
-        self.polls[poll_id] = Poll(content, ctx.guild, ctx.author, None)
+        self.polls[poll_id] = Poll(content, ctx.guild, ctx.author)
 
         embed = discord.Embed(
             title=f"{ctx.author}'s Poll:",
-            description="Loading... :arrows_counterclockwise:",
+            description="Creating... :arrows_counterclockwise:",
         )
 
         msg = await ctx.send(embed=embed)
@@ -68,9 +68,11 @@ class General(commands.Cog):
         await currentPoll.message.add_reaction("❌")
 
         await self.create_poll(poll_id)
+        currentPoll.timer = asyncio.create_task(self.poll_timer(poll_id))
+
+    async def poll_timer(self, poll_id):
         await asyncio.sleep(300)
-        await currentPoll.message.clear_reactions()
-        self.polls.pop(poll_id)
+        await self.create_poll(poll_id, True)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -81,49 +83,59 @@ class General(commands.Cog):
 
                 if payload.message_id == currentPoll.message.id:
                     if str(payload.emoji) in self.emojis:
-                        pick = self.emojis.index(str(payload.emoji))
-                        key = list(currentPoll.results.keys())[pick]
-                        currentPoll.results[key] += 1
+
+                        user = str(payload.user_id)
+                        key = list(currentPoll.results.keys())[
+                            self.emojis.index(str(payload.emoji))
+                        ]
+
+                        if user not in currentPoll.voted:
+                            currentPoll.results[key] += 1
+                            currentPoll.voted[user] = key
+                        else:
+                            currentPoll.results[currentPoll.voted[user]] -= 1
+                            currentPoll.results[key] += 1
+                            currentPoll.voted[user] = key
 
                         await self.create_poll(poll_id)
                     else:
                         if str(payload.emoji) == "❌":
-                            await currentPoll.message.clear_reactions()
-                            self.polls.pop(poll_id)
+                            currentPoll.timer.cancel()
+                            await self.create_poll(poll_id, True)
 
-    @commands.Cog.listener()
-    async def on_raw_reaction_remove(self, payload):
-        if payload.user_id != self.bot.user.id:
-            poll_id = f"{payload.guild_id}{payload.channel_id}"
-            if poll_id in self.polls:
-                currentPoll = self.polls[poll_id]
+                    await currentPoll.message.remove_reaction(
+                        member=payload.member, emoji=payload.emoji
+                    )
 
-                if payload.message_id == currentPoll.message.id:
-                    if str(payload.emoji) in self.emojis:
-                        pick = self.emojis.index(str(payload.emoji))
-                        key = list(currentPoll.results.keys())[pick]
-                        currentPoll.results[key] -= 1
-
-                        await self.create_poll(poll_id)
-
-    async def create_poll(self, poll_id):
+    async def create_poll(self, poll_id, delete=False):
         currentPoll = self.polls[poll_id]
-        currentPoll.update_poll()
+        if not delete:
+            currentPoll.update_poll()
 
-        msg = ""
-        for i in range(len(currentPoll.tempResults)):
-            msg += f"**{list(currentPoll.results.keys())[i]}: {[round((currentPoll.results[value] / currentPoll.total) * 100, 1) for value in currentPoll.results][i]}**\n{self.emojis[i]} {currentPoll.tempResults[i]}\n"
+            msg = ""
+            for i in range(len(currentPoll.tempResults)):
+                msg += f"**{list(currentPoll.results.keys())[i]}: {[round((currentPoll.results[value] / currentPoll.total) * 100, 1) for value in currentPoll.results][i]}**\n{self.emojis[i]} {currentPoll.tempResults[i]}\n"
 
-        embed = discord.Embed(
-            description=msg,
-            color=currentPoll.member.color,
-            timestamp=currentPoll.message.created_at,
-        )
-        embed.set_author(
-            name=f"{currentPoll.member}'s Poll:", icon_url=currentPoll.member.avatar_url
-        )
-        embed.set_footer(text="Poll ends in 5 minutes")
-        await currentPoll.message.edit(embed=embed)
+            embed = discord.Embed(
+                description=msg,
+                color=currentPoll.member.color,
+                timestamp=currentPoll.message.created_at,
+            )
+            embed.set_author(
+                name=f"{currentPoll.member}'s Poll:",
+                icon_url=currentPoll.member.avatar_url,
+            )
+            embed.set_footer(text="Polls end in 5 minutes")
+            currentPoll.embed = embed
+            await currentPoll.message.edit(embed=embed)
+        else:
+            try:
+                self.polls.pop(poll_id)
+                currentPoll.embed.set_footer(text="The poll has concluded.")
+                await currentPoll.message.edit(embed=currentPoll.embed)
+                await currentPoll.message.clear_reactions()
+            except discord.errors.NotFound:
+                print("Could not remove poll!")
 
     @commands.command(aliases=["hi", "hey", "yo"])
     async def hello(self, ctx):
@@ -179,7 +191,7 @@ class General(commands.Cog):
 
 
 class Poll:
-    def __init__(self, content, server, member, msg):
+    def __init__(self, content, server, member):
         self.content = content.upper()
         self.results = {}
 
@@ -189,8 +201,11 @@ class Poll:
             self.results[item] = 0
 
         self.server = server
-        self.message = msg
+        self.message = None
         self.member = member
+        self.embed = None
+        self.timer = None
+        self.voted = {}
 
     def update_poll(self):
         self.total = 0

@@ -128,8 +128,12 @@ async def status(ctx, aType: str, *, aName: commands.clean_content):
         await bot.change_presence(
             activity=discord.Activity(type=discord.ActivityType.watching, name=aName)
         )
-    # elif (aType == 'streaming'):
-    #   await bot.change_presence(activity=discord.Streaming(name=aName, url=my_twitch_url))
+    elif aType == "streaming":
+        await bot.change_presence(
+            activity=discord.Streaming(
+                name=aName, url="https://www.twitch.tv/n7evengod"
+            )
+        )
 
 
 @bot.command()

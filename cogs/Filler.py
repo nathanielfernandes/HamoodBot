@@ -65,7 +65,7 @@ class Filler(commands.Cog):
             await self.games[game_id].message.delete()
 
         self.games[game_id] = filler_functions.Filler(
-            [8, 7], ctx.author, member, ctx.guild, None
+            [8, 7], ctx.author, member, ctx.guild
         )
         embed = discord.Embed(
             title=f"Filler | {ctx.author} vs. {member}",
