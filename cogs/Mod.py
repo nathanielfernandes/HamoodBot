@@ -68,11 +68,11 @@ class Mod(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_channels=True)
-    async def quickchannel(self, ctx, *, name: commands.clean_content = "No Category"):
-        """``quickchannel`` Creates a '+' voice channel that creates quick voice channel for the user that joins it"""
-        await ctx.author.guild.create_voice_channel("\u2795")
+    async def quickchannel(self, ctx, *, name: commands.clean_content = " "):
+        """``quickchannel [name]`` Creates a '+' voice channel that creates quick voice channel for the user that joins it"""
+        await ctx.author.guild.create_voice_channel(f"\u2795 {name}")
         await ctx.send(
-            f"{ctx.author.mention} has setup a `quickchannel` named `{name}`"
+            f"{ctx.author.mention} has setup a `quickchannel` named `\u2795 {name}`"
         )
 
     @commands.Cog.listener()
@@ -86,7 +86,7 @@ class Mod(commands.Cog):
                     print("Could not delete channel!")
 
         if after.channel is not None:
-            if str(after.channel.name) == "\u2795":
+            if "\u2795" in str(after.channel.name):
                 channel = await after.channel.clone(name=f"{member.name}'s channel")
                 await member.move_to(channel, reason=None)
 
