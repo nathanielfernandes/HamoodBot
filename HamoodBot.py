@@ -21,7 +21,7 @@ import image_functions
 description = """Hamood is a multipurpose discord bot"""
 
 # the prefix the bot looks for before processing a message/
-bot = commands.Bot(command_prefix="", case_insensitive=True, description=description)
+bot = commands.Bot(command_prefix="/", case_insensitive=True, description=description)
 
 
 @bot.event
@@ -46,18 +46,16 @@ responses = {
 }
 
 file = f"{os.path.dirname(os.path.realpath(__file__))}/data/profanity.txt"
-badWords = [badword[:-1] for badword in open(file, "r", encoding="utf-8").readlines()]
+badWords = [
+    badword.strip("\n") for badword in open(file, "r", encoding="utf-8").readlines()
+]
 
 
 def profCheck(content):
-    badword = list(
-        dict.fromkeys([bad for bad in badWords if bad in content and len(bad) > 4])
-    )
-    badword += list(
-        dict.fromkeys(
-            [bad for bad in badWords if bad in content.split() and len(bad) <= 4]
-        )
-    )
+    badword = [bad for bad in badWords if bad in content and len(bad) > 4]
+    badword += [bad for bad in badWords if bad in content.split() and len(bad) <= 4]
+    badword = list(dict.fromkeys(badword))
+
     profane = True if badword else False
     return profane, badword
 

@@ -8,16 +8,8 @@ class Soko_ban:
     def __init__(self, size, user, msg):
         self.size = [size[0] + 2, size[1] + 2]
         self.grid = []
-        # self.sprites = ['  ', '# ', '☒ ','o ', 'x ', '@ ']
-        self.sprites = [
-            ":black_large_square:",
-            ":white_large_square:",
-            ":blue_square:",
-            ":white_large_square:",
-            ":x:",
-            ":pensive:",
-            ":kissing_heart:",
-        ]
+        self.sprites = ["  ", "# ", "☒ ", "o ", "x ", "@ "]
+
         self.level = 1
         self.run_level = True
         self.completed = 0

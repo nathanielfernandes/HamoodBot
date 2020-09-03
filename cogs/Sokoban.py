@@ -1,6 +1,7 @@
 import os
 import sys
 import asyncio
+import json
 import discord
 from discord.ext import commands
 
@@ -16,116 +17,13 @@ class Sokoban(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.games = {}
-        self.themes = [
-            [
-                ":black_large_square:",
-                ":red_square:",
-                ":white_large_square:",
-                ":red_square:",
-                ":x:",
-                ":pensive:",
-                ":sweat_smile:",
-            ],
-            [
-                ":black_large_square:",
-                ":orange_square:",
-                ":white_large_square:",
-                ":orange_square:",
-                ":x:",
-                ":sunglasses:",
-                ":sweat_smile:",
-            ],
-            [
-                ":black_large_square:",
-                ":yellow_square:",
-                ":white_large_square:",
-                ":yellow_square:",
-                ":x:",
-                ":partying_face:",
-                ":sweat_smile:",
-            ],
-            [
-                ":black_large_square:",
-                ":green_square:",
-                ":white_large_square:",
-                ":green_square:",
-                ":x:",
-                ":star_struck:",
-                ":sweat_smile:",
-            ],
-            [
-                ":black_large_square:",
-                ":blue_square:",
-                ":white_large_square:",
-                ":blue_square:",
-                ":x:",
-                ":face_with_monocle:",
-                ":sweat_smile:",
-            ],
-            [
-                ":black_large_square:",
-                ":purple_square:",
-                ":white_large_square:",
-                ":purple_square:",
-                ":x:",
-                ":nerd:",
-                ":sweat_smile:",
-            ],
-            [
-                ":black_large_square:",
-                ":white_large_square:",
-                ":cheese:",
-                ":fork_knife_plate:",
-                ":hole:",
-                ":mouse:",
-                ":mouse_three_button:",
-            ],
-            [
-                ":black_large_square:",
-                ":red_square:",
-                ":white_heart:",
-                ":heart:",
-                ":kiss:",
-                ":kissing:",
-                ":kissing_heart:",
-            ],
-            [
-                ":black_large_square:",
-                ":green_square:",
-                ":carrot:",
-                ":moon_cake:",
-                ":hole:",
-                ":rabbit2:",
-                ":rabbit:",
-            ],
-            [
-                ":black_large_square:",
-                ":orange_square:",
-                ":shell:",
-                ":beach:",
-                ":beach_umbrella:",
-                ":crab:",
-                ":shrimp:",
-            ],
-            [
-                ":black_large_square:",
-                ":milky_way:",
-                ":ringed_planet:",
-                ":star2:",
-                ":sparkles:",
-                ":alien:",
-                ":space_invader:",
-            ],
-        ]
-
-        self.emoji_dict = {
-            "\u2B05": "left",
-            "\u2B06": "up",
-            "\u2B07": "down",
-            "\u27A1": "right",
-            "\U0001F504": "reset",
-            "\u267B": "shuffle",
-        }
+        self.info = json.load(
+            open(
+                f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/sokoban.json"
+            )
+        )
+        self.themes = self.info["themes"]
+        self.emoji_dict = self.info["emojis"]
 
     @commands.command()
     @commands.has_permissions(embed_links=True)
