@@ -78,17 +78,19 @@ class Mod(commands.Cog):
     @commands.Cog.listener()
     @commands.has_permissions(manage_channels=True)
     async def on_voice_state_update(self, member, before, after):
-        if before.channel is not None:
-            if str(before.channel.name) == f"{member.name}'s channel":
-                try:
-                    await before.channel.delete()
-                except discord.errors.NotFound:
-                    print("Could not delete channel!")
 
-        if after.channel is not None:
-            if "\u2795" in str(after.channel.name):
-                channel = await after.channel.clone(name=f"{member.name}'s channel")
-                await member.move_to(channel, reason=None)
+        if before.channel != after.channel:
+            if before.channel is not None:
+                if str(before.channel.name) == f"{member.name}'s channel":
+                    try:
+                        await before.channel.delete()
+                    except discord.errors.NotFound:
+                        print("Could not delete channel!")
+
+            if after.channel is not None:
+                if "\u2795" in str(after.channel.name):
+                    channel = await after.channel.clone(name=f"{member.name}'s channel")
+                    await member.move_to(channel, reason=None)
 
 
 def setup(bot):
