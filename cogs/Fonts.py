@@ -104,9 +104,9 @@ class Fonts(commands.Cog):
         """``unknown [msg]`` send a message in a unknown font"""
         await self.textPrep(ctx, content, "unown.ttf", 500, "black", 100)
 
-    @commands.command(aliases=["poke"])
-    async def pokemon(self, ctx, *, content: commands.clean_content):
-        """``pokemon [msg]`` send a message in a pokemon font"""
+    @commands.command()
+    async def pokefont(self, ctx, *, content: commands.clean_content):
+        """``pokefont [msg]`` send a message in a pokemon font"""
         await self.textPrep(ctx, content, "pokemon", 500, "steelblue2", 100)
 
     @commands.command(aliases=["sonic"])
