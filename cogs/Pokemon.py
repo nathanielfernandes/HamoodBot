@@ -51,14 +51,14 @@ class Pokemon(commands.Cog):
                 name="Base Stats:",
                 value="\n".join(
                     [
-                        f"{stat}: {pokemon['stats'][stat]}"
+                        f"{stat}: **{pokemon['stats'][stat]}**"
                         for stat in pokemon["stats"].keys()
                     ]
                 ),
             )
             embed.add_field(
                 name="Properties:",
-                value=f"Height: `{pokemon['height']}`\nWeight: `{pokemon['weight']}`",
+                value=f"Height: {pokemon['height']}\nWeight: {pokemon['weight']}",
                 inline=True,
             )
 
@@ -77,7 +77,7 @@ class Pokemon(commands.Cog):
     @commands.command()
     @commands.has_permissions(embed_links=True)
     async def pokevibe(self, ctx, member: discord.Member = None):
-        """``pokevibe`` finds the pokemon your vibing with"""
+        """``pokevibe [@user]`` finds the pokemon your vibing with"""
         member = ctx.author if not member else member
 
         pokemon = pokemon_get.get_all_info(random.randint(1, 893))
@@ -97,6 +97,14 @@ class Pokemon(commands.Cog):
                 text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
             )
             await ctx.send(embed=embed)
+
+    @commands.command()
+    async def poketype(self, ctx):
+        """``poketype`` find your pokemon types"""
+
+        await ctx.send(
+            f"{self.bot.get_emoji(random.choice(list(self.data['types'].values())))}{self.bot.get_emoji(random.choice(list(self.data['types'].values())))}"
+        )
 
 
 def setup(bot):

@@ -21,7 +21,7 @@ import image_functions
 description = """Hamood is a multipurpose discord bot"""
 
 # the prefix the bot looks for before processing a message/
-bot = commands.Bot(command_prefix="", case_insensitive=True, description=description)
+bot = commands.Bot(command_prefix="/", case_insensitive=True, description=description)
 
 
 @bot.event
