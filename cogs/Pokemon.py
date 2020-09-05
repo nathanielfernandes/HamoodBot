@@ -1,6 +1,7 @@
 import sys
 import os
 import json
+import random
 import discord
 from discord.ext import commands
 
@@ -22,17 +23,27 @@ class Pokemon(commands.Cog):
             )
         )
 
-    @commands.command(alisases=["poke"])
+    @commands.command()
+    @commands.has_permissions(embed_links=True)
     async def pokedex(self, ctx, name: commands.clean_content):
-        """gets a pokemons info"""
+        """``pokedex [name or id]`` gets a pokemons info"""
 
         pokemon = pokemon_get.get_all_info(name)
         if pokemon:
             embed = discord.Embed(
-                title=f"{pokemon['id']}: {pokemon['name']} {' '.join([str(self.bot.get_emoji(self.data['shorttypes'][typ])) for typ in pokemon['types']])}",
+                title=f"{pokemon['name']} {' '.join([str(self.bot.get_emoji(self.data['shorttypes'][typ])) for typ in pokemon['types']])}",
                 description=pokemon["lore"],
                 color=self.data["colors"][pokemon["color"]],
                 url=f"https://pokemondb.net/pokedex/{pokemon['name']}",
+            )
+
+            embed.set_author(
+                name=f"Pokedex - {pokemon['id']}",
+                icon_url="https://cdn.discordapp.com/attachments/699770186227646465/751609285527470261/pokeball_PNG8.png",
+            )
+
+            embed.set_footer(
+                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
             )
 
             # embed.add_field(name="Lore:", value=pokemon["lore"])
@@ -57,14 +68,35 @@ class Pokemon(commands.Cog):
                 if pokemon["abilities"] != []
                 else "None",
             )
-            # embed.add_field(name="poke", value=pokemon["pokedex"])
-            #   embed.add_field(name="Moves:", value="\n".join(pokemon["moves"]))
             embed.set_thumbnail(url=pokemon["image"])
 
             await ctx.send(embed=embed)
         else:
             await ctx.send(f"Could not find the pokemon '{name}'.")
-        # await ctx.send(f"https://img.pokemondb.net/artwork/{name}.jpg")
+
+    @commands.command()
+    @commands.has_permissions(embed_links=True)
+    async def pokevibe(self, ctx, member: discord.Member = None):
+        """``pokevibe`` finds the pokemon your vibing with"""
+        member = ctx.author if not member else member
+
+        pokemon = pokemon_get.get_all_info(random.randint(1, 893))
+        if pokemon:
+            embed = discord.Embed(
+                title=f"{member} is vibing with **{pokemon['name']}** {' '.join([str(self.bot.get_emoji(self.data['shorttypes'][typ])) for typ in pokemon['types']])}",
+                color=self.data["colors"][pokemon["color"]],
+            )
+            embed.set_author(
+                name=f"Pokedex - {pokemon['id']}",
+                icon_url="https://cdn.discordapp.com/attachments/699770186227646465/751609285527470261/pokeball_PNG8.png",
+            )
+
+            embed.set_image(url=pokemon["image"])
+
+            embed.set_footer(
+                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
+            )
+            await ctx.send(embed=embed)
 
 
 def setup(bot):
