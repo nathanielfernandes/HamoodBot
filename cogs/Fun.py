@@ -5,7 +5,7 @@ import json
 import discord
 from discord.ext import commands
 
-from modules.zodiac import zodiac, getCompatibility
+from modules.zodiac_functions import getZodiac, getCompatibility
 
 
 class Fun(commands.Cog):
