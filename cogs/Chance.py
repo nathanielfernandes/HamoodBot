@@ -24,18 +24,7 @@ class Chance(commands.Cog):
         ]
 
     @commands.command(
-        aliases=[
-            "8ball",
-            "does",
-            "would",
-            "should",
-            "could",
-            "can",
-            "do",
-            "will",
-            "is",
-            "am i",
-        ]
+        aliases=["8ball", "does", "would", "should", "could", "can", "will", "am i",]
     )
     async def eightball(self, ctx):
         """``eightball`` Hamood shakes his magic 8ball"""

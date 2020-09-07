@@ -1,14 +1,9 @@
 import os
-import sys
 import discord
 from discord.ext import commands
 
-sys.path.insert(
-    1, f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/modules"
-)
-
-import image_functions
-import web_scraping
+from modules.image_functions import Edit
+from modules.web_scraping import scrape
 
 
 class AvatarMemes(commands.Cog):
@@ -18,9 +13,7 @@ class AvatarMemes(commands.Cog):
         self.bot = bot
         self.direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
 
-        self.edit = image_functions.Edit(
-            f"{self.direct}/memePics", f"{self.direct}/tempImages"
-        )
+        self.edit = Edit(f"{self.direct}/memePics", f"{self.direct}/tempImages")
 
         self.path = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
 
@@ -80,7 +73,7 @@ class AvatarMemes(commands.Cog):
             for item in stuff:
                 name = f"{self.edit.randomNumber()}.png"
                 save = f"{self.path}/tempImages/{name}"
-                web_scraping.scrape(item[2], save)
+                scrape(item[2], save)
 
                 pos = stuff.index(item)
                 stuff[pos][2] = save

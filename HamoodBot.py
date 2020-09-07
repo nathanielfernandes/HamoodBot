@@ -5,23 +5,21 @@
 
 # dependancies
 import os
-import sys
 import datetime
 import random
 import discord
 from discord.ext import commands
 
-sys.path.insert(
-    1, f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/modules"
-)
+from modules.image_functions import Edit
 
-import image_functions
+# vnkdohe;llo there  ypoure sopo an no7ying g hfucehgfbhjgvhurighvgavfugwiljjsdklgfvr b
+# jnfrs;hnodsgjkflgjirfn
 
 # bot description
 description = """Hamood is a multipurpose discord bot"""
 
 # the prefix the bot looks for before processing a message/
-bot = commands.Bot(command_prefix="", case_insensitive=True, description=description)
+bot = commands.Bot(command_prefix="/", case_insensitive=True, description=description)
 
 
 @bot.event
@@ -75,7 +73,7 @@ async def on_message(message):
 
         if profane:
             if "hamood" in message.content:
-                uno = image_functions.Edit().randomFile(
+                uno = Edit().randomFile(
                     f"{os.path.dirname(os.path.realpath(__file__))}/memePics/unoCards"
                 )
                 await message.channel.send(file=discord.File(uno))

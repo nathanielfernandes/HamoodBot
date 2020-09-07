@@ -1,15 +1,11 @@
 import os
-import sys
 import random
 import urllib.request
 import json
 import discord
 from discord.ext import commands
 
-path = os.path.split(os.getcwd())[0] + "/" + os.path.split(os.getcwd())[1] + "/modules"
-sys.path.insert(1, path)
-
-import zodiac
+from modules.zodiac import zodiac, getCompatibility
 
 
 class Fun(commands.Cog):
@@ -117,10 +113,10 @@ class Fun(commands.Cog):
         self, ctx, month1: str, day1: int, month2: str, day2: int, quick="slow"
     ):
         """``zodiac [mmm] [dd] [mmm] [dd]`` lets you test your zodiac's compatibilty with another"""
-        sign1 = zodiac.getZodiac(month1, day1)
-        sign2 = zodiac.getZodiac(month2, day2)
+        sign1 = getZodiac(month1, day1)
+        sign2 = getZodiac(month2, day2)
 
-        compatibility = zodiac.getCompatibility(sign1, sign2)
+        compatibility = getCompatibility(sign1, sign2)
 
         if quick == "slow":
             await ctx.send(

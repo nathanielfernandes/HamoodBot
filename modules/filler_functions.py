@@ -2,7 +2,7 @@ import random
 import math
 
 
-class Filler:
+class _Filler:
     def __init__(self, size, playerOne, playerTwo, server):
         self.size = [size[0] + 2, size[1] + 2]
         # self.sprites = ['R ', 'O ', "Y ", 'G ', 'B ', "P "]

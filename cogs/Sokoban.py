@@ -1,14 +1,10 @@
 import os
-import sys
 import asyncio
 import json
 import discord
 from discord.ext import commands
 
-path = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/modules"
-sys.path.insert(1, path)
-
-import sokoban_functions
+from modules.sokoban_functions import Soko_ban
 
 
 class Sokoban(commands.Cog):
@@ -37,7 +33,7 @@ class Sokoban(commands.Cog):
             await self.games[game_id].message.delete()
 
         # max [9, 7]
-        self.games[game_id] = sokoban_functions.Soko_ban([5, 3], ctx.author, None)
+        self.games[game_id] = Soko_ban([5, 3], ctx.author, None)
         embed = discord.Embed(
             title=f"Sokoban | {ctx.author}",
             description="Loading... :arrows_counterclockwise:",

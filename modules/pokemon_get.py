@@ -4,7 +4,7 @@ import random
 search = pokepy.V2Client()
 
 
-def get_all_info(name):
+def get_pokemon_info(name):
     try:
         pokemon = search.get_pokemon(name)
     except Exception:

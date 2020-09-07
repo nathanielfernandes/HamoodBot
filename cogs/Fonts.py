@@ -1,16 +1,11 @@
 import os
-import sys
 import discord
 import textwrap
 import random
 import json
 from discord.ext import commands
 
-sys.path.insert(
-    1, os.path.split(os.getcwd())[0] + "/" + os.path.split(os.getcwd())[1] + "/modules"
-)
-
-import image_functions
+from modules.image_functions import Edit
 
 
 class Fonts(commands.Cog):
@@ -31,9 +26,7 @@ class Fonts(commands.Cog):
         )
 
         self.direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
-        self.edit = image_functions.Edit(
-            None, f"{self.direct}/tempImages", f"{self.direct}/fonts",
-        )
+        self.edit = Edit(None, f"{self.direct}/tempImages", f"{self.direct}/fonts",)
 
     async def textPrep(self, ctx, text, font, font_size, colour, wrap=80):
         async with ctx.typing():

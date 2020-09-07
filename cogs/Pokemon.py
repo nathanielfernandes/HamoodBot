@@ -1,15 +1,10 @@
-import sys
 import os
 import json
 import random
 import discord
 from discord.ext import commands
 
-sys.path.insert(
-    1, os.path.split(os.getcwd())[0] + "/" + os.path.split(os.getcwd())[1] + "/modules"
-)
-
-import pokemon_get
+from modules.pokemon_get import get_pokemon_info
 
 
 class Pokemon(commands.Cog):
@@ -28,7 +23,7 @@ class Pokemon(commands.Cog):
     async def pokedex(self, ctx, name: commands.clean_content):
         """``pokedex [name or id]`` gets a pokemons info"""
 
-        pokemon = pokemon_get.get_all_info(name)
+        pokemon = get_pokemon_info(name)
         if pokemon:
             embed = discord.Embed(
                 title=f"{pokemon['name']} {' '.join([str(self.bot.get_emoji(self.data['shorttypes'][typ])) for typ in pokemon['types']])}",
@@ -80,7 +75,7 @@ class Pokemon(commands.Cog):
         """``pokevibe [@user]`` finds the pokemon your vibing with"""
         member = ctx.author if not member else member
 
-        pokemon = pokemon_get.get_all_info(random.randint(1, 893))
+        pokemon = get_all_info(random.randint(1, 893))
         if pokemon:
             embed = discord.Embed(
                 title=f"{member} is vibing with **{pokemon['name']}** {' '.join([str(self.bot.get_emoji(self.data['shorttypes'][typ])) for typ in pokemon['types']])}",
@@ -98,13 +93,13 @@ class Pokemon(commands.Cog):
             )
             await ctx.send(embed=embed)
 
-    @commands.command()
-    async def poketype(self, ctx):
-        """``poketype`` find your pokemon types"""
+    # @commands.command()
+    # async def poketype(self, ctx):
+    #     """``poketype`` find your pokemon types"""
 
-        await ctx.send(
-            f"{self.bot.get_emoji(random.choice(list(self.data['types'].values())))}{self.bot.get_emoji(random.choice(list(self.data['types'].values())))}"
-        )
+    #     await ctx.send(
+    #         f"{self.bot.get_emoji(random.choice(list(self.data['types'].values())))}{self.bot.get_emoji(random.choice(list(self.data['types'].values())))}"
+    #     )
 
 
 def setup(bot):
