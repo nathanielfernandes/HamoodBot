@@ -75,7 +75,7 @@ class Pokemon(commands.Cog):
         """``pokevibe [@user]`` finds the pokemon your vibing with"""
         member = ctx.author if not member else member
 
-        pokemon = get_all_info(random.randint(1, 893))
+        pokemon = get_pokemon_info(random.randint(1, 893))
         if pokemon:
             embed = discord.Embed(
                 title=f"{member} is vibing with **{pokemon['name']}** {' '.join([str(self.bot.get_emoji(self.data['shorttypes'][typ])) for typ in pokemon['types']])}",

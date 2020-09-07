@@ -1,14 +1,9 @@
 import os
-import sys
 import discord
 import textwrap
 from discord.ext import commands
 
-sys.path.insert(
-    1, f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/modules"
-)
-
-import image_functions
+from modules.image_functions import Edit
 
 
 class Memes(commands.Cog):
@@ -17,7 +12,7 @@ class Memes(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
-        self.edit = image_functions.Edit(
+        self.edit = Edit(
             f"{self.direct}/memePics",
             f"{self.direct}/tempImages",
             f"{self.direct}/fonts",
