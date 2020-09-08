@@ -81,17 +81,17 @@ async def on_message(message):
                 return
             else:
                 if not nsfw:
-                    if len(badword) == 1:
-                        punc = "is a bad word"
-                    else:
-                        punc = "are bad words"
+                    # if len(badword) == 1:
+                    #     punc = "is a bad word"
+                    # else:
+                    #     punc = "are bad words"
 
-                    badword = ", ".join(badword)
+                    # badword = ", ".join(badword)
                     await message.add_reaction("❌")
-                    await message.channel.send(
-                        f"**{message.author.mention}, ||{badword}|| {punc}, watch your profanity!**"
-                    )
-                    return
+                    # await message.channel.send(
+                    #     f"**{message.author.mention}, ||{badword}|| {punc}, watch your profanity!**"
+                    # )
+                    # return
 
         # elif message.content.startswith("im "):
         #     await message.channel.send(f"hi{message.content[2:]}, im hamood")
