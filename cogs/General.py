@@ -131,10 +131,10 @@ class General(commands.Cog):
             except discord.errors.NotFound:
                 print("Could not remove poll!")
 
-    # @commands.command(aliases=["hi", "hey", "yo"])
-    # async def hello(self, ctx):
-    #     """``greet`` greets the user"""
-    #     await ctx.send(f"{random.choice(self.possible_responses)} {ctx.author.mention}")
+    @commands.command(aliases=["hi", "hey", "yo"])
+    async def hello(self, ctx):
+        """``greet`` greets the user"""
+        await ctx.send(f"{random.choice(self.possible_responses)} {ctx.author.mention}")
 
     @commands.command()
     async def hamood(self, ctx):
