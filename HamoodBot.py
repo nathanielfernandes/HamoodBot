@@ -35,12 +35,12 @@ async def on_ready():
     print("-------------------")
 
 
-responses = {
-    "bye": "goodbye {0.author.mention}",
-    "goodnight": "goodnight {0.author.mention}",
-    "gn": "gn",
-    "marco": "polo {0.author.mention}",
-    "im hamood": "No your not, im hamood!",
+# responses = {
+#     "bye": "goodbye {0.author.mention}",
+#     "goodnight": "goodnight {0.author.mention}",
+#     "gn": "gn",
+#     "marco": "polo {0.author.mention}",
+#     "im hamood": "No your not, im hamood!",
 }
 
 file = f"{os.path.dirname(os.path.realpath(__file__))}/data/profanity.txt"
@@ -93,11 +93,11 @@ async def on_message(message):
                     )
                     return
 
-        elif message.content.startswith("im "):
-            await message.channel.send(f"hi{message.content[2:]}, im hamood")
+        # elif message.content.startswith("im "):
+        #     await message.channel.send(f"hi{message.content[2:]}, im hamood")
 
-        elif message.content in responses:
-            await message.channel.send(responses[message.content].format(message))
+        # elif message.content in responses:
+        #     await message.channel.send(responses[message.content].format(message))
 
         await bot.process_commands(message)
 
