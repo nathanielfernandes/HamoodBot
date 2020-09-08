@@ -41,7 +41,7 @@ async def on_ready():
 #     "gn": "gn",
 #     "marco": "polo {0.author.mention}",
 #     "im hamood": "No your not, im hamood!",
-}
+# }
 
 file = f"{os.path.dirname(os.path.realpath(__file__))}/data/profanity.txt"
 badWords = [
