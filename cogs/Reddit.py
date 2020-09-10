@@ -1,4 +1,5 @@
 import os
+import random
 import discord
 from discord.ext import commands
 
@@ -10,6 +11,26 @@ class Reddit(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+        self.colors = [
+            discord.Color.red(),
+            discord.Color.orange(),
+            discord.Color.gold(),
+            discord.Color.green(),
+            discord.Color.blue(),
+            discord.Color.purple(),
+            discord.Color.blurple(),
+            discord.Color.dark_blue(),
+            discord.Color.dark_gold(),
+            discord.Color.dark_green(),
+            discord.Color.dark_magenta(),
+            discord.Color.dark_orange(),
+            discord.Color.dark_purple(),
+            discord.Color.dark_teal(),
+            discord.Color.greyple(),
+            discord.Color.magenta(),
+            discord.Color.teal(),
+        ]
 
     async def redditPrep(self, ctx, subRedd):
         async with ctx.typing():
@@ -23,7 +44,7 @@ class Reddit(commands.Cog):
                 ):
                     is_image = True
             embed = discord.Embed(
-                title=f"Post from r/{subRedd}:", colour=ctx.author.color, url=post.url
+                title=f"Post from r/{subRedd}:", colour=random.choice(self.colors)
             )
             embed.set_image(url=post.url)
             embed.set_footer(

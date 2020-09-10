@@ -116,7 +116,7 @@ class General(commands.Cog):
                 timestamp=currentPoll.message.created_at,
             )
             embed.set_author(
-                name=f"{currentPoll.member}'s Poll:",
+                name=f"{currentPoll.member}'s Poll | {len(currentPoll.voted)} Votes",
                 icon_url=currentPoll.member.avatar_url,
             )
             embed.set_footer(text="Polls end in 5 minutes")
