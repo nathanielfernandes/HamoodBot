@@ -48,6 +48,18 @@ class Reddit(commands.Cog):
         """``meme`` quickly sends a meme from r/meme"""
         await self.redditPrep(ctx, "memes")
 
+    @commands.command()
+    @commands.has_permissions(embed_links=True)
+    async def dark(self, ctx):
+        """``dark`` quickly sends a meme from r/DarkMemesAndHumor"""
+        await self.redditPrep(ctx, "DarkMemesAndHumor")
+
+    @commands.command()
+    @commands.has_permissions()
+    async def dank(self, ctx):
+        """``dank`` quickly sends a meme from r/dankmemes"""
+        await self.redditPrep(ctx, "dankmemes")
+
     @commands.command(aliases=["cats", "noura"])
     @commands.has_permissions(embed_links=True)
     async def cat(self, ctx):

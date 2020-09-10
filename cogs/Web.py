@@ -42,6 +42,7 @@ class Web(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.is_owner()
     async def google(self, ctx, *, query: commands.clean_content):
         """``google [image]`` googles an image"""
         image = ImgSearch(query)
