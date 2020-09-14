@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from modules.math_functions import base_conversion, solve_eq, run_code
+from modules.math_functions import base_conversion, solve_eq, run_code, calc_eq
 
 
 class Math(commands.Cog):
@@ -24,8 +24,13 @@ class Math(commands.Cog):
         await ctx.send(f"**Base {base1}:** `{number}`\n**Base {base2}:** `{answer}`\n")
 
     @commands.command()
+    async def calc(self, ctx, *, content: commands.clean_content):
+        """``calc [equation]`` calculates the answer to the given equation"""
+        await ctx.send(f"`{calc_eq(content)}`")
+
+    @commands.command()
     async def solve(self, ctx, *, content: commands.clean_content):
-        """``solve [equation]`` solve simple math equations"""
+        """``solve [equation]`` solves for variables in simple math equations"""
         await ctx.send(f"`{solve_eq(content)}`")
 
     @commands.command()

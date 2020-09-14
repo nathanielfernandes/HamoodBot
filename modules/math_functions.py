@@ -32,6 +32,16 @@ def base_conversion(number, base1, base2):
     return answer
 
 
+def calc_eq(equation):
+    equation = equation.replace("^", "**").lower()
+    try:
+        solved = eval(str(parse_expr(equation)))
+    except Exception:
+        return "Invalid Input"
+
+    return solved
+
+
 def solve_eq(equation):
     equation = equation.replace("^", "**").lower()
     count = 0
