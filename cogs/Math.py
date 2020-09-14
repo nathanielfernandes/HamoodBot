@@ -1,7 +1,14 @@
+import os
 import discord
 from discord.ext import commands
 
-from modules.math_functions import base_conversion, solve_eq, run_code, calc_eq
+from modules.math_functions import (
+    base_conversion,
+    solve_eq,
+    run_code,
+    calc_eq,
+    graph_eq,
+)
 
 
 class Math(commands.Cog):
@@ -32,6 +39,17 @@ class Math(commands.Cog):
     async def solve(self, ctx, *, content: commands.clean_content):
         """``solve [equation]`` solves for variables in simple math equations"""
         await ctx.send(f"`{solve_eq(content)}`")
+
+    @commands.command()
+    async def graph(self, ctx, *, content: commands.clean_content):
+        """``graph [equation]`` graphs given equation"""
+        content = content.split(", ") if ", " in content else [content]
+        done, graph = graph_eq(content, f"{ctx.author}'s Graph")
+        if done:
+            await ctx.send(file=discord.File(graph))
+            os.remove(graph)
+        else:
+            await ctx.send("`Could not graph equation`")
 
     @commands.command()
     @commands.is_owner()
