@@ -22,26 +22,31 @@ def format_eq(eq):
 def graph_eq(equations, title):
     equations = equations[:5]
     roots = []
+    ran = random.randint(5, 50)
+
     try:
         for equation in equations:
-            eq = equation
-            equation = format_eq(equation)
+            if len(equation) > 1:
+                ran = int(equation[1]) if 1 < int(equation[1]) < 101 else ran
 
-            x = np.array(range(-100, 100))
+            eq = equation
+            equation = format_eq(equation[0])
+
+            x = np.array(np.arange(-1 * ran, ran, ran / 100))
             y = eval(str(parse_expr(equation)))
 
             plt.title(title)
 
-            roots.append(solve_eq(eq))
+            roots.append(solve_eq(equation))
 
             plt.grid(alpha=0.5, linestyle="solid")
             plt.axhline(y=0, color="k", linewidth=0.5)
             plt.axvline(x=0, color="k", linewidth=0.5)
 
-            plt.plot(x, y, label=f"y = {eq}", color=colors[equations.index(eq)])
+            plt.plot(x, y, label=f"y = {equation}", color=colors[equations.index(eq)])
             plt.legend()
 
-            loc = f"{folder}/{equations}.jpg"
+            loc = f"{folder}/{equation}.jpg"
 
         plt.xlabel(f"Roots: {roots}")
         plt.savefig(loc, bbox_inches="tight")
@@ -69,17 +74,18 @@ def solve_eq(equation):
 
     try:
         sol = solve(Eq(parse_expr(equation), 0), dict=True)
-        try:
-            for solution in sol:
-                for k in solution.keys():
+        for solution in sol:
+            for k in solution.keys():
+                if "I" not in str(solution[k]):
                     solution[k] = round(eval(str(solution[k])), 3)
                     solved.append(f"{k} = {solution[k]}")
-        except NameError:
-            return "No Solution"
     except Exception:
         return "Invalid Input"
 
-    return solved
+    if not solved:
+        return "Could not Solve"
+    else:
+        return solved
 
 
 def base_conversion(number, base1, base2):

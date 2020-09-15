@@ -44,6 +44,12 @@ class Math(commands.Cog):
     async def graph(self, ctx, *, content: commands.clean_content):
         """``graph [equation]`` graphs given equation"""
         content = content.split(", ") if ", " in content else [content]
+        for i in range(len(content)):
+            if ": " in content[i]:
+                content[i] = content[i].split(": ")
+            elif ": " not in content[i]:
+                content[i] = [content[i]]
+
         done, graph = graph_eq(content, f"{ctx.author}'s Graph")
         if done:
             await ctx.send(file=discord.File(graph))

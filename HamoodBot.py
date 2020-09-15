@@ -135,9 +135,9 @@ async def reload(ctx, cog):
     try:
         bot.unload_extension(f"cogs.{cog}")
         bot.load_extension(f"cogs.{cog}")
-        await ctx.send(f"{cog} got reloaded")
+        await ctx.send(f"`{cog} got reloaded`")
     except Exception as e:
-        print(f"{cog} cannot be loaded:")
+        await ctx.send(f"`{cog} cannot be loaded`")
         raise e
 
 
@@ -147,9 +147,9 @@ async def unload(ctx, cog):
     """Owner Command"""
     try:
         bot.unload_extension(f"cogs.{cog}")
-        await ctx.send(f"{cog} got unloaded")
+        await ctx.send(f"`{cog} got unloaded`")
     except Exception as e:
-        print(f"{cog} cannot be unloaded:")
+        await ctx.send(f"`{cog} cannot be unloaded:`")
         raise e
 
 
@@ -159,9 +159,9 @@ async def load(ctx, cog):
     """Owner Command"""
     try:
         bot.load_extension(f"cogs.{cog}")
-        await ctx.send(f"{cog} got loaded")
+        await ctx.send(f"`{cog} got loaded`")
     except Exception as e:
-        print(f"{cog} cannot be loaded:")
+        await ctx.send(f"`{cog} cannot be loaded:`")
         raise e
 
 
