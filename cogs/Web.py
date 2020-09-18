@@ -25,15 +25,19 @@ class Web(commands.Cog):
 
         if country == None:
             embed = discord.Embed(
-                title="Covid-19 Statistics:",
+                title="Statistics:",
                 description=msg,
                 colour=member.color,
                 timestamp=ctx.message.created_at,
                 url=url,
             )
+            embed.set_author(
+                name="Covid-19",
+                icon_url="https://cdn.discordapp.com/attachments/741384050387714162/756642082172436500/Coronavirus-CDC-645x645.jpg",
+            )
         else:
             embed = discord.Embed(
-                title=f"{country}'s Covid-19 Statistics:",
+                title=f"{country}'s Statistics:",
                 description=msg,
                 colour=member.color,
                 timestamp=ctx.message.created_at,

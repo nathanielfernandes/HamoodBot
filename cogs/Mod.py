@@ -26,6 +26,25 @@ class Mod(commands.Cog):
             f"{member.mention} was kicked by {ctx.author.mention} | reason: `{reason}`"
         )
 
+    @commands.command()
+    async def prunes(self, ctx, days: int = 7):
+        """``prunes [days]`` returns how many roleless members have not been active on the server"""
+        prunes = await ctx.guild.estimate_pruned_members(days=days)
+        await ctx.send(
+            f"`{prunes} roleless users have not been active for {days} days`"
+        )
+
+    @commands.command()
+    @commands.has_permissions(kick_members=True)
+    async def deprune(self, ctx, days: int = 30):
+        """``deprune [days]`` kicks all pruned members within given date"""
+        pruned = await ctx.guild.prune_members(
+            days=days, compute_prune_count=True, reason="Inactivity"
+        )
+        await ctx.send(
+            f"`{pruned} have been kicked from the server due to inactivity in the past {days} days!`"
+        )
+
     @commands.command(aliases=["clear"])
     @commands.has_permissions(manage_messages=True)
     async def clean(self, ctx, amount=1):

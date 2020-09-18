@@ -99,6 +99,7 @@ class About(commands.Cog):
     @commands.has_permissions(embed_links=True)
     async def help(self, ctx, *cog):
         """Gets all cogs and commands of Hamood"""
+        cog = [c.capitalize() for c in cog]
         try:
             if not cog:
                 """Cog listing.  What more?"""
@@ -111,7 +112,7 @@ class About(commands.Cog):
                 )
                 cogs_desc = ""
                 for x in self.bot.cogs:
-                    cogs_desc += "{} - {}".format(x, self.bot.cogs[x].__doc__) + "\n"
+                    cogs_desc += "`{}` - {}".format(x, self.bot.cogs[x].__doc__) + "\n"
                 halp.add_field(
                     name="Categories",
                     value=cogs_desc[0 : len(cogs_desc) - 1],
@@ -120,7 +121,7 @@ class About(commands.Cog):
                 cmds_desc = ""
                 for y in self.bot.walk_commands():
                     if not y.cog_name and not y.hidden:
-                        cmds_desc += "{} - {}".format(y.name, y.help) + "\n"
+                        cmds_desc += "`{}` - {}".format(y.name, y.help) + "\n"
                 # halp.add_field(name='Uncatergorized Commands',value=cmds_desc[0:len(cmds_desc)-1],inline=False)
                 await ctx.message.add_reaction(emoji="✉")
                 await ctx.send("", embed=halp)
@@ -161,7 +162,7 @@ class About(commands.Cog):
                         """Reminds you if that category doesn't exist."""
                         halp = discord.Embed(
                             title="Error!",
-                            description=f"How do you even use {cog[0]}",
+                            description=f"{cog[0]} is not a category",
                             color=discord.Color.red(),
                         )
                         halp.set_footer(

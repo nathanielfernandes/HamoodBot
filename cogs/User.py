@@ -96,6 +96,39 @@ class User(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=["listen"])
+    @commands.has_permissions(embed_links=True)
+    async def listening(self, ctx, member: discord.Member = None):
+        """``listening [@user]`` returns a users spotify listening activity"""
+        member = ctx.author if not member else member
+
+        for activity in member.activities:
+            if isinstance(activity, discord.Spotify):
+                if "(" in activity.title:
+                    title = activity.title.find("(")
+                    title = activity.title[:title]
+                else:
+                    title = activity.title
+
+                song = f"**[{activity.title}](https://open.spotify.com/search/{title.replace(' ', '%20')})**"
+                artist = f"**Artists: {', '.join(activity.artists)}**"
+                album = f"**Album: {activity.album}**"
+
+                embed = discord.Embed(
+                    title=f"{member} is listening to:",
+                    description=f"{song}\n{artist}\n{album}",
+                    colour=discord.Color.green(),
+                    timestamp=ctx.message.created_at,
+                )
+
+                embed.set_thumbnail(url=activity.album_cover_url)
+                embed.set_author(
+                    name="Spotify",
+                    icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756607817611346051/1200px-Spotify_logo_without_text.svg.jpg",
+                )
+
+                await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(User(bot))

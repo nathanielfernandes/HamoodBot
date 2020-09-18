@@ -110,7 +110,7 @@ class Sokoban(commands.Cog):
                 msg = f"Click Any Button To Go To Level {currentGame.level}:"
                 currentGame.moves -= 1
             else:
-                msg = f"Sokoban Level {currentGame.level}:"
+                msg = f"{currentGame.user}'s game | Level {currentGame.level}:"
 
             embed = discord.Embed(
                 title=msg,
@@ -118,7 +118,8 @@ class Sokoban(commands.Cog):
                 color=currentGame.user.color,
             )
             embed.set_author(
-                name=f"{currentGame.user}'s game", icon_url=currentGame.user.avatar_url
+                name="Sokoban",
+                icon_url="https://cdn.discordapp.com/attachments/699770186227646465/744963999782797512/unknown.png",
             )
             embed.add_field(
                 name=f"{currentGame.sprites[2]} Boxes Left: {len(currentGame.box_pos) - currentGame.completed}     {currentGame.sprites[5]} Moves: {currentGame.moves}",

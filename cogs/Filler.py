@@ -148,7 +148,7 @@ class Filler(commands.Cog):
                 )
                 await currentGame.message.clear_reactions()
             else:
-                msg = f"Filler | {currentGame.sprites[currentGame.current_colour]} {currentGame.current_player}'s Turn"
+                msg = f"{currentGame.sprites[currentGame.current_colour]} {currentGame.current_player}'s Turn"
 
                 if currentGame.timer != None:
                     currentGame.timer.cancel()
@@ -157,6 +157,10 @@ class Filler(commands.Cog):
                 colour = self.colors[currentGame.current_colour]
             embed = discord.Embed(
                 title=msg, description=f"{currentGame.game_grid}", color=colour,
+            )
+            embed.set_author(
+                name="Filler",
+                icon_url="https://cdn.discordapp.com/attachments/699770186227646465/744962953006153738/unknown.png",
             )
             # embed.set_author(name=f"| Filler |")
             embed.add_field(

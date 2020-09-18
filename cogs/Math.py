@@ -19,7 +19,7 @@ class Math(commands.Cog):
 
     @commands.command()
     async def base(self, ctx, *, content: commands.clean_content):
-        """``base [number)base] [base]`` converts numbers between bases"""
+        """``base [number)base], [base]`` converts numbers between bases"""
         try:
             number, base2 = content.split(", ")
             number, base1 = number.split(")")
@@ -42,7 +42,7 @@ class Math(commands.Cog):
 
     @commands.command()
     async def graph(self, ctx, *, content: commands.clean_content):
-        """``graph [equation]`` graphs given equation"""
+        """``graph [equation], [next equation]`` graphs given equation"""
         content = content.split(", ") if ", " in content else [content]
         for i in range(len(content)):
             if ": " in content[i]:
@@ -60,7 +60,7 @@ class Math(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def py(self, ctx, *, content: commands.clean_content):
-        """``py [code]`` lets me run code and out put it to the chat"""
+        """``py [code]`` runs python code and outputs to the chat"""
         out = run_code(content.strip("`"))
         await ctx.send(f"```py\n{out}```")
 

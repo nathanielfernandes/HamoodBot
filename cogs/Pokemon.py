@@ -93,6 +93,29 @@ class Pokemon(commands.Cog):
             )
             await ctx.send(embed=embed)
 
+    @commands.command()
+    @commands.has_permissions(embed_links=True)
+    async def pokepic(self, ctx, name: commands.clean_content):
+        pokemon = get_pokemon_info(name)
+        if pokemon:
+            embed = discord.Embed(
+                title=f"**{pokemon['name']}** {' '.join([str(self.bot.get_emoji(self.data['shorttypes'][typ])) for typ in pokemon['types']])}",
+                color=self.data["colors"][pokemon["color"]],
+            )
+            embed.set_author(
+                name=f"Pokedex - {pokemon['id']}",
+                icon_url="https://cdn.discordapp.com/attachments/699770186227646465/751609285527470261/pokeball_PNG8.png",
+            )
+
+            embed.set_image(url=pokemon["image"])
+
+            embed.set_footer(
+                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
+            )
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send(f"Could not find the pokemon '{name}'.")
+
     # @commands.command()
     # async def poketype(self, ctx):
     #     """``poketype`` find your pokemon types"""

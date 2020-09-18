@@ -106,26 +106,24 @@ class Fun(commands.Cog):
         w = "||pop||" * int(w)
         for i in range(h):
             wrap += w + "\n"
-        await ctx.send(wrap)
+
+        embed = discord.Embed(
+            tile=f"Bubble Wrap {w} x {h}:", description=wrap, color=ctx.author.color
+        )
+
+        await ctx.send(embed=embed)
 
     @commands.command(aliases=["sign"])
-    async def zodiac(
-        self, ctx, month1: str, day1: int, month2: str, day2: int, quick="slow"
-    ):
+    async def zodiac(self, ctx, month1: str, day1: int, month2: str, day2: int):
         """``zodiac [mmm] [dd] [mmm] [dd]`` lets you test your zodiac's compatibilty with another"""
         sign1 = getZodiac(month1, day1)
         sign2 = getZodiac(month2, day2)
 
         compatibility = getCompatibility(sign1, sign2)
 
-        if quick == "slow":
-            await ctx.send(
-                f"person 1 is a **{sign1}**, person 2 is a **{sign2}**, and they are about **{compatibility}** compatible"
-            )
-        else:
-            await ctx.send(
-                f"**{sign1}** and **{sign2}** are about **{compatibility}** compatible"
-            )
+        await ctx.send(
+            f"person 1 is a **{sign1}**, person 2 is a **{sign2}**, and they are about **{compatibility}** compatible"
+        )
 
     @commands.command()
     async def match(self, ctx, *, content: commands.clean_content):

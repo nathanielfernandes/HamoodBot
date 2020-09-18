@@ -1,5 +1,4 @@
 import os
-import json
 import discord
 from discord.ext import commands
 
@@ -9,11 +8,6 @@ class Events(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.error_solutions = json.load(
-            open(
-                f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/errors.json"
-            )
-        )
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -26,10 +20,13 @@ class Events(commands.Cog):
         if isinstance(error, commands.CommandNotFound):
             return
         elif isinstance(error, commands.CheckFailure):
-            await ctx.send("You don't have the permission to do that")
+            await ctx.send("`You don't have the permission to do that`")
         elif isinstance(error, commands.MissingRequiredArgument):
             try:
-                await ctx.send(self.error_solutions[str(ctx.command)])
+                s = ctx.command.help
+                start = s.find("``") + 2
+                end = s.find("``", start)
+                await ctx.send(f"```{s[start:end]}```")
             except Exception:
                 print("error")
                 # raise error

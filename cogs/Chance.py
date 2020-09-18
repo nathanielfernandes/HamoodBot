@@ -24,11 +24,23 @@ class Chance(commands.Cog):
         ]
 
     @commands.command(
-        aliases=["8ball", "does", "would", "should", "could", "can", "will", "am i",]
+        aliases=[
+            "8ball",
+            "does",
+            "would",
+            "should",
+            "could",
+            "can",
+            "will",
+            "am i",
+            "is",
+        ]
     )
     async def eightball(self, ctx):
         """``eightball`` Hamood shakes his magic 8ball"""
-        await ctx.send(f"{random.choice(self.possible_responses)}")
+        await ctx.send(
+            f"{ctx.author.mention}, {random.choice(self.possible_responses)}"
+        )
 
     @commands.command(aliases=["coin"])
     async def flip(self, ctx):
