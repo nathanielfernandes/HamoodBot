@@ -95,5 +95,5 @@ class AvatarMemes(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(AvatarMemes(bot))
+    bot.add_cog(Avatarmemes(bot))
 
