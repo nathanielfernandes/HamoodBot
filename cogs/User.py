@@ -110,7 +110,7 @@ class User(commands.Cog):
                 else:
                     title = activity.title
 
-                song = f"**[{activity.title}](https://open.spotify.com/search/{title.replace(' ', '%20')})**"
+                song = f"**[{activity.title}](https://open.spotify.com/search/{title.replace(' ', '_')})**"
                 artist = f"**Artists: {', '.join(activity.artists)}**"
                 album = f"**Album: {activity.album}**"
 
