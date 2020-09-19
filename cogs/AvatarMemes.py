@@ -6,7 +6,7 @@ from modules.image_functions import Edit
 from modules.web_scraping import scrape
 
 
-class AvatarMemes(commands.Cog):
+class Avatarmemes(commands.Cog):
     """Custom Avatar Memes"""
 
     def __init__(self, bot):
