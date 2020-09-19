@@ -156,7 +156,7 @@ class General(commands.Cog):
 
     @commands.command()
     async def repeat(self, ctx, times: int, *, content: commands.clean_content):
-        """``repeat [msg]`` repeats your message multiple times"""
+        """``repeat [number of messages] [msg]`` repeats your message multiple times"""
         msg = ""
         for i in range(times):
             msg += content + "\n"

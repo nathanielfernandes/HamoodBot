@@ -43,6 +43,10 @@ class Web(commands.Cog):
                 timestamp=ctx.message.created_at,
                 url=url,
             )
+            embed.set_author(
+                name="Covid-19",
+                icon_url="https://cdn.discordapp.com/attachments/741384050387714162/756642082172436500/Coronavirus-CDC-645x645.jpg",
+            )
         await ctx.send(embed=embed)
 
     @commands.command()

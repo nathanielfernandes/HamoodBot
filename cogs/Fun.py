@@ -108,7 +108,7 @@ class Fun(commands.Cog):
             wrap += w + "\n"
 
         embed = discord.Embed(
-            tile=f"Bubble Wrap {w} x {h}:", description=wrap, color=ctx.author.color
+            tile=f"Bubble Wrap:", description=wrap, color=ctx.author.color
         )
 
         await ctx.send(embed=embed)
@@ -127,7 +127,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def match(self, ctx, *, content: commands.clean_content):
-        """``match [person1] [person2]`` randomly gives a match percentage between two people"""
+        """``match [person1], [person2]`` randomly gives a match percentage between two people"""
         match = str(random.randint(0, 100))
         content = content.split(", ")
         left, right = content
