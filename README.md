@@ -76,7 +76,13 @@ These commands are organized alphabetically from thier corresponding [Cog](https
 - ``kick [@user]`` kicks a tagged member
 - ``ban [@user]`` bans a tagged member
 - ``clean`` deletes chat messages
-- ``quickchannel [name]`` sets up a quick channel system in your server
+- ``prunes [days]`` returns how many roleless members have not been active on the server
+- ``deprune [days]`` kicks all pruned members within given date
+- ``nickname [@user] [newname]`` changes the nickname of a member
+- ``quickcategory [category]`` Creates a '+' channel which instantly creates a quick voice channel for the user that joins it
+- ``quickchannel [name]`` Creates a '+' voice channel that creates quick voice channel for the user that joins it
+- ``fullcategory [category]`` Creates a text channel and a '+' voice channel under a category which instantly creates a quick voice channel for the user that joins it
+- 
 ### Reddit
 - ``red [subreddit]`` finds a post from your specified subreddit
 - ``meme`` quickly sends a meme from r/meme
@@ -97,9 +103,11 @@ These commands are organized alphabetically from thier corresponding [Cog](https
 - ``avatar [@user]`` sends the profile picture of a tagged user
 - ``roles [@user]`` lists the roles of a tagged user
 - ``userinfo [@user]`` sends allot of server info on a user
+- ``listening [@user]`` returns a users spotify listening activity
 ### Web
 - ``covid [country]`` gets the latest covid 19 statistics
 - ``google [image]`` googles an image
+- ``insta [username]`` gets an instagram profile
 
 ## Screenshots
 ![level1](https://cdn.discordapp.com/attachments/699770186227646465/741028512609206282/unknown.png)
