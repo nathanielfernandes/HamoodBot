@@ -96,6 +96,11 @@ class User(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @commands.command()
+    @commands.has_permissions(embed_links=True)
+    async def activity(self, ctx, member: discord.Member = None):
+        """``activity [@user]`` returns a users activity"""
+
     @commands.command(aliases=["listen"])
     @commands.has_permissions(embed_links=True)
     async def listening(self, ctx, member: discord.Member = None):

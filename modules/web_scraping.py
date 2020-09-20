@@ -1,13 +1,14 @@
 from bs4 import BeautifulSoup as BS
 import requests
 import re
+import random
 import json
-from instaloader import Instaloader, Profile
+from instaloader import Instaloader, Profile, Hashtag
 
 L = Instaloader()
 
 
-def insta_scrape(username):
+def insta_profile(username):
     url = f"https://instagram.com/{username}/"
     response = requests.get(url)
 
@@ -65,13 +66,13 @@ def covid_info(country):
     return url, info
 
 
-# import re
-
-# def insta_scrape(username):
+# def insta_scrapes(username):
 #     url = f"https://www.instagram.com/{username}/"
 
-#     try:
-#         r = requests.get(url)
+#     r = requests.get(url)
+
+#     if r.status_code != 404:
+#         profile = Profile.from_username(L.context, username)
 #         json_m = re.search(r"window\._sharedData = (.*);</script>", r.text)
 #         profile = json.loads(json_m.group(1))["entry_data"]["ProfilePage"][0][
 #             "graphql"
@@ -87,11 +88,9 @@ def covid_info(country):
 #             "bio": profile["biography"],
 #             "link": profile["external_url"],
 #         }
-#     except Exception as e:
-#         raise e
+#         return True, data
+#     else:
 #         return False, None
-
-#     return True, data
 
 
 def scrape(imgURL, saveDir):

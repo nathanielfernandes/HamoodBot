@@ -19,7 +19,11 @@ from modules.image_functions import Edit
 description = """Hamood is a multipurpose discord bot"""
 
 # the prefix the bot looks for before processing a message/
-bot = commands.Bot(command_prefix=".", case_insensitive=True, description=description)
+bot = commands.Bot(
+    command_prefix=commands.when_mentioned_or("."),
+    case_insensitive=True,
+    description=description,
+)
 
 
 @bot.event
