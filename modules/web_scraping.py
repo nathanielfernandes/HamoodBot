@@ -59,7 +59,8 @@ def insta_scrape(username):
             "bio": profile["biography"],
             "link": profile["external_url"],
         }
-    except Exception:
+    except Exception as e:
+        raise e
         return False, None
 
     return True, data
