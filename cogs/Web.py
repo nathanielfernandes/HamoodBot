@@ -54,7 +54,7 @@ class Web(commands.Cog):
     @commands.has_permissions(embed_links=True)
     async def insta(self, ctx, username=None):
         """``insta [username]`` gets an instagram profile"""
-        exists, profile = insta_scrape(username)
+        exists, profile = await insta_scrape(username)
         if exists:
             line2 = f"**Post:** {profile['posts']}   **Followers:** {profile['followers']}  **Following:** {profile['following']}"
             name = profile["name"] if profile["name"] != "" else "`no name`"

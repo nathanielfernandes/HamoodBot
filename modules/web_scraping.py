@@ -2,6 +2,32 @@ from bs4 import BeautifulSoup as BS
 import requests
 import re
 import json
+from instaloader import Instaloader, Profile
+
+L = Instaloader()
+
+
+def insta_scrape(username):
+    url = f"https://instagram.com/{username}/"
+    response = requests.get(url)
+
+    if response.status_code != 404:
+        profile = Profile.from_username(L.context, username)
+
+        data = {
+            "url": url,
+            "pfp": profile.profile_pic_url,
+            "posts": profile.mediacount,
+            "followers": profile.followers,
+            "following": profile.followees,
+            "name": profile.full_name,
+            "bio": profile.biography,
+            "link": profile.external_url,
+        }
+
+        return True, data
+    else:
+        False, None
 
 
 def covid_info(country):
@@ -39,31 +65,33 @@ def covid_info(country):
     return url, info
 
 
-def insta_scrape(username):
-    url = f"https://www.instagram.com/{username}/"
+# import re
 
-    try:
-        r = requests.get(url)
-        json_m = re.search(r"window\._sharedData = (.*);</script>", r.text)
-        profile = json.loads(json_m.group(1))["entry_data"]["ProfilePage"][0][
-            "graphql"
-        ]["user"]
+# def insta_scrape(username):
+#     url = f"https://www.instagram.com/{username}/"
 
-        data = {
-            "url": url,
-            "pfp": profile["profile_pic_url_hd"],
-            "posts": profile["edge_owner_to_timeline_media"]["count"],
-            "followers": profile["edge_followed_by"]["count"],
-            "following": profile["edge_follow"]["count"],
-            "name": profile["full_name"],
-            "bio": profile["biography"],
-            "link": profile["external_url"],
-        }
-    except Exception as e:
-        raise e
-        return False, None
+#     try:
+#         r = requests.get(url)
+#         json_m = re.search(r"window\._sharedData = (.*);</script>", r.text)
+#         profile = json.loads(json_m.group(1))["entry_data"]["ProfilePage"][0][
+#             "graphql"
+#         ]["user"]
 
-    return True, data
+#         data = {
+#             "url": url,
+#             "pfp": profile["profile_pic_url_hd"],
+#             "posts": profile["edge_owner_to_timeline_media"]["count"],
+#             "followers": profile["edge_followed_by"]["count"],
+#             "following": profile["edge_follow"]["count"],
+#             "name": profile["full_name"],
+#             "bio": profile["biography"],
+#             "link": profile["external_url"],
+#         }
+#     except Exception as e:
+#         raise e
+#         return False, None
+
+#     return True, data
 
 
 def scrape(imgURL, saveDir):
