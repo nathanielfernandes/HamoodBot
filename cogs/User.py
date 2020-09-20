@@ -111,8 +111,8 @@ class User(commands.Cog):
                     title = activity.title
 
                 song = f"**[{activity.title}](https://open.spotify.com/search/{title.replace(' ', '_')})**"
-                artist = f"**Artists: {', '.join(activity.artists)}**"
-                album = f"**Album: {activity.album}**"
+                artist = f"**Artists:** {', '.join(activity.artists)}"
+                album = f"**Album:** {activity.album}"
 
                 embed = discord.Embed(
                     title=f"{member} is listening to:",
@@ -126,6 +126,7 @@ class User(commands.Cog):
                     name="Spotify",
                     icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756607817611346051/1200px-Spotify_logo_without_text.svg.jpg",
                 )
+                embed.set_footer(text=f"Requested by {ctx.author}")
 
                 await ctx.send(embed=embed)
 
