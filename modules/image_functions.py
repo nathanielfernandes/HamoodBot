@@ -1,7 +1,8 @@
 import os
 import pathlib
 import random
-from PIL import Image, ImageDraw, ImageFont
+import io
+from PIL import Image, ImageDraw, ImageFont, ImageSequence
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -14,7 +15,53 @@ class Edit:
         self.temp = save_location
         self.fontPath = font_location
 
-    def addText(self, imageName, fontSize, textColor, imagedict, new, fontName):
+    def gif_addText(self, gifName, fontSize, textColor, gifData, new, fontName):
+        """adds text to a gif"""
+        gif = f"{self.folder}/{gifName}"
+        edited = f"{self.temp}/{new}"
+
+        fontLoc = f"{self.fontPath}/{fontName}"
+
+        gif = Image.open(gif)
+        font_type = ImageFont.truetype(fontLoc, fontSize)
+
+        if textColor == "BLACK":
+            textColor = (0, 0, 0)
+            STROKECOLOR = (255, 255, 255)
+        elif textColor == "WHITE":
+            textColor = (255, 255, 255)
+            STROKECOLOR = (0, 0, 0)
+
+        frames = []
+        for frame in ImageSequence.Iterator(gif):
+            frame = frame.convert("RGBA")
+
+            for img in gifData:
+                draw = ImageDraw.Draw(frame)
+                draw.text(
+                    xy=(img[0][0], img[0][1]),
+                    text=img[1],
+                    fill=(textColor),
+                    font=font_type,
+                    anchor=None,
+                    spacing=4,
+                    align="center",
+                    direction=None,
+                    features=None,
+                    language=None,
+                    stroke_width=4,
+                    stroke_fill=STROKECOLOR,
+                )
+                del draw
+
+            frames.append(frame)
+
+            # my_bytes = io.BytesIO()
+        frames[0].save(edited, format="GIF", save_all=True, append_images=frames[1:])
+        # print(my_bytes.getvalue())
+        return edited
+
+    def addText(self, imageName, fontSize, textColor, imageData, new, fontName):
         """adds text to an image"""
         image = f"{self.folder}/{imageName}"
         edited = f"{self.temp}/{new}"
@@ -32,7 +79,7 @@ class Edit:
             textColor = (255, 255, 255)
             STROKECOLOR = (0, 0, 0)
 
-        for img in imagedict:
+        for img in imageData:
             draw.text(
                 xy=(img[0][0], img[0][1]),
                 text=img[1],
@@ -106,4 +153,5 @@ class Edit:
             num = random.choice("1234567890")
             combo += num
         return combo
+
 

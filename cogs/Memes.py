@@ -18,7 +18,9 @@ class Memes(commands.Cog):
             f"{self.direct}/fonts",
         )
 
-    async def textMemePrep(self, ctx, text, coords, font, colour, source, wrap=12):
+    async def textMemePrep(
+        self, ctx, text, coords, font, colour, source, wrap=12, gif=False
+    ):
         async with ctx.typing():
 
             text = text.split(", ")
@@ -33,13 +35,19 @@ class Memes(commands.Cog):
                 coords[i].append(text[i])
 
             name = self.edit.randomNumber()
-            name = str(name) + ".jpg"
-
-            meme = self.edit.addText(
-                source, font, colour, coords, name, "arialbold.ttf"
-            )
+            if gif:
+                name = str(name) + ".gif"
+                meme = self.edit.gif_addText(
+                    source, font, colour, coords, name, "arialbold.ttf"
+                )
+            else:
+                name = str(name) + ".jpg"
+                meme = self.edit.addText(
+                    source, font, colour, coords, name, "arialbold.ttf"
+                )
             # await ctx.message.delete()
             await ctx.send(file=discord.File(meme))
+
         os.remove(meme)
 
     @commands.command()
@@ -92,9 +100,24 @@ class Memes(commands.Cog):
     @commands.command()
     @commands.has_permissions(attach_files=True)
     async def pour(self, ctx, *, content: commands.clean_content):
-        """``pour [text1], [text2]``adds your own text to the 'pour' meme format"""
+        """``pour [text1], [text2]`` adds your own text to the 'pour' meme format"""
         await self.textMemePrep(
             ctx, content, [[(50, 110)], [(430, 60)]], 45, "BLACK", "coffeeImage.jpg", 8
+        )
+
+    @commands.command()
+    @commands.has_permissions(attach_files=True)
+    async def shoot(self, ctx, *, content: commands.clean_content):
+        """``shoot [text1], [text2]`` shoot someone"""
+        await self.textMemePrep(
+            ctx,
+            content,
+            [[(80, 245)], [(240, 245)]],
+            20,
+            "WHITE",
+            "amongUsShoot.gif",
+            9,
+            True,
         )
 
 
