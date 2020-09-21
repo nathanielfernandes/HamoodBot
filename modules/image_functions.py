@@ -154,4 +154,3 @@ class Edit:
             combo += num
         return combo
 
-

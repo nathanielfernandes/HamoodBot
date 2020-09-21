@@ -112,11 +112,11 @@ class Memes(commands.Cog):
         await self.textMemePrep(
             ctx,
             content,
-            [[(80, 245)], [(240, 245)]],
+            [[(10, 150)], [(170, 150)]],
             20,
             "WHITE",
             "amongUsShoot.gif",
-            9,
+            13,
             True,
         )
 
