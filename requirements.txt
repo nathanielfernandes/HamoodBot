@@ -7,4 +7,3 @@ bs4
 pokepy
 sympy
 matplotlib
-instaloader

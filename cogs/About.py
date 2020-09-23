@@ -19,8 +19,6 @@ class About(commands.Cog):
         else:
             self.running = "?"
 
-    # \n[Invite Him](https://bit.ly/2XD2YPN)",
-
     @commands.command()
     @commands.has_permissions(embed_links=True)
     async def info(self, ctx):
@@ -37,16 +35,26 @@ class About(commands.Cog):
         )
         embed.add_field(
             name="Highlighted Features",
-            value="**• Covid-19 Satistics** `New!`\nHamood can send the latest Covid-19 statistics of any country from [worldometer](https://www.worldometers.info/coronavirus/)\n**• Profanity Detection**\nHamood calls out anyone that uses profane words\n**• Custom Text Generated Memes**\nYou can generate custom memes with your own text with the meme templates Hamood has.\n**• Reddit Posts**\nHamood can find and send posts from your favourite subreddits.",
+            value="**• Filler Game** `New!`\nYou can now play the popular imsg game 'Filler' with hamood.\n**• Complex Math**\nHamood has new and improved math functions that can help you with your homework.\n**• Custom Text Generated Memes**\nYou can generate custom memes with your own text with the meme templates Hamood has.\n**• Reddit Posts**\nHamood can find and send posts from your favourite subreddits.\n**• Profanity Detection**\nHamood flags any message with a bad word\n",
             inline=False,
         )
         embed.add_field(
             name="Server Presence",
-            value=f"Hamood is current in **{len(self.bot.guilds)}** servers",
+            value=f"Hamood is current in **{len(self.bot.guilds)}** servers\n[Invite Him](https://bit.ly/2XD2YPN)",
         )
         embed.add_field(
             name="Source Code",
             value="[Click Here](https://github.com/nathanielfernandes/HamoodBot)",
+        )
+
+        embed.add_field(
+            name="Command Listing",
+            value="Type `.help` or [Click Here](https://github.com/nathanielfernandes/HamoodBot/blob/master/README.md#commands)",
+        )
+
+        embed.add_field(
+            name="For bugs, further help or suggestions",
+            value="You can message me on discord\n`nathan#3724`",
         )
         embed.set_thumbnail(
             url="https://cdn.discordapp.com/avatars/699510311018823680/bcb476ebfc7c8765a4f673615143996d.webp?size=1024"
@@ -58,13 +66,12 @@ class About(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["inv"])
-    @commands.is_owner()
     async def invite(self, ctx):
         """``invite`` get the invite link for this bot"""
         embed = discord.Embed(
             title="Invite Hamood to your server by clicking here!",
             description="Click the **hyperlink** above to invite Hamood.",
-            color=ctx.author.color,
+            color=discord.Color.blue(),
             url="https://discord.com/api/oauth2/authorize?client_id=699510311018823680&permissions=8&scope=bot",
         )
         embed.set_thumbnail(
@@ -75,11 +82,6 @@ class About(commands.Cog):
             value="make it one more!",
         )
         await ctx.send(embed=embed)
-
-    @commands.command(aliases=["repo"])
-    async def github(self, ctx):
-        """``github`` sends the link to Hamood's github repository"""
-        await ctx.send("https://github.com/nathanielfernandes/HamoodBot")
 
     @commands.command()
     async def version(self, ctx):
@@ -106,6 +108,7 @@ class About(commands.Cog):
                 halp = discord.Embed(
                     title="Command Categories",
                     description="Use `help <category>` to find out more about them!\nIf you want to know how to use a specific command\njust send it alone and I will help.",
+                    color=discord.Color.blue(),
                 )
                 halp.set_footer(
                     text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url

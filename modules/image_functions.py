@@ -15,10 +15,10 @@ class Edit:
         self.temp = save_location
         self.fontPath = font_location
 
-    def gif_addText(self, gifName, fontSize, textColor, gifData, new, fontName):
+    def gif_addText(self, gifName, fontSize, textColor, textData, newname, fontName):
         """adds text to a gif"""
         gif = f"{self.folder}/{gifName}"
-        edited = f"{self.temp}/{new}"
+        edited = f"{self.temp}/{newname}"
 
         fontLoc = f"{self.fontPath}/{fontName}"
 
@@ -36,11 +36,11 @@ class Edit:
         for frame in ImageSequence.Iterator(gif):
             frame = frame.convert("RGBA")
 
-            for img in gifData:
+            for key in textData:
                 draw = ImageDraw.Draw(frame)
                 draw.text(
-                    xy=(img[0][0], img[0][1]),
-                    text=img[1],
+                    xy=(textData[key][0], textData[key][1]),
+                    text=key,
                     fill=(textColor),
                     font=font_type,
                     anchor=None,
@@ -61,10 +61,10 @@ class Edit:
         # print(my_bytes.getvalue())
         return edited
 
-    def addText(self, imageName, fontSize, textColor, imageData, new, fontName):
+    def addText(self, imageName, fontSize, textColor, textData, newname, fontName):
         """adds text to an image"""
         image = f"{self.folder}/{imageName}"
-        edited = f"{self.temp}/{new}"
+        edited = f"{self.temp}/{newname}"
 
         fontLoc = f"{self.fontPath}/{fontName}"
 
@@ -79,10 +79,10 @@ class Edit:
             textColor = (255, 255, 255)
             STROKECOLOR = (0, 0, 0)
 
-        for img in imageData:
+        for key in textData:
             draw.text(
-                xy=(img[0][0], img[0][1]),
-                text=img[1],
+                xy=(textData[key][0], textData[key][1]),
+                text=key,
                 fill=(textColor),
                 font=font_type,
                 anchor=None,

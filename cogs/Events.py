@@ -16,6 +16,32 @@ class Events(commands.Cog):
             await channel.send(f"Welcome {member.mention}!")
 
     @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        for channel in guild.text_channels:
+            if channel.permissions_for(guild.me).embed_links:
+                embed = discord.Embed(
+                    title=f"Hi {guild}, im Hamood!",
+                    description=f"My command prefix is '`.`', use `.help` to get started.\nFor more info use `.info`",
+                )
+                embed.add_field(
+                    name="Server Presence",
+                    value=f"Hamood is current in **{len(self.bot.guilds)}** servers\n[Invite Him](https://bit.ly/2XD2YPN)",
+                )
+
+                embed.add_field(
+                    name="For bugs, further help or suggestions",
+                    value="You can message me on discord\n`nathan#3724`",
+                )
+
+                embed.set_footer(
+                    text="created by Nathaniel Fernandes",
+                    icon_url="https://cdn.discordapp.com/attachments/699770186227646465/741388960227655790/k70up0p0ozz21.png",
+                )
+
+                await channel.send(embed=embed)
+            break
+
+    @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
             return

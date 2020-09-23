@@ -3,32 +3,33 @@ import requests
 import re
 import random
 import json
-from instaloader import Instaloader, Profile, Hashtag
 
-L = Instaloader()
+# from instaloader import Instaloader, Profile, Hashtag
+
+# L = Instaloader()
 
 
-def insta_profile(username):
-    url = f"https://instagram.com/{username}/"
-    response = requests.get(url)
+# def insta_profile(username):
+#     url = f"https://instagram.com/{username}/"
+#     response = requests.get(url)
 
-    if response.status_code != 404:
-        profile = Profile.from_username(L.context, username)
+#     if response.status_code != 404:
+#         profile = Profile.from_username(L.context, username)
 
-        data = {
-            "url": url,
-            "pfp": profile.profile_pic_url,
-            "posts": profile.mediacount,
-            "followers": profile.followers,
-            "following": profile.followees,
-            "name": profile.full_name,
-            "bio": profile.biography,
-            "link": profile.external_url,
-        }
+#         data = {
+#             "url": url,
+#             "pfp": profile.profile_pic_url,
+#             "posts": profile.mediacount,
+#             "followers": profile.followers,
+#             "following": profile.followees,
+#             "name": profile.full_name,
+#             "bio": profile.biography,
+#             "link": profile.external_url,
+#         }
 
-        return True, data
-    else:
-        False, None
+#         return True, data
+#     else:
+#         False, None
 
 
 def covid_info(country):

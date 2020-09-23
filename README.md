@@ -10,8 +10,10 @@ Hamood's name and profile picture is an inside joke based off the [Yotube](https
 ### Filler ``New``
 You can now play the popular imsg game 'Filler' with hamood.
 ### Quick Channels ``New``
-Using the ``channelsetup`` command, you can add a quick channel system into your server that allows users to instantly create a temporary channel to talk to someone.
-### Covid-19 Statistics ``New!``
+Using the ``quickchannel`` command, you can add a quick channel system into your server that allows users to instantly create a temporary channel to talk to someone.
+### Complex Math ``New``
+Hamood has new and improved math functions that can help you with your homework
+### Covid-19 Statistics
 Hamood can send the latest Covid-19 statistics of any country from [worldometer](https://www.worldometers.info/coronavirus/).
 ### Custom Text Generated Memes
 You can generate custom memes with your own text with the meme templates Hamood has.
@@ -28,12 +30,13 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## Commands
 These commands are organized alphabetically from thier corresponding [Cog](https://discordpy.readthedocs.io/en/latest/ext/commands/cogs.html)
+### Hamood's Prefix for the following commands is "``.``"
 ### About
+- ``info`` get some background information on Hamood
 - ``invite`` get the invite link for this bot
-- ``github`` sends the link to Hamood's github repository
 - ``version`` sends Hamood's current version
 - ``ping`` returns hamood's ping
-### Avatar Memes
+### Avatarmemes
 - ``stonks [@user]`` adds a tagged discord avatar to the 'stonks' meme
 - ``worthless [@user]`` adds a tagged discord avatar to the 'this is worthless' meme
 - ``neat [@user]`` adds a tagged discord avatar to the 'this is pretty neat' meme
@@ -68,10 +71,10 @@ These commands are organized alphabetically from thier corresponding [Cog](https
 - ``shrek`` sends the entire shrek movie as a 90 min long gif
 - ``poll [option1], [option2]..., [option6]`` create a poll with 2-6 options
 ### Math
-- ``add [number1] [number2]`` adds two numbers together
-- ``multiply [number1] [number2]`` multiplies two numbers together
-- ``subtract [number1] [number2]`` subtracts two numbers together
-- ``divide [number1] [number2]`` divides two numbers together
+- ``base [number)base], [next base]`` base conversion from base 2-36, assumes 2's compliment for negative numbers in binary
+- ``calc [equation]`` calculates the answer to a given equation
+- ``solve [equation]`` solves for variables in most math equations 
+- ``graph [equation], [next equation]... optional([last equation]: (start -x to x))`` graphs most equations
 ### Mod
 - ``kick [@user]`` kicks a tagged member
 - ``ban [@user]`` bans a tagged member
@@ -82,22 +85,22 @@ These commands are organized alphabetically from thier corresponding [Cog](https
 - ``quickcategory [category]`` Creates a '+' channel which instantly creates a quick voice channel for the user that joins it
 - ``quickchannel [name]`` Creates a '+' voice channel that creates quick voice channel for the user that joins it
 - ``fullcategory [category]`` Creates a text channel and a '+' voice channel under a category which instantly creates a quick voice channel for the user that joins it
-- 
 ### Reddit
 - ``red [subreddit]`` finds a post from your specified subreddit
 - ``meme`` quickly sends a meme from r/meme
 - ``cat`` quickly sends a cat from r/cats
 - ``dog`` quickly sends a dog from r/dogs
-- ``spam [subreddit] [amount]`` sends a number of posts from a specified subreddit (max=10)
+- ``spam [subreddit] [amount]`` sends a number of posts from a specified subreddit (max=5)
 ### Sokoban
-- ``sokoban`` play the clasic sokoban game using the emoji reactions
+- ``sokoban`` play the clasic sokoban game using the emoji reactions. Inspired by [PolyMars](https://www.youtube.com/channel/UCl7dSJloxuCa9IBFml7sakw).
 ### Text Memes
 - ``bonk [text1], [text2]`` adds your own text to the 'bonk' meme format
 - ``lick [text1], [text2]`` adds your own text to the 'lick' meme format
 - ``slap [text1], [text2]`` adds your own text to the 'slap' meme format
 - ``lookback [text1], [text2], [text3]`` adds your own text to the 'lookback' meme format
 - ``our [text1], [text2]`` adds your own text to the 'our' meme format
-- ``pour [text1], [text2]``adds your own text to the 'pour' meme format
+- ``pour [text1], [text2]`` adds your own text to the 'pour' meme format
+- ``shoot [text1], [text2]`` shoot someone, among us style
 ### User
 - ``joined [@user]`` says when a member joined the server
 - ``avatar [@user]`` sends the profile picture of a tagged user
@@ -106,11 +109,9 @@ These commands are organized alphabetically from thier corresponding [Cog](https
 - ``listening [@user]`` returns a users spotify listening activity
 ### Web
 - ``covid [country]`` gets the latest covid 19 statistics
-- ``google [image]`` googles an image
-- ``insta [username]`` gets an instagram profile
 
-## Screenshots
+<!-- ## Screenshots
 ![level1](https://cdn.discordapp.com/attachments/699770186227646465/741028512609206282/unknown.png)
 ![level2](https://cdn.discordapp.com/attachments/699770186227646465/741038530767093821/unknown.png)
 ![level3](https://cdn.discordapp.com/attachments/699770186227646465/741028185029738627/unknown.png)
-![level4](https://cdn.discordapp.com/attachments/699770186227646465/741038792810430545/unknown.png)
+![level4](https://cdn.discordapp.com/attachments/699770186227646465/741038792810430545/unknown.png) -->

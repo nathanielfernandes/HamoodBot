@@ -2,7 +2,7 @@ import os
 import discord
 from discord.ext import commands
 
-from modules.web_scraping import covid_info, insta_profile
+from modules.web_scraping import covid_info  # , insta_profile
 from modules.image_search import ImgSearch
 
 
@@ -50,37 +50,37 @@ class Web(commands.Cog):
             )
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["instagram"])
-    @commands.has_permissions(embed_links=True)
-    async def insta(self, ctx, username=None):
-        """``insta [username]`` gets an instagram profile"""
-        async with ctx.typing():
-            exists, profile = insta_profile(username)
-            if exists:
-                line2 = f"**Post:** {profile['posts']}   **Followers:** {profile['followers']}  **Following:** {profile['following']}"
-                name = profile["name"] if profile["name"] != "" else "`no name`"
-                bio = profile["bio"] if profile["bio"] != "" else "`no bio`"
-                link = f"{profile['link']}\n" if profile["link"] != None else ""
+    # @commands.command(aliases=["instagram"])
+    # @commands.has_permissions(embed_links=True)
+    # async def insta(self, ctx, username=None):
+    #     """``insta [username]`` gets an instagram profile"""
+    #     async with ctx.typing():
+    #         exists, profile = insta_profile(username)
+    #         if exists:
+    #             line2 = f"**Post:** {profile['posts']}   **Followers:** {profile['followers']}  **Following:** {profile['following']}"
+    #             name = profile["name"] if profile["name"] != "" else "`no name`"
+    #             bio = profile["bio"] if profile["bio"] != "" else "`no bio`"
+    #             link = f"{profile['link']}\n" if profile["link"] != None else ""
 
-                line1 = f"**{name}**\n{bio}\n{link}"
+    #             line1 = f"**{name}**\n{bio}\n{link}"
 
-                embed = discord.Embed(
-                    title=username,
-                    url=profile["url"],
-                    colour=14104244,
-                    description=f"{line1}\n{line2}",
-                    timestamp=ctx.message.created_at,
-                )
-                embed.set_author(
-                    name="Instagram",
-                    icon_url="https://cdn.discordapp.com/attachments/741384050387714162/757034757971378176/600px-Instagram_logo_2016.png",
-                )
-                embed.set_thumbnail(url=profile["pfp"])
-                embed.set_footer(text=f"Requested by {ctx.author}",)
+    #             embed = discord.Embed(
+    #                 title=username,
+    #                 url=profile["url"],
+    #                 colour=14104244,
+    #                 description=f"{line1}\n{line2}",
+    #                 timestamp=ctx.message.created_at,
+    #             )
+    #             embed.set_author(
+    #                 name="Instagram",
+    #                 icon_url="https://cdn.discordapp.com/attachments/741384050387714162/757034757971378176/600px-Instagram_logo_2016.png",
+    #             )
+    #             embed.set_thumbnail(url=profile["pfp"])
+    #             embed.set_footer(text=f"Requested by {ctx.author}",)
 
-                await ctx.send(embed=embed)
-            else:
-                await ctx.send("`Profile Not Found`")
+    #             await ctx.send(embed=embed)
+    #         else:
+    #             await ctx.send("`Profile Not Found`")
 
     @commands.command()
     @commands.is_owner()

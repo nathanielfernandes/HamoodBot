@@ -15,14 +15,9 @@ from modules.image_functions import Edit
 # vnkdohe;llo there  ypoure sopo an no7ying g hfucehgfbhjgvhurighvgavfugwiljjsdklgfvr b
 # jnfrs;hnodsgjkflgjirfn
 
-# bot description
-description = """Hamood is a multipurpose discord bot"""
-
-# the prefix the bot looks for before processing a message/
-bot = commands.Bot(
-    command_prefix=commands.when_mentioned_or("."),
-    case_insensitive=True,
-    description=description,
+# the prefix the bot looks for before processing a message
+bot = commands.AutoShardedBot(
+    command_prefix=commands.when_mentioned_or("."), case_insensitive=True,
 )
 
 
@@ -109,7 +104,7 @@ async def on_message(message):
 @bot.command()
 @commands.is_owner()
 async def logout(ctx):
-    """Owner Command"""
+    """logs hamood out"""
     await ctx.send("**goodbye**")
     await bot.logout()
 
@@ -117,7 +112,7 @@ async def logout(ctx):
 @bot.command()
 @commands.is_owner()
 async def status(ctx, aType: str, uRL: str, *, aName: commands.clean_content):
-    """Owner Command"""
+    """lets me change hamoods status"""
     if aType == "playing":
         await bot.change_presence(activity=discord.Game(name=aName))
     elif aType == "listening":
@@ -135,7 +130,7 @@ async def status(ctx, aType: str, uRL: str, *, aName: commands.clean_content):
 @bot.command()
 @commands.is_owner()
 async def reload(ctx, cog):
-    """Owner Command"""
+    """reloads the requested cog"""
     try:
         bot.unload_extension(f"cogs.{cog}")
         bot.load_extension(f"cogs.{cog}")
@@ -148,7 +143,7 @@ async def reload(ctx, cog):
 @bot.command()
 @commands.is_owner()
 async def unload(ctx, cog):
-    """Owner Command"""
+    """unloads the requested cog"""
     try:
         bot.unload_extension(f"cogs.{cog}")
         await ctx.send(f"`{cog} got unloaded`")
@@ -160,7 +155,7 @@ async def unload(ctx, cog):
 @bot.command()
 @commands.is_owner()
 async def load(ctx, cog):
-    """Owner Command"""
+    """loads the requested cog"""
     try:
         bot.load_extension(f"cogs.{cog}")
         await ctx.send(f"`{cog} got loaded`")

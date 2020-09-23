@@ -19,7 +19,7 @@ class Math(commands.Cog):
 
     @commands.command()
     async def base(self, ctx, *, content: commands.clean_content):
-        """``base [number)base], [base]`` converts numbers between bases"""
+        """``base [number)base], [next base]`` converts numbers between bases"""
         try:
             number, base2 = content.split(", ")
             number, base1 = number.split(")")
@@ -37,7 +37,7 @@ class Math(commands.Cog):
 
     @commands.command()
     async def solve(self, ctx, *, content: commands.clean_content):
-        """``solve [equation]`` solves for variables in simple math equations"""
+        """``solve [equation]`` solves for variables in most math equations"""
         await ctx.send(f"`{solve_eq(content)}`")
 
     @commands.command()

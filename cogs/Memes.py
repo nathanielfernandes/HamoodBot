@@ -31,19 +31,20 @@ class Memes(commands.Cog):
                     text[i][a] += "\n"
                 text[i] = " ".join(text[i])
 
+            textData = {}
             for i in range(len(coords)):
-                coords[i].append(text[i])
+                textData[text[i]] = coords[i]
 
             name = self.edit.randomNumber()
             if gif:
                 name = str(name) + ".gif"
                 meme = self.edit.gif_addText(
-                    source, font, colour, coords, name, "arialbold.ttf"
+                    source, font, colour, textData, name, "arialbold.ttf"
                 )
             else:
                 name = str(name) + ".jpg"
                 meme = self.edit.addText(
-                    source, font, colour, coords, name, "arialbold.ttf"
+                    source, font, colour, textData, name, "arialbold.ttf"
                 )
             # await ctx.message.delete()
             await ctx.send(file=discord.File(meme))
@@ -55,7 +56,7 @@ class Memes(commands.Cog):
     async def bonk(self, ctx, *, content: commands.clean_content):
         """``bonk [text1], [text2]`` adds your own text to the 'bonk' meme format"""
         await self.textMemePrep(
-            ctx, content, [[(250, 450)], [(1050, 600)]], 75, "BLACK", "bonkImage.jpg"
+            ctx, content, [(250, 450), (1050, 600)], 75, "BLACK", "bonkImage.jpg"
         )
 
     @commands.command()
@@ -63,7 +64,7 @@ class Memes(commands.Cog):
     async def lick(self, ctx, *, content: commands.clean_content):
         """``lick [text1], [text2]`` adds your own text to the 'lick' meme format"""
         await self.textMemePrep(
-            ctx, content, [[(320, 220)], [(75, 200)]], 35, "BLACK", "lickImage.jpg"
+            ctx, content, [(320, 220), (75, 200)], 35, "BLACK", "lickImage.jpg"
         )
 
     @commands.command()
@@ -71,7 +72,7 @@ class Memes(commands.Cog):
     async def slap(self, ctx, *, content: commands.clean_content):
         """``slap [text1], [text2]`` adds your own text to the 'slap' meme format"""
         await self.textMemePrep(
-            ctx, content, [[(580, 30)], [(220, 250)]], 60, "WHITE", "slapImage.jpg"
+            ctx, content, [(580, 30), (220, 250)], 60, "WHITE", "slapImage.jpg"
         )
 
     @commands.command()
@@ -81,7 +82,7 @@ class Memes(commands.Cog):
         await self.textMemePrep(
             ctx,
             content,
-            [[(120, 285)], [(360, 180)], [(525, 250)]],
+            [(120, 285), (360, 180), (525, 250)],
             30,
             "BLACK",
             "lookBackImage.jpg",
@@ -94,7 +95,7 @@ class Memes(commands.Cog):
         """``our [text1], [text2]`` adds your own text to the 'our' meme format"""
         content = "our " + content + ",  "
         await self.textMemePrep(
-            ctx, content, [[(325, 320)], [(310, 110)]], 45, "BLACK", "sovietImage.jpg"
+            ctx, content, [(325, 320), (310, 110)], 45, "BLACK", "sovietImage.jpg"
         )
 
     @commands.command()
@@ -102,7 +103,7 @@ class Memes(commands.Cog):
     async def pour(self, ctx, *, content: commands.clean_content):
         """``pour [text1], [text2]`` adds your own text to the 'pour' meme format"""
         await self.textMemePrep(
-            ctx, content, [[(50, 110)], [(430, 60)]], 45, "BLACK", "coffeeImage.jpg", 8
+            ctx, content, [(50, 110), (430, 60)], 45, "BLACK", "coffeeImage.jpg", 8
         )
 
     @commands.command()
@@ -112,7 +113,7 @@ class Memes(commands.Cog):
         await self.textMemePrep(
             ctx,
             content,
-            [[(10, 150)], [(170, 150)]],
+            [(10, 150), (170, 150)],
             20,
             "WHITE",
             "amongUsShoot.gif",
