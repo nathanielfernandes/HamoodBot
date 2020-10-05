@@ -4,9 +4,10 @@ import os
 import random
 import matplotlib.pyplot as plt
 import numpy as np
-from math import sqrt, sin, cos, tan, log
+from numpy import sqrt, sin, cos, tan, log
 from sympy import symbols, Eq, solve, parse_expr, integrate
 
+# from math import sqrt, sin, cos, tan, log
 
 chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 symbl = "abcdefghijklmnopqrstuvwxyz"
@@ -16,15 +17,16 @@ folder = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempI
 
 def format_eq(eq):
     eq = eq.lower().replace("^", "**").replace("mod", "%")
+
     for i in range(len(eq) - 1):
         if eq[i].isdigit() and (eq[i + 1] in symbl or eq[i + 1] == "("):
             eq = eq[: i + 1] + "*" + eq[i + 1 :]
     for i in range(len(eq) - 1):
         if eq[i + 1].isdigit() and (eq[i] in symbl or eq[i] == ")"):
             eq = eq[: i + 1] + "*" + eq[i + 1 :]
-    for i in range(len(eq) - 1):
-        if eq[i] in symbl and eq[i + 1] == "(":
-            eq = eq[: i + 1] + "*" + eq[i + 1 :]
+    # for i in range(len(eq) - 1):
+    #     if eq[i] in symbl and eq[i + 1] == "(":
+    #         eq = eq[: i + 1] + "*" + eq[i + 1 :]
     for i in range(len(eq) - 1):
         if eq[i + 1] in symbl and eq[i] == ")":
             eq = eq[: i + 1] + "*" + eq[i + 1 :]
@@ -63,7 +65,8 @@ def graph_eq(equations, title):
         plt.xlabel(f"Roots: {roots}")
         plt.savefig(loc, bbox_inches="tight")
 
-    except Exception:
+    except Exception as e:
+        raise e
         return False, None
 
     plt.clf()
