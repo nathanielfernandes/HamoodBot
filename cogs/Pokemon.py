@@ -19,6 +19,7 @@ class Pokemon(commands.Cog):
         )
 
     @commands.command()
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pokedex(self, ctx, name: commands.clean_content):
         """``pokedex [name or id]`` gets a pokemons info"""
@@ -70,6 +71,7 @@ class Pokemon(commands.Cog):
             await ctx.send(f"Could not find the pokemon '{name}'.")
 
     @commands.command()
+    @commands.cooldown(4, 10, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pokevibe(self, ctx, member: discord.Member = None):
         """``pokevibe [@user]`` finds the pokemon your vibing with"""
@@ -94,6 +96,7 @@ class Pokemon(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pokepic(self, ctx, name: commands.clean_content):
         pokemon = get_pokemon_info(name)

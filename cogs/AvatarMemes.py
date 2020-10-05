@@ -18,6 +18,7 @@ class Avatarmemes(commands.Cog):
         self.path = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def stonks(self, ctx, *avamember: discord.Member):
         """``stonks [@user]`` adds a tagged discord avatar to the 'stonks' meme"""
@@ -26,6 +27,7 @@ class Avatarmemes(commands.Cog):
         )
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def worthless(self, ctx, *avamember: discord.Member):
         """``worthless [@user]`` adds a tagged discord avatar to the 'this is worthless' meme"""
@@ -34,6 +36,7 @@ class Avatarmemes(commands.Cog):
         )
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def neat(self, ctx, *avamember: discord.Member):
         """``neat [@user]`` adds a tagged discord avatar to the 'this is pretty neat' meme"""
@@ -42,6 +45,7 @@ class Avatarmemes(commands.Cog):
         )
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def grab(self, ctx, *avamember: discord.Member):
         """``grab [@user]`` adds a tagged discord avatar to the 'grab' meme"""
@@ -50,6 +54,7 @@ class Avatarmemes(commands.Cog):
         )
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def compare(self, ctx, *avamember: discord.Member):
         """``compare [@user1] [@user2]`` compares discord avatars"""
         await self.imagePrep(

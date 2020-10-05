@@ -47,12 +47,21 @@ class Events(commands.Cog):
             return
         elif isinstance(error, commands.CheckFailure):
             await ctx.send("`You don't have the permission to do that`")
-        elif isinstance(error, commands.MissingRequiredArgument):
+        elif isinstance(error, commands.BadArgument):
+            if ctx.command.qualified_name == "tag list":
+                await ctx.send("`I could not find that member`")
+        elif isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(
+                f"`{ctx.command.name} is on cooldown for {str(error.retry_after)[:4]} seconds!`"
+            )
+        elif isinstance(error, commands.CommandError):
             try:
                 s = ctx.command.help
                 start = s.find("``") + 2
                 end = s.find("``", start)
-                await ctx.send(f"```{s[start:end]}```")
+                await ctx.send(
+                    f"{ctx.author.mention}, **{ctx.command.name}** is used like this:\n`.{s[start:end]}`"
+                )
             except Exception:
                 print("error")
                 # raise error

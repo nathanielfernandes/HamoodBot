@@ -16,6 +16,18 @@ folder = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempI
 
 def format_eq(eq):
     eq = eq.lower().replace("^", "**").replace("mod", "%")
+    for i in range(len(eq) - 1):
+        if eq[i].isdigit() and (eq[i + 1] in symbl or eq[i + 1] == "("):
+            eq = eq[: i + 1] + "*" + eq[i + 1 :]
+    for i in range(len(eq) - 1):
+        if eq[i + 1].isdigit() and (eq[i] in symbl or eq[i] == ")"):
+            eq = eq[: i + 1] + "*" + eq[i + 1 :]
+    for i in range(len(eq) - 1):
+        if eq[i] in symbl and eq[i + 1] == "(":
+            eq = eq[: i + 1] + "*" + eq[i + 1 :]
+    for i in range(len(eq) - 1):
+        if eq[i + 1] in symbl and eq[i] == ")":
+            eq = eq[: i + 1] + "*" + eq[i + 1 :]
     return eq
 
 

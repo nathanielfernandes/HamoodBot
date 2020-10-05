@@ -25,6 +25,7 @@ class Fun(commands.Cog):
         ).readlines()
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def tag(self, ctx, member: discord.Member):
         """tags a user"""
         user = ctx.message.author
@@ -81,6 +82,7 @@ class Fun(commands.Cog):
         await ctx.message.add_reaction("✔️")
 
     @commands.command()
+    @commands.cooldown(4, 10, commands.BucketType.user)
     async def vibe(self, ctx, member: discord.Member = None):
         """``vibe`` vibechecks you but better"""
         member = ctx.author if not member else member

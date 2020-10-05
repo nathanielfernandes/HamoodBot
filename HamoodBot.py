@@ -17,7 +17,7 @@ from modules.image_functions import Edit
 
 # the prefix the bot looks for before processing a message
 bot = commands.AutoShardedBot(
-    command_prefix=commands.when_mentioned_or("."), case_insensitive=True,
+    command_prefix=commands.when_mentioned_or("/"), case_insensitive=True,
 )
 
 
@@ -87,6 +87,7 @@ async def on_message(message):
 
                     # badword = ", ".join(badword)
                     await message.add_reaction("❌")
+                    return
                     # await message.channel.send(
                     #     f"**{message.author.mention}, ||{badword}|| {punc}, watch your profanity!**"
                     # )

@@ -22,6 +22,7 @@ class Sokoban(commands.Cog):
         self.emoji_dict = self.info["emojis"]
 
     @commands.command()
+    @commands.cooldown(2, 60, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def sokoban(self, ctx):
         """``sokoban`` starts a new sokoban game (games auto delete if theres no input for 10 minutes)"""

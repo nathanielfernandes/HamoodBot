@@ -24,7 +24,6 @@ class Memes(commands.Cog):
         async with ctx.typing():
 
             text = text.split(", ")
-
             for i in range(len(text)):
                 text[i] = textwrap.wrap(text[i], width=wrap)
                 for a in range(len(text[i])):
@@ -52,6 +51,7 @@ class Memes(commands.Cog):
         os.remove(meme)
 
     @commands.command()
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def bonk(self, ctx, *, content: commands.clean_content):
         """``bonk [text1], [text2]`` adds your own text to the 'bonk' meme format"""
@@ -60,6 +60,7 @@ class Memes(commands.Cog):
         )
 
     @commands.command()
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def lick(self, ctx, *, content: commands.clean_content):
         """``lick [text1], [text2]`` adds your own text to the 'lick' meme format"""
@@ -68,6 +69,7 @@ class Memes(commands.Cog):
         )
 
     @commands.command()
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def slap(self, ctx, *, content: commands.clean_content):
         """``slap [text1], [text2]`` adds your own text to the 'slap' meme format"""
@@ -76,6 +78,7 @@ class Memes(commands.Cog):
         )
 
     @commands.command()
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def lookback(self, ctx, *, content: commands.clean_content):
         """``lookback [text1], [text2], [text3]`` adds your own text to the 'lookback' meme format"""
@@ -90,6 +93,7 @@ class Memes(commands.Cog):
         )
 
     @commands.command()
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def our(self, ctx, *, content: commands.clean_content):
         """``our [text1], [text2]`` adds your own text to the 'our' meme format"""
@@ -99,6 +103,7 @@ class Memes(commands.Cog):
         )
 
     @commands.command()
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def pour(self, ctx, *, content: commands.clean_content):
         """``pour [text1], [text2]`` adds your own text to the 'pour' meme format"""
@@ -107,6 +112,7 @@ class Memes(commands.Cog):
         )
 
     @commands.command()
+    @commands.cooldown(2, 8, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def shoot(self, ctx, *, content: commands.clean_content):
         """``shoot [text1], [text2]`` shoot someone"""

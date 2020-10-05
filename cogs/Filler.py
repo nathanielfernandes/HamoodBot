@@ -31,6 +31,7 @@ class Filler(commands.Cog):
         ]
 
     @commands.command()
+    @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def filler(self, ctx, member: discord.Member = None):
         """``filler [@opponent]`` starts a new filler game (games auto delete if theres no input for 10 minutes)"""

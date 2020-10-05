@@ -34,6 +34,7 @@ class General(commands.Cog):
         ]
 
     @commands.command()
+    @commands.cooldown(2, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def poll(self, ctx, *, content: commands.clean_content):
         """``poll [option1], [option2]..., [option6]`` create a poll with 2-6 options"""
@@ -155,6 +156,7 @@ class General(commands.Cog):
         await ctx.send(msg)
 
     @commands.command()
+    @commands.cooldown(1, 30, commands.BucketType.channel)
     async def repeat(self, ctx, times: int, *, content: commands.clean_content):
         """``repeat [number of messages] [msg]`` repeats your message multiple times"""
         msg = ""
@@ -163,12 +165,14 @@ class General(commands.Cog):
         await ctx.send(msg)
 
     @commands.command()
+    @commands.cooldown(3, 10, commands.BucketType.user)
     async def echo(self, ctx, *, content: commands.clean_content):
         """``echo [msg]`` echos your message a random amount of times"""
         for i in range(random.randint(1, 5)):
             await ctx.send(content)
 
     @commands.command()
+    @commands.cooldown(2, 5, commands.BucketType.user)
     async def no(self, ctx, content: str):
         """``no u`` sends an uno reverse card"""
         if content == "u" or content == "you":

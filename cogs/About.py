@@ -49,12 +49,14 @@ class About(commands.Cog):
 
         embed.add_field(
             name="Command Listing",
-            value="Type `.help` or [Click Here](https://github.com/nathanielfernandes/HamoodBot/blob/master/README.md#commands)",
+            value="Type `.help` or \n[Click Here](https://github.com/nathanielfernandes/HamoodBot/blob/master/README.md#commands)",
+            inline=False,
         )
 
         embed.add_field(
             name="For bugs, further help or suggestions",
             value="You can message me on discord\n`nathan#3724`",
+            inline=True,
         )
         embed.set_thumbnail(
             url="https://cdn.discordapp.com/avatars/699510311018823680/bcb476ebfc7c8765a4f673615143996d.webp?size=1024"

@@ -13,6 +13,7 @@ class Web(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @commands.cooldown(2, 15, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def covid(self, ctx, country=None):
         """``covid [country]`` gets the latest covid 19 statistics"""
@@ -85,7 +86,7 @@ class Web(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def google(self, ctx, *, query: commands.clean_content):
-        """``google [image]`` googles an image"""
+        """``google [image]`` googles an image (owner command)"""
         image = ImgSearch(query)
         await ctx.send(f"This is the first result for **'{query}'**:")
         await ctx.send(file=discord.File(image))

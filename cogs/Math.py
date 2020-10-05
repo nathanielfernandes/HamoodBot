@@ -36,11 +36,13 @@ class Math(commands.Cog):
         await ctx.send(f"`{calc_eq(content)}`")
 
     @commands.command()
+    @commands.cooldown(4, 10, commands.BucketType.user)
     async def solve(self, ctx, *, content: commands.clean_content):
         """``solve [equation]`` solves for variables in most math equations"""
         await ctx.send(f"`{solve_eq(content)}`")
 
     @commands.command()
+    @commands.cooldown(2, 10, commands.BucketType.user)
     async def graph(self, ctx, *, content: commands.clean_content):
         """``graph [equation], [next equation]`` graphs given equation"""
         content = content.split(", ") if ", " in content else [content]
@@ -60,7 +62,7 @@ class Math(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def py(self, ctx, *, content: commands.clean_content):
-        """``py [code]`` runs python code and outputs to the chat"""
+        """``py [code]`` runs python code and outputs to the chat (owner command)"""
         out = run_code(content.strip("`"))
         await ctx.send(f"```py\n{out}```")
 

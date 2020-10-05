@@ -36,6 +36,7 @@ class Reddit(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["reddit"])
+    @commands.cooldown(3, 15, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def red(self, ctx, redditSub=None):
         """``red [subreddit]`` finds a post from your specified subreddit"""
@@ -47,62 +48,72 @@ class Reddit(commands.Cog):
         )
 
     @commands.command(aliases=["memes"])
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def meme(self, ctx):
         """``meme`` quickly sends a meme from r/meme"""
         await self.redditPrep(ctx, "memes")
 
     @commands.command()
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def dark(self, ctx):
         """``dark`` quickly sends a meme from r/DarkMemesAndHumor"""
         await self.redditPrep(ctx, "DarkMemesAndHumor")
 
     @commands.command()
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions()
     async def dank(self, ctx):
         """``dank`` quickly sends a meme from r/dankmemes"""
         await self.redditPrep(ctx, "dankmemes")
 
     @commands.command(aliases=["cats", "noura"])
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def cat(self, ctx):
         """``cat`` quickly sends a cat from r/cats"""
         await self.redditPrep(ctx, "cats")
 
     @commands.command(aliases=["curse"])
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def cursed(self, ctx):
         """``cursed`` quickly sends a post from r/cursedimages"""
         await self.redditPrep(ctx, "cursedimages")
 
     @commands.command(aliases=["blur"])
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def blursed(self, ctx):
         """``blursed`` quickly sends a post from r/blursedimages"""
         await self.redditPrep(ctx, "blursedimages")
 
     @commands.command(aliases=["bless"])
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def blessed(self, ctx):
         """``blessed`` quickly sends a post from r/Blessed_Images"""
         await self.redditPrep(ctx, "Blessed_Images")
 
     @commands.command(aliases=["pizza", "time", "pizza time", "ayan"])
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pizzatime(self, ctx):
         """its pizza time!"""
         await self.redditPrep(ctx, "raimimemes")
 
     @commands.command(aliases=["dogs", "doggy", "doge"])
+    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def dog(self, ctx):
         """``dog`` quickly sends a dog from r/dogs"""
         await self.redditPrep(ctx, "dog")
 
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
-    async def spam(self, ctx, redditSub="random", amount="1"):
+    async def spam(self, ctx, redditSub="random", amount="3"):
         """``spam [subreddit] [amount]`` sends a number of posts from a specified subreddit (max=10)"""
         amount = int(amount)
         if amount > 5:
