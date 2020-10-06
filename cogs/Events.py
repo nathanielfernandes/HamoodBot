@@ -43,17 +43,20 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandNotFound):
-            return
-        elif isinstance(error, commands.CheckFailure):
-            await ctx.send("`You don't have the permission to do that`")
-        elif isinstance(error, commands.BadArgument):
-            if ctx.command.qualified_name == "tag list":
-                await ctx.send("`I could not find that member`")
-        elif isinstance(error, commands.CommandOnCooldown):
+        if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(
                 f"`{ctx.command.name} is on cooldown for {str(error.retry_after)[:4]} seconds!`"
             )
+        elif isinstance(error, commands.CommandNotFound):
+            return
+
+        elif isinstance(error, commands.CheckFailure):
+            await ctx.send("`You don't have the permission to do that`")
+
+        elif isinstance(error, commands.BadArgument):
+            if ctx.command.qualified_name == "tag list":
+                await ctx.send("`I could not find that member`")
+
         elif isinstance(error, commands.CommandError):
             try:
                 s = ctx.command.help

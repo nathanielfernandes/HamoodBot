@@ -60,10 +60,12 @@ class Math(commands.Cog):
             await ctx.send("`Could not graph equation`")
 
     @commands.command()
-    @commands.is_owner()
+    @commands.cooldown(2, 10, commands.BucketType.channel)
     async def py(self, ctx, *, content: commands.clean_content):
-        """``py [code]`` runs python code and outputs to the chat (owner command)"""
-        out = run_code(content.strip("`"))
+        """``py [code]`` runs python code and outputs to the chat. Execution cannot exceed 1 second!"""
+        out = str(run_code(content.strip("`")))
+        if len(out) > 2000:
+            out = out[:1950] + " Exceded Character Limit! "
         await ctx.send(f"```py\n{out}```")
 
 

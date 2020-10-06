@@ -7,7 +7,8 @@ import numpy as np
 from numpy import sqrt, sin, cos, tan, log
 from sympy import symbols, Eq, solve, parse_expr, integrate
 
-# from math import sqrt, sin, cos, tan, log
+import signal
+from contextlib import contextmanager
 
 chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 symbl = "abcdefghijklmnopqrstuvwxyz"
@@ -30,6 +31,14 @@ def format_eq(eq):
     for i in range(len(eq) - 1):
         if eq[i + 1] in symbl and eq[i] == ")":
             eq = eq[: i + 1] + "*" + eq[i + 1 :]
+    # if NumP:
+    #     eq = (
+    #         eq.replace("sin", "np.sin")
+    #         .replace("cos", "np.cos")
+    #         .replace("tan", "np.tan")
+    #         .replace("sqrt", "np.sqrt")
+    #         .replace("log", "np.log")
+    #     )
     return eq
 
 
@@ -154,6 +163,20 @@ def base_conversion(number, base1, base2):
     return answer
 
 
+# implemented from https://stackoverflow.com/questions/366682/how-to-limit-execution-time-of-a-function-call-in-python
+@contextmanager
+def time_limit(seconds):
+    def signal_handler(signum, frame):
+        raise TimeoutError("Timed Out! Code execution surpassed 1 second!")
+
+    signal.signal(signal.SIGALRM, signal_handler)
+    signal.alarm(seconds)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+
+
 def run_code(code):
     if "__" in code:
         return "Dangerous Request!"
@@ -162,7 +185,8 @@ def run_code(code):
     sys.stdout = codeOut
 
     try:
-        exec(code, {})
+        with time_limit(1):
+            exec(code, {})
     except Exception as e:
         sys.stdout = sys.__stdout__
         codeOut.close()
