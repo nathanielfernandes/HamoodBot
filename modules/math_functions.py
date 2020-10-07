@@ -15,6 +15,19 @@ symbl = "abcdefghijklmnopqrstuvwxyz"
 colors = ["b", "g", "r", "c", "m"]
 folder = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages"
 
+# implemented from https://stackoverflow.com/questions/366682/how-to-limit-execution-time-of-a-function-call-in-python
+@contextmanager
+def time_limit(seconds):
+    def signal_handler(signum, frame):
+        raise TimeoutError("Timed Out! Code execution surpassed 1 second!")
+
+    signal.signal(signal.SIGALRM, signal_handler)
+    signal.alarm(seconds)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+
 
 def format_eq(eq):
     eq = eq.lower().replace("^", "**").replace("mod", "%")
@@ -56,7 +69,8 @@ def graph_eq(equations, title):
             equation = format_eq(equation[0])
 
             x = np.array(np.arange(-1 * ran, ran, ran / 100))
-            y = eval(str(parse_expr(equation)))
+            with time_limit(1):
+                y = eval(str(parse_expr(equation)))
 
             plt.title(title)
 
@@ -74,8 +88,7 @@ def graph_eq(equations, title):
         plt.xlabel(f"Roots: {roots}")
         plt.savefig(loc, bbox_inches="tight")
 
-    except Exception as e:
-        raise e
+    except Exception:
         return False, None
 
     plt.clf()
@@ -85,7 +98,8 @@ def graph_eq(equations, title):
 def calc_eq(equation):
     equation = format_eq(equation)
     try:
-        solved = eval(str(parse_expr(equation)))
+        with time_limit(1):
+            solved = eval(str(parse_expr(equation)))
     except Exception:
         return "Invalid Input"
 
@@ -161,20 +175,6 @@ def base_conversion(number, base1, base2):
         answer = "1" + twos_comp(answer)
 
     return answer
-
-
-# implemented from https://stackoverflow.com/questions/366682/how-to-limit-execution-time-of-a-function-call-in-python
-@contextmanager
-def time_limit(seconds):
-    def signal_handler(signum, frame):
-        raise TimeoutError("Timed Out! Code execution surpassed 1 second!")
-
-    signal.signal(signal.SIGALRM, signal_handler)
-    signal.alarm(seconds)
-    try:
-        yield
-    finally:
-        signal.alarm(0)
 
 
 def run_code(code):
