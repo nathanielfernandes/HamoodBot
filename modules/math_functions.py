@@ -178,8 +178,8 @@ def base_conversion(number, base1, base2):
 
 
 def run_code(code):
-    if "__" in code:
-        return "Dangerous Request!"
+    if "__" in code or "import" in code:
+        return "Dangerous Request!", None
 
     codeOut = io.StringIO()
     sys.stdout = codeOut

@@ -69,7 +69,9 @@ class Math(commands.Cog):
         out, time = run_code(content.strip("`"))
         if len(str(out)) > 2000:
             out = out[:1900] + " Exceded Character Limit! "
-        await ctx.send(f"**Output:** Completed in **{time}** seconds!```py\n{out}```")
+        await ctx.send(
+            f"**Output:** {f'Completed in **{time}** seconds!' if time else ' '}```py\n{out}```"
+        )
 
 
 def setup(bot):

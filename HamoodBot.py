@@ -12,9 +12,6 @@ from discord.ext import commands
 
 from modules.image_functions import Edit
 
-# vnkdohe;llo there  ypoure sopo an no7ying g hfucehgfbhjgvhurighvgavfugwiljjsdklgfvr b
-# jnfrs;hnodsgjkflgjirfn
-
 # the prefix the bot looks for before processing a message
 bot = commands.AutoShardedBot(
     command_prefix=commands.when_mentioned_or("."), case_insensitive=True,
