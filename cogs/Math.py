@@ -33,10 +33,10 @@ class Math(commands.Cog):
     @commands.command()
     async def calc(self, ctx, *, content: commands.clean_content):
         """``calc [equation]`` calculates the answer to the given equation"""
-        out = calc_eq(content)
+        out = str(calc_eq(content))
         if len(out) > 2000:
             out = out[:1950] + " Exceded Character Limit! "
-        await ctx.send(f"`{out}`")
+        await ctx.send(f"**Answer: **`{out}`")
 
     @commands.command()
     @commands.cooldown(4, 10, commands.BucketType.user)
@@ -66,12 +66,11 @@ class Math(commands.Cog):
     @commands.cooldown(2, 10, commands.BucketType.channel)
     async def py(self, ctx, *, content: commands.clean_content):
         """``py [code]`` runs python code and outputs to the chat. Execution cannot exceed 1 second!"""
-        out = str(run_code(content.strip("`")))
-        if len(out) > 2000:
-            out = out[:1950] + " Exceded Character Limit! "
-        await ctx.send(f"```py\n{out}```")
+        out, time = run_code(content.strip("`"))
+        if len(str(out)) > 2000:
+            out = out[:1900] + " Exceded Character Limit! "
+        await ctx.send(f"**Output:** Completed in **{time}** seconds!```py\n{out}```")
 
 
 def setup(bot):
     bot.add_cog(Math(bot))
-

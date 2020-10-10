@@ -1,6 +1,7 @@
 import sys
 import io
 import os
+import time
 import random
 import matplotlib.pyplot as plt
 import numpy as np
@@ -152,7 +153,6 @@ def base_conversion(number, base1, base2):
                 number = twos_comp(number)
             if base2 == 2:
                 twosComp = True
-
         if not 1 < base1 < 37 and not 1 < base2 < 37:
             return "<Invalid Entry>"
     except ValueError:
@@ -186,14 +186,16 @@ def run_code(code):
 
     try:
         with time_limit(1):
+            tic = time.perf_counter()
             exec(code, {})
+            toc = time.perf_counter()
     except Exception as e:
         sys.stdout = sys.__stdout__
         codeOut.close()
-        return e
+        return e, None
 
     out = codeOut.getvalue()
     sys.stdout = sys.__stdout__
     codeOut.close()
 
-    return out
+    return out, f"{toc-tic:0.6f}"
