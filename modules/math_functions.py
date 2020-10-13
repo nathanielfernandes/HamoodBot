@@ -1,12 +1,12 @@
 import sys
 import io
 import os
-import time
-import random
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy import sqrt, sin, cos, tan, log
 from sympy import symbols, Eq, solve, parse_expr, integrate
+
+import time, math, random
 
 import signal
 from contextlib import contextmanager
@@ -16,7 +16,7 @@ symbl = "abcdefghijklmnopqrstuvwxyz"
 colors = ["b", "g", "r", "c", "m"]
 folder = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages"
 
-# implemented from https://stackoverflow.com/questions/366682/how-to-limit-execution-time-of-a-function-call-in-python
+# This function was implemented from https://stackoverflow.com/questions/366682/how-to-limit-execution-time-of-a-function-call-in-python
 @contextmanager
 def time_limit(seconds):
     def signal_handler(signum, frame):
@@ -31,28 +31,48 @@ def time_limit(seconds):
 
 
 def format_eq(eq):
-    eq = eq.lower().replace("^", "**").replace("mod", "%")
+    eq = (
+        eq.lower()
+        .replace("^", "**")
+        .replace("mod", "%")
+        .replace("sin", "[sin]")
+        .replace("sqrt", "[sqrt]")
+        .replace("cos", "[cos]")
+        .replace("tan", "[tan]")
+        .replace("log", "[log]")
+    ) + len(eq) * " "
 
     for i in range(len(eq) - 1):
         if eq[i].isdigit() and (eq[i + 1] in symbl or eq[i + 1] == "("):
             eq = eq[: i + 1] + "*" + eq[i + 1 :]
-    for i in range(len(eq) - 1):
-        if eq[i + 1].isdigit() and (eq[i] in symbl or eq[i] == ")"):
+        # for i in range(len(eq) - 1):
+        elif eq[i + 1].isdigit() and (eq[i] in symbl or eq[i] == ")"):
             eq = eq[: i + 1] + "*" + eq[i + 1 :]
-    # for i in range(len(eq) - 1):
-    #     if eq[i] in symbl and eq[i + 1] == "(":
-    #         eq = eq[: i + 1] + "*" + eq[i + 1 :]
-    for i in range(len(eq) - 1):
-        if eq[i + 1] in symbl and eq[i] == ")":
+        # for i in range(len(eq) - 1):
+        elif eq[i] in symbl and eq[i + 1] == "(":
             eq = eq[: i + 1] + "*" + eq[i + 1 :]
-    # if NumP:
-    #     eq = (
-    #         eq.replace("sin", "np.sin")
-    #         .replace("cos", "np.cos")
-    #         .replace("tan", "np.tan")
-    #         .replace("sqrt", "np.sqrt")
-    #         .replace("log", "np.log")
-    #     )
+        # for i in range(len(eq) - 1):
+        elif eq[i + 1] in symbl and eq[i] == ")":
+            eq = eq[: i + 1] + "*" + eq[i + 1 :]
+        # for i in range(len(eq) - 1):
+        elif eq[i] == ")" and eq[i + 1] == "(":
+            eq = eq[: i + 1] + "*" + eq[i + 1 :]
+        # for i in range(len(eq) - 1):
+        elif (
+            eq[i] in symbl and eq[i + 1] == "[" or eq[i].isdigit() and eq[i + 1] == "["
+        ):
+            eq = eq[: i + 1] + "*" + eq[i + 1 :]
+
+    eq = (
+        eq.lower()
+        .replace("[sin]", "sin")
+        .replace("[sqrt]", "sqrt")
+        .replace("[cos]", "cos")
+        .replace("[tan]", "tan")
+        .replace("[log]", "log")
+        .replace(" ", "")
+    )
+
     return eq
 
 
@@ -179,7 +199,7 @@ def base_conversion(number, base1, base2):
 
 def run_code(code):
     if "__" in code or "import" in code:
-        return "Dangerous Request!", None
+        return "code cannot include '__' or 'import' for safety reasons!", None
 
     codeOut = io.StringIO()
     sys.stdout = codeOut
@@ -187,7 +207,7 @@ def run_code(code):
     try:
         with time_limit(1):
             tic = time.perf_counter()
-            exec(code, {})
+            exec(code, {"time": time, "math": math, "random": random, "numpy": np})
             toc = time.perf_counter()
     except Exception as e:
         sys.stdout = sys.__stdout__

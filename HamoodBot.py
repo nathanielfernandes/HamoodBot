@@ -90,9 +90,8 @@ async def on_message(message):
                     # )
                     # return
 
-        # elif message.content.startswith("im "):
-        #     await message.channel.send(f"hi{message.content[2:]}, im hamood")
-
+        elif message.content.startswith("im "):
+            await message.channel.send(f"hi{message.content[2:]}, im hamood")
         elif message.content in responses:
             await message.channel.send(responses[message.content].format(message))
 
