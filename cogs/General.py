@@ -156,6 +156,33 @@ class General(commands.Cog):
         await ctx.send(msg)
 
     @commands.command()
+    async def lengthen(self, ctx, *content: str):
+        """makes things long"""
+
+        def lengthen(word):
+            halves = (word[: len(word) // 2], word[len(word) // 2 :][::-1])
+            final = []
+            for half in halves:
+                string = ""
+                for i in range(len(half)):
+                    string += half[i] * (i + 1)
+                final.append(string)
+
+            return final[0] + final[1][::-1]
+
+        await ctx.send(" ".join([lengthen(word) for word in content]))
+
+    @commands.command()
+    async def clown(self, ctx, *, content: commands.clean_content):
+        """clown someones text"""
+        content = content.lower()
+        for i in range(len(content)):
+            if bool(random.getrandbits(1)):
+                content = content[:i] + content[i].upper() + content[i + 1 :]
+
+        await ctx.send(content)
+
+    @commands.command()
     @commands.cooldown(1, 30, commands.BucketType.channel)
     async def repeat(self, ctx, times: int, *, content: commands.clean_content):
         """``repeat [number of messages] [msg]`` repeats your message multiple times"""
