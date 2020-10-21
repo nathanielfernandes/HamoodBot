@@ -26,9 +26,9 @@ class ChemEq:
 
         self.matrix = self.create_matrix()
         self.coefs = self.solve_coefs()
-        self.answer = self.format_answer()
+        self.balanced = self.format_answer()
 
-        return self.answer
+        return self.balanced
 
     def parse_equation(self):
         """
@@ -273,6 +273,6 @@ class ChemEq:
                 equation[i] = f"**{self.coefs[j]}**`{equation[i]}`"
                 j += 1
 
-        self.answer = " ".join(equation)
-        return self.answer
+        self.balanced = " ".join(equation)
+        return self.balanced
 

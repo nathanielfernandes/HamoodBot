@@ -2,7 +2,8 @@ import os
 import pathlib
 import random
 import io
-from PIL import Image, ImageDraw, ImageFont, ImageSequence
+from PIL import Image, ImageDraw, ImageFont, ImageSequence, ImageEnhance
+
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -14,6 +15,40 @@ class Edit:
         self.folder = image_location
         self.temp = save_location
         self.fontPath = font_location
+
+    def deep_fry(self, imageName, newname, ext):
+        """deepfries an image"""
+        img = f"{self.temp}/{imageName}"
+        edited = f"{self.temp}/{newname}"
+
+        img = Image.open(img)
+        if ext == "png":
+            img = img.convert("RGBA")
+
+        img = ImageEnhance.Contrast(img).enhance(300)
+        img = ImageEnhance.Brightness(img).enhance(300)
+        img = ImageEnhance.Color(img).enhance(300)
+        img = ImageEnhance.Sharpness(img).enhance(300)
+
+        img.save(edited)
+
+        # def gif_rgb(self, gifName, newname):
+        #     """makes a gif rgb"""
+
+        #     gif = f"{self.temp}/{gifName}"
+        #     edited = f"{self.temp}/{newname}"
+
+        #     gif = Image.open(gif)
+
+        #     # frames = []
+        #     #  for frame in ImageSequence.Iterator(gif):
+        #     # frame = frame.convert("RGB")
+        #     en = ImageEnhance.Contrast(gif)
+        #     gif = en.enhance(200)
+        #     #  frames.append(fried)
+        #     gif.save(edited)
+        #     # frames[0].save(edited, format="GIF", save_all=True, append_images=frames[1:])
+        return edited
 
     def gif_addText(self, gifName, fontSize, textColor, textData, newname, fontName):
         """adds text to a gif"""

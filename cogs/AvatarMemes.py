@@ -11,11 +11,46 @@ class Avatarmemes(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
-
-        self.edit = Edit(f"{self.direct}/memePics", f"{self.direct}/tempImages")
-
         self.path = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
+
+        self.edit = Edit(f"{self.path}/memePics", f"{self.path}/tempImages")
+
+    async def imagePrep(self, ctx, member, stuff, memeImage, size):
+        async with ctx.typing():
+            member = list(member)
+            member.append(ctx.author)
+
+            Urls = []
+            for a in member:
+                userAvatarUrl = str(a.avatar_url)
+                userAvatarUrl = userAvatarUrl.replace(".webp", ".png")
+                Urls.append(userAvatarUrl)
+
+            for i in range(len(stuff)):
+                stuff[i].append(Urls[i])
+
+            for item in stuff:
+                name = f"{self.edit.randomNumber()}.png"
+                save = f"{self.path}/tempImages/{name}"
+                scrape(item[2], save)
+
+                pos = stuff.index(item)
+                stuff[pos][2] = save
+
+            finalName = self.edit.randomNumber()
+            finalName = f"{str(finalName)}.jpg"
+
+            meme = self.edit.addImage(memeImage, stuff, size, finalName)
+
+            for item in stuff:
+                os.remove(item[2])
+
+            try:
+                await ctx.send(file=discord.File(meme))
+            except discord.Forbidden:
+                print("could not send!")
+
+        os.remove(meme)
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -60,43 +95,6 @@ class Avatarmemes(commands.Cog):
         await self.imagePrep(
             ctx, avamember, [[(0, 0), 0], [(405, 0), 0]], "blankAvatar.jpg", (400, 400)
         )
-
-    async def imagePrep(self, ctx, member, stuff, memeImage, size):
-        async with ctx.typing():
-            member = list(member)
-            member.append(ctx.author)
-
-            Urls = []
-            for a in member:
-                userAvatarUrl = str(a.avatar_url)
-                userAvatarUrl = userAvatarUrl.replace(".webp", ".png")
-                Urls.append(userAvatarUrl)
-
-            for i in range(len(stuff)):
-                stuff[i].append(Urls[i])
-
-            for item in stuff:
-                name = f"{self.edit.randomNumber()}.png"
-                save = f"{self.path}/tempImages/{name}"
-                scrape(item[2], save)
-
-                pos = stuff.index(item)
-                stuff[pos][2] = save
-
-            finalName = self.edit.randomNumber()
-            finalName = f"{str(finalName)}.jpg"
-
-            meme = self.edit.addImage(memeImage, stuff, size, finalName)
-
-            for item in stuff:
-                os.remove(item[2])
-
-            try:
-                await ctx.send(file=discord.File(meme))
-            except discord.Forbidden:
-                print("could not send!")
-
-        os.remove(meme)
 
 
 def setup(bot):
