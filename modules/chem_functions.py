@@ -270,7 +270,7 @@ class ChemEq:
         for i in range(len(equation)):
             if equation[i][0] not in "-+":
                 # modifified for discord
-                equation[i] = f"**{self.coefs[j]}**`{equation[i]}`"
+                equation[i] = f"{self.coefs[j]}{equation[i]}"
                 j += 1
 
         self.balanced = " ".join(equation)

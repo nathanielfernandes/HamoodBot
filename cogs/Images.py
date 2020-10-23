@@ -15,7 +15,7 @@ class Images(commands.Cog):
         self.edit = Edit(None, f"{self.path}/tempImages")
 
     @commands.command()
-    # @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.cooldown(3, 10, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def deepfry(self, ctx):
         message = await ctx.message.channel.history(limit=20).find(
