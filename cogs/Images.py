@@ -19,26 +19,26 @@ class Images(commands.Cog):
     @commands.has_permissions(attach_files=True)
     async def deepfry(self, ctx):
         """``deepfry [looks for previous sent images]`` deepfries any image, tasty!"""
-        message = await ctx.message.channel.history(limit=20).find(
-            lambda m: ".jpg" in str(m.attachments)
-            or ".png" in str(m.attachments)
-            or ".jpeg" in str(m.attachments)
-            or ".gif" in str(m.attachments)
+
+        message = await ctx.message.channel.history(limit=3).find(
+            lambda m: "https" in str(m.content)
+            and (
+                ".jpg" in str(m.content)
+                or ".png" in str(m.content)
+                or ".jpeg" in str(m.content)
+                or ".gif" in str(m.content)
+            )
         )
-        url = message.attachments[0].url
+        url = message.content
 
         if message is None:
-            message = await ctx.message.channel.history(limit=40).find(
-                lambda m: "https" in str(m.content)
-                and (
-                    ".jpg" in str(m.content)
-                    or ".png" in str(m.content)
-                    or ".jpeg" in str(m.content)
-                    or ".gif" in str(m.content)
-                )
+            message = await ctx.message.channel.history(limit=3).find(
+                lambda m: ".jpg" in str(m.attachments)
+                or ".png" in str(m.attachments)
+                or ".jpeg" in str(m.attachments)
+                or ".gif" in str(m.attachments)
             )
-
-            url = message.content
+            url = message.attachments[0].url
 
         exts = ["jpg", "png", "jpeg", "gif"]
 
