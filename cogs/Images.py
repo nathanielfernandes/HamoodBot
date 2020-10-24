@@ -18,6 +18,7 @@ class Images(commands.Cog):
     @commands.cooldown(3, 10, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def deepfry(self, ctx):
+        """``deepfry [looks for previous sent images]`` deepfries any image, tasty!"""
         message = await ctx.message.channel.history(limit=20).find(
             lambda m: ".jpg" in str(m.attachments)
             or ".png" in str(m.attachments)
@@ -36,11 +37,11 @@ class Images(commands.Cog):
 
         scrape(message.attachments[0].url, save)
 
-        rgbb = self.edit.deep_fry(name, new, end)
+        deepfried = self.edit.deep_fry(name, new, end)
 
-        await ctx.send(file=discord.File(rgbb))
+        await ctx.send(file=discord.File(deepfried))
 
-        os.remove(rgbb)
+        os.remove(deepfried)
         os.remove(save)
 
     # @commands.command()

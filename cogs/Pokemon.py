@@ -99,6 +99,7 @@ class Pokemon(commands.Cog):
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pokepic(self, ctx, name: commands.clean_content):
+        """``pokepic [pokemon]`` gets a pic of the pokemon"""
         pokemon = get_pokemon_info(name)
         if pokemon:
             embed = discord.Embed(

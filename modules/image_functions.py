@@ -25,13 +25,13 @@ class Edit:
         if ext == "png":
             img = img.convert("RGBA")
 
-        img = ImageEnhance.Sharpness(img).enhance(random.randint(1, 1000))
+        img = ImageEnhance.Sharpness(img).enhance(10000)
 
-        img = ImageEnhance.Color(img).enhance(random.randint(1, 1000))
+        img = ImageEnhance.Contrast(img).enhance(10000)
 
-        img = ImageEnhance.Contrast(img).enhance(random.randint(1, 1000))
+        img = ImageEnhance.Color(img).enhance(10000)
 
-        img = ImageEnhance.Brightness(img).enhance(random.randint(1, 1000))
+        img = ImageEnhance.Brightness(img).enhance(10000)
 
         img.save(edited)
 

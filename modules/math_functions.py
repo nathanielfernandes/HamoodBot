@@ -15,6 +15,21 @@ chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 symbl = "abcdefghijklmnopqrstuvwxyz"
 colors = ["b", "g", "r", "c", "m"]
 folder = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages"
+restricted = [
+    "exit",
+    "__",
+    "import",
+    "eval",
+    "open",
+    "file",
+    "input",
+    "execfile",
+    "stdin",
+    "builtins",
+    "globals",
+    "locals",
+]
+
 
 # This function was implemented from https://stackoverflow.com/questions/366682/how-to-limit-execution-time-of-a-function-call-in-python
 @contextmanager
@@ -198,8 +213,12 @@ def base_conversion(number, base1, base2):
 
 
 def run_code(code):
-    if "__" in code or "import" in code:
-        return "code cannot include '__' or 'import' for safety reasons!", None
+    for r in restricted:
+        if r in code:
+            return f"code cannot contain '{r}'", None
+
+    # if "__" in code or "import" in code or "exit()" in code:
+    #     return "code cannot contain include '__' or 'import' for safety reasons!", None
 
     codeOut = io.StringIO()
     sys.stdout = codeOut
