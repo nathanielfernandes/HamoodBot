@@ -18,40 +18,60 @@ class Edit:
 
     def deep_fry(self, imageName, newname, ext):
         """deepfries an image"""
+
+        def fry(img):
+            img = ImageEnhance.Sharpness(img).enhance(10000)
+            img = ImageEnhance.Contrast(img).enhance(10000)
+            img = ImageEnhance.Color(img).enhance(10000)
+            img = ImageEnhance.Brightness(img).enhance(10000)
+
+            return img
+
         img = f"{self.temp}/{imageName}"
         edited = f"{self.temp}/{newname}"
 
         img = Image.open(img)
-        if ext == "png":
-            img = img.convert("RGBA")
 
-        img = ImageEnhance.Sharpness(img).enhance(10000)
+        if ext == "gif":
+            frames = []
+            for frame in ImageSequence.Iterator(img):
+                frames.append(fry(frame.convert("RGBA")))
 
-        img = ImageEnhance.Contrast(img).enhance(10000)
+            frames[0].save(
+                edited,
+                save_all=True,
+                append_images=frames[1:],
+                optimize=False,
+                loop=False,
+                duration=img.info["duration"],
+            )
+        else:
+            if ext == "png":
+                img = img.convert("RGB")
 
-        img = ImageEnhance.Color(img).enhance(10000)
+            img = fry(img)
+            img.save(edited)
 
-        img = ImageEnhance.Brightness(img).enhance(10000)
-
-        img.save(edited)
-
-        # def gif_rgb(self, gifName, newname):
-        #     """makes a gif rgb"""
-
-        #     gif = f"{self.temp}/{gifName}"
-        #     edited = f"{self.temp}/{newname}"
-
-        #     gif = Image.open(gif)
-
-        #     # frames = []
-        #     #  for frame in ImageSequence.Iterator(gif):
-        #     # frame = frame.convert("RGB")
-        #     en = ImageEnhance.Contrast(gif)
-        #     gif = en.enhance(200)
-        #     #  frames.append(fried)
-        #     gif.save(edited)
-        #     # frames[0].save(edited, format="GIF", save_all=True, append_images=frames[1:])
         return edited
+
+    def gif_rgb(self, gifName, newname):
+        """makes a gif rgb"""
+
+        gif = f"{self.temp}/{gifName}"
+        edited = f"{self.temp}/{newname}"
+
+        gif = Image.open(gif)
+
+        frames = []
+        for frame in ImageSequence.Iterator(gif):
+            # frame = frame.convert("RGB")
+            en = ImageEnhance.Contrast(gif)
+            gif = en.enhance(200)
+
+            frames.append(gif)
+        frames[0].save(
+            edited, format="GIF", save_all=True, append_images=frames[1:],
+        )
 
     def gif_addText(self, gifName, fontSize, textColor, textData, newname, fontName):
         """adds text to a gif"""
