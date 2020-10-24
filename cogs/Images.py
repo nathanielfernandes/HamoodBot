@@ -19,19 +19,31 @@ class Images(commands.Cog):
     @commands.has_permissions(attach_files=True)
     async def deepfry(self, ctx):
         """``deepfry [looks for previous sent images]`` deepfries any image, tasty!"""
-        message = await ctx.message.channel.history(limit=40).find(
-            lambda m: "https" in str(m.content)
-            and (
-                ".jpg" in str(m.content)
-                or ".png" in str(m.content)
-                or ".jpeg" in str(m.content)
-                or ".gif" in str(m.content)
-            )
+        message = await ctx.message.channel.history(limit=20).find(
+            lambda m: ".jpg" in str(m.attachments)
+            or ".png" in str(m.attachments)
+            or ".jpeg" in str(m.attachments)
+            or ".gif" in str(m.attachments)
         )
+        url = message.attachments[0].url
+
+        if message is None:
+            message = await ctx.message.channel.history(limit=40).find(
+                lambda m: "https" in str(m.content)
+                and (
+                    ".jpg" in str(m.content)
+                    or ".png" in str(m.content)
+                    or ".jpeg" in str(m.content)
+                    or ".gif" in str(m.content)
+                )
+            )
+
+            url = message.content
+
         exts = ["jpg", "png", "jpeg", "gif"]
 
         for e in exts:
-            if e in message.content:
+            if e in url:
                 end = e
 
         name = f"{self.edit.randomNumber()}.{end}"
@@ -39,7 +51,7 @@ class Images(commands.Cog):
 
         new = f"{self.edit.randomNumber()}.{end}"
 
-        scrape(message.content, save)
+        scrape(url, save)
 
         deepfried = self.edit.deep_fry(name, new, end)
 
