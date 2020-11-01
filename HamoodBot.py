@@ -14,7 +14,9 @@ from modules.image_functions import Edit
 
 # the prefix the bot looks for before processing a message
 bot = commands.AutoShardedBot(
-    command_prefix=commands.when_mentioned_or("."), case_insensitive=True,
+    command_prefix=commands.when_mentioned_or("."),
+    case_insensitive=True,
+    intents=discord.Intents().all(),
 )
 
 

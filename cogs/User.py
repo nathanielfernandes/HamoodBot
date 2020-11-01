@@ -106,9 +106,9 @@ class User(commands.Cog):
     async def listening(self, ctx, member: discord.Member = None):
         """``listening [@user]`` returns a users spotify listening activity"""
         member = ctx.author if not member else member
-
         for activity in member.activities:
             if isinstance(activity, discord.Spotify):
+
                 if "(" in activity.title:
                     title = activity.title.find("(")
                     title = activity.title[:title]
