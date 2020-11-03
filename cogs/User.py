@@ -106,8 +106,10 @@ class User(commands.Cog):
     async def listening(self, ctx, member: discord.Member = None):
         """``listening [@user]`` returns a users spotify listening activity"""
         member = ctx.author if not member else member
+        dont = False
         for activity in member.activities:
             if isinstance(activity, discord.Spotify):
+                done = True
 
                 if "(" in activity.title:
                     title = activity.title.find("(")
@@ -134,6 +136,9 @@ class User(commands.Cog):
                 embed.set_footer(text=f"Requested by {ctx.author}")
 
                 await ctx.send(embed=embed)
+
+        if not done:
+            await ctx.send(f"{member.mention} is not listening to spotify!")
 
 
 def setup(bot):

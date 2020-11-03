@@ -7,7 +7,7 @@ from modules.web_scraping import scrape
 
 
 class Images(commands.Cog):
-    """Image & Gif Manipulation"""
+    """Image & Gif Manipulation `BETA`"""
 
     def __init__(self, bot):
         self.bot = bot
@@ -18,7 +18,7 @@ class Images(commands.Cog):
     @commands.cooldown(3, 10, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def deepfry(self, ctx, link=None):
-        """``deepfry [looks for previous sent images]`` deepfries any image, tasty!"""
+        """``deepfry [looks for previous sent images or gifs]`` deepfries any image or gif, tasty!"""
 
         if link is None:
             message = await ctx.message.channel.history(limit=40).find(
@@ -29,7 +29,7 @@ class Images(commands.Cog):
             )
             url = message.attachments[0].url
         else:
-            message = await ctx.message.channel.history(limit=3).find(
+            message = await ctx.message.channel.history(limit=40).find(
                 lambda m: "https" in str(m.content)
                 and (
                     ".jpg" in str(m.content)

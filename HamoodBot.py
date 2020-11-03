@@ -4,6 +4,7 @@
 """HamoodBot is a multipurpose discord bot that has a variety of different fucntions"""
 
 # dependancies
+import time
 import os
 import datetime
 import random
@@ -12,9 +13,12 @@ from discord.ext import commands
 
 from modules.image_functions import Edit
 
+
+tic = time.perf_counter()
+
 # the prefix the bot looks for before processing a message
 bot = commands.AutoShardedBot(
-    command_prefix=commands.when_mentioned_or("."),
+    command_prefix=commands.when_mentioned_or("/"),
     case_insensitive=True,
     intents=discord.Intents().all(),
 )
@@ -27,10 +31,19 @@ async def on_ready():
             type=discord.ActivityType.playing, name="with your feelings"
         )
     )
+    toc = time.perf_counter()
+
     print("-------------------")
     print(f"|Logged in as {bot.user} ({bot.user.id})|")
     print("|" + str(datetime.datetime.now()) + "|")
     print("-------------------")
+    print("-------------------")
+    print(f"Took {toc-tic:0.2f} seconds")
+    print("-------------------")
+
+    # used to change profile pic
+    # with open("/Users/nathaniel/Desktop/Edits/christmashamoood.png", "rb") as f:
+    #     await bot.user.edit(avatar=f.read())
 
 
 responses = {
@@ -164,15 +177,17 @@ async def load(ctx, cog):
 
 
 # loads in all cogs
+print("-------------------")
 for cog in os.listdir("./cogs"):
     if cog.endswith(".py"):
         try:
             cog = f"cogs.{cog.replace('.py', '')}"
             bot.load_extension(cog)
+            print(f"{cog} Loaded!")
         except Exception as e:
             print(f"{cog} cannot be loaded:")
             raise e
-
+print("-------------------")
 try:
     TOKEN = os.environ["TOKEN"]
     os.remove(

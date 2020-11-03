@@ -7,7 +7,7 @@ from modules.web_scraping import scrape
 
 
 class Avatarmemes(commands.Cog):
-    """Custom Avatar Memes"""
+    """Custom Avatar Memes `does not work with animated avatars`"""
 
     def __init__(self, bot):
         self.bot = bot

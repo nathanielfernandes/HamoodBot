@@ -33,10 +33,10 @@ class Events(commands.Cog):
                     value="You can message me on discord\n`nathan#3724`",
                 )
 
-                embed.set_footer(
-                    text="created by Nathaniel Fernandes",
-                    icon_url="https://cdn.discordapp.com/attachments/699770186227646465/741388960227655790/k70up0p0ozz21.png",
-                )
+                # embed.set_footer(
+                #     text="created by Nathaniel Fernandes",
+                #     icon_url="https://cdn.discordapp.com/attachments/699770186227646465/741388960227655790/k70up0p0ozz21.png",
+                # )
 
                 await channel.send(embed=embed)
             break
@@ -62,9 +62,22 @@ class Events(commands.Cog):
                 s = ctx.command.help
                 start = s.find("``") + 2
                 end = s.find("``", start)
-                await ctx.send(
-                    f"{ctx.author.mention}, **{ctx.command.name}** is used like this:\n`.{s[start:end]}`"
+
+                embed = discord.Embed(
+                    title="Command Failed",
+                    description=f"**{ctx.command.name}** is used like this: `.{s[start:end]}`",
+                    colour=discord.Color.red(),
+                    timestamp=ctx.message.created_at,
                 )
+                embed.set_author(
+                    name="Error!",
+                    icon_url="https://cdn.discordapp.com/attachments/749779629643923548/773072024922095636/images.png",
+                )
+                embed.set_footer(text=f"{ctx.author}", icon_url=ctx.author.avatar_url)
+                # await ctx.send(
+                #     f"{ctx.author.mention}, **{ctx.command.name}** is used like this:\n`.{s[start:end]}`"
+                # )
+                await ctx.send(embed=embed)
             except Exception:
                 print("error")
                 # raise error

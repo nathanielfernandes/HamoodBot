@@ -21,6 +21,8 @@ reddit = praw.Reddit(
 
 file = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/subreddits.txt"
 
+post_cache = {}
+
 
 def getSubReddit():
     sub_list = []
@@ -35,12 +37,35 @@ def getSubReddit():
     return redditSub
 
 
+def fillCache(sub):
+    try:
+        post_submissions = list(reddit.subreddit(sub).hot())
+    except Exception:
+        post_submissions = False
+
+    post_cache[sub] = [post_submissions, 0]
+    return post_submissions
+
+
 def findPost(sub):
-    post_submissions = reddit.subreddit(sub).hot()
-    post_to_pick = random.randint(1, 100)
+    if sub in post_cache.keys():
+        post_submissions, count = post_cache[sub]
+        post_cache[sub][1] += 1
+        if count >= 30:
+            fillCache(sub)
+            print(f"r/{sub} cache has been refilled")
+    else:
+        post_submissions = fillCache(sub)
+        print(f"r/{sub} cache has been filled")
 
-    for i in range(0, post_to_pick):
-        submission = next(x for x in post_submissions if not x.stickied)
+    sample = random.sample(range(100), 100)
+    for i in sample:
+        if (
+            (".jpg" in post_submissions[i].url)
+            or (".jpeg" in post_submissions[i].url)
+            or (".png" in post_submissions[i].url)
+        ):
+            return post_submissions[i].url
 
-    return submission
+    return
 

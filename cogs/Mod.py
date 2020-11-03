@@ -56,15 +56,18 @@ class Mod(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
-    async def clean(self, ctx, member: discord.Member):
-        """``clean [@user] [amount]`` deletes chat messages from a user"""
-        history = await ctx.message.channel.history(limit=40).flatten()
+    async def clean(self, ctx, member: discord.Member, amount=5):
+        """``clean [@user] [amount, max=50]`` deletes chat messages from a user"""
+        history = await ctx.message.channel.history(limit=50).flatten()
         messages = [msg for msg in history if msg.author.id == member.id]
+        messages = messages[: amount + 1] if len(messages) > amount else messages
 
         for msg in messages:
             await msg.delete()
 
-        await ctx.send(f"{member.name}'s messages have been cleaned up'")
+        await ctx.send(
+            f"`{len(messages)}` of **{member.name}'s** messages have been **deleted!**"
+        )
 
     @commands.command(aliases=["rename"])
     @commands.has_permissions(manage_nicknames=True)
