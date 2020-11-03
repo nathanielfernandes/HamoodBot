@@ -3,7 +3,7 @@ import random
 import discord
 from discord.ext import commands
 
-from modules.reddit_functions import findPost, getSubReddit, fillCache
+from modules.reddit_functions import findPost, cachePosts
 
 
 class Reddit(commands.Cog):
@@ -23,42 +23,41 @@ class Reddit(commands.Cog):
             "dog",
         ]
 
-        print("\nFilling Reddit Caches:")
+        print("\nCaching Reddit Posts:")
         for i in self.common:
-            fillCache(i)
-            print(f"    r/{i} cache filled!")
-        print("All Caches Filled\n")
+            p = cachePosts(i)
+            print(f"    {len(p)} r/{i} posts have been cached!")
+        print("All Posts Cached\n")
 
     async def redditPrep(self, ctx, subRedd):
-        async with ctx.typing():
-            post = findPost(subRedd)
-            msg = None
-            if post is None:
-                msg = f"Could not find a recent post from **r/{subRedd}!**"
-            elif not post:
-                msg = f"**r/{subRedd}!** does not exist"
-            else:
-                embed = discord.Embed(title=f"Post from r/{subRedd}:", colour=16729344)
-                embed.set_author(
-                    name="Reddit",
-                    icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756609606922535057/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png",
-                )
-                embed.set_image(url=post)
-                embed.set_footer(
-                    text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
-                )
-                await ctx.send(embed=embed)
+        post = findPost(subRedd)
+        msg = None
+        if post is None:
+            msg = f"Could not find a recent post from **r/{subRedd}!**"
+        elif not post:
+            msg = f"**r/{subRedd}!** does not exist"
+        else:
+            embed = discord.Embed(title=f"Post from r/{subRedd}:", colour=16729344)
+            embed.set_author(
+                name="Reddit",
+                icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756609606922535057/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png",
+            )
+            embed.set_image(url=post)
+            embed.set_footer(
+                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
+            )
+            await ctx.send(embed=embed)
 
         if msg is not None:
             await ctx.send(msg)
 
     @commands.command(aliases=["reddit"])
-    @commands.cooldown(3, 15, commands.BucketType.user)
+    @commands.cooldown(3, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def red(self, ctx, redditSub=None):
         """``red [subreddit]`` finds a post from your specified subreddit"""
         if redditSub == None:
-            redditSub = getSubReddit()
+            redditSub = random.choice(self.common)
         await self.redditPrep(ctx, redditSub)
 
     @commands.command(aliases=["memes"])
@@ -135,8 +134,10 @@ class Reddit(commands.Cog):
 
         for i in range(amount):
             if redditSub == "random":
-                redditSub = getSubReddit()
-            await self.redditPrep(ctx, redditSub)
+                r = random.choice(self.common)
+            else:
+                r = redditSub
+            await self.redditPrep(ctx, r)
 
 
 def setup(bot):
