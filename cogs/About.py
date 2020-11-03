@@ -9,7 +9,7 @@ class About(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.VERSION = "Hamood v15.7"
+        self.VERSION = "Hamood v19.8"
         self.currentDT = str(datetime.datetime.now())
 
         if platform.system() == "Darwin":

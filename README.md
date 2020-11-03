@@ -3,7 +3,6 @@
 Hamood is a Discord bot written with [discord.py](https://github.com/Rapptz/discord.py) that has a variety of helpful and fun [functions](#Commands).
 
 ### Background
-I decided to create Hamood as a fun qurantine project to learn new skills.
 Hamood's name and profile picture is an inside joke based off the [Yotube](https://knowyourmeme.com/memes/yotube) kid meme.
 
 ## Highlighted Features

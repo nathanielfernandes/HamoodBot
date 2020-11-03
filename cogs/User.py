@@ -106,7 +106,7 @@ class User(commands.Cog):
     async def listening(self, ctx, member: discord.Member = None):
         """``listening [@user]`` returns a users spotify listening activity"""
         member = ctx.author if not member else member
-        dont = False
+        done = False
         for activity in member.activities:
             if isinstance(activity, discord.Spotify):
                 done = True

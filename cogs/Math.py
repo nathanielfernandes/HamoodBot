@@ -26,9 +26,15 @@ class Math(commands.Cog):
         except ValueError:
             await ctx.send("Invalid Input!")
             return
-
         answer = base_conversion(number, base1, base2)
-        await ctx.send(f"**Base {base1}:** `{number}`\n**Base {base2}:** `{answer}`\n")
+        embed = discord.Embed(
+            title=f"Base {base1} to Base {base2}:",
+            description=f"**Base {base1}:** `{number}`\n**Base {base2}:** `{answer}`\n",
+            color=discord.Color.blue(),
+        )
+        await ctx.send(embed=embed)
+
+    # await ctx.send(f"**Base {base1}:** `{number}`\n**Base {base2}:** `{answer}`\n")
 
     @commands.command()
     async def calc(self, ctx, *, content: commands.clean_content):
@@ -36,13 +42,29 @@ class Math(commands.Cog):
         out = str(calc_eq(content))
         if len(out) > 2000:
             out = out[:1950] + " Exceded Character Limit! "
-        await ctx.send(f"**Answer: **`{out}`")
+
+        embed = discord.Embed(
+            title="Calculate:",
+            description=f"{content} **=**\n```{out}```",
+            color=discord.Color.blue(),
+        )
+
+        await ctx.send(embed=embed)
+
+    #  await ctx.send(f"**Answer: **`{out}`")
 
     @commands.command()
     @commands.cooldown(4, 10, commands.BucketType.user)
     async def solve(self, ctx, *, content: commands.clean_content):
         """``solve [equation]`` solves for variables in most math equations"""
-        await ctx.send(f"`{solve_eq(content)}`")
+        embed = discord.Embed(
+            title="Solve:",
+            description=f"**{content}**:\n```{solve_eq(content)}```",
+            color=discord.Color.blue(),
+        )
+        await ctx.send(embed=embed)
+
+    #     await ctx.send(f"`{solve_eq(content)}`")
 
     @commands.command()
     @commands.cooldown(2, 10, commands.BucketType.user)

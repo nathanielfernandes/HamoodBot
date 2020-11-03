@@ -173,8 +173,14 @@ class General(commands.Cog):
         await ctx.send(" ".join([lengthen(word) for word in content]))
 
     @commands.command()
-    async def clown(self, ctx, *, content: commands.clean_content):
-        """clown someones text"""
+    async def clown(self, ctx, *, content: commands.clean_content = None):
+        """``.clown [msg]``clown someones text"""
+        if content is None:
+            content = await ctx.message.channel.history(limit=5).find(
+                lambda m: ".clown" not in m.content.lower()
+            )
+        content = content.content
+
         content = content.lower()
         for i in range(len(content)):
             if bool(random.getrandbits(1)):
