@@ -24,9 +24,9 @@ class Reddit(commands.Cog):
         ]
 
         print("\nCaching Reddit Posts:")
-        # for i in self.common:
-        #     p = cachePosts(i)
-        #     print(f"    {len(p)} r/{i} posts have been cached!")
+        for i in self.common:
+            p = cachePosts(i)
+            print(f"    {len(p)} r/{i} posts have been cached!")
         print("All Posts Cached\n")
 
     async def redditPrep(self, ctx, subRedd):
