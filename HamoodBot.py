@@ -18,7 +18,7 @@ tic = time.perf_counter()
 
 # the prefix the bot looks for before processing a message
 bot = commands.AutoShardedBot(
-    command_prefix=commands.when_mentioned_or("/"),
+    command_prefix=commands.when_mentioned_or("."),
     case_insensitive=True,
     intents=discord.Intents().all(),
 )
