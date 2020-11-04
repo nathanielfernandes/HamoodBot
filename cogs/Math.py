@@ -39,6 +39,8 @@ class Math(commands.Cog):
     @commands.command()
     async def calc(self, ctx, *, content: commands.clean_content):
         """``calc [equation]`` calculates the answer to the given equation"""
+        content = "".join([x for x in content if not x.isalpha()])
+
         out = str(calc_eq(content))
         if len(out) > 2000:
             out = out[:1950] + " Exceded Character Limit! "

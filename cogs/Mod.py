@@ -60,7 +60,7 @@ class Mod(commands.Cog):
         """``clean [@user] [amount, max=50]`` deletes chat messages from a user"""
         history = await ctx.message.channel.history(limit=50).flatten()
         messages = [msg for msg in history if msg.author.id == member.id]
-        messages = messages[: amount + 1] if len(messages) > amount else messages
+        messages = messages[:amount] if len(messages) > amount else messages
 
         for msg in messages:
             await msg.delete()

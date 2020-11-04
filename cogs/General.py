@@ -157,7 +157,7 @@ class General(commands.Cog):
 
     @commands.command()
     async def lengthen(self, ctx, *content: str):
-        """makes things long"""
+        """``lengthen [sentence]`` makes words long"""
 
         def lengthen(word):
             halves = (word[: len(word) // 2], word[len(word) // 2 :][::-1])
@@ -174,7 +174,7 @@ class General(commands.Cog):
 
     @commands.command()
     async def clown(self, ctx, *, content: commands.clean_content = None):
-        """``.clown [msg]``clown someones text"""
+        """``clown [msg]`` clown someones text"""
         if content is None:
             content = await ctx.message.channel.history(limit=5).find(
                 lambda m: ".clown" not in m.content.lower()
@@ -185,7 +185,7 @@ class General(commands.Cog):
         for i in range(len(content)):
             if bool(random.getrandbits(1)):
                 content = content[:i] + content[i].upper() + content[i + 1 :]
-
+        await ctx.message.delete()
         await ctx.send(content)
 
     @commands.command()

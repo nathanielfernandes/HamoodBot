@@ -22,6 +22,17 @@ class Reddit(commands.Cog):
             "raimimemes",
             "dog",
         ]
+        self.names = [
+            "meme",
+            "dark",
+            "dank",
+            "cats",
+            "cursed",
+            "blursed",
+            "blessed",
+            "pizzatime",
+            "dog",
+        ]
 
         print("\nCaching Reddit Posts:")
         for i in self.common:
@@ -129,6 +140,9 @@ class Reddit(commands.Cog):
         amount = int(amount)
         if amount > 5:
             amount = 5
+
+        if redditSub in self.names:
+            redditSub = self.common[self.names.index(redditSub)]
 
         for i in range(amount):
             if redditSub == "random":

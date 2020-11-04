@@ -50,7 +50,7 @@ class Edit:
                 img = img.convert("RGB")
 
             img = fry(img)
-            img.save(edited)
+            img.save(edited, "JPEG", optimize=True, quality=10)
 
         return edited
 

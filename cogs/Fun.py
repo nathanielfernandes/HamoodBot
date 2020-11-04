@@ -98,14 +98,14 @@ class Fun(commands.Cog):
         await ctx.send(f"{member.mention} {random.choice(self.roasts)}")
 
     @commands.command(aliases=["pop", "bubble"])
-    async def bubblewrap(self, ctx, w=3, h=3):
+    async def bubblewrap(self, ctx, w=3, h=3, inside="pop"):
         """``bubblewrap [height] [width]`` makes bubblewrap"""
         if w > 12:
             w = 12
         if h > 12:
             h = 12
         wrap = ""
-        w = "||pop||" * int(w)
+        w = f"||{inside}||" * int(w)
         for i in range(h):
             wrap += w + "\n"
 
