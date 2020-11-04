@@ -4,7 +4,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy import sqrt, sin, cos, tan, log
-from sympy import symbols, Eq, solve, parse_expr, integrate
+from sympy import symbols, Eq, solve, parse_expr, integrate, diff
 
 import time, math, random
 
@@ -55,6 +55,7 @@ def format_eq(eq):
         .replace("cos", "[cos]")
         .replace("tan", "[tan]")
         .replace("log", "[log]")
+        .replace("ln", "[ln]")
     ) + len(eq) * " "
 
     for i in range(len(eq) - 1):
@@ -85,6 +86,7 @@ def format_eq(eq):
         .replace("[cos]", "cos")
         .replace("[tan]", "tan")
         .replace("[log]", "log")
+        .replace("[ln]", "log")
         .replace(" ", "")
     )
 
@@ -162,54 +164,22 @@ def solve_eq(equation):
         return solved
 
 
-def twos_comp(number):
-    answer = [numb for numb in number[::-1]]
-    for i in range(len(answer)):
-        answer[i] = "0" if answer[i] == "1" else "1"
-
-    for i in range(len(answer)):
-        if answer[i] == "1":
-            answer[i] = "0"
-        else:
-            answer[i] = "1"
-            break
-    answer = "".join(answer)[::-1]
-
-    return answer
-
-
 def base_conversion(number, base1, base2):
-    twosComp = False
     try:
-        number, base1, base2 = str(number).upper(), int(base1), int(base2)
-        if number[0] == "-":
-            number = number[1:]
-            if base1 == 2:
-                number = twos_comp(number)
-            if base2 == 2:
-                twosComp = True
-        if not 1 < base1 < 37 and not 1 < base2 < 37:
-            return "<Invalid Entry>"
+        return np.base_repr(int(number, base1), base2)
     except ValueError:
-        return "<Invalid Entry>"
+        return "Invalid Input"
 
-    for num in number:
-        if num not in chars[:base1]:
-            return "<Invalid Entry>"
 
-    temp_number = 0
-    for i in range(len(number)):
-        temp_number += chars.index(number[::-1][i]) * base1 ** i
-
-    answer = ""
-    while temp_number >= 1:
-        answer = chars[temp_number % base2] + answer
-        temp_number = temp_number // base2
-
-    if twosComp:
-        answer = "1" + twos_comp(answer)
-
-    return answer
+def get_derivative(equation, d):
+    equation = format_eq(equation)
+    try:
+        with time_limit(1):
+            for i in range(d):
+                equation = diff(equation)
+        return str(equation)
+    except Exception:
+        return "Invalid Input"
 
 
 def run_code(code):

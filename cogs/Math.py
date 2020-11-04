@@ -8,6 +8,7 @@ from modules.math_functions import (
     run_code,
     calc_eq,
     graph_eq,
+    get_derivative,
 )
 
 
@@ -36,9 +37,9 @@ class Math(commands.Cog):
 
     # await ctx.send(f"**Base {base1}:** `{number}`\n**Base {base2}:** `{answer}`\n")
 
-    @commands.command()
+    @commands.command(aliases=["calculate"])
     async def calc(self, ctx, *, content: commands.clean_content):
-        """``calc [equation]`` calculates the answer to the given equation"""
+        """``calc [equation]`` calculates the answer to the given equation (assumes natural log unless specified [log(base, number)]"""
         content = "".join([x for x in content if not x.isalpha()])
 
         out = str(calc_eq(content))
@@ -54,6 +55,18 @@ class Math(commands.Cog):
         await ctx.send(embed=embed)
 
     #  await ctx.send(f"**Answer: **`{out}`")
+
+    @commands.command(aliases=["aliases"])
+    async def derivative(self, ctx, number=1, *, content: commands.clean_content):
+        """``derivative [nth derivative] [equation]`` solves for the nth dervative of an equation"""
+        ext = ["th", "st", "nd", "rd"]
+        answer = get_derivative(content, number)
+        embed = discord.Embed(
+            title=f"{number}{ext[number] if int(number) <= 3 else 'th'} Derivative of :",
+            description=f"{content} **=**\n```{answer}```",
+            color=discord.Color.blue(),
+        )
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(4, 10, commands.BucketType.user)

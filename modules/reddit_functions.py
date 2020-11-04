@@ -52,6 +52,6 @@ def findPost(sub):
             print(f"{len(p)} r/{sub} posts recached")
     else:
         post_submissions = cachePosts(sub)
-        print(f"{len(post_submissions)} r/{sub} posts recached")
+        print(f"{len(post_submissions)} r/{sub} posts cached")
 
     return random.choice(post_submissions) if post_submissions != [] else None
