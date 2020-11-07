@@ -66,8 +66,6 @@ def get_element_period(element):
     return elements["Table"]["Row"][element - 1]["Cell"]
 
 
-print(get_element_period("N"))
-
 # class ChemEq:
 #     """
 #     Proviedes functionaily for parsing and balancing unbalanced chemical equations.

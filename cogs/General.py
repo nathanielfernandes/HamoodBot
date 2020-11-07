@@ -1,4 +1,5 @@
 import os
+import datetime
 import random
 import discord
 import asyncio
@@ -219,6 +220,49 @@ class General(commands.Cog):
     async def shrek(self, ctx):
         """``shrek`` sends the entire shrek movie as a 90 min long gif"""
         await ctx.send("https://imgur.com/gallery/IsWDJWa")
+
+    @commands.command(aliases=["nut", "robert"])
+    async def nnn(self, ctx):
+        """``nnn`` dont nut"""
+        embed = discord.Embed(
+            title=f"No Nut November Countdown",
+            color=discord.Color.from_rgb(245, 245, 220),
+        )
+        embed.set_footer(
+            text=f"Hang in there {ctx.author}.", icon_url=ctx.author.avatar_url
+        )
+
+        today = datetime.datetime.now()
+        if today.month != 11:
+            embed.description("It is not November")
+        else:
+            end = datetime.datetime(today.year, 12, 1)
+
+            timeLeft = end - today
+            embed.description = (
+                f"```{self.pretty_time_delta(timeLeft.total_seconds())}```"
+            )
+
+        await ctx.send(embed=embed)
+
+    def pretty_time_delta(self, seconds):
+        seconds = int(seconds)
+        days, seconds = divmod(seconds, 86400)
+        hours, seconds = divmod(seconds, 3600)
+        minutes, seconds = divmod(seconds, 60)
+        if days > 0:
+            return "%d days, %d hours, %d minutes, %d seconds" % (
+                days,
+                hours,
+                minutes,
+                seconds,
+            )
+        elif hours > 0:
+            return "%d hours, %d minutes, %d seconds" % (hours, minutes, seconds)
+        elif minutes > 0:
+            return "%d minutes, %d seconds" % (minutes, seconds)
+        else:
+            return "%d seconds" % (seconds,)
 
 
 class Poll:

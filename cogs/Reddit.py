@@ -13,7 +13,6 @@ class Reddit(commands.Cog):
         self.bot = bot
         self.common = [
             "memes",
-            "DarkMemesAndHumor",
             "dankmemes",
             "cats",
             "cursedimages",
@@ -24,7 +23,6 @@ class Reddit(commands.Cog):
         ]
         self.names = [
             "meme",
-            "dark",
             "dank",
             "cats",
             "cursed",
@@ -76,12 +74,12 @@ class Reddit(commands.Cog):
         """``meme`` quickly sends a meme from r/meme"""
         await self.redditPrep(ctx, "memes")
 
-    @commands.command()
-    @commands.cooldown(5, 5, commands.BucketType.user)
-    @commands.has_permissions(embed_links=True)
-    async def dark(self, ctx):
-        """``dark`` quickly sends a meme from r/DarkMemesAndHumor"""
-        await self.redditPrep(ctx, "DarkMemesAndHumor")
+    # @commands.command()
+    # @commands.cooldown(5, 5, commands.BucketType.user)
+    # @commands.has_permissions(embed_links=True)
+    # async def dark(self, ctx):
+    #     """``dark`` quickly sends a meme from r/DarkMemesAndHumor"""
+    #     await self.redditPrep(ctx, "DarkMemesAndHumor")
 
     @commands.command()
     @commands.cooldown(5, 5, commands.BucketType.user)
