@@ -264,6 +264,13 @@ class General(commands.Cog):
         else:
             return "%d seconds" % (seconds,)
 
+    @commands.command()
+    async def cliffhanger(self, ctx):
+        """ ``cliffhanger`` the day hamood died"""
+        await ctx.send(
+            "https://cdn.discordapp.com/attachments/749779300181606411/774512600411144222/unknown.png"
+        )
+
 
 class Poll:
     def __init__(self, content, server, member):

@@ -18,8 +18,10 @@ folder = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempI
 restricted = [
     "exit",
     "__",
+    "_",
     "import",
     "eval",
+    "exec",
     "open",
     "file",
     "input",
@@ -28,6 +30,11 @@ restricted = [
     "builtins",
     "globals",
     "locals",
+    "try",
+    "except",
+    "calloc",
+    "malloc",
+    "sleep",
 ]
 
 
