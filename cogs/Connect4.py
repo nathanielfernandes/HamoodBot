@@ -2,38 +2,37 @@ import asyncio
 import discord
 from discord.ext import commands
 
-from modules.filler_functions import _Filler
+from modules.connect4_functions import Connect_Four
 
 
-class Filler(commands.Cog):
-    """Play the Filler Imessage game with an oponent"""
+class Connect4(commands.Cog):
+    """Play Connect Four with an oponent"""
 
     def __init__(self, bot):
         self.bot = bot
         self.games = {}
         self.keys = {}
         self.emojis = [
-            "\U0001F7E5",
-            "\U0001F7E7",
-            "\U0001F7E8",
-            "\U0001F7E9",
-            "\U0001F7E6",
-            "\U0001F7EA",
+            "\U0001F550",
+            "\U0001F551",
+            "\U0001F552",
+            "\U0001F553",
+            "\U0001F554",
+            "\U0001F555",
+            "\U0001F556",
         ]
         self.colors = [
-            discord.Color.red(),
-            discord.Color.orange(),
-            discord.Color.gold(),
-            discord.Color.green(),
             discord.Color.blue(),
-            discord.Color.purple(),
+            discord.Color.orange(),
+            discord.Color.red(),
+            discord.Color.gold(),
         ]
 
     @commands.command()
     @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
-    async def filler(self, ctx, member: discord.Member = None):
-        """``filler [@opponent]`` starts a new filler game (games auto delete if theres no input for 5 minutes)"""
+    async def connect(self, ctx, member: discord.Member = None):
+        """``connect [@opponent]`` starts a new connect 4 game (games auto delete if theres no input for 5 minutes)"""
         if member == None or member.bot or member == ctx.author:
             await ctx.send("tag a user you want to play against")
             return
@@ -54,19 +53,19 @@ class Filler(commands.Cog):
             str(ctx.guild.id) + str(ctx.author.id) + str(member.id)
         )
 
-        # str(ctx.guild.id) + str(ctx.author.id) + str(member.id)
         game_id = self.keys[str(ctx.guild.id) + str(ctx.author.id)]
 
         if game_id in self.games:
             await self.games[game_id].message.delete()
 
-        self.games[game_id] = _Filler([8, 7], ctx.author, member, ctx.guild)
+        self.games[game_id] = Connect_Four([7, 6], ctx.author, member, ctx.guild)
         embed = discord.Embed(
-            title=f"Filler | {ctx.author} vs. {member}",
+            title=f"Connect 4 | {ctx.author} vs. {member}",
             description="Loading... :arrows_counterclockwise:",
         )
+
         embed.set_thumbnail(
-            url="https://cdn.discordapp.com/attachments/699770186227646465/744962953006153738/unknown.png"
+            url="https://cdn.discordapp.com/attachments/749779300181606411/774883799347494942/unknown.png"
         )
         msg = await ctx.send(embed=embed)
 
@@ -77,7 +76,7 @@ class Filler(commands.Cog):
             await currentGame.message.add_reaction(emoji)
         await currentGame.message.add_reaction("❌")
 
-        await self.create_fill(game_id)
+        await self.update_embed(game_id)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -97,7 +96,7 @@ class Filler(commands.Cog):
                                     await self.update_game(game_id, emoji, payload)
                         else:
                             if str(payload.emoji) == "❌":
-                                await self.create_fill(game_id, True)
+                                await self.update_embed(game_id, True)
                                 return
 
                         await currentGame.message.remove_reaction(
@@ -106,37 +105,29 @@ class Filler(commands.Cog):
 
     async def update_game(self, game_id, emoji, payload):
         currentGame = self.games[game_id]
-        pick = self.emojis.index(emoji)
-
-        if pick != currentGame.one_pick and pick != currentGame.two_pick:
-            if currentGame.turn == 1 and payload.user_id == currentGame.playerOne.id:
-                currentGame.one_pick = pick
-                await self.create_fill(game_id)
-            elif currentGame.turn == -1 and payload.user_id == currentGame.playerTwo.id:
-                currentGame.two_pick = pick
-                await self.create_fill(game_id)
+        temp = list(currentGame.grid)
+        if payload.user_id == currentGame.current_player.id:
+            currentGame.choice = self.emojis.index(emoji) + 1
+            currentGame.update_player()
+            if currentGame.grid != temp:
+                await self.update_embed(game_id)
 
     async def overtime(self, gameID):
         await asyncio.sleep(300)
-        await self.create_fill(gameID, True)
+        await self.update_embed(gameID, True)
 
-    async def create_fill(self, gameID, delete=False):
+    async def update_embed(self, gameID, delete=False):
         currentGame = self.games[gameID]
         if not delete:
-            currentGame.update_player()
             currentGame.draw_board()
+            winner, c = currentGame.check_win()
             if not currentGame.run_level:
-                winner = currentGame.get_winner()
-                if winner != False:
-                    if winner == currentGame.playerOne:
-                        msg = f"{currentGame.sprites[currentGame.one_pick]} {winner} won the game!"
-                        colour = self.colors[currentGame.one_pick]
-                    elif winner == currentGame.playerTwo:
-                        colour = self.colors[currentGame.two_pick]
-                        msg = f"{currentGame.sprites[currentGame.two_pick]} {winner} won the game!"
-                else:
-                    msg = "It's a draw!"
-                    colour = discord.Color.default()
+                if winner is not None:
+                    if winner == "Tie":
+                        msg = "It's a draw!"
+                    else:
+                        colour = self.colors[c]
+                        msg = f"{currentGame.sprites[c]} {winner} won the game!"
 
                 currentGame.timer.cancel()
                 self.games.pop(gameID)
@@ -148,30 +139,31 @@ class Filler(commands.Cog):
                 )
                 await currentGame.message.clear_reactions()
             else:
-                msg = f"{currentGame.sprites[currentGame.current_colour]} {currentGame.current_player}'s Turn"
+
+                msg = f"{currentGame.sprites[2] if currentGame.turn == 1 else currentGame.sprites[3]} {currentGame.current_player}'s Turn"
 
                 if currentGame.timer != None:
                     currentGame.timer.cancel()
 
                 currentGame.timer = asyncio.create_task(self.overtime(gameID))
-                colour = self.colors[currentGame.current_colour]
+                colour = self.colors[2] if currentGame.turn == 1 else self.colors[3]
             embed = discord.Embed(
                 title=msg, description=f"{currentGame.game_grid}", color=colour,
             )
             embed.set_author(
-                name="Filler",
-                icon_url="https://cdn.discordapp.com/attachments/699770186227646465/744962953006153738/unknown.png",
+                name="Connect 4",
+                icon_url="https://cdn.discordapp.com/attachments/749779300181606411/774883799347494942/unknown.png",
             )
-            # embed.set_author(name=f"| Filler |")
+
             embed.add_field(
-                name=f"{currentGame.sprites[currentGame.one_pick]} {currentGame.playerOne}: {currentGame.amountOne}       {currentGame.sprites[currentGame.two_pick]} {currentGame.playerTwo}: {currentGame.amountTwo}",
+                name=f"{currentGame.sprites[2]}{currentGame.playerOne}     {currentGame.sprites[3]}{currentGame.playerTwo}",
                 value="auto delete in 5 mins",
             )
 
             await currentGame.message.edit(embed=embed)
 
         else:
-            embed = discord.Embed(title="Filler")
+            embed = discord.Embed(title="Connect 4")
             embed.set_author(name="No Winner")
             embed.set_footer(text="Game was deleted.")
             currentGame.timer.cancel()
@@ -183,8 +175,8 @@ class Filler(commands.Cog):
                 await currentGame.message.clear_reactions()
                 await currentGame.message.edit(embed=embed)
             except discord.errors.NotFound:
-                print("Could not delete Filler game!")
+                print("Could not delete Connect 4 game!")
 
 
 def setup(bot):
-    bot.add_cog(Filler(bot))
+    bot.add_cog(Connect4(bot))
