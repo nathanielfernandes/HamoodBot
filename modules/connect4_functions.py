@@ -67,6 +67,7 @@ class Connect_Four:
         ):
             self.run_level = False
             self.winner = "Tie"
+            i = 2
 
         else:
             for i in range(len(self.grid)):

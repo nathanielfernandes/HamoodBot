@@ -124,6 +124,7 @@ class Connect4(commands.Cog):
             if not currentGame.run_level:
                 if winner is not None:
                     if winner == "Tie":
+                        colour = self.colors[0]
                         msg = "It's a draw!"
                     else:
                         colour = self.colors[c]
