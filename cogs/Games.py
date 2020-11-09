@@ -1,9 +1,12 @@
+import os
+import json
 import asyncio
 import discord
 from discord.ext import commands
 
 from modules.filler_functions import _Filler
 from modules.connect4_functions import Connect_Four
+from modules.sokoban_functions import Soko_ban
 
 
 class Games(commands.Cog):
@@ -15,14 +18,30 @@ class Games(commands.Cog):
         self.games = {}
         self.keys = {}
 
-        self.fillerEmojis = [
-            "\U0001F7E5",
-            "\U0001F7E7",
-            "\U0001F7E8",
-            "\U0001F7E9",
-            "\U0001F7E6",
-            "\U0001F7EA",
-        ]
+        self.info = json.load(
+            open(
+                f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/sokoban.json"
+            )
+        )
+        self.themes = self.info["themes"]
+        self.sokobanEmojis = {
+            "\u2B05": "left",
+            "\u2B06": "up",
+            "\u2B07": "down",
+            "\u27A1": "right",
+            "\u21A9": "reset",
+            "\u267B": "shuffle",
+            "\U0001F440": "theme",
+        }
+
+        self.fillerEmojis = {
+            "\U0001F7E5": 0,
+            "\U0001F7E7": 1,
+            "\U0001F7E8": 2,
+            "\U0001F7E9": 3,
+            "\U0001F7E6": 4,
+            "\U0001F7EA": 5,
+        }
         self.fillerColors = [
             discord.Color.red(),
             discord.Color.orange(),
@@ -32,15 +51,16 @@ class Games(commands.Cog):
             discord.Color.purple(),
         ]
 
-        self.connectEmojis = [
-            "\U0001F550",
-            "\U0001F551",
-            "\U0001F552",
-            "\U0001F553",
-            "\U0001F554",
-            "\U0001F555",
-            "\U0001F556",
-        ]
+        self.connectEmojis = {
+            "\U0001F550": 1,
+            "\U0001F551": 2,
+            "\U0001F552": 3,
+            "\U0001F553": 4,
+            "\U0001F554": 5,
+            "\U0001F555": 6,
+            "\U0001F556": 7,
+        }
+
         self.connectColors = [
             discord.Color.blue(),
             discord.Color.orange(),
@@ -49,6 +69,9 @@ class Games(commands.Cog):
         ]
 
         self.gameCalls = {
+            "update_sokoban_game": self.update_sokoban_game,
+            "update_sokoban_embed": self.update_sokoban_embed,
+            "sokobanEmojis": self.sokobanEmojis,
             "update_connect4_game": self.update_connect_game,
             "update_connect4_embed": self.update_connect_embed,
             "connect4Emojis": self.connectEmojis,
@@ -57,9 +80,9 @@ class Games(commands.Cog):
             "fillerEmojis": self.fillerEmojis,
         }
 
-    async def overtime(self, gameID):
+    async def overtime(self, gameID, extras="No Winner"):
         await asyncio.sleep(300)
-        await self.delete_game(gameID)
+        await self.delete_game(gameID, extras)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -68,20 +91,20 @@ class Games(commands.Cog):
             key_id = str(payload.guild_id) + str(payload.user_id)
             if key_id in self.keys:
                 game_id = self.keys[key_id]
-
                 if game_id in self.games:
                     currentGame = self.games[game_id]
 
                     if payload.message_id == currentGame.message.id:
-
                         gameType = game_id[: game_id.index("#")]
 
                         if str(payload.emoji) in self.gameCalls[f"{gameType}Emojis"]:
-                            for emoji in self.gameCalls[f"{gameType}Emojis"]:
-                                if str(payload.emoji) == emoji:
-                                    await self.gameCalls[f"update_{gameType}_game"](
-                                        game_id, emoji, payload
-                                    )
+                            move = self.gameCalls[f"{gameType}Emojis"][
+                                str(payload.emoji)
+                            ]
+                            await self.gameCalls[f"update_{gameType}_game"](
+                                game_id, move, payload
+                            )
+
                         else:
                             if str(payload.emoji) == "❌":
                                 await self.delete_game(game_id)
@@ -91,15 +114,19 @@ class Games(commands.Cog):
                             member=payload.member, emoji=payload.emoji
                         )
 
-    async def delete_game(self, gameID):
+    async def delete_game(self, gameID, extras="No Winner"):
         gameType = gameID[: gameID.index("#")]
         currentGame = self.games[gameID]
+
         embed = discord.Embed(title=gameType.capitalize())
-        embed.set_author(name="No Winner")
+        embed.set_author(name=extras)
         embed.set_footer(text="Game was deleted.")
         self.games.pop(gameID)
-        self.keys.pop(str(currentGame.server.id) + str(currentGame.playerOne.id))
-        self.keys.pop(str(currentGame.server.id) + str(currentGame.playerTwo.id))
+        if "!" not in gameID:
+            self.keys.pop(str(currentGame.server.id) + str(currentGame.playerOne.id))
+            self.keys.pop(str(currentGame.server.id) + str(currentGame.playerTwo.id))
+        else:
+            self.keys.pop(str(currentGame.server.id) + str(currentGame.user.id))
 
         try:
             await currentGame.message.clear_reactions()
@@ -108,6 +135,93 @@ class Games(commands.Cog):
             print(f"Could not delete {gameType} game!")
 
         currentGame.timer.cancel()
+
+    async def add_reactions(self, msg, emojis):
+        for emoji in emojis:
+            await msg.add_reaction(emoji)
+        await msg.add_reaction("❌")
+
+    # -------------------------------------------------------------------------------------------------------#
+
+    @commands.command()
+    @commands.cooldown(2, 60, commands.BucketType.user)
+    @commands.has_permissions(embed_links=True)
+    async def sokoban(self, ctx):
+        """``sokoban`` starts a new sokoban game"""
+
+        self.keys[str(ctx.guild.id) + str(ctx.author.id)] = (
+            "sokoban#!" + str(ctx.guild.id) + str(ctx.author.id)
+        )
+        game_id = self.keys[str(ctx.guild.id) + str(ctx.author.id)]
+
+        if game_id in self.games:
+            await self.games[game_id].message.delete()
+
+        # max [9, 7]
+        self.games[game_id] = Soko_ban([5, 3], ctx.author, ctx.guild, None)
+        embed = discord.Embed(
+            title=f"Sokoban | {ctx.author}",
+            description="Loading... :arrows_counterclockwise:",
+        )
+        embed.set_thumbnail(
+            url="https://cdn.discordapp.com/attachments/699770186227646465/744963999782797512/unknown.png"
+        )
+        msg = await ctx.send(embed=embed)
+        # await ctx.send(f"{ctx.author.mention}'s Game:")
+
+        currentGame = self.games[game_id]
+        currentGame.message = msg
+        currentGame.sprites = self.themes[currentGame.theme_num]
+
+        await self.add_reactions(currentGame.message, self.sokobanEmojis)
+        await self.update_sokoban_embed(game_id)
+
+    async def update_sokoban_game(self, game_id, move, payload):
+        currentGame = self.games[game_id]
+        currentGame.move = move
+        if move == "theme":
+            currentGame.theme_num += 1
+            if currentGame.theme_num >= len(self.themes):
+                currentGame.theme_num = 0
+
+            currentGame.sprites = self.themes[currentGame.theme_num]
+
+        await self.update_sokoban_embed(game_id)
+
+    async def update_sokoban_embed(self, gameID):
+        currentGame = self.games[gameID]
+        currentGame.player_move()
+        currentGame.draw_board()
+        if not currentGame.run_level:
+            currentGame.game_start()
+            msg = f"Click Any Button To Go To Level {currentGame.level}:"
+            currentGame.moves -= 1
+        else:
+            msg = f"{currentGame.user}'s game | Level {currentGame.level}:"
+
+        embed = discord.Embed(
+            title=msg,
+            description=f"{currentGame.game_grid}",
+            color=currentGame.user.color,
+        )
+        embed.set_author(
+            name="Sokoban",
+            icon_url="https://cdn.discordapp.com/attachments/699770186227646465/744963999782797512/unknown.png",
+        )
+        embed.add_field(
+            name=f"{currentGame.sprites[2]} Boxes Left: {len(currentGame.box_pos) - currentGame.completed}     {currentGame.sprites[5]} Moves: {currentGame.moves}",
+            value="auto delete in 5 mins",
+        )
+        await currentGame.message.edit(embed=embed)
+
+        if currentGame.timer is not None:
+            currentGame.timer.cancel()
+
+        currentGame.timer = asyncio.create_task(
+            self.overtime(
+                gameID, f"{currentGame.user} made it to level {currentGame.level}!"
+            )
+        )
 
     # -------------------------------------------------------------------------------------------------------#
 
@@ -155,17 +269,15 @@ class Games(commands.Cog):
         currentGame = self.games[game_id]
         currentGame.message = msg
 
-        for emoji in self.connectEmojis:
-            await currentGame.message.add_reaction(emoji)
-        await currentGame.message.add_reaction("❌")
+        await self.add_reactions(currentGame.message, self.connectEmojis)
 
         await self.update_connect_embed(game_id)
 
-    async def update_connect_game(self, game_id, emoji, payload):
+    async def update_connect_game(self, game_id, move, payload):
         currentGame = self.games[game_id]
         temp = list(currentGame.grid)
         if payload.user_id == currentGame.current_player.id:
-            currentGame.choice = self.connectEmojis.index(emoji) + 1
+            currentGame.choice = move
             currentGame.update_player()
             if currentGame.grid != temp:
                 await self.update_connect_embed(game_id)
@@ -193,7 +305,7 @@ class Games(commands.Cog):
 
             msg = f"{currentGame.sprites[2] if currentGame.turn == 1 else currentGame.sprites[3]} {currentGame.current_player}'s Turn"
 
-            if currentGame.timer != None:
+            if currentGame.timer is not None:
                 currentGame.timer.cancel()
 
             currentGame.timer = asyncio.create_task(self.overtime(gameID))
@@ -263,22 +375,18 @@ class Games(commands.Cog):
         currentGame = self.games[game_id]
         currentGame.message = msg
 
-        for emoji in self.fillerEmojis:
-            await currentGame.message.add_reaction(emoji)
-        await currentGame.message.add_reaction("❌")
-
+        await self.add_reactions(currentGame.message, self.fillerEmojis)
         await self.update_filler_embed(game_id)
 
-    async def update_filler_game(self, game_id, emoji, payload):
+    async def update_filler_game(self, game_id, move, payload):
         currentGame = self.games[game_id]
-        pick = self.fillerEmojis.index(emoji)
 
-        if pick != currentGame.one_pick and pick != currentGame.two_pick:
+        if move != currentGame.one_pick and move != currentGame.two_pick:
             if currentGame.turn == 1 and payload.user_id == currentGame.playerOne.id:
-                currentGame.one_pick = pick
+                currentGame.one_pick = move
                 await self.update_filler_embed(game_id)
             elif currentGame.turn == -1 and payload.user_id == currentGame.playerTwo.id:
-                currentGame.two_pick = pick
+                currentGame.two_pick = move
                 await self.update_filler_embed(game_id)
 
     async def update_filler_embed(self, gameID):
@@ -306,7 +414,7 @@ class Games(commands.Cog):
         else:
             msg = f"{currentGame.sprites[currentGame.current_colour]} {currentGame.current_player}'s Turn"
 
-            if currentGame.timer != None:
+            if currentGame.timer is not None:
                 currentGame.timer.cancel()
 
             currentGame.timer = asyncio.create_task(self.overtime(gameID))

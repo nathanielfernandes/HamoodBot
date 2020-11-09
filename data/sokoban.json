@@ -99,13 +99,5 @@
             ":alien:",
             ":space_invader:"
         ]
-    ],
-    "emojis": {
-        "\u2B05": "left",
-        "\u2B06": "up",
-        "\u2B07": "down",
-        "\u27A1": "right",
-        "\u21A9": "reset",
-        "\u267B": "shuffle"
-    }
+    ]
 }
