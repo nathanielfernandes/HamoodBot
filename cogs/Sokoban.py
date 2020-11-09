@@ -62,7 +62,6 @@ class Sokoban(commands.Cog):
     async def on_raw_reaction_add(self, payload):
         if payload.user_id != self.bot.user.id:
             game_id = str(payload.guild_id) + str(payload.user_id)
-
             if game_id in self.games:
                 currentGame = self.games[game_id]
 

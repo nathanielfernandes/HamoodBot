@@ -18,7 +18,7 @@ tic = time.perf_counter()
 
 # the prefix the bot looks for before processing a message
 bot = commands.AutoShardedBot(
-    command_prefix=commands.when_mentioned_or("."),
+    command_prefix=commands.when_mentioned_or("/"),
     case_insensitive=True,
     intents=discord.Intents().all(),
 )
@@ -118,10 +118,11 @@ async def on_message(message):
 async def on_raw_reaction_add(payload):
     if payload.user_id != bot.user.id:
         if str(payload.emoji) == "🚫":
-            channel = await bot.fetch_channel(payload.channel_id)
-            msg = await channel.fetch_message(payload.message_id)
+            if payload.member.guild_permissions.manage_messages:
+                channel = await bot.fetch_channel(payload.channel_id)
+                msg = await channel.fetch_message(payload.message_id)
 
-            await msg.delete()
+                await msg.delete()
 
 
 @bot.command()
