@@ -99,7 +99,7 @@ async def on_message(message):
                     #     punc = "are bad words"
 
                     # badword = ", ".join(badword)
-                    await message.add_reaction("❌")
+                    await message.add_reaction("🚫")
                     return
                     # await message.channel.send(
                     #     f"**{message.author.mention}, ||{badword}|| {punc}, watch your profanity!**"
@@ -112,6 +112,16 @@ async def on_message(message):
             await message.channel.send(responses[message.content].format(message))
 
         await bot.process_commands(message)
+
+
+@bot.event
+async def on_raw_reaction_add(payload):
+    if payload.user_id != bot.user.id:
+        if str(payload.emoji) == "🚫":
+            channel = await bot.fetch_channel(payload.channel_id)
+            msg = await channel.fetch_message(payload.message_id)
+
+            await msg.delete()
 
 
 @bot.command()

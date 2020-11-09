@@ -167,7 +167,6 @@ class Connect4(commands.Cog):
             embed = discord.Embed(title="Connect 4")
             embed.set_author(name="No Winner")
             embed.set_footer(text="Game was deleted.")
-            currentGame.timer.cancel()
             self.games.pop(gameID)
             self.keys.pop(str(currentGame.server.id) + str(currentGame.playerOne.id))
             self.keys.pop(str(currentGame.server.id) + str(currentGame.playerTwo.id))
@@ -177,6 +176,8 @@ class Connect4(commands.Cog):
                 await currentGame.message.edit(embed=embed)
             except discord.errors.NotFound:
                 print("Could not delete Connect 4 game!")
+
+            currentGame.timer.cancel()
 
 
 def setup(bot):

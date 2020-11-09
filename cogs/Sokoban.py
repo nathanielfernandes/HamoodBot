@@ -25,7 +25,7 @@ class Sokoban(commands.Cog):
     @commands.cooldown(2, 60, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def sokoban(self, ctx):
-        """``sokoban`` starts a new sokoban game (games auto delete if theres no input for 10 minutes)"""
+        """``sokoban`` starts a new sokoban game (games auto delete if theres no input for 5 minutes)"""
         game_id = str(ctx.guild.id) + str(
             ctx.author.id
         )  # if ctx.guild != None else str(ctx.author.id)
@@ -98,7 +98,7 @@ class Sokoban(commands.Cog):
                     await self.create_board(game_id)
 
     async def overtime(self, gameID):
-        await asyncio.sleep(600)
+        await asyncio.sleep(300)
         await self.create_board(gameID, True)
 
     async def create_board(self, gameID, delete=False):
@@ -124,7 +124,7 @@ class Sokoban(commands.Cog):
             )
             embed.add_field(
                 name=f"{currentGame.sprites[2]} Boxes Left: {len(currentGame.box_pos) - currentGame.completed}     {currentGame.sprites[5]} Moves: {currentGame.moves}",
-                value="auto delete in 10 mins",
+                value="auto delete in 5 mins",
             )
 
             await currentGame.message.edit(embed=embed)
@@ -140,7 +140,7 @@ class Sokoban(commands.Cog):
                 icon_url=currentGame.user.avatar_url,
             )
             embed.set_footer(text="Game was deleted.")
-            currentGame.timer.cancel()
+
             self.games.pop(gameID)
 
             try:
@@ -148,6 +148,8 @@ class Sokoban(commands.Cog):
                 await currentGame.message.edit(embed=embed)
             except discord.errors.NotFound:
                 print("Could not delete Sokoban game!")
+
+            currentGame.timer.cancel()
 
 
 def setup(bot):
