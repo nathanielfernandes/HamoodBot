@@ -5,7 +5,7 @@ import random
 class Soko_ban:
     """handles the sokoban game"""
 
-    def __init__(self, size, user, server, msg):
+    def __init__(self, size, user, server):
         self.size = [size[0] + 2, size[1] + 2]
         self.grid = []
         self.sprites = ["  ", "# ", "☒ ", "o ", "x ", "@ "]
@@ -20,7 +20,7 @@ class Soko_ban:
         self.theme_num = random.randint(0, 7)
         self.user = user
         self.server = server
-        self.message = msg
+        self.message = None
         self.timer = None
 
         self.game_start()
