@@ -128,7 +128,10 @@ class Games(commands.Cog):
 
     async def delete_game(self, gameID, extras="Timed Out"):
         gameType = gameID[: gameID.index("#")]
-        currentGame = self.games[gameID]
+        try:
+            currentGame = self.games[gameID]
+        except KeyError:
+            return
 
         embed = discord.Embed(title=gameType.capitalize())
         embed.set_author(name=extras)
@@ -137,12 +140,14 @@ class Games(commands.Cog):
         if "!" not in gameID:
             self.keys.pop(str(currentGame.server.id) + str(currentGame.playerOne.id))
             self.keys.pop(str(currentGame.server.id) + str(currentGame.playerTwo.id))
+            content = None
         else:
             self.keys.pop(str(currentGame.server.id) + str(currentGame.user.id))
+            content = " "
 
         try:
             await currentGame.message.clear_reactions()
-            await currentGame.message.edit(embed=embed)
+            await currentGame.message.edit(embed=embed, content=content)
         except discord.errors.NotFound:
             print(f"Could not delete {gameType} game!")
 
@@ -158,7 +163,7 @@ class Games(commands.Cog):
     @commands.cooldown(2, 60, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def twenty48(self, ctx):
-        """``2048`` starts a new 2048 game `BETA`"""
+        """``2048 [classic]`` starts a new 2048 game. Classic mode increases the game size. `BETA`"""
         if str(ctx.guild.id) + str(ctx.author.id) in self.keys:
             await ctx.send("You are currently in a game!")
             return
@@ -173,14 +178,20 @@ class Games(commands.Cog):
 
         # max [9, 7]
         self.games[game_id] = TwentyFortyEight(ctx.author, ctx.guild)
+
+        # msg = await ctx.send(
+        #     embed=discord.Embed(title=f"2048 | {ctx.author}"),
+        #     content=f"{ctx.author.mention} Loading... :arrows_counterclockwise:",
+        # )
+
         embed = discord.Embed(
             title=f"2048 | {ctx.author}",
             description="Loading... :arrows_counterclockwise:",
         )
         embed.set_thumbnail(
-            url="https://cdn.discordapp.com/attachments/749779300181606411/775642820105994250/Screen_Shot_2020-11-10_at_3.47.29_AM.png"
+            url="https://cdn.discordapp.com/attachments/749779300181606411/775809774251540520/2048.png"
         )
-        msg = await ctx.send(embed=embed)
+        msg = await ctx.send(embed=embed, content=f"{ctx.author}'s Game",)
         # await ctx.send(f"{ctx.author.mention}'s Game:")
 
         currentGame = self.games[game_id]
@@ -212,24 +223,23 @@ class Games(commands.Cog):
             self.keys.pop(str(currentGame.server.id) + str(currentGame.user.id))
             await currentGame.message.clear_reactions()
 
-            msg = f"Game Over\n{currentGame.user} | Score {currentGame.score}:"
+            msg = f"Game Over\n{currentGame.user}"
 
         else:
-            msg = f"{currentGame.user}'s game | Score {currentGame.score}:"
+            msg = f"{currentGame.user}'s game"
 
-        embed = discord.Embed(
-            title=msg,
-            description=f"{currentGame.game_grid}",
-            color=currentGame.user.color,
-        )
-        embed.set_author(
-            name="2048",
-            icon_url="https://cdn.discordapp.com/attachments/749779300181606411/775642820105994250/Screen_Shot_2020-11-10_at_3.47.29_AM.png",
-        )
-        embed.add_field(
-            name=f"Moves: {currentGame.moves}", value="auto delete in 5 mins",
-        )
-        await currentGame.message.edit(embed=embed)
+            #  await currentGame.message.edit(content=)
+
+            embed = discord.Embed(
+                title=f"Score: {currentGame.score} | Moves: {currentGame.moves}",
+                description=f"auto delete in 5 mins",
+                color=currentGame.user.color,
+            )
+            embed.set_author(name=f"{currentGame.user}'s Game:",)
+
+            await currentGame.message.edit(
+                embed=embed, content=f"{currentGame.game_grid}"
+            )
 
         if currentGame.timer is not None:
             currentGame.timer.cancel()

@@ -5,8 +5,8 @@ class TwentyFortyEight:
     def __init__(self, user, server):
         self.grid = []
         self.sprites = [
-            ":black_large_square:",
             "<:empty:775638765410320394>",
+            ":black_large_square:",
             "<:2_:775636041565732874>",
             "<:4_:775636041473458176>",
             "<:8_:775636041624977408>",
@@ -146,8 +146,10 @@ class TwentyFortyEight:
         # temp.append([1] * 6)
 
         self.game_grid = "\n".join(
-            [" ".join([self.sprites[temp[i][j]] for j in range(4)]) for i in range(4)]
+            ["".join([self.sprites[temp[i][j]] for j in range(4)]) for i in range(4)]
         )
+
+        # print(self.game_grid)
 
 
 # game = TwentyFortyEight("p1", "oli")
