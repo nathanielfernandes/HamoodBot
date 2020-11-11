@@ -138,22 +138,17 @@ class TwentyFortyEight:
             self.grid = self.updates[self.move](self.grid)
 
     def draw_board(self):
-        # sets self.sprites
-        temp = list(self.grid)
-        # for i in range(len(temp)):
-        #     temp[i] = [1] + temp[i] + [1]
-        # temp = [[1] * 6] + temp
-        # temp.append([1] * 6)
 
+        temp = list(self.grid)
         self.game_grid = "\n".join(
             ["".join([self.sprites[temp[i][j]] for j in range(4)]) for i in range(4)]
         )
 
-        # print(self.game_grid)
+
 
 
 # game = TwentyFortyEight("p1", "oli")
-# game.draw_board()
+
 
 # while game.run_game:
 #

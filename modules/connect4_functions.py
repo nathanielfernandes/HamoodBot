@@ -152,4 +152,3 @@ class Connect_Four:
 #     game.choice = int(input(f"{game.current_player} enter: "))
 #     print()
 #     game.update_player()
-

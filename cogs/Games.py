@@ -15,7 +15,7 @@ class Games(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
+        self.games_log = {}
         self.games = {}
         self.keys = {}
 
@@ -92,7 +92,14 @@ class Games(commands.Cog):
             "fillerEmojis": self.fillerEmojis,
         }
 
+    @commands.command()
+    @commands.is_owner()
+    async def gamelog(self, ctx):
+        log = "\n".join([f"{k} | {self.games_log[k]}" for k in self.games_log])
+        await ctx.send(f"```{len(self.games_log)} Games:\n{log}```")
+
     async def overtime(self, gameID, extras="No Winner"):
+        self.games_log[f"{gameID[: gameID.index('#')]}"] = f"ID:{gameID}"
         await asyncio.sleep(300)
         await self.delete_game(gameID, extras)
 
@@ -163,7 +170,7 @@ class Games(commands.Cog):
     @commands.cooldown(2, 60, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def twenty48(self, ctx):
-        """``2048 [classic]`` starts a new 2048 game. Classic mode increases the game size. `BETA`"""
+        """``2048`` starts a new 2048 game. `BETA`"""
         if str(ctx.guild.id) + str(ctx.author.id) in self.keys:
             await ctx.send("You are currently in a game!")
             return
@@ -223,23 +230,19 @@ class Games(commands.Cog):
             self.keys.pop(str(currentGame.server.id) + str(currentGame.user.id))
             await currentGame.message.clear_reactions()
 
-            msg = f"Game Over\n{currentGame.user}"
-
+            msg = f"Game Over {currentGame.user}\nScore: {currentGame.score} | Moves: {currentGame.moves}"
         else:
-            msg = f"{currentGame.user}'s game"
+            msg = f"Score: {currentGame.score} | Moves: {currentGame.moves}"
 
             #  await currentGame.message.edit(content=)
+        embed = discord.Embed(
+            title=msg,
+            description=f"auto delete in 5 mins",
+            color=currentGame.user.color,
+        )
+        embed.set_author(name=f"{currentGame.user}'s Game:",)
 
-            embed = discord.Embed(
-                title=f"Score: {currentGame.score} | Moves: {currentGame.moves}",
-                description=f"auto delete in 5 mins",
-                color=currentGame.user.color,
-            )
-            embed.set_author(name=f"{currentGame.user}'s Game:",)
-
-            await currentGame.message.edit(
-                embed=embed, content=f"{currentGame.game_grid}"
-            )
+        await currentGame.message.edit(embed=embed, content=f"{currentGame.game_grid}")
 
         if currentGame.timer is not None:
             currentGame.timer.cancel()
