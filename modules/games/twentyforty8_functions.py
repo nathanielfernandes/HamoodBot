@@ -145,8 +145,6 @@ class TwentyFortyEight:
         )
 
 
-
-
 # game = TwentyFortyEight("p1", "oli")
 
 

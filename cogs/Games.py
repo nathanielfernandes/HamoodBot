@@ -4,10 +4,11 @@ import asyncio
 import discord
 from discord.ext import commands
 
-from modules.filler_functions import _Filler
-from modules.connect4_functions import Connect_Four
-from modules.sokoban_functions import Soko_ban
-from modules.twentyforty8_functions import TwentyFortyEight
+from modules.games.filler_functions import _Filler
+from modules.games.connect4_functions import Connect_Four
+from modules.games.sokoban_functions import Soko_ban
+from modules.games.twentyforty8_functions import TwentyFortyEight
+from modules.games.chess_functions import _Chess
 
 
 class Games(commands.Cog):
@@ -24,6 +25,7 @@ class Games(commands.Cog):
                 f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/sokoban.json"
             )
         )
+        self.chessEmojis = {"none": "none"}
 
         self.twenty48Emojis = {
             "\u2B05": "left",
@@ -78,6 +80,9 @@ class Games(commands.Cog):
         ]
 
         self.gameCalls = {
+            # "update_chess_game": self.update_chess_game,
+            # "update_chess_embed": self.update_chess_embed,
+            "chessEmojis": self.chessEmojis,
             "update_2048_game": self.update_2048_game,
             "update_2048_embed": self.update_2048_embed,
             "2048Emojis": self.twenty48Emojis,
@@ -95,11 +100,12 @@ class Games(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def gamelog(self, ctx):
-        log = "\n".join([f"{k} | {self.games_log[k]}" for k in self.games_log])
+        log = "\n".join([f"{self.games_log[k]} | {k}" for k in self.games_log])
         await ctx.send(f"```{len(self.games_log)} Games:\n{log}```")
 
     async def overtime(self, gameID, extras="No Winner"):
-        self.games_log[f"{gameID[: gameID.index('#')]}"] = f"ID:{gameID}"
+        self.games_log[f"ID:{gameID}"] = f"{gameID[: gameID.index('#')]}"
+
         await asyncio.sleep(300)
         await self.delete_game(gameID, extras)
 
@@ -338,6 +344,131 @@ class Games(commands.Cog):
                 gameID, f"{currentGame.user} made it to level {currentGame.level}!"
             )
         )
+
+    # -------------------------------------------------------------------------------------------------------#
+
+    @commands.command()
+    @commands.cooldown(4, 60, commands.BucketType.channel)
+    @commands.has_permissions(embed_links=True)
+    async def chess(self, ctx, member: discord.Member = None):
+        """``chess [@opponent]`` starts a new chess game. Use .move to play `BETA`"""
+        if member == None or member.bot or member == ctx.author:
+            await ctx.send("tag a user you want to play against")
+            return
+
+        elif str(ctx.guild.id) + str(member.id) in self.keys:
+            await ctx.send("The member you tagged is currently in a game!")
+            return
+
+        elif str(ctx.guild.id) + str(ctx.author.id) in self.keys:
+            await ctx.send("You are currently in a game!")
+            return
+
+        self.keys[str(ctx.guild.id) + str(ctx.author.id)] = (
+            "chess#" + str(ctx.guild.id) + str(ctx.author.id) + str(member.id)
+        )
+
+        self.keys[str(ctx.guild.id) + str(member.id)] = (
+            "chess#" + str(ctx.guild.id) + str(ctx.author.id) + str(member.id)
+        )
+
+        game_id = self.keys[str(ctx.guild.id) + str(ctx.author.id)]
+
+        if game_id in self.games:
+            await self.games[game_id].message.delete()
+
+        self.games[game_id] = _Chess(ctx.author, member, ctx.guild)
+        embed = discord.Embed(
+            title=f"Chess | <:B_:776325516096569384>{ctx.author} vs. <:W_:776325516118065152>{member}",
+            description="Loading... :arrows_counterclockwise:",
+        )
+
+        embed.set_thumbnail(
+            url="https://cdn.discordapp.com/attachments/749779300181606411/774883799347494942/unknown.png"
+        )
+        msg = await ctx.send(embed=embed, content=" ")
+
+        currentGame = self.games[game_id]
+        currentGame.message = msg
+
+        await msg.add_reaction("❌")
+
+        await self.update_chess_embed(game_id)
+
+    @commands.command()
+    @commands.cooldown(4, 10, commands.BucketType.channel)
+    @commands.has_permissions(embed_links=True)
+    async def move(self, ctx, *, content: commands.clean_content = None):
+        """``chess [coordinate of peice] [coordinate to move peice to]`` can only be used if you are in a chess match!. """
+        if str(ctx.guild.id) + str(ctx.author.id) not in self.keys:
+            await ctx.send("You are not currently in a game!")
+            return
+
+        game_id = self.keys[str(ctx.guild.id) + str(ctx.author.id)]
+        currentGame = self.games[game_id]
+
+        if ctx.author.id == currentGame.current_player[currentGame.turn].id:
+            currentGame.move = content.replace(" ", "").replace(",", "")
+            msg = currentGame.update_game()
+            if msg is not None:
+                await ctx.send(msg)
+
+            await self.update_chess_embed(game_id)
+        else:
+            await ctx.send("It's not your turn!")
+
+        await ctx.message.delete()
+
+    async def update_chess_embed(self, gameID, delete=False):
+        currentGame = self.games[gameID]
+
+        currentGame.draw_board()
+        currentGame.check_end()
+        if not currentGame.run_game:
+            if currentGame.winner == "DRAW":
+                msg = "Draw"
+            elif currentGame.winner == -1:
+                msg = f"<:W_:776325516118065152>{currentGame.current_player[-1]} won by {currentGame.reason}"
+                colour = discord.Color.from_rgb(245, 245, 220)
+
+            elif currentGame.winner == 1:
+                msg = f"<:B_:776325516096569384>{currentGame.current_player[1]} won by {currentGame.reason}"
+                colour = discord.Color.blue()
+
+            currentGame.timer.cancel()
+            self.games.pop(gameID)
+            self.keys.pop(str(currentGame.server.id) + str(currentGame.playerOne.id))
+            self.keys.pop(str(currentGame.server.id) + str(currentGame.playerTwo.id))
+            await currentGame.message.clear_reactions()
+        else:
+            msg = f"{'<:B_:776325516096569384>' if currentGame.turn == 1 else '<:W_:776325516118065152>'} {currentGame.current_player[currentGame.turn]}'s Turn"
+
+            if currentGame.timer is not None:
+                currentGame.timer.cancel()
+
+            currentGame.timer = asyncio.create_task(self.overtime(gameID))
+            colour = (
+                discord.Color.blue()
+                if currentGame.turn == 1
+                else discord.Color.from_rgb(245, 245, 220)
+            )
+
+        embed = discord.Embed(
+            title=msg,
+            description=f"**{currentGame.playerOne}** vs. **{currentGame.playerTwo}**\nauto delete in 5 mins",
+            color=colour,
+        )
+        # embed.set_author(
+        #     name="Chess",
+        #     icon_url="https://cdn.discordapp.com/attachments/749779300181606411/774883799347494942/unknown.png",
+        # )
+
+        # embed.add_field(
+        #     name=,
+        #     value="auto delete in 5 mins",
+        # )
+
+        await currentGame.message.edit(embed=embed, content=f"{currentGame.game_board}")
 
     # -------------------------------------------------------------------------------------------------------#
 
