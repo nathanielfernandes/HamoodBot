@@ -384,9 +384,9 @@ class Games(commands.Cog):
         )
 
         embed.set_thumbnail(
-            url="https://cdn.discordapp.com/attachments/749779300181606411/774883799347494942/unknown.png"
+            url="https://cdn.discordapp.com/attachments/749779300181606411/776368591557754910/unknown.png"
         )
-        msg = await ctx.send(embed=embed, content=" ")
+        msg = await ctx.send(embed=embed, content="Use `.move` to begin.")
 
         currentGame = self.games[game_id]
         currentGame.message = msg
@@ -408,12 +408,12 @@ class Games(commands.Cog):
         currentGame = self.games[game_id]
 
         if ctx.author.id == currentGame.current_player[currentGame.turn].id:
-            currentGame.move = content.replace(" ", "").replace(",", "")
+            currentGame.move = content.lower().replace(" ", "").replace(",", "")
             msg = currentGame.update_game()
             if msg is not None:
                 await ctx.send(msg)
-
-            await self.update_chess_embed(game_id)
+            else:
+                await self.update_chess_embed(game_id)
         else:
             await ctx.send("It's not your turn!")
 

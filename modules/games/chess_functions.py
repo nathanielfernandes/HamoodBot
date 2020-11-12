@@ -41,7 +41,7 @@ class _Chess:
             "RW": "<:RW:776325515786453012>",
             "RB": "<:RB:776325515870863361>",
             "NW": "<:NW:776325515665080351>",
-            "NB": "<:NB:776325515870863361>",
+            "NB": "<:NB:776325515912937522>",
             "BW": "<:BW:776325515631788052>",
             "BB": "<:BB:776325515564679189>",
             "QW": "<:QW:776325515665211452>",
@@ -137,33 +137,3 @@ class _Chess:
             + "".join(self.legendY)
         )
 
-
-# game = _Chess("nathan", "noura", "oli")
-# while True:
-#     game.draw_board()
-#     print(len(game.sprites))
-#     # print(game.board)
-
-#     game.move = input("enter move: ")
-
-#     ran = game.update_game()
-#     print(ran, game.playerOne, game.playerTwo, game.current_player[game.turn])
-
-
-# board = chess.Board()
-
-# # sprites = {'p':}
-
-# while True:
-#     print()
-#     print(board)
-
-#     move = input("Enter Move: ")
-
-#     try:
-
-#         board.color_at(square=chess.parse_square(move[:2]))
-
-#         board.push_san(move)
-#     except ValueError:
-#         print("BRUH")
