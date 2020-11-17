@@ -176,7 +176,7 @@ class Games(commands.Cog):
     @commands.cooldown(2, 60, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def twenty48(self, ctx):
-        """``2048`` starts a new 2048 game. `BETA`"""
+        """``2048`` starts a new 2048 game."""
         if str(ctx.guild.id) + str(ctx.author.id) in self.keys:
             await ctx.send("You are currently in a game!")
             return
@@ -386,7 +386,7 @@ class Games(commands.Cog):
         embed.set_thumbnail(
             url="https://cdn.discordapp.com/attachments/749779300181606411/776368591557754910/unknown.png"
         )
-        msg = await ctx.send(embed=embed, content="Use `.move` to begin.")
+        msg = await ctx.send(content="Use `.move` to begin.", embed=embed)
 
         currentGame = self.games[game_id]
         currentGame.message = msg
@@ -455,7 +455,7 @@ class Games(commands.Cog):
 
         embed = discord.Embed(
             title=msg,
-            description=f"**{currentGame.playerOne}** vs. **{currentGame.playerTwo}**\nauto delete in 5 mins",
+            description=f"**{currentGame.playerOne}** vs. **{currentGame.playerTwo}**\nuse .move to play",
             color=colour,
         )
         # embed.set_author(

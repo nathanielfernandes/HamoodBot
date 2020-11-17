@@ -4,10 +4,201 @@ import random
 import io
 from PIL import Image, ImageDraw, ImageFont, ImageSequence, ImageEnhance
 
+import requests
+from io import BytesIO
 
 path = os.path.dirname(os.path.realpath(__file__))
 
 
+class Modify:
+    def __init__(self, image=None, image_location=None, image_url=None):
+        """
+        image: PIL img\n
+        image_location: image name or path to image\n
+        image_url: url of the image
+        """
+        self.image = None
+        self.font = None
+
+        if image:
+            self.image = image
+        elif image_location:
+            self.image = self.open_image(image_location)
+        elif image_url:
+            self.image = self.download_image(image_url)
+
+        if self.image.format == "GIF":
+            self.image.seek(0)
+
+    def open_image(self, image):
+        """
+        image: image name or location\n
+
+        returns (optional): PIL PNG image
+        """
+        try:
+            image = Image.open(image)
+        except OSError as e:
+            return e
+
+        return image
+
+    def download_image(self, url):
+        """
+        url: url of image (PNG, JPEG, JPG, GIF)\n
+
+        returns: raw image data
+        """
+        try:
+            response = requests.get(url)
+        except Exception as e:
+            return e
+
+        return self.open_image(BytesIO(response.content))
+
+    def set_font(self, font_location, font_size):
+        """
+        font_location: path to a font
+        fot_size: font size to be used
+
+        returns: PIL font
+        """
+        try:
+            self.font = ImageFont.truetype(font_location, font_size)
+        except Exception as e:
+            return e
+
+        return self.font
+
+    def save_image(
+        self,
+        image=None,
+        file_name=None,
+        location=None,
+        file_format="jpg",
+        size=None,
+        compression_level=None,
+    ):
+        """
+        image: PIL image\n
+        file_name: name of to be saved file\n
+        location: where to save the new file\n
+        file_format: format to save file in\n
+        size: size to resize image to\n
+        compression_level: amount of compression to be added (only saves in JPEG)
+        """
+
+        if image is None:
+            image = self.image
+
+        if size is not None:
+            image.resize(size)
+
+        if file_name is None:
+            file_name = (
+                "".join(random.choice("123456789") for i in range(12))
+                + "."
+                + file_format.lower()
+            )
+
+        if location is None:
+            location = ""
+        elif location[-1] != "/":
+            location += "/"
+
+        if compression_level is not None:
+            image.save(
+                f"{location}{file_name}",
+                "JPEG",
+                optimize=True,
+                quality=compression_level,
+            )
+        else:
+            image.save(f"{location}{file_name}")
+
+        return f"{location}{file_name}"
+
+    def add_text(
+        self,
+        image=None,
+        text="test",
+        coordinates=(0, 0),
+        font=None,
+        font_color=(255, 255, 255),
+        stroke_color=None,
+        stroke_width=0,
+    ):
+        if image is None:
+            image = self.image
+
+        if font is None:
+            font = self.font
+
+        if stroke_color is None:
+            r, g, b = font_color
+            stroke_color = (255 - r, 255 - g, 255 - b)
+
+        draw = ImageDraw.Draw(image)
+        draw.text(
+            xy=coordinates,
+            text=text,
+            fill=font_color,
+            font=font,
+            spacing=4,
+            align="center",
+            stroke_width=stroke_width,
+            stroke_fill=stroke_color,
+        )
+
+        self.image = image
+        return self.image
+
+    def add_image(
+        self,
+        base_image=None,
+        top_image=None,
+        coordinates=(0, 0),
+        top_image_size=None,
+        top_image_rotation=None,
+    ):
+        if base_image is None:
+            base_image = self.image
+        if top_image is None:
+            top_image = self.image
+        if top_image_size is not None:
+            top_image = top_image.resize(top_image_size)
+
+        top_image.putalpha(255)
+
+        if top_image_rotation is not None:
+            top_image = top_image.rotate(top_image_rotation, expand=1).resize(
+                top_image_size
+            )
+
+        base_image.paste(top_image, coordinates, top_image)
+
+        self.image = base_image
+        return self.image
+
+    def enhance_image(
+        self, image=None, sharpness=1.0, contrast=1.0, color=1.0, brightness=1.0
+    ):
+        if image is None:
+            image = self.image
+
+        if image.format == "PNG" or image.format == "GIF":
+            image = image.convert("RGB")
+
+        image = ImageEnhance.Sharpness(image).enhance(sharpness)
+        image = ImageEnhance.Contrast(image).enhance(contrast)
+        image = ImageEnhance.Color(image).enhance(color)
+        image = ImageEnhance.Brightness(image).enhance(brightness)
+
+        self.image = image
+        return self.image
+
+
+### soon to be removed ###
 class Edit:
     """image creation and editing functions"""
 
@@ -143,12 +334,8 @@ class Edit:
                 text=key,
                 fill=(textColor),
                 font=font_type,
-                anchor=None,
                 spacing=4,
                 align="center",
-                direction=None,
-                features=None,
-                language=None,
                 stroke_width=4,
                 stroke_fill=STROKECOLOR,
             )
@@ -211,4 +398,3 @@ class Edit:
             num = random.choice("1234567890")
             combo += num
         return combo
-
