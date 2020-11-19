@@ -41,6 +41,13 @@ class Events(commands.Cog):
                 await channel.send(embed=embed)
             break
 
+        await self.bot.change_presence(
+            activity=discord.Activity(
+                type=discord.ActivityType.listening,
+                name=f"{sum([len(g.members) for g in bot.guilds])} Users",
+            )
+        )
+
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):

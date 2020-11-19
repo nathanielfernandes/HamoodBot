@@ -59,6 +59,20 @@ class Images(commands.Cog):
 
         await self.send_image(ctx, image, "deepfry")
 
+    # @commands.command()
+    # @commands.cooldown(3, 10, commands.BucketType.user)
+    # @commands.has_permissions(attach_files=True)
+    # async def blur(self, ctx, member: discord.Member = None):
+    #     image = await self.find_image(ctx, member, 40)
+    #     if image is None:
+    #         return
+
+    #     image.enhance_image(sharpness=0.01)
+
+    #     image = image.save_image(location=self.save_location, compression_level=10)
+
+    #     await self.send_image(ctx, image, "blur")
+
     @commands.command()
     @commands.cooldown(3, 10, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)

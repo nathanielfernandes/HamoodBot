@@ -102,7 +102,7 @@ class Reddit(commands.Cog):
         """``cursed`` quickly sends a post from r/cursedimages"""
         await self.redditPrep(ctx, "cursedimages")
 
-    @commands.command(aliases=["blur"])
+    @commands.command()
     @commands.cooldown(5, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def blursed(self, ctx):

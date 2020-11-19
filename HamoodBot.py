@@ -28,8 +28,8 @@ bot = commands.AutoShardedBot(
 async def on_ready():
     await bot.change_presence(
         activity=discord.Activity(
-            type=discord.ActivityType.watching,
-            name=f"{sum([len(g.channels) for g in bot.guilds])} Channels",
+            type=discord.ActivityType.listening,
+            name=f"{sum([len(g.members) for g in bot.guilds])} Users",
         )
     )
     toc = time.perf_counter()
