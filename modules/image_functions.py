@@ -2,6 +2,7 @@ import os
 import pathlib
 import random
 import io
+from copy import copy
 from PIL import Image, ImageDraw, ImageFont, ImageSequence, ImageEnhance
 
 import requests
@@ -29,6 +30,7 @@ class Modify:
 
         if self.image.format == "GIF":
             self.image.seek(0)
+            self.enhance_image()
 
     def open_image(self, image):
         """
@@ -85,7 +87,7 @@ class Modify:
         location: where to save the new file\n
         file_format: format to save file in\n
         size: size to resize image to\n
-        compression_level: amount of compression to be added (only saves in JPEG)
+        compression_level: amount of compression to be added
         """
 
         if image is None:
@@ -118,7 +120,7 @@ class Modify:
 
         return f"{location}{file_name}"
 
-    def add_text(
+    def image_add_text(
         self,
         image=None,
         text="test",
@@ -128,6 +130,16 @@ class Modify:
         stroke_color=None,
         stroke_width=0,
     ):
+        """
+        image: PIL image\n
+        text: text to be used\n
+        coordinates: (x, y)position to place text\n
+        font: PIL loaded font\n
+        font_color: (r,g,b)\n
+        stroke_color: (r,g,b)\n
+        stroke_width: thickness of stroke
+        """
+
         if image is None:
             image = self.image
 
@@ -197,6 +209,133 @@ class Modify:
         self.image = image
         return self.image
 
+    def resize_image(self, image=None, size=(64, 64), constant_resolution=False):
+        if image is None:
+            image = self.image
+
+        resized = image.resize(size, resample=Image.BILINEAR)
+
+        if constant_resolution:
+            resized = resized.resize(image.size, Image.NEAREST)
+
+        self.image = resized
+        return self.image
+
+
+class Modify_Gif(Modify):
+    def __init__(self, gif=None, gif_location=None, gif_url=None):
+        """
+        gif: PIL gif\n
+        gif_location: gif name or path to gif\n
+        gif_url: url of the gif
+        """
+        super().__init__(image=gif, image_location=gif_location, image_url=gif_url)
+        # self.gif_resize_image = self.resize_image
+
+        self.set_font = self.set_font
+        # self.gif = None
+
+        if gif:
+            self.gif = gif
+        elif gif_location:
+            self.gif = self.open_image(gif_location)
+        elif gif_url:
+            self.gif = self.download_image(gif_url)
+
+        self.og_gif = copy(self.gif)
+
+        self.gif = [f.convert("RGBA") for f in ImageSequence.Iterator(self.gif)]
+
+    def save_gif(
+        self,
+        gif=None,
+        file_name=None,
+        location=None,
+        optimize=False,
+        compression_level=None,
+    ):
+        if gif is None:
+            gif = self.gif
+
+        if file_name is None:
+            file_name = "".join(random.choice("123456789") for i in range(12)) + ".gif"
+
+        if location is None:
+            location = ""
+        elif location[-1] != "/":
+            location += "/"
+
+        # frames = [f.convert("RGBA") for f in ImageSequence.Iterator(gif)]
+        gif[0].save(
+            f"{location}{file_name}",
+            format="GIF",
+            save_all=True,
+            optimize=optimize,
+            append_images=gif[1:],
+            loop=False,
+            duration=self.og_gif.info["duration"],
+        )
+
+        return f"{location}{file_name}"
+
+    def gif_add_text(
+        self,
+        gif=None,
+        text="test",
+        coordinates=(0, 0),
+        font=None,
+        font_color=(255, 255, 255),
+        stroke_color=None,
+        stroke_width=0,
+    ):
+        if gif is None:
+            gif = self.gif
+
+        if font is None:
+            font = self.font
+
+        if stroke_color is None:
+            r, g, b = font_color
+            stroke_color = (255 - r, 255 - g, 255 - b)
+
+        frames = []
+        for f in gif:
+            draw = ImageDraw.Draw(f)
+            draw.text(
+                xy=coordinates,
+                text=text,
+                fill=font_color,
+                font=font,
+                spacing=4,
+                align="center",
+                stroke_width=stroke_width,
+                stroke_fill=stroke_color,
+            )
+            del draw
+            frames.append(f)
+        self.gifs = frames
+        return self.gifs
+
+    def enhance_gif(
+        self, gif=None, sharpness=1.0, contrast=1.0, color=1.0, brightness=1.0
+    ):
+        if gif is None:
+            gif = self.gif
+
+        self.gif = [
+            self.enhance_image(f, sharpness, contrast, color, brightness) for f in gif
+        ]
+
+        return self.gif
+
+    def resize_gif(self, gif=None, size=(64, 64), constant_resolution=False):
+        if gif is None:
+            gif = self.gif
+
+        self.gif = [self.resize_image(f, size, constant_resolution) for f in gif]
+
+        return self.gif
+
 
 ### soon to be removed ###
 class Edit:
@@ -259,7 +398,7 @@ class Edit:
             en = ImageEnhance.Contrast(gif)
             gif = en.enhance(200)
 
-            frames.append(gif)
+            frames.append(frame)
         frames[0].save(
             edited, format="GIF", save_all=True, append_images=frames[1:],
         )

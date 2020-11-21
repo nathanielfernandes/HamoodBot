@@ -249,7 +249,6 @@ class General(commands.Cog):
     # async def time(self, ctx):
     #     """``time`` sends the current time"""
 
-
     def pretty_time_delta(self, seconds):
         seconds = int(seconds)
         days, seconds = divmod(seconds, 86400)

@@ -1,9 +1,10 @@
 import os
+import random
 import discord
 from discord.ext import commands
 
 from modules.image_functions import Edit
-from modules.image_functions import Modify
+from modules.image_functions import Modify, Modify_Gif
 
 
 class Images(commands.Cog):
@@ -32,7 +33,10 @@ class Images(commands.Cog):
                 await ctx.send("`No recent images found!`")
                 return
 
-        return Modify(image_url=url)
+        if ".gif" in url:
+            return Modify_Gif(gif_url=url), "gif"
+
+        return Modify(image_url=url), "image"
 
     async def send_image(self, ctx, image, msg):
         try:
@@ -48,30 +52,41 @@ class Images(commands.Cog):
     async def deepfry(self, ctx, member: discord.Member = None):
         """``deepfry [@someone or send image]`` deepfries any image, tasty!"""
 
-        image = await self.find_image(ctx, member, 40)
+        image, ext = await self.find_image(ctx, member, 40)
         if image is None:
             return
 
-        image.enhance_image(
+        getattr(image, f"enhance_{ext}")(
             sharpness=10000, contrast=10000, color=10000, brightness=10000
         )
-        image = image.save_image(location=self.save_location, compression_level=10)
+        image = getattr(image, f"save_{ext}")(
+            location=self.save_location, compression_level=10
+        )
 
         await self.send_image(ctx, image, "deepfry")
 
-    # @commands.command()
-    # @commands.cooldown(3, 10, commands.BucketType.user)
-    # @commands.has_permissions(attach_files=True)
-    # async def blur(self, ctx, member: discord.Member = None):
-    #     image = await self.find_image(ctx, member, 40)
-    #     if image is None:
-    #         return
+    @commands.command()
+    @commands.cooldown(3, 10, commands.BucketType.user)
+    @commands.has_permissions(attach_files=True)
+    async def pixelate(self, ctx, member: discord.Member = None):
+        """``deepfry [@someone or send image]`` pixelates any image"""
 
-    #     image.enhance_image(sharpness=0.01)
+        image, ext = await self.find_image(ctx, member, 40)
+        if image is None:
+            return
 
-    #     image = image.save_image(location=self.save_location, compression_level=10)
+        level = random.randint(10, 100)
 
-    #     await self.send_image(ctx, image, "blur")
+        getattr(image, f"resize_{ext}")(
+            size=(int(image.image.size[0] / level), int(image.image.size[0] / level)),
+            constant_resolution=True,
+        )
+
+        image = getattr(image, f"save_{ext}")(
+            location=self.save_location, compression_level=50
+        )
+
+        await self.send_image(ctx, image, "pixelate")
 
     @commands.command()
     @commands.cooldown(3, 10, commands.BucketType.user)
@@ -79,15 +94,17 @@ class Images(commands.Cog):
     async def edit(
         self, ctx, sharpness=1.0, contrast=1.0, color=1.0, brightness=1.0,
     ):
-        """``edit [sharpness] [contrast] [color] [brightness]`` deepfries any image, tasty!"""
-        image = await self.find_image(ctx, None, 40)
+        """``edit [sharpness] [contrast] [color] [brightness]`` work in progress"""
+        image, ext = await self.find_image(ctx, None, 40)
         if image is None:
             return
 
-        image.enhance_image(
+        getattr(image, f"enhance_{ext}")(
             sharpness=sharpness, contrast=contrast, color=color, brightness=brightness
         )
-        image = image.save_image(location=self.save_location)
+        image = getattr(image, f"save_{ext}")(
+            location=self.save_location, compression_level=10
+        )
 
         await self.send_image(ctx, image, "edit")
 
