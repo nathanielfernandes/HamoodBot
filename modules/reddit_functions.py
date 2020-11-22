@@ -7,6 +7,7 @@ try:
     CLIENTID = os.environ["CLIENTID"]
     CLIENTSECRET = os.environ["CLIENTSECRET"]
     USERAGENT = os.environ["USERAGENT"]
+    do_cache = True
 except KeyError:
     from dotenv import load_dotenv
 
@@ -14,6 +15,8 @@ except KeyError:
     CLIENTID = os.environ.get("REDDITID")
     CLIENTSECRET = os.environ.get("REDDITSECRET")
     USERAGENT = os.environ.get("USERAGENT")
+
+    do_cache = False
 
 reddit = praw.Reddit(
     client_id=CLIENTID, client_secret=CLIENTSECRET, user_agent=USERAGENT

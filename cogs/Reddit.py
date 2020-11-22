@@ -3,7 +3,7 @@ import random
 import discord
 from discord.ext import commands
 
-from modules.reddit_functions import findPost, cachePosts
+from modules.reddit_functions import findPost, cachePosts, do_cache
 
 
 class Reddit(commands.Cog):
@@ -34,11 +34,12 @@ class Reddit(commands.Cog):
             "minecraft",
         ]
 
-        print("\nCaching Reddit Posts:")
-        for i in self.common:
-            p = cachePosts(i)
-            print(f"    {len(p)} r/{i} posts have been cached!")
-        print("All Posts Cached\n")
+        if do_cache:
+            print("\nCaching Reddit Posts:")
+            for i in self.common:
+                p = cachePosts(i)
+                print(f"    {len(p)} r/{i} posts have been cached!")
+            print("All Posts Cached\n")
 
     async def redditPrep(self, ctx, subRedd):
         embed = discord.Embed(title=f"Post from r/{subRedd}:", colour=16729344)
