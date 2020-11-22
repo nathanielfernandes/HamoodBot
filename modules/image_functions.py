@@ -12,6 +12,10 @@ path = os.path.dirname(os.path.realpath(__file__))
 
 
 class Modify:
+    """
+    Methods to mutate and edit an Image
+    """
+
     def __init__(self, image=None, image_location=None, image_url=None):
         """
         image: PIL img\n
@@ -174,6 +178,13 @@ class Modify:
         top_image_size=None,
         top_image_rotation=None,
     ):
+        """
+            base_image: PIL image\n
+            top_image: PIL image\n
+            coordinates: (x, y) position to place image\n
+            top_image_size: (x, y) size of image to place\n
+            top_image_rotation: int, degrees of rotation
+        """
         if base_image is None:
             base_image = self.image
         if top_image is None:
@@ -196,6 +207,13 @@ class Modify:
     def enhance_image(
         self, image=None, sharpness=1.0, contrast=1.0, color=1.0, brightness=1.0
     ):
+        """
+            image: PIL Image\n
+            sharpness: int, 1 being default\n
+            contrast: int, 1 being default\n
+            color: int, 1 being default\n
+            brightness: int, 1 being default
+        """
         if image is None:
             image = self.image
 

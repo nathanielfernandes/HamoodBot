@@ -89,7 +89,7 @@ class Fun(commands.Cog):
         fonts = self.bot.get_cog("Fonts")
         random_word = random.choice(self.words)
         await ctx.send(f"{member.mention} your vibe checked out to be:")
-        await fonts.textPrep(ctx, (random_word), "random", 500, "random", 100)
+        await fonts.text_prep(ctx, (random_word), "random", 500, "random", 100)
 
     @commands.command(aliases=["roast me", "roastme"])
     async def roast(self, ctx, member: discord.Member = None):
