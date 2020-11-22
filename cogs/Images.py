@@ -3,7 +3,6 @@ import random
 import discord
 from discord.ext import commands
 
-from modules.image_functions import Edit
 from modules.image_functions import Modify, Modify_Gif
 
 
@@ -12,10 +11,9 @@ class Images(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.save_location = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages"
-        self.fonts = (
-            f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/fonts"
-        )
+        self.direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
+        self.save_location = f"{self.direct}/tempImages"
+        self.fonts = f"{self.direct}/fonts"
 
     async def find_image(self, ctx, member, depth):
         if member is None:
@@ -69,7 +67,7 @@ class Images(commands.Cog):
     @commands.cooldown(3, 10, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def pixelate(self, ctx, member: discord.Member = None):
-        """``deepfry [@someone or send image]`` pixelates any image"""
+        """``pixelate [@someone or send image]`` pixelates any image"""
 
         image, ext = await self.find_image(ctx, member, 40)
         if image is None:

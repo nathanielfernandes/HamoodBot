@@ -2,54 +2,47 @@ import os
 import discord
 from discord.ext import commands
 
-from modules.image_functions import Edit
-from modules.web_scraping import scrape
+from modules.image_functions import Modify, Modify_Gif
 
 
 class Avatarmemes(commands.Cog):
-    """Custom Avatar Memes `does not work with animated avatars`"""
+    """Custom Avatar Memes"""
 
     def __init__(self, bot):
         self.bot = bot
-        self.path = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
 
-        self.edit = Edit(f"{self.path}/memePics", f"{self.path}/tempImages")
+        self.direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
+        self.memes = f"{self.direct}/memePics"
+        self.save_location = f"{self.direct}/tempImages"
 
-    async def imagePrep(self, ctx, member, stuff, memeImage, size):
+    async def meme_prep(self, ctx, meme_image, members, positions, size):
         async with ctx.typing():
-            member = list(member)
-            member.append(ctx.author)
+            members = list(members)
+            if len(members) == 0:
+                members.append(ctx.author)
 
-            Urls = []
-            for a in member:
-                userAvatarUrl = str(a.avatar_url)
-                userAvatarUrl = userAvatarUrl.replace(".webp", ".png")
-                Urls.append(userAvatarUrl)
+            ext = meme_image[-3:]
+            if ext == "gif":
+                meme = Modify_Gif(gif_location=f"{self.memes}/{meme_image}")
+            else:
+                meme = Modify(image_location=f"{self.memes}/{meme_image}")
+                ext = "image"
 
-            for i in range(len(stuff)):
-                stuff[i].append(Urls[i])
+            for i in range(len(members)):
+                avatar = Modify(
+                    image_url=str(members[i].avatar_url).replace(".webp", ".png")
+                )
 
-            for item in stuff:
-                name = f"{self.edit.randomNumber()}.png"
-                save = f"{self.path}/tempImages/{name}"
-                scrape(item[2], save)
+                getattr(meme, f"{ext}_add_image")(
+                    top_image=avatar.image,
+                    coordinates=positions[i][0],
+                    top_image_size=size,
+                    top_image_rotation=positions[i][1],
+                )
 
-                pos = stuff.index(item)
-                stuff[pos][2] = save
+            meme = getattr(meme, f"save_{ext}")(location=self.save_location)
 
-            finalName = self.edit.randomNumber()
-            finalName = f"{str(finalName)}.jpg"
-
-            meme = self.edit.addImage(memeImage, stuff, size, finalName)
-
-            for item in stuff:
-                os.remove(item[2])
-
-            try:
-                await ctx.send(file=discord.File(meme))
-            except discord.Forbidden:
-                print("could not send!")
-
+            await ctx.send(file=discord.File(meme))
         os.remove(meme)
 
     @commands.command()
@@ -57,8 +50,9 @@ class Avatarmemes(commands.Cog):
     @commands.has_permissions(attach_files=True)
     async def stonks(self, ctx, *avamember: discord.Member):
         """``stonks [@user]`` adds a tagged discord avatar to the 'stonks' meme"""
-        await self.imagePrep(
-            ctx, avamember, [[(65, 20), 0]], "stonksImage.jpg", (200, 200)
+
+        await self.meme_prep(
+            ctx, "stonksImage.jpg", avamember, [[(65, 20), 0]], (200, 200)
         )
 
     @commands.command()
@@ -66,8 +60,8 @@ class Avatarmemes(commands.Cog):
     @commands.has_permissions(attach_files=True)
     async def worthless(self, ctx, *avamember: discord.Member):
         """``worthless [@user]`` adds a tagged discord avatar to the 'this is worthless' meme"""
-        await self.imagePrep(
-            ctx, avamember, [[(490, 235), -10]], "worthlessImage.jpg", (450, 450)
+        await self.meme_prep(
+            ctx, "worthlessImage.jpg", avamember, [[(490, 235), -10]], (450, 450)
         )
 
     @commands.command()
@@ -75,8 +69,8 @@ class Avatarmemes(commands.Cog):
     @commands.has_permissions(attach_files=True)
     async def neat(self, ctx, *avamember: discord.Member):
         """``neat [@user]`` adds a tagged discord avatar to the 'this is pretty neat' meme"""
-        await self.imagePrep(
-            ctx, avamember, [[(16, 210), 0]], "neatImage.jpg", (270, 270)
+        await self.meme_prep(
+            ctx, "neatImage.jpg", avamember, [[(16, 210), 0]], (270, 270)
         )
 
     @commands.command()
@@ -84,16 +78,16 @@ class Avatarmemes(commands.Cog):
     @commands.has_permissions(attach_files=True)
     async def grab(self, ctx, *avamember: discord.Member):
         """``grab [@user]`` adds a tagged discord avatar to the 'grab' meme"""
-        await self.imagePrep(
-            ctx, avamember, [[(25, 265), 0]], "grabImage.jpg", (150, 150)
+        await self.meme_prep(
+            ctx, "grabImage.jpg", avamember, [[(25, 265), 0]], (150, 150)
         )
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def compare(self, ctx, *avamember: discord.Member):
         """``compare [@user1] [@user2]`` compares discord avatars"""
-        await self.imagePrep(
-            ctx, avamember, [[(0, 0), 0], [(405, 0), 0]], "blankAvatar.jpg", (400, 400)
+        await self.meme_prep(
+            ctx, "blankAvatar.jpg", avamember, [[(0, 0), 0], [(405, 0), 0]], (400, 400)
         )
 
 

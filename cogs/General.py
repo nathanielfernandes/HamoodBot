@@ -5,7 +5,7 @@ import discord
 import asyncio
 from discord.ext import commands
 
-from modules.image_functions import Edit
+from modules.image_functions import randomFile
 
 # Messaging cog that checks for profantiy and also provide some simple chat commands
 class General(commands.Cog):
@@ -211,8 +211,8 @@ class General(commands.Cog):
         """``no u`` sends an uno reverse card"""
         if content == "u" or content == "you":
             # await ctx.channel.purge(limit=1)
-            uno = Edit().randomFile(
-                f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/memePics/unoCards"
+            uno = randomFile(
+                folder=f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/memePics/unoCards"
             )
             await ctx.send(file=discord.File(uno))
 

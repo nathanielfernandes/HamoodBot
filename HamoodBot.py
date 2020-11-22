@@ -11,14 +11,28 @@ import random
 import discord
 from discord.ext import commands
 
-from modules.image_functions import Edit
+from modules.image_functions import randomFile
 
 
 tic = time.perf_counter()
 
+try:
+    TOKEN = os.environ["TOKEN"]
+    os.remove(
+        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages/placeholder.txt"
+    )
+    prefix = "."
+except KeyError:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+    TOKEN = os.environ.get("BOTTOKENTEST")
+    prefix = "/"
+
+
 # the prefix the bot looks for before processing a message
 bot = commands.AutoShardedBot(
-    command_prefix=commands.when_mentioned_or("."),
+    command_prefix=commands.when_mentioned_or(prefix),
     case_insensitive=True,
     intents=discord.Intents().all(),
 )
@@ -85,7 +99,7 @@ async def on_message(message):
 
         if profane:
             if "hamood" in message.content:
-                uno = Edit().randomFile(
+                uno = randomFile(
                     f"{os.path.dirname(os.path.realpath(__file__))}/memePics/unoCards"
                 )
                 await message.channel.send(file=discord.File(uno))
@@ -200,15 +214,6 @@ for cog in os.listdir("./cogs"):
             print(f"{cog} cannot be loaded:")
             raise e
 print("-------------------")
-try:
-    TOKEN = os.environ["TOKEN"]
-    os.remove(
-        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages/placeholder.txt"
-    )
-except KeyError:
-    from dotenv import load_dotenv
 
-    load_dotenv()
-    TOKEN = os.environ.get("BOTTOKEN")
 
 bot.run(TOKEN)
