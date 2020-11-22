@@ -20,6 +20,7 @@ class Reddit(commands.Cog):
             "Blessed_Images",
             "raimimemes",
             "dog",
+            "Minecraft",
         ]
         self.names = [
             "meme",
@@ -30,6 +31,7 @@ class Reddit(commands.Cog):
             "blessed",
             "pizzatime",
             "dog",
+            "minecraft",
         ]
 
         print("\nCaching Reddit Posts:")
@@ -129,6 +131,13 @@ class Reddit(commands.Cog):
     async def dog(self, ctx):
         """``dog`` quickly sends a dog from r/dogs"""
         await self.redditPrep(ctx, "dog")
+
+    @commands.command(aliases=["charity", "mine"])
+    @commands.cooldown(5, 5, commands.BucketType.user)
+    @commands.has_permissions(embed_links=True)
+    async def minecraft(self, ctx):
+        """``minecraft`` quickly sends a dog from r/Minecraft"""
+        await self.redditPrep(ctx, "minecraft")
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.channel)

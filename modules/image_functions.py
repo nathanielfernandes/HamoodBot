@@ -361,10 +361,8 @@ class Modify_Gif(Modify):
 
 
 # needs work
-def makeText(self, content, font, font_size, colour, final):
+def makeText(content, font, font_size, colour, final):
     """turns text from text into an image of the text"""
-    fontLoc = f"{self.fontPath}/{font}"
-    finalName = f"{self.temp}/{final}"
 
     placeholderImg = Image.new("RGBA", (0, 0), (0, 0, 0, 0))
 

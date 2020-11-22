@@ -39,7 +39,7 @@ class Fonts(commands.Cog):
             elif font in self.fontDict:
                 font = self.fontDict[font]
 
-            font = f"{self.font}/{font}"
+            font = f"{self.fonts}/{font}"
 
             if colour == "random":
                 colour = tuple(random.choice(list(self.colourDict.values())))
@@ -80,8 +80,8 @@ class Fonts(commands.Cog):
 
     @commands.command(aliases=["craft"])
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def minecraft(self, ctx, *, content: commands.clean_content):
-        """``minecraft [msg]`` send a message in a minecraft font"""
+    async def minec(self, ctx, *, content: commands.clean_content):
+        """``minec [msg]`` send a message in a minecraft font"""
         await self.text_prep(
             ctx, content, "minecraft", 500, "yellow2",
         )
