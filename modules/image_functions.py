@@ -192,7 +192,9 @@ class Modify:
         if top_image_size is not None:
             top_image = top_image.resize(top_image_size)
 
-        top_image.putalpha(255)
+        top_image = top_image.convert("RGBA")
+        base_image = base_image.convert("RGBA")
+        # top_image.putalpha(255)
 
         if top_image_rotation is not None:
             top_image = top_image.rotate(top_image_rotation, expand=1).resize(

@@ -1,4 +1,5 @@
 import os
+from copy import copy
 import random
 import discord
 from discord.ext import commands
@@ -14,6 +15,7 @@ class Images(commands.Cog):
         self.direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
         self.save_location = f"{self.direct}/tempImages"
         self.fonts = f"{self.direct}/fonts"
+        self.memes = f"{self.direct}/memePics"
 
     async def find_image(self, ctx, member, depth):
         if member is None:
@@ -85,6 +87,57 @@ class Images(commands.Cog):
         )
 
         await self.send_image(ctx, image, "pixelate")
+
+    @commands.command()
+    @commands.cooldown(3, 10, commands.BucketType.user)
+    @commands.has_permissions(attach_files=True)
+    async def youtube(self, ctx, *, title: commands.clean_content = None):
+        """``youtube [video title]`` watch your images in youtube."""
+        words = self.bot.get_cog("Fun").words
+
+        top_image, ext = await self.find_image(ctx, None, 40)
+        if top_image is None:
+            return
+
+        if title is None:
+            center = " ".join(
+                [random.choice(words) for i in range(random.randint(1, 7))]
+            )
+            title = f"{random.choice(words).capitalize()} {center}{random.choice(['!', '.', '?', ' :)'])}"
+
+        base_image = Modify(image_location=f"{self.memes}/youtubeImage.png")
+        top = copy(base_image.image)
+        profile = Modify(image_url=str(ctx.author.avatar_url))
+        base_image.image_add_image(
+            top_image=top_image.image, coordinates=(25, 55), top_image_size=(855, 485)
+        )
+        base_image.image_add_image(
+            top_image=profile.image, coordinates=(35, 595), top_image_size=(60, 60)
+        )
+        base_image.image_add_image(top_image=top)
+        base_image.set_font(
+            font_location=f"{self.fonts}/arialbold.ttf", font_size=30,
+        )
+        base_image.image_add_text(
+            text=title[:50], coordinates=(30, 555), font_color=(25, 25, 25)
+        )
+        base_image.set_font(
+            font_location=f"{self.fonts}/arialbold.ttf", font_size=15,
+        )
+        base_image.image_add_text(
+            text=ctx.author.name, coordinates=(100, 602), font_color=(150, 150, 150)
+        )
+        base_image.set_font(
+            font_location=f"{self.fonts}/arialbold.ttf", font_size=20,
+        )
+        base_image.image_add_text(
+            text=f"{random.randint(1, 10000000):,} views",
+            coordinates=(710, 630),
+            font_color=(140, 140, 140),
+        )
+        base_image = base_image.save_image(location=self.save_location,)
+
+        await self.send_image(ctx, base_image, "youtubify")
 
     @commands.command()
     @commands.cooldown(3, 10, commands.BucketType.user)

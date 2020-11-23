@@ -83,7 +83,7 @@ class About(commands.Cog):
         # embed.add_field(name="Uptime", value=f"```py\n{uptime}```", inline=True)
         embed.add_field(
             name="Discord Presence",
-            value=f"```py\nGuilds: {len(self.bot.guilds)}\nChannels: {sum([len(g.channels) for g in self.bot.guilds])}\nUsers: {sum([len(g.members) for g in self.bot.guilds])}```",
+            value=f"```py\nGuilds: {len(self.bot.guilds):,}\nChannels: {sum([len(g.channels) for g in self.bot.guilds]):,}\nUsers: {sum([len(g.members) for g in self.bot.guilds]):,}```",
             inline=False,
         )
         embed.add_field(
