@@ -19,19 +19,30 @@ class Images(commands.Cog):
 
     async def find_image(self, ctx, member, depth):
         if member is None:
-            message = await ctx.message.channel.history(limit=depth).find(
-                lambda m: ".jpg" in str(m.attachments)
-                or ".png" in str(m.attachments)
-                or ".jpeg" in str(m.attachments)
-                or ".gif" in str(m.attachments)
+            message1 = await ctx.message.channel.history(limit=depth).find(
+                lambda m: ".jpg" in str(m.attachments).lower()
+                or ".png" in str(m.attachments).lower()
+                or ".jpeg" in str(m.attachments).lower()
+                or ".gif" in str(m.attachments).lower()
             )
-            url = message.attachments[0].url if message is not None else None
+
+            message2 = await ctx.message.channel.history(limit=depth).find(
+                lambda m: ".jpg" in str(m.content).lower()
+                or ".png" in str(m.content).lower()
+                or ".jpeg" in str(m.content).lower()
+                or ".gif" in str(m.content).lower()
+            )
+
+            if message1.created_at >= message2.created_at:
+                url = message1.attachments[0].url if message1 is not None else None
+            else:
+                url = message2.content if message2 is not None else None
         else:
             url = str(member.avatar_url).replace(".webp", ".png")
 
-            if url is None:
-                await ctx.send("`No recent images found!`")
-                return
+        if url is None:
+            await ctx.send("`No recent images found!`")
+            return None, None
 
         if ".gif" in url:
             return Modify_Gif(gif_url=url), "gif"

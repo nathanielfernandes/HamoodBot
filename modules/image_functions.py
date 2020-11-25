@@ -36,6 +36,9 @@ class Modify:
             self.image.seek(0)
             self.enhance_image()
 
+    def __len__(self):
+        return 1
+
     def open_image(self, image):
         """
         image: image name or location\n
@@ -84,6 +87,7 @@ class Modify:
         file_format="jpg",
         size=None,
         compression_level=None,
+        optimize=True,
     ):
         """
         image: PIL image\n
@@ -117,7 +121,7 @@ class Modify:
             image.save(
                 f"{location}{file_name}",
                 "JPEG",
-                optimize=True,
+                optimize=optimize,
                 quality=compression_level,
             )
         else:
@@ -246,7 +250,7 @@ class Modify:
 class Modify_Gif(Modify):
     def __init__(self, gif=None, gif_location=None, gif_url=None):
         """
-        gif: PIL gif\n
+        gif: PIL gif (or image)\n
         gif_location: gif name or path to gif\n
         gif_url: url of the gif
         """
@@ -265,7 +269,15 @@ class Modify_Gif(Modify):
 
         self.og_gif = copy(self.gif)
 
-        self.gif = [f.convert("RGBA") for f in ImageSequence.Iterator(self.gif)]
+        if self.gif.format != "GIF":
+            self.duration = 5.0
+            self.gif = [self.gif for f in range(10)]
+        else:
+            self.duration = self.gif.info["duration"]
+            self.gif = [f.convert("RGBA") for f in ImageSequence.Iterator(self.gif)]
+
+    def __len__(self):
+        return len(self.gif)
 
     def save_gif(
         self,
@@ -294,7 +306,7 @@ class Modify_Gif(Modify):
             optimize=optimize,
             append_images=gif[1:],
             loop=False,
-            duration=self.og_gif.info["duration"],
+            duration=self.duration,  # self.og_gif.info["duration"],
         )
 
         return f"{location}{file_name}"
@@ -378,7 +390,44 @@ class Modify_Gif(Modify):
             )
             for f in base_gif
         ]
+        return self.gif
 
+    def image_add_gif(
+        self,
+        base_image=None,
+        top_gif=None,
+        coordinates=(0, 0),
+        top_gif_size=None,
+        top_gif_rotation=None,
+    ):
+        if base_image is None:
+            base_image = self.image
+        if top_gif is None:
+            top_gif = self.gif
+
+        base_image = [copy(base_image) for f in range(len(top_gif))]
+
+        self.gif = [
+            self.image_add_image(
+                base_image[i], top_gif[i], coordinates, top_gif_size, top_gif_rotation
+            )
+            for i in range(len(top_gif))
+        ]
+
+        return self.gif
+
+
+# img = Modify(
+#     image_url="https://cdn.discordapp.com/attachments/711016016955703316/780996990191534120/unknown.png"
+# )
+
+# gf = Modify_Gif(gif_url="https://media.giphy.com/media/GwGXoeb0gm7sc/giphy.gif")
+# print(gf.duration)
+# gf.image_add_gif(base_image=img.image, top_gif=gf.gif, top_gif_size=(200, 200))
+# gf.save_gif()
+
+
+# gif.save_gif()
 
 # needs work
 def makeText(content, font, font_size, colour, final):
