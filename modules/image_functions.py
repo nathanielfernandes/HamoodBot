@@ -417,18 +417,6 @@ class Modify_Gif(Modify):
         return self.gif
 
 
-# img = Modify(
-#     image_url="https://cdn.discordapp.com/attachments/711016016955703316/780996990191534120/unknown.png"
-# )
-
-# gf = Modify_Gif(gif_url="https://media.giphy.com/media/GwGXoeb0gm7sc/giphy.gif")
-# print(gf.duration)
-# gf.image_add_gif(base_image=img.image, top_gif=gf.gif, top_gif_size=(200, 200))
-# gf.save_gif()
-
-
-# gif.save_gif()
-
 # needs work
 def makeText(content, font, font_size, colour, final):
     """turns text from text into an image of the text"""

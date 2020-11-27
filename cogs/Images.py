@@ -20,23 +20,36 @@ class Images(commands.Cog):
     async def find_image(self, ctx, member, depth):
         if member is None:
             message1 = await ctx.message.channel.history(limit=depth).find(
-                lambda m: ".jpg" in str(m.attachments).lower()
-                or ".png" in str(m.attachments).lower()
-                or ".jpeg" in str(m.attachments).lower()
-                or ".gif" in str(m.attachments).lower()
+                lambda m: ".jpg" in str(m.attachments)
+                or ".png" in str(m.attachments)
+                or ".jpeg" in str(m.attachments)
+                or ".gif" in str(m.attachments)
+                or ".JPG" in str(m.attachments)
+                or ".PNG" in str(m.attachments)
+                or ".JPEG" in str(m.attachments)
+                or ".GIF" in str(m.attachments)
             )
 
             message2 = await ctx.message.channel.history(limit=depth).find(
-                lambda m: ".jpg" in str(m.content).lower()
-                or ".png" in str(m.content).lower()
-                or ".jpeg" in str(m.content).lower()
-                or ".gif" in str(m.content).lower()
+                lambda m: ".jpg" in str(m.content)
+                or ".png" in str(m.content)
+                or ".jpeg" in str(m.content)
+                or ".gif" in str(m.content)
+                or ".JPG" in str(m.content)
+                or ".PNG" in str(m.content)
+                or ".JPEG" in str(m.content)
+                or ".GIF" in str(m.content)
             )
 
-            if message1.created_at >= message2.created_at:
-                url = message1.attachments[0].url if message1 is not None else None
+            if message1 is None:
+                url = message2.content
+            elif message2 is None:
+                url = message1.attachments[0].url
             else:
-                url = message2.content if message2 is not None else None
+                if message1.created_at >= message2.created_at:
+                    url = message1.attachments[0].url
+                else:
+                    url = message2.content
         else:
             url = str(member.avatar_url).replace(".webp", ".png")
 
