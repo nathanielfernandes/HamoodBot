@@ -22,8 +22,6 @@ reddit = praw.Reddit(
     client_id=CLIENTID, client_secret=CLIENTSECRET, user_agent=USERAGENT
 )
 
-file = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/subreddits.txt"
-
 post_cache = {}
 
 

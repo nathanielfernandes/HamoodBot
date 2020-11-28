@@ -43,7 +43,7 @@ class _Filler:
         # creates playing space
         self.grid = []
         for i in range(self.size[0] * self.size[1]):
-            self.grid.append(random.randint(0, 1))
+            self.grid.append(random.randint(0, 5))
 
         self.oneColour.append(71)
         self.twoColour.append(18)
