@@ -46,20 +46,20 @@ class Games(commands.Cog):
         }
 
         self.fillerEmojis = {
-            "\U0001F7E5": 0,
-            "\U0001F7E7": 1,
-            "\U0001F7E8": 2,
-            "\U0001F7E9": 3,
-            "\U0001F7E6": 4,
-            "\U0001F7EA": 5,
+            "<:red:782108442998997003>": 0,
+            "<:blue:782108442851803158>": 1,
+            "<:green:782108443418689536>": 2,
+            "<:yellow:782108443225751552>": 3,
+            "<:purple:782108443284733962>": 4,
+            "<:black:782108442835812374>": 5,
         }
         self.fillerColors = [
-            discord.Color.red(),
-            discord.Color.orange(),
-            discord.Color.gold(),
-            discord.Color.green(),
-            discord.Color.blue(),
-            discord.Color.purple(),
+            discord.Color.from_rgb(229, 43, 92),
+            discord.Color.from_rgb(56, 158, 220),
+            discord.Color.from_rgb(166, 227, 90),
+            discord.Color.from_rgb(251, 235, 62),
+            discord.Color.from_rgb(115, 79, 166),
+            discord.Color.from_rgb(64, 64, 64),
         ]
 
         self.connectEmojis = {

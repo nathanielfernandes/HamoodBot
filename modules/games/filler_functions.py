@@ -12,13 +12,21 @@ class _Filler:
         self.turn = -1
         self.run_level = True
         self.sprites = [
-            ":red_square:",
-            ":orange_square:",
-            ":yellow_square:",
-            ":green_square:",
-            ":blue_square:",
-            ":purple_square:",
-            ":black_large_square:",
+            "<:red:782108442998997003>",
+            "<:blue:782108442851803158>",
+            "<:green:782108443418689536>",
+            "<:yellow:782108443225751552>",
+            "<:purple:782108443284733962>",
+            "<:black:782108442835812374>",
+            "",
+        ]
+        self.player_sprites = [
+            "<a:redg:782108443238465556>",
+            "<a:blueg:782108443045134387>",
+            "<a:greeng:782108443184070696>",
+            "<a:yellowg:782108443179876352>",
+            "<a:purpleg:782108443296530432>",
+            "<a:blackg:782108443124695092>",
         ]
 
         self.playerOne = playerOne
@@ -131,6 +139,10 @@ class _Filler:
         self.tempGrid = list(self.grid)
         for i in range(len(self.tempGrid)):
             self.tempGrid[i] = self.sprites[self.grid[i]]
+
+        tempColors = self.oneColour + self.twoColour
+        for p in tempColors:
+            self.tempGrid[p] = self.player_sprites[self.sprites.index(self.tempGrid[p])]
 
         # creates printable string
         self.game_grid = ""
