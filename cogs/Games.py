@@ -53,6 +53,7 @@ class Games(commands.Cog):
             "<:purple:782108443284733962>": 4,
             "<:black:782108442835812374>": 5,
         }
+
         self.fillerColors = [
             discord.Color.from_rgb(229, 43, 92),
             discord.Color.from_rgb(56, 158, 220),
@@ -616,7 +617,7 @@ class Games(commands.Cog):
             description="Loading... :arrows_counterclockwise:",
         )
         embed.set_thumbnail(
-            url="https://cdn.discordapp.com/attachments/699770186227646465/744962953006153738/unknown.png"
+            url="https://cdn.discordapp.com/attachments/732309032240545883/782327997096263700/unknown.png"
         )
         msg = await ctx.send(embed=embed)
 
@@ -673,7 +674,7 @@ class Games(commands.Cog):
         )
         embed.set_author(
             name="Filler",
-            icon_url="https://cdn.discordapp.com/attachments/699770186227646465/744962953006153738/unknown.png",
+            icon_url="https://cdn.discordapp.com/attachments/732309032240545883/782327997096263700/unknown.png",
         )
         # embed.set_author(name=f"| Filler |")
         embed.add_field(

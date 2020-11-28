@@ -8,6 +8,12 @@ class Mod(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    # @commands.command()
+    # @commands.has_permissions(manage_roles=True)
+    # async def rainbowroles(self, ctx):
+    #     """``rainbowroles`` adds a role color picker"""
+    #     await server.create_role(name="it!", hoist=True)
+
     @commands.command()
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason="No reason"):
@@ -47,12 +53,16 @@ class Mod(commands.Cog):
 
     @commands.command(aliases=["clear"])
     @commands.has_permissions(manage_messages=True)
-    async def purge(self, ctx, amount=1):
+    async def purge(self, ctx, amount=5):
         """``purge`` deletes chat messages"""
-        amount = int(amount) + 1
-        if amount > 20:
-            amount = 20
-        await ctx.channel.purge(limit=amount)
+        messages = []
+        async for message in discord.abc.Messageable.history(
+            ctx.message.channel, limit=int(amount) + 1
+        ):
+            messages.append(message)
+
+        await ctx.message.channel.delete_messages(messages)
+        await ctx.send(f"**{amount} messages were deleted**")
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
@@ -60,10 +70,14 @@ class Mod(commands.Cog):
         """``clean [@user] [amount, max=50]`` deletes chat messages from a user"""
         history = await ctx.message.channel.history(limit=50).flatten()
         messages = [msg for msg in history if msg.author.id == member.id]
-        messages = messages[:amount] if len(messages) > amount else messages
 
-        for msg in messages:
-            await msg.delete()
+        amount = int(amount)
+        if ctx.message.author == member:
+            amount += 1
+
+        messages = messages[:amount] if len(messages) > amount + 1 else messages
+
+        await ctx.message.channel.delete_messages(messages)
 
         await ctx.send(
             f"`{len(messages)}` of **{member.name}'s** messages have been **deleted!**"

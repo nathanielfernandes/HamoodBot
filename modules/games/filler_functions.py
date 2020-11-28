@@ -43,7 +43,7 @@ class _Filler:
         # creates playing space
         self.grid = []
         for i in range(self.size[0] * self.size[1]):
-            self.grid.append(random.randint(0, 5))
+            self.grid.append(random.randint(0, 1))
 
         self.oneColour.append(71)
         self.twoColour.append(18)
@@ -139,10 +139,12 @@ class _Filler:
         self.tempGrid = list(self.grid)
         for i in range(len(self.tempGrid)):
             self.tempGrid[i] = self.sprites[self.grid[i]]
-
-        tempColors = self.oneColour + self.twoColour
-        for p in tempColors:
-            self.tempGrid[p] = self.player_sprites[self.sprites.index(self.tempGrid[p])]
+        if self.run_level:
+            tempColors = self.oneColour + self.twoColour
+            for p in tempColors:
+                self.tempGrid[p] = self.player_sprites[
+                    self.sprites.index(self.tempGrid[p])
+                ]
 
         # creates printable string
         self.game_grid = ""
