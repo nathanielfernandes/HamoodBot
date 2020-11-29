@@ -9,7 +9,7 @@ class About(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.VERSION = "Hamood v27.6"
+        self.VERSION = "Hamood v3.0"
         self.currentDT = str(datetime.datetime.now())
         self.start = datetime.datetime.now()
 
@@ -145,7 +145,7 @@ class About(commands.Cog):
                 """Cog listing.  What more?"""
                 halp = discord.Embed(
                     title="Command Categories",
-                    description="Use `help <category>` to find out more about them!\nIf you want to know how to use a specific command\njust send it alone and I will help.",
+                    description="Use `help [category]` to find out more about them!\nYou can also just click [**here**](https://nathanielfernandes.github.io/HamoodBot/#commands) for info on all the commands.",
                     color=discord.Color.blue(),
                 )
                 halp.set_footer(
