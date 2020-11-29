@@ -1,0 +1,363 @@
+/*Start global*/
+@import url('https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Trispace:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
+
+:root {
+    --backgroundColor: #282a36;
+    --accent0: #ffffff;
+    --accent1: #7289DA;
+    --accent2: #504f4f;
+    --accent3: #5c6eb1;
+    --accent4: #383838;
+    --textColor0: #fff;
+    --textColor1: #b9b9b9;
+    --headerColor: #18abf0;
+    --headerFont: 'Roboto';
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    font-size: 10px;
+    font-family: "Roboto";
+    color: var(--textColor0);
+}
+
+body{
+    width: 100%;
+    height: 100%;
+    /* background: url("images/sitebg.jpg") no-repeat center fixed; */
+    background-size: cover;
+    background-color: var(--backgroundColor);
+}
+
+section{
+    padding: 6rem 0;
+}
+
+a{
+    text-decoration: none;
+    color: var(--textColor1);
+}
+
+p{
+    font-size: 1.8rem;
+    font-weight: 300;
+}
+
+img{
+    width: 90%;
+}
+
+li{
+    margin: 0 2rem;
+}
+
+header{
+    width: 100%;
+    height: 100vh;
+}
+
+img{ 
+    max-width: 100%; 
+    height: auto; 
+}
+
+
+a:hover {
+    color: var(--headerColor);
+    background-color: transparent;
+}
+
+/*End global*/
+
+/*Start reuseable*/
+.container{
+    width: 90%;
+    max-width: 140rem;
+    height: 100%;
+    margin: 0 auto;
+    position: relative;
+}
+
+.section-heading{
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.section-heading h1{
+    font-size: 5rem;
+    color: var(--accent0);
+    /* opacity: 0.3; */
+    text-transform: uppercase;
+    font-weight: 300;
+    position: relative;
+}
+
+.has-margin-right{
+    margin-right: 1rem;
+}
+
+
+
+/*End reusable*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Landing Text */
+.landing-text{
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    z-index: 1;
+    /* opacity: .8; */
+}
+
+
+
+
+
+.landing-text h1{
+    display: inline;
+    font-size: 15rem;
+    font-family: var(--headerFont), sans-serif;
+    color: var(--accent0);
+    -webkit-transition: color 0.5s;
+    transition: color 0.5s;
+    padding: 1rem;
+    /* cursor: pointer; */
+    border-radius: 10rem;
+    user-select: none;
+}
+
+.landing-text h1:hover{
+    color: var(--headerColor);
+}
+
+.landing-text h6{
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--textColor1);
+}
+
+.landing-text ul {
+    position: absolute;
+    top: 130%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.landing-text ul a {
+    display: inline;
+    font-family: "Roboto";
+    font-size: 3rem;
+    padding: 1.5rem 8rem;
+    border-radius: 0.5rem;
+    color: var(--accent0);
+    cursor: pointer;
+    -webkit-transition: background-color 0.5s;
+    transition: background-color 0.5s;
+}
+
+.landing-text ul a2 {
+    display: inline;
+    font-family: "Roboto";
+    font-size: 3rem;
+    padding: 1.5rem 9rem;
+    border-radius: 0.5rem;
+    color: var(--accent0);
+    cursor: pointer;
+    -webkit-transition: background-color 0.5s;
+    transition: background-color 0.5s;
+}
+
+.landing-text li:nth-child(1) a {
+    background-color: var(--accent1);
+}
+
+.landing-text li:nth-child(1) a:hover{
+    background-color: var(--accent3)
+}
+
+
+
+.landing-text li:nth-child(2) a {
+    background-color: var(--accent2);
+}
+.landing-text li:nth-child(2) a:hover{
+    background-color: var(--accent4)
+}
+
+
+.buttons {
+    list-style: none;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* Scroll Down Animation */
+.arrow{
+    position: absolute;
+    top: 90vh;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    opacity: 0.5;
+}
+.arrow span{
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-bottom: 5px solid var(--accent1);
+    border-right: 5px solid var(--accent1);
+    transform: rotate(45deg);
+    margin: -10px;
+    animation: animate 3s infinite;
+}
+.arrow span:nth-child(2){
+    animation-delay: -0.2s;
+}
+.arrow span:nth-child(3){
+    animation-delay: -0.4s;
+}
+
+@keyframes animate {
+    0%{
+        opacity: 0;
+        transform: rotate(45deg) translate(-20px,-20px);
+    }
+    50%{
+        opacity: 1;
+    }
+    100%{
+        opacity: 0;
+        transform: rotate(45deg) translate(20px,20px);
+    }
+}
+
+
+
+
+/*Start portfolio*/
+.portfolio-item{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5rem;
+}
+
+.portfolio-item:last-child{
+    margin-bottom: 0;
+}
+
+.portfolio-description h1{
+    font-size: 3rem;
+    font-weight: 300;
+    margin: 1rem 0;
+    color: var(--accent0);
+}
+
+.portfolio-description p {
+    color: var(--textColor1);
+}
+
+
+
+
+
+.command-section{
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5rem;
+}
+
+.command-section:last-child{
+    margin-bottom: 0;
+}
+
+.command-section h1{
+    font-size: 4rem;
+    font-weight: 300;
+    margin: 1rem 0;
+    color: var(--accentColor);
+}
+
+.command-section li {
+    color: var(--textColor1);
+    font-size: 2rem;
+}
+
+.command-section li b{
+    color: var(--accent1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* iframe{
+    height: 40rem;
+    width: 40rem;
+} */
+/*End portfolio*/
+
+
+
+/* Change the color of links on hover */
+/* .topnav a:hover {
+    background-color: #ddd;
+    color: black;
+} */
+
+/* Add a color to the active/current link */
+/* .topnav a.active {
+background-color: #4CAF50;
+color: white;
+} */
+
+
+
+.copyright{
+    width: 100%;
+    text-align: center;
+    background-color: var(--accent4);
+    padding: 1rem 0;
+    position: relative;
+}
+
+.copyright p {
+    font-size: 1.4rem;
+}
