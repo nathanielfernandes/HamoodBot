@@ -102,7 +102,7 @@ class Chemistry(commands.Cog):
 
         if table is not None:
             embed = discord.Embed(
-                title=f"Periodic Table {table[0]} | {element} | {table[2]}",
+                title=f"Periodic Table {table[0]} | {table[1]} | {table[2]}",
                 color=discord.Color.purple(),
             )
             embed.add_field(

@@ -54,7 +54,7 @@ class Mod(commands.Cog):
     @commands.command(aliases=["clear"])
     @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, amount=5):
-        """``purge`` deletes chat messages"""
+        """``purge [amount]`` deletes chat messages"""
         messages = []
         async for message in discord.abc.Messageable.history(
             ctx.message.channel, limit=int(amount) + 1
@@ -68,7 +68,7 @@ class Mod(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def clean(self, ctx, member: discord.Member, amount=5):
         """``clean [@user] [amount, max=50]`` deletes chat messages from a user"""
-        history = await ctx.message.channel.history(limit=50).flatten()
+        history = await ctx.message.channel.history(limit=100).flatten()
         messages = [msg for msg in history if msg.author.id == member.id]
 
         amount = int(amount)
