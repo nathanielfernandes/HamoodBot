@@ -9,7 +9,6 @@ class About(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.VERSION = "Hamood v3.0"
         self.currentDT = str(datetime.datetime.now())
         self.start = datetime.datetime.now()
 
@@ -23,7 +22,7 @@ class About(commands.Cog):
     @commands.command()
     @commands.has_permissions(embed_links=True)
     async def about(self, ctx):
-        """``info`` About Hamood"""
+        """``about`` About Hamood"""
         embed = discord.Embed(
             title="Hamood",
             description="Hamood is a Discord bot written with [discord.py](https://github.com/Rapptz/discord.py) that has a variety of helpful and fun functions.",
@@ -51,17 +50,18 @@ class About(commands.Cog):
         embed.add_field(
             name="Command Listing",
             value="Type `.help` or \n[Click Here](https://github.com/nathanielfernandes/HamoodBot/blob/master/README.md#commands)",
-            inline=False,
+        )
+
+        embed.add_field(
+            name="Website",
+            value="[**Click Here**](https://nathanielfernandes.github.io/HamoodBot/)",
         )
 
         embed.add_field(
             name="For bugs, further help or suggestions",
             value="You can message me on discord\n`nathan#3724`",
-            inline=False,
         )
-        embed.set_thumbnail(
-            url="https://cdn.discordapp.com/attachments/749779300181606411/780169368066850857/rsz_sddefault.jpg"
-        )
+        embed.set_thumbnail(url=self.bot.user.avatar_url,)
         embed.set_footer(
             text="created by Nathaniel Fernandes",
             icon_url="https://cdn.discordapp.com/attachments/699770186227646465/741388960227655790/k70up0p0ozz21.png",
@@ -112,22 +112,20 @@ class About(commands.Cog):
             color=discord.Color.blue(),
             url="https://discord.com/api/oauth2/authorize?client_id=699510311018823680&permissions=8&scope=bot",
         )
-        embed.set_thumbnail(
-            url="https://cdn.discordapp.com/attachments/749779300181606411/780169368066850857/rsz_sddefault.jpg"
-        )
+        embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.add_field(
             name=f"Hamood is currently in **{len(self.bot.guilds)}** servers",
             value="make it one more!",
         )
         await ctx.send(embed=embed)
 
-    @commands.command()
-    async def version(self, ctx):
-        """``version`` sends Hamood's current version"""
-        self.currentDT = datetime.datetime.now()
-        await ctx.send(
-            f"```md\n[{self.VERSION} | {self.currentDT}](RUNNING ON: {self.running})```"
-        )
+    # @commands.command()
+    # async def version(self, ctx):
+    #     """``version`` sends Hamood's current version"""
+    #     self.currentDT = datetime.datetime.now()
+    #     await ctx.send(
+    #         f"```md\n[{self.VERSION} | {self.currentDT}](RUNNING ON: {self.running})```"
+    #     )
 
     @commands.command()
     async def ping(self, ctx):

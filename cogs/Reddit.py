@@ -20,7 +20,7 @@ class Reddit(commands.Cog):
             "Blessed_Images",
             "raimimemes",
             "dog",
-            "Minecraft",
+            "minecraft",
         ]
         self.names = [
             "meme",

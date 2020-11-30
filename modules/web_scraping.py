@@ -73,7 +73,7 @@ def covid_info(country):
 #     r = requests.get(url)
 
 #     if r.status_code != 404:
-#         profile = Profile.from_username(L.context, username)
+#         # profile = Profile.from_username(L.context, username)
 #         json_m = re.search(r"window\._sharedData = (.*);</script>", r.text)
 #         profile = json.loads(json_m.group(1))["entry_data"]["ProfilePage"][0][
 #             "graphql"
@@ -98,3 +98,4 @@ def scrape(imgURL, saveDir):
     img_data = requests.get(imgURL).content
     with open(saveDir, "wb") as handler:
         handler.write(img_data)
+
