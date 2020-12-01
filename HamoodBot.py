@@ -113,7 +113,7 @@ async def on_message(message):
                     #     punc = "are bad words"
 
                     # badword = ", ".join(badword)
-                    await message.add_reaction("🚫")
+                    await message.add_reaction("<:trash:783097450461397052>")
                     return
                     # await message.channel.send(
                     #     f"**{message.author.mention}, ||{badword}|| {punc}, watch your profanity!**"
@@ -131,7 +131,7 @@ async def on_message(message):
 @bot.event
 async def on_raw_reaction_add(payload):
     if payload.user_id != bot.user.id:
-        if str(payload.emoji) == "🚫":
+        if str(payload.emoji) == "<:trash:783097450461397052>":
             if payload.member.guild_permissions.manage_messages:
                 channel = await bot.fetch_channel(payload.channel_id)
                 msg = await channel.fetch_message(payload.message_id)

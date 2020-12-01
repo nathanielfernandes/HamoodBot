@@ -234,7 +234,7 @@ class General(commands.Cog):
 
         today = datetime.datetime.now()
         if today.month != 11:
-            embed.description("It is not November")
+            embed.description = "It is not November"
         else:
             end = datetime.datetime(today.year, 12, 1)
 

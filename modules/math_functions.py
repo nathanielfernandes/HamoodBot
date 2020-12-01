@@ -11,6 +11,8 @@ import time, math, random
 import signal
 from contextlib import contextmanager
 
+import pylab
+
 chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 symbl = "abcdefghijklmnopqrstuvwxyz"
 colors = ["b", "g", "r", "c", "m"]
@@ -215,3 +217,43 @@ def run_code(code):
     codeOut.close()
 
     return out, f"{toc-tic:0.6f}"
+
+
+# implemented from https://stackoverflow.com/questions/14110709/creating-images-of-mathematical-expressions-from-tex-using-matplotlib
+def latex_to_text(formula):
+    formula = formula.replace("`", "")
+
+    if formula[0] != "$":
+        formula = "$" + formula
+    if formula[-1] != "$":
+        formula += "$"
+
+    save = (
+        folder + "/" + "".join([str(random.randint(0, 9)) for i in range(12)]) + ".png"
+    )
+
+    try:
+        formula = r"{}".format(formula)
+        fig = pylab.figure()
+        text = fig.text(0, 0, formula)
+
+        # Saving the figure will render the text.
+        dpi = 300
+        fig.savefig(save, dpi=dpi)
+
+        # Now we can work with text's bounding box.
+        bbox = text.get_window_extent()
+        width, height = bbox.size / float(dpi) + 0.005
+        # Adjust the figure size so it can hold the entire text.
+        fig.set_size_inches((width, height))
+
+        # Adjust text's vertical position.
+        dy = (bbox.ymin / float(dpi)) / height
+        text.set_position((0, -dy))
+
+        # Save the adjusted text.
+        fig.savefig(save, dpi=dpi)
+    except Exception as e:
+        return save, e
+
+    return save, None

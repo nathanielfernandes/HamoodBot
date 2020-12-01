@@ -9,6 +9,7 @@ from modules.math_functions import (
     calc_eq,
     graph_eq,
     get_derivative,
+    latex_to_text,
 )
 
 
@@ -111,6 +112,23 @@ class Math(commands.Cog):
         await ctx.send(
             f"**Output:** {f'Completed in **{time}** seconds!' if time else ' '}```py\n{out}```"
         )
+
+    @commands.command(aliases=["ltx", "fool"])
+    @commands.cooldown(4, 10, commands.BucketType.user)
+    async def latex(self, ctx, *, content: commands.clean_content):
+        """``latex [latex formula]`` converts latex to regular text"""
+
+        text, e = latex_to_text(content)
+
+        if e is None:
+            try:
+                await ctx.send(file=discord.File(text))
+            except Exception:
+                await ctx.send("`Could Not Convert Formula`")
+
+            os.remove(text)
+        else:
+            await ctx.send(f"```{e}```")
 
 
 def setup(bot):

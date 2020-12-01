@@ -405,6 +405,8 @@ class Games(commands.Cog):
             await ctx.send("You are not currently in a game!")
             return
 
+        invalid_move = None
+
         game_id = self.keys[str(ctx.guild.id) + str(ctx.author.id)]
         currentGame = self.games[game_id]
 
@@ -412,11 +414,14 @@ class Games(commands.Cog):
             currentGame.move = content.lower().replace(" ", "").replace(",", "")
             msg = currentGame.update_game()
             if msg is not None:
-                await ctx.send(msg)
+                invalid_move = await ctx.send(msg)
             else:
                 await self.update_chess_embed(game_id)
         else:
-            await ctx.send("It's not your turn!")
+            invalid_move = await ctx.send("It's not your turn!")
+
+        if invalid_move is not None:
+            await invalid_move.add_reaction("<:trash:783097450461397052>")
 
         await ctx.message.delete()
 
