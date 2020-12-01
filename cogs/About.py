@@ -66,7 +66,7 @@ class About(commands.Cog):
 
         embed.add_field(
             name="Command Listing",
-            value="Type `.help` or \n[Click Here](https://github.com/nathanielfernandes/HamoodBot/blob/master/README.md#commands)",
+            value="Type `.help` or \n[Click Here](https://nathanielfernandes.github.io/HamoodBot/#commands)",
         )
 
         embed.add_field(

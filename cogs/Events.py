@@ -30,13 +30,17 @@ class Events(commands.Cog):
             if channel.permissions_for(guild.me).embed_links:
                 embed = discord.Embed(
                     title=f"Hi {guild}, im Hamood!",
-                    description=f"My command prefix is '`.`', use `.help` to get started.\nFor more info use `.info`",
+                    description=f"My command prefix is '`.`', use `.help` or [**click here**](https://nathanielfernandes.github.io/HamoodBot/#commands) to get started.",
                 )
-                embed.add_field(
-                    name="Server Presence",
-                    value=f"Hamood is current in **{len(self.bot.guilds)}** servers\n[Invite Him](https://bit.ly/2XD2YPN)",
-                )
+                # embed.add_field(
+                #     name="Server Presence",
+                #     value=f"Hamood is current in **{len(self.bot.guilds)}** servers\n[Invite Him](https://bit.ly/2XD2YPN)",
+                # )
 
+                embed.add_field(
+                    name="Website",
+                    value="[**click here**](https://nathanielfernandes.github.io/HamoodBot/)",
+                )
                 embed.add_field(
                     name="For bugs, further help or suggestions",
                     value="You can message me on discord\n`nathan#3724`",
