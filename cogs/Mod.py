@@ -2,6 +2,23 @@ import discord
 from discord.ext import commands
 
 
+import os
+import json
+
+blacklist = json.load(
+    open(
+        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
+    )
+)["commandblacklist"][f"{os.path.basename(__file__)[:-3]}"]
+
+
+def isAllowedCommand():
+    async def predicate(ctx):
+        return ctx.guild.id not in blacklist
+
+    return commands.check(predicate)
+
+
 class Mod(commands.Cog):
     """Server Moderation"""
 
@@ -15,6 +32,7 @@ class Mod(commands.Cog):
     #     await server.create_role(name="it!", hoist=True)
 
     @commands.command()
+    @isAllowedCommand()
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason="No reason"):
         """``kick [@user]`` kicks a tagged member"""
@@ -24,6 +42,7 @@ class Mod(commands.Cog):
         )
 
     @commands.command()
+    @isAllowedCommand()
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason="No reason"):
         """``ban [@user]`` bans a tagged member"""
@@ -33,6 +52,7 @@ class Mod(commands.Cog):
         )
 
     @commands.command()
+    @isAllowedCommand()
     async def prunes(self, ctx, days: int = 7):
         """``prunes [days]`` returns how many roleless members have not been active on the server"""
         prunes = await ctx.guild.estimate_pruned_members(days=days)
@@ -41,6 +61,7 @@ class Mod(commands.Cog):
         )
 
     @commands.command()
+    @isAllowedCommand()
     @commands.has_permissions(kick_members=True)
     async def deprune(self, ctx, days: int = 30):
         """``deprune [days]`` kicks all pruned members within given date"""
@@ -52,6 +73,7 @@ class Mod(commands.Cog):
         )
 
     @commands.command(aliases=["clear"])
+    @isAllowedCommand()
     @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, amount=5):
         """``purge [amount]`` deletes chat messages"""
@@ -65,6 +87,7 @@ class Mod(commands.Cog):
         await ctx.send(f"**{amount} messages were deleted**")
 
     @commands.command()
+    @isAllowedCommand()
     @commands.has_permissions(manage_messages=True)
     async def clean(self, ctx, member: discord.Member, amount=5):
         """``clean [@user] [amount, max=50]`` deletes chat messages from a user"""
@@ -84,6 +107,7 @@ class Mod(commands.Cog):
         )
 
     @commands.command(aliases=["rename"])
+    @isAllowedCommand()
     @commands.has_permissions(manage_nicknames=True)
     async def nickname(
         self, ctx, member: discord.Member = None, *, name: commands.clean_content = None
@@ -92,6 +116,7 @@ class Mod(commands.Cog):
         await member.edit(nick=name) if (name != None) else None
 
     @commands.command()
+    @isAllowedCommand()
     @commands.has_permissions(manage_channels=True)
     async def quickcategory(
         self, ctx, *, name: commands.clean_content = "Quick Channels"
@@ -104,6 +129,7 @@ class Mod(commands.Cog):
         )
 
     @commands.command()
+    @isAllowedCommand()
     @commands.has_permissions(manage_channels=True)
     async def fullcategory(self, ctx, *, name: commands.clean_content = "No Category"):
         """``fullcategory [category]`` Creates a text channel and a '+' voice channel under a category which instantly creates a quick voice channel for the user that joins it"""
@@ -115,6 +141,7 @@ class Mod(commands.Cog):
         )
 
     @commands.command()
+    @isAllowedCommand()
     @commands.has_permissions(manage_channels=True)
     async def quickchannel(self, ctx, *, name: commands.clean_content = " "):
         """``quickchannel [name]`` Creates a '+' voice channel that creates quick voice channel for the user that joins it"""

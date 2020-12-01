@@ -10,6 +10,22 @@ from modules.chem_functions import (
     elements,
 )
 
+import os
+import json
+
+blacklist = json.load(
+    open(
+        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
+    )
+)["commandblacklist"][f"{os.path.basename(__file__)[:-3]}"]
+
+
+def isAllowedCommand():
+    async def predicate(ctx):
+        return ctx.guild.id not in blacklist
+
+    return commands.check(predicate)
+
 
 class Chemistry(commands.Cog):
     """Quick Chem"""
@@ -18,6 +34,7 @@ class Chemistry(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(5, 10, commands.BucketType.user)
     async def balance(self, ctx, *, content: commands.clean_content):
         """``balance [equation] ex. FeCl3 + NH4OH -> Fe(OH)3 + NH4Cl`` balances chemical equations"""
@@ -34,6 +51,7 @@ class Chemistry(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(5, 10, commands.BucketType.user)
     async def stoich(self, ctx, *, content: commands.clean_content):
         """``stoich [equation] ex. FeCl3 + NH4OH -> Fe(OH)3 + NH4Cl`` balances chemical equations and returns extra info"""
@@ -76,6 +94,7 @@ class Chemistry(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(5, 10, commands.BucketType.user)
     async def molar(self, ctx, *, content: commands.clean_content):
         """``molar [compound]`` returns the molar mass of the compound"""
@@ -95,6 +114,7 @@ class Chemistry(commands.Cog):
             await ctx.send("Invalid Input")
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(5, 10, commands.BucketType.user)
     async def table(self, ctx, element):
         """``table [element symbol or number]`` returns a list of periodic information"""

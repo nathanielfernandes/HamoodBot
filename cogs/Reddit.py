@@ -6,6 +6,22 @@ from discord.ext import commands
 from modules.reddit_functions import findPost, cachePosts, do_cache
 
 
+import json
+
+blacklist = json.load(
+    open(
+        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
+    )
+)["commandblacklist"][f"{os.path.basename(__file__)[:-3]}"]
+
+
+def isAllowedCommand():
+    async def predicate(ctx):
+        return ctx.guild.id not in blacklist
+
+    return commands.check(predicate)
+
+
 class Reddit(commands.Cog):
     """Get Reddit Posts"""
 
@@ -62,6 +78,7 @@ class Reddit(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["reddit"])
+    @isAllowedCommand()
     @commands.cooldown(3, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def red(self, ctx, redditSub=None):
@@ -71,6 +88,7 @@ class Reddit(commands.Cog):
         await self.redditPrep(ctx, redditSub)
 
     @commands.command(aliases=["memes"])
+    @isAllowedCommand()
     @commands.cooldown(5, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def meme(self, ctx):
@@ -85,6 +103,7 @@ class Reddit(commands.Cog):
     #     await self.redditPrep(ctx, "DarkMemesAndHumor")
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(5, 5, commands.BucketType.user)
     @commands.has_permissions()
     async def dank(self, ctx):
@@ -92,6 +111,7 @@ class Reddit(commands.Cog):
         await self.redditPrep(ctx, "dankmemes")
 
     @commands.command(aliases=["cats", "noura"])
+    @isAllowedCommand()
     @commands.cooldown(5, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def cat(self, ctx):
@@ -99,6 +119,7 @@ class Reddit(commands.Cog):
         await self.redditPrep(ctx, "cats")
 
     @commands.command(aliases=["curse"])
+    @isAllowedCommand()
     @commands.cooldown(5, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def cursed(self, ctx):
@@ -106,6 +127,7 @@ class Reddit(commands.Cog):
         await self.redditPrep(ctx, "cursedimages")
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(5, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def blursed(self, ctx):
@@ -113,6 +135,7 @@ class Reddit(commands.Cog):
         await self.redditPrep(ctx, "blursedimages")
 
     @commands.command(aliases=["bless"])
+    @isAllowedCommand()
     @commands.cooldown(5, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def blessed(self, ctx):
@@ -120,6 +143,7 @@ class Reddit(commands.Cog):
         await self.redditPrep(ctx, "Blessed_Images")
 
     @commands.command(aliases=["pizza", "time", "pizza time", "ayan"])
+    @isAllowedCommand()
     @commands.cooldown(5, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pizzatime(self, ctx):
@@ -127,6 +151,7 @@ class Reddit(commands.Cog):
         await self.redditPrep(ctx, "raimimemes")
 
     @commands.command(aliases=["dogs", "doggy", "doge"])
+    @isAllowedCommand()
     @commands.cooldown(5, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def dog(self, ctx):
@@ -134,6 +159,7 @@ class Reddit(commands.Cog):
         await self.redditPrep(ctx, "dog")
 
     @commands.command(aliases=["charity", "mine"])
+    @isAllowedCommand()
     @commands.cooldown(5, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def minecraft(self, ctx):
@@ -141,6 +167,7 @@ class Reddit(commands.Cog):
         await self.redditPrep(ctx, "minecraft")
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def spam(self, ctx, redditSub="random", amount="3"):

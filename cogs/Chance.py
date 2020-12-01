@@ -2,6 +2,22 @@ import random
 import discord
 from discord.ext import commands
 
+import os
+import json
+
+blacklist = json.load(
+    open(
+        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
+    )
+)["commandblacklist"][f"{os.path.basename(__file__)[:-3]}"]
+
+
+def isAllowedCommand():
+    async def predicate(ctx):
+        return ctx.guild.id not in blacklist
+
+    return commands.check(predicate)
+
 
 class Chance(commands.Cog):
     """Take a Chance"""
@@ -36,6 +52,7 @@ class Chance(commands.Cog):
             "is",
         ]
     )
+    @isAllowedCommand()
     async def eightball(self, ctx):
         """``eightball`` Hamood shakes his magic 8ball"""
         await ctx.send(
@@ -43,12 +60,14 @@ class Chance(commands.Cog):
         )
 
     @commands.command(aliases=["coin"])
+    @isAllowedCommand()
     async def flip(self, ctx):
         """``flip`` flips a coin"""
         possible_responses = ["heads", "tails"]
         await ctx.send(f"**{random.choice(possible_responses)}**, {ctx.author.mention}")
 
     @commands.command(aliases=["dice"])
+    @isAllowedCommand()
     async def roll(self, ctx, dice: str):
         """``roll [NdN]`` Rolls a dice in NdN format."""
         rolls, limit = map(int, dice.split("d"))
@@ -56,6 +75,7 @@ class Chance(commands.Cog):
         await ctx.send(result)
 
     @commands.command(description="For when you wanna settle the score some other way")
+    @isAllowedCommand()
     async def choose(self, ctx, *, content: commands.clean_content):
         """``choose [choice1], [choice2], [choice3]`` Chooses between multiple choices."""
         content = content.split(", ")

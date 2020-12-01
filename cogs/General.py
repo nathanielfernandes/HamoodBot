@@ -7,6 +7,14 @@ from discord.ext import commands
 
 from modules.image_functions import randomFile
 
+
+def isAllowedCommand():
+    async def predicate(ctx):
+        return ctx.guild.id != 768164858960937030
+
+    return commands.check(predicate)
+
+
 # Messaging cog that checks for profantiy and also provide some simple chat commands
 class General(commands.Cog):
     """General Commands"""
@@ -222,6 +230,7 @@ class General(commands.Cog):
         await ctx.send("https://imgur.com/gallery/IsWDJWa")
 
     @commands.command(aliases=["nut", "robert"])
+    @isAllowedCommand()
     async def nnn(self, ctx):
         """``nnn`` dont nut"""
         embed = discord.Embed(

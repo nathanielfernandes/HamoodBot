@@ -12,6 +12,21 @@ from modules.math_functions import (
     latex_to_text,
 )
 
+import json
+
+blacklist = json.load(
+    open(
+        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
+    )
+)["commandblacklist"][f"{os.path.basename(__file__)[:-3]}"]
+
+
+def isAllowedCommand():
+    async def predicate(ctx):
+        return ctx.guild.id not in blacklist
+
+    return commands.check(predicate)
+
 
 class Math(commands.Cog):
     """Quick Mafs"""
@@ -20,6 +35,7 @@ class Math(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @isAllowedCommand()
     async def base(self, ctx, *, content: commands.clean_content):
         """``base [number)base], [next base]`` converts numbers between bases"""
         try:
@@ -39,6 +55,7 @@ class Math(commands.Cog):
     # await ctx.send(f"**Base {base1}:** `{number}`\n**Base {base2}:** `{answer}`\n")
 
     @commands.command(aliases=["calculate"])
+    @isAllowedCommand()
     async def calc(self, ctx, *, content: commands.clean_content):
         """``calc [equation]`` calculates the answer to the given equation (assumes natural log unless specified [log(base, number)]"""
         content = "".join([x for x in content if not x.isalpha()])
@@ -58,6 +75,8 @@ class Math(commands.Cog):
     #  await ctx.send(f"**Answer: **`{out}`")
 
     @commands.command(aliases=["aliases"])
+    @isAllowedCommand()
+    @commands.cooldown(4, 10, commands.BucketType.user)
     async def derivative(self, ctx, number=1, *, content: commands.clean_content):
         """``derivative [nth derivative] [equation]`` solves for the nth dervative of an equation"""
         ext = ["th", "st", "nd", "rd"]
@@ -70,6 +89,7 @@ class Math(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(4, 10, commands.BucketType.user)
     async def solve(self, ctx, *, content: commands.clean_content):
         """``solve [equation]`` solves for variables in most math equations"""
@@ -83,6 +103,7 @@ class Math(commands.Cog):
     #     await ctx.send(f"`{solve_eq(content)}`")
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(2, 10, commands.BucketType.user)
     async def graph(self, ctx, *, content: commands.clean_content):
         """``graph [equation], [next equation]`` graphs given equation"""
@@ -101,6 +122,7 @@ class Math(commands.Cog):
             await ctx.send("`Could not graph equation`")
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(2, 10, commands.BucketType.user)
     async def py(self, ctx, *, content: commands.clean_content):
         """``py [code]`` runs `python-3.7.2` code and outputs to the chat. 
@@ -114,6 +136,7 @@ class Math(commands.Cog):
         )
 
     @commands.command(aliases=["ltx", "fool"])
+    @isAllowedCommand()
     @commands.cooldown(4, 10, commands.BucketType.user)
     async def latex(self, ctx, *, content: commands.clean_content):
         """``latex [latex formula]`` converts latex to regular text"""

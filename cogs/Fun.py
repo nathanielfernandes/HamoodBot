@@ -8,6 +8,20 @@ from discord.ext import commands
 from modules.zodiac_functions import getZodiac, getCompatibility
 
 
+blacklist = json.load(
+    open(
+        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
+    )
+)["commandblacklist"][f"{os.path.basename(__file__)[:-3]}"]
+
+
+def isAllowedCommand():
+    async def predicate(ctx):
+        return ctx.guild.id not in blacklist
+
+    return commands.check(predicate)
+
+
 class Fun(commands.Cog):
     """Random Fun Commands"""
 
@@ -25,6 +39,7 @@ class Fun(commands.Cog):
         ).readlines()
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def tag(self, ctx, member: discord.Member):
         """tags a user"""
@@ -54,6 +69,7 @@ class Fun(commands.Cog):
             await ctx.send(f"{ctx.author.mention}, you arn't it!")
 
     @commands.command()
+    @isAllowedCommand()
     async def pp(self, ctx, member: discord.Member = None):
         """``pp`` returns your pp size"""
         member = ctx.author if not member else member
@@ -65,6 +81,7 @@ class Fun(commands.Cog):
         await ctx.send(f"{member.mention} :eggplant: size is **{size}**")
 
     @commands.command()
+    @isAllowedCommand()
     async def sortinghat(self, ctx):
         """``sortinghat`` sorts you to one of the Hogwarts houses"""
         houses = ["Gryffindor", "Hufflepuff", "Slytherin", "Ravenclaw"]
@@ -72,6 +89,7 @@ class Fun(commands.Cog):
         await ctx.send(f"{ctx.author.mention}, you belong to the **{house}** house!")
 
     @commands.command()
+    @isAllowedCommand()
     async def vibecheck(self, ctx, member: discord.Member = None):
         """``vibecheck`` vibechecks you"""
         member = ctx.author if not member else member
@@ -92,12 +110,14 @@ class Fun(commands.Cog):
         await fonts.text_prep(ctx, (random_word), "random", 500, "random", 100)
 
     @commands.command(aliases=["roast me", "roastme"])
+    @isAllowedCommand()
     async def roast(self, ctx, member: discord.Member = None):
         """``roast [person]`` roasts/insults you"""
         member = ctx.author if not member else member
         await ctx.send(f"{member.mention} {random.choice(self.roasts)}")
 
     @commands.command(aliases=["pop", "bubble"])
+    @isAllowedCommand()
     async def bubblewrap(self, ctx, w=3, h=3, inside="pop"):
         """``bubblewrap [height] [width]`` makes bubblewrap"""
         if w > 12:
@@ -116,6 +136,7 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["sign"])
+    @isAllowedCommand()
     async def zodiac(self, ctx, month1: str, day1: int, month2: str, day2: int):
         """``zodiac [mmm] [dd] [mmm] [dd]`` lets you test your zodiac's compatibilty with another"""
         sign1 = getZodiac(month1, day1)
@@ -128,6 +149,7 @@ class Fun(commands.Cog):
         )
 
     @commands.command()
+    @isAllowedCommand()
     async def match(self, ctx, *, content: commands.clean_content):
         """``match [person1], [person2]`` randomly gives a match percentage between two people"""
         match = str(random.randint(0, 100))

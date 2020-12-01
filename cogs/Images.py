@@ -6,6 +6,21 @@ from discord.ext import commands
 
 from modules.image_functions import Modify, Modify_Gif
 
+import json
+
+blacklist = json.load(
+    open(
+        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
+    )
+)["commandblacklist"][f"{os.path.basename(__file__)[:-3]}"]
+
+
+def isAllowedCommand():
+    async def predicate(ctx):
+        return ctx.guild.id not in blacklist
+
+    return commands.check(predicate)
+
 
 class Images(commands.Cog):
     """Image Manipulation `BETA`"""
@@ -71,6 +86,7 @@ class Images(commands.Cog):
         os.remove(image)
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(3, 10, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def deepfry(self, ctx, member: discord.Member = None):
@@ -90,6 +106,7 @@ class Images(commands.Cog):
         await self.send_image(ctx, image, "deepfry")
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(3, 10, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def pixelate(self, ctx, member: discord.Member = None):
@@ -113,6 +130,7 @@ class Images(commands.Cog):
         await self.send_image(ctx, image, "pixelate")
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(3, 10, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def youtube(self, ctx, *, title: commands.clean_content = None):
@@ -164,6 +182,7 @@ class Images(commands.Cog):
         await self.send_image(ctx, base_image, "youtubify")
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(3, 10, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def edit(

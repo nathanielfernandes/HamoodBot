@@ -5,6 +5,21 @@ from discord.ext import commands
 from modules.web_scraping import covid_info  # , insta_profile
 from modules.image_search import ImgSearch
 
+import json
+
+blacklist = json.load(
+    open(
+        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
+    )
+)["commandblacklist"][f"{os.path.basename(__file__)[:-3]}"]
+
+
+def isAllowedCommand():
+    async def predicate(ctx):
+        return ctx.guild.id not in blacklist
+
+    return commands.check(predicate)
+
 
 class Web(commands.Cog):
     """Information Scraped From The Web"""
@@ -13,6 +28,7 @@ class Web(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(2, 15, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def covid(self, ctx, country=None):

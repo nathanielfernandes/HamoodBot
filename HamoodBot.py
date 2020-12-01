@@ -98,27 +98,27 @@ async def on_message(message):
         profane, badword = profCheck((message.content).lower())
 
         if profane:
-            if "hamood" in message.content:
-                uno = randomFile(
-                    f"{os.path.dirname(os.path.realpath(__file__))}/memePics/unoCards"
-                )
-                await message.channel.send(file=discord.File(uno))
-                await message.channel.send(f"{message.author.mention} No U!")
-                return
-            else:
-                if not nsfw:
-                    # if len(badword) == 1:
-                    #     punc = "is a bad word"
-                    # else:
-                    #     punc = "are bad words"
+            #     if "hamood" in message.content:
+            #         uno = randomFile(
+            #             f"{os.path.dirname(os.path.realpath(__file__))}/memePics/unoCards"
+            #         )
+            #         await message.channel.send(file=discord.File(uno))
+            #         await message.channel.send(f"{message.author.mention} No U!")
+            #         return
+            #     else:
+            if not nsfw:
+                # if len(badword) == 1:
+                #     punc = "is a bad word"
+                # else:
+                #     punc = "are bad words"
 
-                    # badword = ", ".join(badword)
-                    await message.add_reaction("<:trash:783097450461397052>")
-                    return
-                    # await message.channel.send(
-                    #     f"**{message.author.mention}, ||{badword}|| {punc}, watch your profanity!**"
-                    # )
-                    # return
+                # badword = ", ".join(badword)
+                await message.add_reaction("<:trash:783097450461397052>")
+                return
+                # await message.channel.send(
+                #     f"**{message.author.mention}, ||{badword}|| {punc}, watch your profanity!**"
+                # )
+                # return
 
         elif message.content.startswith("im "):
             await message.channel.send(f"hi{message.content[2:]}, im hamood")

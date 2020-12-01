@@ -10,6 +10,19 @@ from modules.games.sokoban_functions import Soko_ban
 from modules.games.twentyforty8_functions import TwentyFortyEight
 from modules.games.chess_functions import _Chess
 
+blacklist = json.load(
+    open(
+        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
+    )
+)["commandblacklist"][f"{os.path.basename(__file__)[:-3]}"]
+
+
+def isAllowedCommand():
+    async def predicate(ctx):
+        return ctx.guild.id not in blacklist
+
+    return commands.check(predicate)
+
 
 class Games(commands.Cog):
     """Play Games, all games auto delete if theres no input for 5 minutes"""
@@ -174,6 +187,7 @@ class Games(commands.Cog):
 
     # -------------------------------------------------------------------------------------------------------#
     @commands.command(aliases=["2048"])
+    @isAllowedCommand()
     @commands.cooldown(2, 60, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def twenty48(self, ctx):
@@ -263,6 +277,7 @@ class Games(commands.Cog):
 
     # -------------------------------------------------------------------------------------------------------#
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(2, 60, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def sokoban(self, ctx):
@@ -349,6 +364,7 @@ class Games(commands.Cog):
     # -------------------------------------------------------------------------------------------------------#
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def chess(self, ctx, member: discord.Member = None):
@@ -397,6 +413,7 @@ class Games(commands.Cog):
         await self.update_chess_embed(game_id)
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(4, 10, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def move(self, ctx, *, content: commands.clean_content = None):
@@ -479,6 +496,7 @@ class Games(commands.Cog):
     # -------------------------------------------------------------------------------------------------------#
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def connect(self, ctx, member: discord.Member = None):
@@ -586,6 +604,7 @@ class Games(commands.Cog):
     # -------------------------------------------------------------------------------------------------------#
 
     @commands.command()
+    @isAllowedCommand()
     @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def filler(self, ctx, member: discord.Member = None):
