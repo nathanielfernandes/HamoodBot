@@ -8,9 +8,19 @@ from discord.ext import commands
 from modules.image_functions import randomFile
 
 
+import os
+import json
+
+blacklist = json.load(
+    open(
+        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
+    )
+)["commandblacklist"][f"{os.path.basename(__file__)[:-3].lower()}"]
+
+
 def isAllowedCommand():
     async def predicate(ctx):
-        return ctx.guild.id != 768164858960937030
+        return ctx.guild.id not in blacklist
 
     return commands.check(predicate)
 

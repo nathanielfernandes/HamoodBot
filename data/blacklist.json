@@ -1,43 +1,43 @@
 {
     "commandblacklist": {
-        "About": [],
-        "Avatarmemes": [
+        "about": [],
+        "avatarmemes": [
             711013485575798804
         ],
-        "Chance": [
+        "chance": [
             711013485575798804
         ],
-        "Chemistry": [],
-        "Events": [
+        "chemistry": [],
+        "events": [
             711013485575798804
         ],
-        "Fonts": [
+        "fonts": [
             711013485575798804
         ],
-        "Fun": [
+        "fun": [
             711013485575798804
         ],
-        "Games": [],
-        "General": [
+        "games": [],
+        "general": [
             711013485575798804
         ],
-        "Images": [
+        "images": [
             711013485575798804
         ],
-        "Math": [],
-        "Memes": [
+        "math": [],
+        "memes": [
             711013485575798804
         ],
-        "Mod": [],
-        "Pokemon": [
+        "mod": [],
+        "pokemon": [
             711013485575798804
         ],
-        "Reddit": [
+        "reddit": [
             711013485575798804
         ],
-        "User": [
+        "user": [
             711013485575798804
         ],
-        "Web": []
+        "web": []
     }
 }

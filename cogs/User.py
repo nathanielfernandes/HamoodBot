@@ -11,7 +11,7 @@ blacklist = json.load(
     open(
         f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
     )
-)["commandblacklist"][f"{os.path.basename(__file__)[:-3]}"]
+)["commandblacklist"][f"{os.path.basename(__file__)[:-3].lower()}"]
 
 
 def isAllowedCommand():
