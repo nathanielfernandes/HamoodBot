@@ -153,6 +153,9 @@ def calc_eq(equation):
     return solved
 
 
+print(calc_eq("sqrt(20)"))
+
+
 def solve_eq(equation):
     equation = format_eq(equation)
     solved = []

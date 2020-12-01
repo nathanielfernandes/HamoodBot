@@ -58,7 +58,7 @@ class Math(commands.Cog):
     @isAllowedCommand()
     async def calc(self, ctx, *, content: commands.clean_content):
         """``calc [equation]`` calculates the answer to the given equation (assumes natural log unless specified [log(base, number)]"""
-        content = "".join([x for x in content if not x.isalpha()])
+        content = "".join([x for x in content])
 
         out = str(calc_eq(content))
         if len(out) > 2000:
