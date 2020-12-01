@@ -1,23 +1,9 @@
+import os
 import discord
 from discord.ext import commands
 
 from modules.image_functions import Modify, Modify_Gif
-
-import os
-import json
-
-blacklist = json.load(
-    open(
-        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
-    )
-)["commandblacklist"][f"{os.path.basename(__file__)[:-3].lower()}"]
-
-
-def isAllowedCommand():
-    async def predicate(ctx):
-        return ctx.guild.id not in blacklist
-
-    return commands.check(predicate)
+import modules.checks as checks
 
 
 class Avatarmemes(commands.Cog):
@@ -61,7 +47,7 @@ class Avatarmemes(commands.Cog):
         os.remove(meme)
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def stonks(self, ctx, *avamember: discord.Member):
@@ -72,7 +58,7 @@ class Avatarmemes(commands.Cog):
         )
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def worthless(self, ctx, *avamember: discord.Member):
@@ -82,7 +68,7 @@ class Avatarmemes(commands.Cog):
         )
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def neat(self, ctx, *avamember: discord.Member):
@@ -92,7 +78,7 @@ class Avatarmemes(commands.Cog):
         )
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def grab(self, ctx, *avamember: discord.Member):
@@ -102,7 +88,7 @@ class Avatarmemes(commands.Cog):
         )
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def compare(self, ctx, *avamember: discord.Member):
         """``compare [@user1] [@user2]`` compares discord avatars"""

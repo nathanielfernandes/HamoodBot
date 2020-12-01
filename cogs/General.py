@@ -6,23 +6,7 @@ import asyncio
 from discord.ext import commands
 
 from modules.image_functions import randomFile
-
-
-import os
-import json
-
-blacklist = json.load(
-    open(
-        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
-    )
-)["commandblacklist"][f"{os.path.basename(__file__)[:-3].lower()}"]
-
-
-def isAllowedCommand():
-    async def predicate(ctx):
-        return ctx.guild.id not in blacklist
-
-    return commands.check(predicate)
+import modules.checks as checks
 
 
 # Messaging cog that checks for profantiy and also provide some simple chat commands
@@ -53,6 +37,7 @@ class General(commands.Cog):
         ]
 
     @commands.command()
+    @checks.isAllowedCommand()
     @commands.cooldown(2, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def poll(self, ctx, *, content: commands.clean_content):
@@ -152,11 +137,13 @@ class General(commands.Cog):
                 print("Could not remove poll!")
 
     @commands.command(aliases=["hi", "hey", "yo"])
+    @checks.isAllowedCommand()
     async def hello(self, ctx):
         """``greet`` greets the user"""
         await ctx.send(f"{random.choice(self.possible_responses)} {ctx.author.mention}")
 
     @commands.command()
+    @checks.isAllowedCommand()
     async def hamood(self, ctx):
         """``hamood`` calls hamood"""
         member = ctx.author
@@ -167,6 +154,7 @@ class General(commands.Cog):
         self.last_member = member
 
     @commands.command()
+    @checks.isAllowedCommand()
     async def clap(self, ctx, *content: str):
         """``clap [msg]`` adds clap emojis to your sentence"""
         msg = ""
@@ -175,6 +163,7 @@ class General(commands.Cog):
         await ctx.send(msg)
 
     @commands.command()
+    @checks.isAllowedCommand()
     async def lengthen(self, ctx, *content: str):
         """``lengthen [sentence]`` makes words long"""
 
@@ -192,6 +181,7 @@ class General(commands.Cog):
         await ctx.send(" ".join([lengthen(word) for word in content]))
 
     @commands.command()
+    @checks.isAllowedCommand()
     async def clown(self, ctx, *, content: commands.clean_content = None):
         """``clown [msg]`` clown someones text"""
         if content is None:
@@ -208,6 +198,7 @@ class General(commands.Cog):
         await ctx.send(content)
 
     @commands.command()
+    @checks.isAllowedCommand()
     @commands.cooldown(1, 30, commands.BucketType.channel)
     async def repeat(self, ctx, times: int, *, content: commands.clean_content):
         """``repeat [number of messages] [msg]`` repeats your message multiple times"""
@@ -217,6 +208,7 @@ class General(commands.Cog):
         await ctx.send(msg)
 
     @commands.command()
+    @checks.isAllowedCommand()
     @commands.cooldown(3, 10, commands.BucketType.user)
     async def echo(self, ctx, *, content: commands.clean_content):
         """``echo [msg]`` echos your message a random amount of times"""
@@ -224,6 +216,7 @@ class General(commands.Cog):
             await ctx.send(content)
 
     @commands.command()
+    @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def no(self, ctx, content: str):
         """``no u`` sends an uno reverse card"""
@@ -240,7 +233,7 @@ class General(commands.Cog):
         await ctx.send("https://imgur.com/gallery/IsWDJWa")
 
     @commands.command(aliases=["nut", "robert"])
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     async def nnn(self, ctx):
         """``nnn`` dont nut"""
         embed = discord.Embed(
@@ -288,6 +281,7 @@ class General(commands.Cog):
             return "%d seconds" % (seconds,)
 
     @commands.command()
+    @checks.isAllowedCommand()
     async def cliffhanger(self, ctx):
         """ ``cliffhanger`` the day hamood died"""
         await ctx.send(

@@ -5,20 +5,7 @@ import discord
 from discord.ext import commands
 
 
-import os
-
-blacklist = json.load(
-    open(
-        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
-    )
-)["commandblacklist"][f"{os.path.basename(__file__)[:-3].lower()}"]
-
-
-def isAllowedCommand():
-    async def predicate(ctx):
-        return ctx.guild.id not in blacklist
-
-    return commands.check(predicate)
+import modules.checks as checks
 
 
 class User(commands.Cog):
@@ -32,14 +19,14 @@ class User(commands.Cog):
         self.words = json.loads(self.url.read())
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     async def joined(self, ctx, member: discord.Member = None):
         """``joined [@user]`` says when a member joined the server"""
         member = ctx.author if not member else member
         await ctx.send(f"{member.name} joined in {member.joined_at}")
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.has_permissions(embed_links=True)
     async def avatar(self, ctx, member: discord.Member = None):
         """``avatar [@user]`` sends the profile picture of a tagged user"""
@@ -56,7 +43,7 @@ class User(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.has_permissions(embed_links=True)
     async def roles(self, ctx, member: discord.Member = None):
         """``roles [@user]`` lists the roles of a tagged user"""
@@ -78,7 +65,7 @@ class User(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.has_permissions(embed_links=True)
     async def userinfo(self, ctx, member: discord.Member = None):
         """``userinfo [@user]`` sends allot of info on a user"""
@@ -122,7 +109,7 @@ class User(commands.Cog):
     #     """``activity [@user]`` returns a users activity"""
 
     @commands.command(aliases=["listen"])
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.has_permissions(embed_links=True)
     async def listening(self, ctx, member: discord.Member = None):
         """``listening [@user]`` returns a users spotify listening activity"""

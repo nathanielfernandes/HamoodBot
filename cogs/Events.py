@@ -2,14 +2,7 @@ import os
 import discord
 from discord.ext import commands
 
-
-import json
-
-blacklist = json.load(
-    open(
-        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
-    )
-)["commandblacklist"][f"{os.path.basename(__file__)[:-3].lower()}"]
+import modules.checks as checks
 
 
 class Events(commands.Cog):
@@ -19,9 +12,10 @@ class Events(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
+    @checks.isAllowedCommand()
     async def on_member_join(self, member):
         channel = member.guild.system_channel
-        if channel is not None and member.guild.id not in blacklist:
+        if channel is not None:
             await channel.send(f"Welcome {member.mention}!")
 
     @commands.Cog.listener()

@@ -10,18 +10,7 @@ from modules.games.sokoban_functions import Soko_ban
 from modules.games.twentyforty8_functions import TwentyFortyEight
 from modules.games.chess_functions import _Chess
 
-blacklist = json.load(
-    open(
-        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
-    )
-)["commandblacklist"][f"{os.path.basename(__file__)[:-3].lower()}"]
-
-
-def isAllowedCommand():
-    async def predicate(ctx):
-        return ctx.guild.id not in blacklist
-
-    return commands.check(predicate)
+import modules.checks as checks
 
 
 class Games(commands.Cog):
@@ -113,14 +102,14 @@ class Games(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def gamelog(self, ctx):
+    async def gameslog(self, ctx):
         log = "\n".join([f"{self.games_log[k]} | {k}" for k in self.games_log])
         await ctx.send(f"```{len(self.games_log)} Games:\n{log}```")
 
     async def overtime(self, gameID, extras="No Winner"):
         self.games_log[f"ID:{gameID}"] = f"{gameID[: gameID.index('#')]}"
 
-        await asyncio.sleep(300)
+        await asyncio.sleep(120)
         await self.delete_game(gameID, extras)
 
     @commands.Cog.listener()
@@ -187,8 +176,8 @@ class Games(commands.Cog):
 
     # -------------------------------------------------------------------------------------------------------#
     @commands.command(aliases=["2048"])
-    @isAllowedCommand()
-    @commands.cooldown(2, 60, commands.BucketType.user)
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def twenty48(self, ctx):
         """``2048`` starts a new 2048 game."""
@@ -258,7 +247,7 @@ class Games(commands.Cog):
             #  await currentGame.message.edit(content=)
         embed = discord.Embed(
             title=msg,
-            description=f"auto delete in 5 mins",
+            description=f"auto delete in 2 mins",
             color=currentGame.user.color,
         )
         embed.set_author(name=f"{currentGame.user}'s Game:",)
@@ -277,8 +266,8 @@ class Games(commands.Cog):
 
     # -------------------------------------------------------------------------------------------------------#
     @commands.command()
-    @isAllowedCommand()
-    @commands.cooldown(2, 60, commands.BucketType.user)
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 60, commands.BucketType.guild)
     @commands.has_permissions(embed_links=True)
     async def sokoban(self, ctx):
         """``sokoban`` starts a new sokoban game"""
@@ -348,7 +337,7 @@ class Games(commands.Cog):
         )
         embed.add_field(
             name=f"{currentGame.sprites[2]} Boxes Left: {len(currentGame.box_pos) - currentGame.completed}     {currentGame.sprites[5]} Moves: {currentGame.moves}",
-            value="auto delete in 5 mins",
+            value="auto delete in 2 mins",
         )
         await currentGame.message.edit(embed=embed)
 
@@ -364,7 +353,7 @@ class Games(commands.Cog):
     # -------------------------------------------------------------------------------------------------------#
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def chess(self, ctx, member: discord.Member = None):
@@ -413,7 +402,7 @@ class Games(commands.Cog):
         await self.update_chess_embed(game_id)
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(4, 10, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def move(self, ctx, *, content: commands.clean_content = None):
@@ -488,7 +477,7 @@ class Games(commands.Cog):
 
         # embed.add_field(
         #     name=,
-        #     value="auto delete in 5 mins",
+        #     value="auto delete in 2 mins",
         # )
 
         await currentGame.message.edit(embed=embed, content=f"{currentGame.game_board}")
@@ -496,7 +485,7 @@ class Games(commands.Cog):
     # -------------------------------------------------------------------------------------------------------#
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def connect(self, ctx, member: discord.Member = None):
@@ -596,7 +585,7 @@ class Games(commands.Cog):
 
         embed.add_field(
             name=f"{currentGame.sprites[2]}{currentGame.playerOne}     {currentGame.sprites[3]}{currentGame.playerTwo}",
-            value="auto delete in 5 mins",
+            value="auto delete in 2 mins",
         )
 
         await currentGame.message.edit(embed=embed)
@@ -604,7 +593,7 @@ class Games(commands.Cog):
     # -------------------------------------------------------------------------------------------------------#
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def filler(self, ctx, member: discord.Member = None):
@@ -703,7 +692,7 @@ class Games(commands.Cog):
         # embed.set_author(name=f"| Filler |")
         embed.add_field(
             name=f"{currentGame.sprites[currentGame.one_pick]} {currentGame.playerOne}: {currentGame.amountOne}       {currentGame.sprites[currentGame.two_pick]} {currentGame.playerTwo}: {currentGame.amountTwo}",
-            value="auto delete in 5 mins",
+            value="auto delete in 2 mins",
         )
 
         await currentGame.message.edit(embed=embed)

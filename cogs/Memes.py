@@ -5,20 +5,7 @@ from discord.ext import commands
 
 from modules.image_functions import Modify, Modify_Gif
 
-import json
-
-blacklist = json.load(
-    open(
-        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
-    )
-)["commandblacklist"][f"{os.path.basename(__file__)[:-3].lower()}"]
-
-
-def isAllowedCommand():
-    async def predicate(ctx):
-        return ctx.guild.id not in blacklist
-
-    return commands.check(predicate)
+import modules.checks as checks
 
 
 class Memes(commands.Cog):
@@ -62,7 +49,7 @@ class Memes(commands.Cog):
         os.remove(meme)
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def bonk(self, ctx, *, content: commands.clean_content):
@@ -72,7 +59,7 @@ class Memes(commands.Cog):
         )
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def lick(self, ctx, *, content: commands.clean_content):
@@ -80,7 +67,7 @@ class Memes(commands.Cog):
         await self.meme_prep(ctx, "lickImage.jpg", content, [(305, 230), (40, 200)], 25)
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def slap(self, ctx, *, content: commands.clean_content):
@@ -90,7 +77,7 @@ class Memes(commands.Cog):
         )
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def lookback(self, ctx, *, content: commands.clean_content):
@@ -100,7 +87,7 @@ class Memes(commands.Cog):
         )
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def our(self, ctx, *, content: commands.clean_content):
@@ -110,7 +97,7 @@ class Memes(commands.Cog):
         )
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def pour(self, ctx, *, content: commands.clean_content):
@@ -120,7 +107,7 @@ class Memes(commands.Cog):
         )
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(2, 8, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def shoot(self, ctx, *, content: commands.clean_content):

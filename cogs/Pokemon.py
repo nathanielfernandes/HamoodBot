@@ -5,20 +5,7 @@ import discord
 from discord.ext import commands
 
 from modules.pokemon_get import get_pokemon_info
-
-
-blacklist = json.load(
-    open(
-        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
-    )
-)["commandblacklist"][f"{os.path.basename(__file__)[:-3].lower()}"]
-
-
-def isAllowedCommand():
-    async def predicate(ctx):
-        return ctx.guild.id not in blacklist
-
-    return commands.check(predicate)
+import modules.checks as checks
 
 
 class Pokemon(commands.Cog):
@@ -33,7 +20,7 @@ class Pokemon(commands.Cog):
         )
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pokedex(self, ctx, name: commands.clean_content):
@@ -86,7 +73,7 @@ class Pokemon(commands.Cog):
             await ctx.send(f"Could not find the pokemon '{name}'.")
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(4, 10, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pokevibe(self, ctx, member: discord.Member = None):
@@ -112,7 +99,7 @@ class Pokemon(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pokepic(self, ctx, name: commands.clean_content):

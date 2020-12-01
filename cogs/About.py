@@ -3,21 +3,7 @@ import platform
 import discord
 from discord.ext import commands
 
-import os
-import json
-
-blacklist = json.load(
-    open(
-        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/blacklist.json"
-    )
-)["commandblacklist"][f"{os.path.basename(__file__)[:-3].lower()}"]
-
-
-def isAllowedCommand():
-    async def predicate(ctx):
-        return ctx.guild.id not in blacklist
-
-    return commands.check(predicate)
+import modules.checks as checks
 
 
 class About(commands.Cog):
@@ -36,7 +22,7 @@ class About(commands.Cog):
             self.running = "?"
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     @commands.has_permissions(embed_links=True)
     async def about(self, ctx):
         """``about`` About Hamood"""
@@ -86,7 +72,7 @@ class About(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     async def info(self, ctx):
         """``info`` info about Hamood"""
         general = self.bot.get_cog("General")
@@ -122,7 +108,7 @@ class About(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["inv"])
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     async def invite(self, ctx):
         """``invite`` get the invite link for Hamood"""
         embed = discord.Embed(
@@ -147,14 +133,13 @@ class About(commands.Cog):
     #     )
 
     @commands.command()
-    @isAllowedCommand()
+    @checks.isAllowedCommand()
     async def ping(self, ctx):
         """``ping`` returns hamood's ping"""
         await ctx.send(f"```xl\n'pong! {self.bot.latency}```")
 
     # This help command was implemented from [https://gist.github.com/StudioMFTechnologies/ad41bfd32b2379ccffe90b0e34128b8b]
     @commands.command()
-    @isAllowedCommand()
     @commands.has_permissions(embed_links=True)
     async def help(self, ctx, *cog):
         """Gets all cogs and commands of Hamood"""
