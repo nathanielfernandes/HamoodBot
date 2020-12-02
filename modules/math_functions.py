@@ -229,7 +229,7 @@ def latex_to_text(formula):
         formula += "$"
 
     save = (
-        folder + "/" + "".join([str(random.randint(0, 9)) for i in range(12)]) + ".png"
+        folder + "/" + "".join([str(random.randint(0, 9)) for i in range(9)]) + ".png"
     )
 
     try:

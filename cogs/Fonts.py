@@ -104,7 +104,7 @@ class Fonts(commands.Cog):
     async def morty(self, ctx, *, content: commands.clean_content):
         """``morty [msg]`` send a message in a morty font"""
         await self.text_prep(
-            ctx, content, "morty", 500, "green1",
+            ctx, content, "get_schwhifty.ttf", 500, "green1",
         )
 
     @commands.command()

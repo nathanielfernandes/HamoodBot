@@ -63,6 +63,7 @@ def get_element_period(element):
             ]
         except Exception:
             return
+
     return elements["Table"]["Row"][element - 1]["Cell"]
 
 

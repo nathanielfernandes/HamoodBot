@@ -87,6 +87,7 @@ class Fun(commands.Cog):
         await ctx.message.add_reaction("✔️")
 
     @commands.command()
+    @checks.isAllowedCommand()
     @commands.cooldown(4, 10, commands.BucketType.user)
     async def vibe(self, ctx, member: discord.Member = None):
         """``vibe`` vibechecks you but better"""

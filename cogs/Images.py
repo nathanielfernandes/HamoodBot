@@ -73,7 +73,7 @@ class Images(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(3, 10, commands.BucketType.user)
+    @commands.cooldown(3, 15, commands.BucketType.channel)
     @commands.has_permissions(attach_files=True)
     async def deepfry(self, ctx, member: discord.Member = None):
         """``deepfry [@someone or send image]`` deepfries any image, tasty!"""
@@ -93,7 +93,7 @@ class Images(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(3, 10, commands.BucketType.user)
+    @commands.cooldown(3, 15, commands.BucketType.channel)
     @commands.has_permissions(attach_files=True)
     async def pixelate(self, ctx, member: discord.Member = None):
         """``pixelate [@someone or send image]`` pixelates any image"""
@@ -117,7 +117,7 @@ class Images(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(3, 10, commands.BucketType.user)
+    @commands.cooldown(3, 15, commands.BucketType.channel)
     @commands.has_permissions(attach_files=True)
     async def youtube(self, ctx, *, title: commands.clean_content = None):
         """``youtube [video title]`` watch your images in youtube."""
@@ -169,7 +169,7 @@ class Images(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(3, 10, commands.BucketType.user)
+    @commands.cooldown(3, 15, commands.BucketType.channel)
     @commands.has_permissions(attach_files=True)
     async def edit(
         self, ctx, sharpness=1.0, contrast=1.0, color=1.0, brightness=1.0,

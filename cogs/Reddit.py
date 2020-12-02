@@ -64,7 +64,7 @@ class Reddit(commands.Cog):
 
     @commands.command(aliases=["reddit"])
     @checks.isAllowedCommand()
-    @commands.cooldown(3, 5, commands.BucketType.user)
+    @commands.cooldown(3, 5, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def red(self, ctx, redditSub=None):
         """``red [subreddit]`` finds a post from your specified subreddit"""
