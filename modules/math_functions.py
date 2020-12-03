@@ -256,4 +256,5 @@ def latex_to_text(formula):
     except Exception as e:
         return save, e
 
+    fig.clf()
     return save, None
