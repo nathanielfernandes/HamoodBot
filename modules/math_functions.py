@@ -103,6 +103,7 @@ def format_eq(eq):
 
 
 def graph_eq(equations, title):
+    plt.clf()
     equations = equations[:5]
     roots = []
     ran = random.randint(5, 50)
@@ -256,5 +257,6 @@ def latex_to_text(formula):
     except Exception as e:
         return save, e
 
-    fig.clf()
+    plt.clf()
+    plt.close()
     return save, None
