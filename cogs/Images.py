@@ -170,6 +170,48 @@ class Images(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(3, 15, commands.BucketType.channel)
     @commands.has_permissions(attach_files=True)
+    async def snipe(self, ctx, member: discord.Member = None):
+        """``snipe [@someone or send image]`` snipe someone or something"""
+        image, ext = await self.find_image(ctx, member, 40)
+        if image is None:
+            return
+
+        getattr(image, f"resize_{ext}")(size=(256, 256))
+        top_image = Modify(image_location=f"{self.memes}/scopeImage.png")
+        top_image.resize_image(size=(256, 256))
+        getattr(image, f"{ext}_add_image")(top_image=top_image.image)
+
+        image = getattr(image, f"save_{ext}")(
+            location=self.save_location, compression_level=100
+        )
+
+        await self.send_image(ctx, image, "snipe")
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(3, 15, commands.BucketType.channel)
+    @commands.has_permissions(attach_files=True)
+    async def pride(self, ctx, member: discord.Member = None):
+        """``pride [@someone or send image]`` support someone or somethings pride"""
+        image, ext = await self.find_image(ctx, member, 40)
+        if image is None:
+            return
+
+        # getattr(image, f"resize_{ext}")(size=(512, 512))
+        top_image = Modify(image_location=f"{self.memes}/lgbtImage.png")
+        top_image.resize_image(size=image.image.size)
+        getattr(image, f"{ext}_add_image")(top_image=top_image.image)
+
+        image = getattr(image, f"save_{ext}")(
+            location=self.save_location, compression_level=100
+        )
+
+        await self.send_image(ctx, image, "pride")
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(3, 15, commands.BucketType.channel)
+    @commands.has_permissions(attach_files=True)
     async def edit(
         self, ctx, sharpness=1.0, contrast=1.0, color=1.0, brightness=1.0,
     ):

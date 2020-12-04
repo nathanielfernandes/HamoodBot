@@ -273,7 +273,9 @@ class Modify_Gif(Modify):
             self.duration = 5.0
             self.gif = [self.gif for f in range(10)]
         else:
-            self.duration = self.gif.info["duration"]
+            self.duration = self.gif.info.get("duration")
+            if self.duration is None:
+                self.duration = 5.0
             self.gif = [f.convert("RGBA") for f in ImageSequence.Iterator(self.gif)]
 
     def __len__(self):
