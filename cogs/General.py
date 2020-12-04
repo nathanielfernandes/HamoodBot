@@ -257,6 +257,34 @@ class General(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=["xmas"])
+    @checks.isAllowedCommand()
+    async def christmas(self, ctx):
+        """``christmas`` Christmas countdown"""
+        embed = discord.Embed(
+            title=f":christmas_tree: Christmas Countdown", color=discord.Color.green(),
+        )
+        embed.set_footer(
+            text=f"Santa is comming {ctx.author}.", icon_url=ctx.author.avatar_url
+        )
+
+        embed.set_thumbnail(
+            url="https://www.animatedimages.org/data/media/359/animated-santa-claus-image-0420.gif"
+        )
+
+        today = datetime.datetime.now()
+        if today.month != 12:
+            embed.description = "It is not December"
+        else:
+            end = datetime.datetime(today.year, 12, 25)
+
+            timeLeft = end - today
+            embed.description = (
+                f"```{self.pretty_time_delta(timeLeft.total_seconds())}```"
+            )
+
+        await ctx.send(embed=embed)
+
     # @commands.command(aliases=["clock"])
     # async def time(self, ctx):
     #     """``time`` sends the current time"""

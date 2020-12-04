@@ -115,7 +115,6 @@ class Games(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         if payload.user_id != self.bot.user.id:
-            # str(payload.guild_id) + str(payload.user_id)
             key_id = str(payload.guild_id) + str(payload.user_id)
             if key_id in self.keys:
                 game_id = self.keys[key_id]

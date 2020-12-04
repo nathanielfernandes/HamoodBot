@@ -15,7 +15,7 @@ class About(commands.Cog):
         self.start = datetime.datetime.now()
 
         if platform.system() == "Darwin":
-            self.running = "macOS Catalina"
+            self.running = "macOS Big Sur"
         elif platform.system() == "Linux":
             self.running = "Heroku Linux"
         else:
@@ -92,13 +92,13 @@ class About(commands.Cog):
         )
         embed.add_field(
             name="Network",
-            value=f"```py\nLatency: {self.bot.latency:0.2f}s\nShards: {self.bot.shard_count}```",
+            value=f"```py\nLatency: {round(self.bot.latency * 1000)}ms\nShards: {self.bot.shard_count}```",
             inline=False,
         )
 
         embed.add_field(
             name="Basic Info",
-            value=f"```py\nCommands: {len(self.bot.commands)}\nLibrary: discord.py v 1.5.1\nCreated On: Tue, April 14th, 2020\nCreated By: 'nathan#3724'```",
+            value=f"```py\nCommands: {len(self.bot.commands)}\nLibrary: discord.py v 1.5.1\nCreated On: Tue, April 14th, 2020\nCreated By: 'nathan#3724'\nRunning: {self.running}```",
             inline=False,
         )
 
@@ -135,8 +135,7 @@ class About(commands.Cog):
     @commands.command()
     @checks.isAllowedCommand()
     async def ping(self, ctx):
-        """``ping`` returns hamood's ping"""
-        await ctx.send(f"```xl\n'pong! {self.bot.latency}```")
+        await ctx.send(f"Pong! **{round(self.bot.latency * 1000)}ms**")
 
     # This help command was implemented from [https://gist.github.com/StudioMFTechnologies/ad41bfd32b2379ccffe90b0e34128b8b]
     @commands.command()
@@ -220,5 +219,5 @@ class About(commands.Cog):
 
 
 def setup(bot):
-    bot.remove_command("help")
+    # bot.remove_command("help")
     bot.add_cog(About(bot))

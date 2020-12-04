@@ -449,3 +449,4 @@ def randomFile(folder):
     """selects a random file from a folder"""
     card = f"{folder}/{random.choice(os.listdir(folder))}"
     return card
+

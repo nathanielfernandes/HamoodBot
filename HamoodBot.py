@@ -37,6 +37,7 @@ if __name__ == "__main__":
         command_prefix=commands.when_mentioned_or(prefix),
         case_insensitive=True,
         intents=discord.Intents().all(),
+        help_command=None,
     )
 
     file = f"{os.path.dirname(os.path.realpath(__file__))}/data/profanity.txt"

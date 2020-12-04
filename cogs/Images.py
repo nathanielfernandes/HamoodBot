@@ -82,9 +82,8 @@ class Images(commands.Cog):
         if image is None:
             return
 
-        getattr(image, f"enhance_{ext}")(
-            sharpness=10000, contrast=10000, color=10000, brightness=10000
-        )
+        getattr(image, f"enhance_{ext}")(contrast=10000, color=10000, sharpness=5)
+
         image = getattr(image, f"save_{ext}")(
             location=self.save_location, compression_level=10
         )
