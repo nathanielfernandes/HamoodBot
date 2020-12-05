@@ -13,28 +13,58 @@ import discord
 from discord.ext import commands
 
 from modules.image_functions import randomFile
-
+from modules.database import *
 
 if __name__ == "__main__":
-
     tic = time.perf_counter()
+
+    # download_database(
+    #     database_name="discord",
+    #     collection_name="prefixes",
+    #     file_name="data/prefixes.json",
+    # )
+
+    # download_database(
+    #     database_name="discord",
+    #     collection_name="servers",
+    #     file_name="data/servers.json",
+    # )
+
+    def get_prefix(bot, message):
+        prefixes = json.load(open("data/prefixes.json"))
+        result = search(prefixes, message.guild.id)
+        if result is None:
+            insert_prefix_post(message.guild.id)
+            return "."
+
+        return result["prefix"]
+
+        # collection = get_data(database_name="discord", collection_name="prefixes")
+        # result = collection.find_one({"_id": message.guild.id})
+
+        # if result is None:
+        #     insert_prefix_post(message.guild.id, collection)
+        #     return "."
+        # else:
+        #     prefix = result["prefix"]
+        # return prefix
 
     try:
         TOKEN = os.environ["TOKEN"]
         os.remove(
             f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages/placeholder.txt"
         )
-        prefix = "."
+        # prefix = "."
     except KeyError:
         from dotenv import load_dotenv
 
         load_dotenv()
         TOKEN = os.environ.get("BOTTOKENTEST")
-        prefix = "/"
+    # prefix = "/"
 
     # the prefix the bot looks for before processing a message
     bot = commands.AutoShardedBot(
-        command_prefix=commands.when_mentioned_or(prefix),
+        command_prefix=get_prefix,
         case_insensitive=True,
         intents=discord.Intents().all(),
         help_command=None,

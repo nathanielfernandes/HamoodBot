@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-
+from modules.database import *
 import modules.checks as checks
 
 
@@ -10,6 +10,25 @@ class Mod(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.categories = [
+            "About",
+            "Avatarmemes",
+            "Chance",
+            "Chemistry",
+            "Events",
+            "Fonts",
+            "Fun",
+            "Games",
+            "General",
+            "Images",
+            "Math",
+            "Memes",
+            "Mod",
+            "Pokemon",
+            "Reddit",
+            "User",
+            "Web",
+        ]
 
     # @commands.command()
     # @commands.has_permissions(manage_roles=True)
@@ -152,6 +171,55 @@ class Mod(commands.Cog):
                 if "\u2795" in str(after.channel.name):
                     channel = await after.channel.clone(name=f"{member.name}'s channel")
                     await member.move_to(channel, reason=None)
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(1, 5, commands.BucketType.guild)
+    @commands.has_permissions(administrator=True)
+    async def settings(
+        self, ctx, setting=None, *, value: commands.clean_content = None
+    ):
+        """``settings [setting] [value]`` update your current server settings for Hamood"""
+
+        collection = get_data(database_name="discord", collection_name="servers")
+        result = collection.find_one({"_id": ctx.guild.id})
+        categs = result["categories"]
+        prefix = get_data(database_name="discord", collection_name="prefixes").find_one(
+            {"_id": ctx.guild.id}
+        )["prefix"]
+
+        if setting is None or value is None:
+            embed = discord.Embed(
+                title=f"{ctx.guild.name}'s settings for Hamood",
+                description=f"Use `{prefix}settings [setting] [value]` to change the value of a setting, for example `{prefix}settings categories fun`.",
+            )
+            cat_list = "\n".join(
+                [f"{i} - {'[ON]' if categs[i] else 'OFF'}" for i in categs]
+            )
+            embed.add_field(
+                name="Current Settings",
+                value=f"Prefix: `{prefix}`\nCategories:```ini\n{cat_list}```",
+            )
+            return await ctx.send(embed=embed)
+
+        setting = setting.lower()
+        if setting == "categories":
+            value = value.lower().capitalize()
+            if value not in self.categories:
+                return await ctx.send(f"`{value} is not a Category!`")
+
+            if "," in value:
+                values = value.replace(" ", "").split(", ")
+                for v in values:
+                    categs[v] = True if not categs[v] else False
+            else:
+                categs[value] = True if not categs[value] else False
+
+            update_server_post(guild_id=ctx.guild.id, name=setting, value=categs)
+        elif setting == "prefix":
+            update_prefix_post(guild_id=ctx.guild.id, prefix=value)
+        else:
+            await ctx.send("`Unkown Setting`")
 
 
 def setup(bot):

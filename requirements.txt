@@ -9,3 +9,6 @@ sympy
 matplotlib
 chempy
 chess
+pymongo
+dnspython
+pandas

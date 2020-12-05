@@ -2,15 +2,7 @@ import os
 import discord
 from discord.ext import commands
 
-from modules.math_functions import (
-    base_conversion,
-    solve_eq,
-    run_code,
-    calc_eq,
-    graph_eq,
-    get_derivative,
-    latex_to_text,
-)
+from modules.math_functions import *
 
 import modules.checks as checks
 
