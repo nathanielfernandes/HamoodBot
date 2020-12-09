@@ -11,4 +11,4 @@ chempy
 chess
 pymongo
 dnspython
-pandas
+motor

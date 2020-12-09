@@ -13,62 +13,59 @@ import discord
 from discord.ext import commands
 
 from modules.image_functions import randomFile
-from modules.database import *
+from utils.mongo import Leaderboards
+
 
 if __name__ == "__main__":
     tic = time.perf_counter()
-
-    # download_database(
-    #     database_name="discord",
-    #     collection_name="prefixes",
-    #     file_name="data/prefixes.json",
-    # )
-
-    # download_database(
-    #     database_name="discord",
-    #     collection_name="servers",
-    #     file_name="data/servers.json",
-    # )
-
-    def get_prefix(bot, message):
-        prefixes = json.load(open("data/prefixes.json"))
-        result = search(prefixes, message.guild.id)
-        if result is None:
-            insert_prefix_post(message.guild.id)
-            return "."
-
-        return result["prefix"]
-
-        # collection = get_data(database_name="discord", collection_name="prefixes")
-        # result = collection.find_one({"_id": message.guild.id})
-
-        # if result is None:
-        #     insert_prefix_post(message.guild.id, collection)
-        #     return "."
-        # else:
-        #     prefix = result["prefix"]
-        # return prefix
 
     try:
         TOKEN = os.environ["TOKEN"]
         os.remove(
             f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages/placeholder.txt"
         )
-        # prefix = "."
+        prefix = "."
     except KeyError:
         from dotenv import load_dotenv
 
         load_dotenv()
         TOKEN = os.environ.get("BOTTOKENTEST")
-    # prefix = "/"
+        prefix = "/"
 
-    # the prefix the bot looks for before processing a message
     bot = commands.AutoShardedBot(
-        command_prefix=get_prefix,
+        command_prefix=commands.when_mentioned_or(prefix),
         case_insensitive=True,
         intents=discord.Intents().all(),
         help_command=None,
     )
+
+    @bot.event
+    async def on_ready():
+        bot.leaderboards = Leaderboards()
+
+        toc = time.perf_counter()
+
+        print("-------------------")
+        print(f"|Logged in as {bot.user} ({bot.user.id})|")
+        print("|" + str(datetime.datetime.now()) + "|")
+        print("-------------------")
+        print(f"Took {toc-tic:0.2f} seconds")
+        print("-------------------")
+
+        await bot.change_presence(
+            activity=discord.Activity(
+                type=discord.ActivityType.listening,
+                name=f"{sum([len(g.members) for g in bot.guilds])} Users",
+            )
+        )
+
+    responses = {
+        "bye": "goodbye {0.author.mention}",
+        "goodnight": "goodnight {0.author.mention}",
+        "gn": "gn",
+        "marco": "polo {0.author.mention}",
+        "im hamood": "No your not, im hamood!",
+    }
 
     file = f"{os.path.dirname(os.path.realpath(__file__))}/data/profanity.txt"
     badWords = [
@@ -82,36 +79,6 @@ if __name__ == "__main__":
 
         profane = True if badword else False
         return profane, badword
-
-    @bot.event
-    async def on_ready():
-        await bot.change_presence(
-            activity=discord.Activity(
-                type=discord.ActivityType.listening,
-                name=f"{len(bot.guilds)} Servers and {sum([len(g.members) for g in bot.guilds])} Users",
-            )
-        )
-        toc = time.perf_counter()
-
-        print("-------------------")
-        print(f"|Logged in as {bot.user} ({bot.user.id})|")
-        print("|" + str(datetime.datetime.now()) + "|")
-        print("-------------------")
-        print("-------------------")
-        print(f"Took {toc-tic:0.2f} seconds")
-        print("-------------------")
-
-        # used to change profile pic
-        # with open("/Users/nathaniel/Desktop/Edits/christmashamoood.png", "rb") as f:
-        #     await bot.user.edit(avatar=f.read())
-
-    responses = {
-        "bye": "goodbye {0.author.mention}",
-        "goodnight": "goodnight {0.author.mention}",
-        "gn": "gn",
-        "marco": "polo {0.author.mention}",
-        "im hamood": "No your not, im hamood!",
-    }
 
     @bot.event
     async def on_message(message):
@@ -131,10 +98,10 @@ if __name__ == "__main__":
                     await message.add_reaction("<:trash:783097450461397052>")
                     return
 
-            elif message.content.startswith("im "):
-                await message.channel.send(f"hi{message.content[2:]}, im hamood")
             elif message.content in responses:
                 await message.channel.send(responses[message.content].format(message))
+            elif message.content.startswith("im "):
+                await message.channel.send(f"hi{message.content[2:]}, im hamood")
 
             await bot.process_commands(message)
 
