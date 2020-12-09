@@ -4,6 +4,7 @@ import math
 
 class _Filler:
     def __init__(self, size, playerOne, playerTwo, server):
+        self.game_started = False
         self.size = [size[0] + 2, size[1] + 2]
         # self.sprites = ['R ', 'O ', "Y ", 'G ', 'B ', "P "]
         # self.sprites = [u"\U0001F494", 	u"\U0001F497", 	u"\U0001F49B", 	u"\U0001F49A", 	u"\U0001F499", 	u"\U0001F49C", u"\u2B1B"]

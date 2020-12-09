@@ -3,6 +3,7 @@ import chess
 
 class _Chess:
     def __init__(self, playerOne, playerTwo, server):
+        self.game_started = False
         self.turn = -1
         self.run_game = True
         self.legendX = [

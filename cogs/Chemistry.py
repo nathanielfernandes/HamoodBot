@@ -1,14 +1,8 @@
 import discord
 from discord.ext import commands
 
-from modules.chem_functions import (
-    balance_equation,
-    format_equation,
-    get_molar_mass,
-    get_elements,
-    get_element_period,
-    elements,
-)
+from modules.chem_functions import *
+
 
 import modules.checks as checks
 

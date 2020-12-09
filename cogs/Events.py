@@ -2,8 +2,6 @@ import os
 import discord
 from discord.ext import commands
 
-import modules.checks as checks
-
 
 class Events(commands.Cog):
     """Handles Any Discord Events"""
@@ -12,11 +10,24 @@ class Events(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    @checks.isAllowedCommand()
     async def on_member_join(self, member):
         channel = member.guild.system_channel
         if channel is not None:
             await channel.send(f"Welcome {member.mention}!")
+
+    @commands.Cog.listener()
+    async def on_member_remove(self, member):
+        if member.id == self.bot.user.id:
+            return
+        channel = member.guild.system_channel
+        if channel is not None:
+            await channel.send(f"Goodbye {member.mention}!")
+
+        await self.bot.leaderboards.delete_member(member.guild.id, member.id)
+
+    @commands.Cog.listener()
+    async def on_guild_remove(self, guild):
+        await self.bot.leaderboards.delete_by_id(guild.id)
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -51,7 +62,7 @@ class Events(commands.Cog):
         await self.bot.change_presence(
             activity=discord.Activity(
                 type=discord.ActivityType.listening,
-                name=f"{len(bot.guilds)} Servers and {sum([len(g.members) for g in bot.guilds])} Users",
+                name=f"{sum([len(g.members) for g in self.bot.guilds])} Users",
             )
         )
 
@@ -94,7 +105,9 @@ class Events(commands.Cog):
                 await ctx.send(embed=embed)
             except Exception:
                 print("error")
-                # raise error
+
+        elif isinstance(error, commands.MissingPermissions):
+            await ctx.send("`I don't have the permission to do that`")
 
 
 def setup(bot):

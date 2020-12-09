@@ -1,5 +1,6 @@
 class Connect_Four:
     def __init__(self, size, playerOne, playerTwo, server):
+        self.game_started = False
         self.size = [size[0] + 2, size[1] + 1]
         self.turn = -1
         self.run_level = True

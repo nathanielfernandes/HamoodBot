@@ -14,14 +14,27 @@ import modules.checks as checks
 
 
 class Games(commands.Cog):
-    """Play Games, all games auto delete if theres no input for 5 minutes"""
+    """Play Games, all games auto delete if theres no input for 2 minutes"""
 
     def __init__(self, bot):
         self.bot = bot
-        self.games_log = {}
         self.games = {}
         self.keys = {}
+        self.games_log = {}
+        self.game_names = ["total", "filler", "connect4", "chess"]
 
+        self.leaderboard_emojis = [
+            ":first_place:",
+            ":second_place:",
+            ":third_place:",
+            ":clap:",
+            ":clap:",
+            ":clap:",
+            ":thumbsup:",
+            ":thumbsup:",
+            ":thumbsup:",
+            ":poop:",
+        ]
         self.info = json.load(
             open(
                 f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/sokoban.json"
@@ -100,17 +113,17 @@ class Games(commands.Cog):
             "fillerEmojis": self.fillerEmojis,
         }
 
-    @commands.command()
-    @commands.is_owner()
-    async def gameslog(self, ctx):
-        log = "\n".join([f"{self.games_log[k]} | {k}" for k in self.games_log])
-        await ctx.send(f"```{len(self.games_log)} Games:\n{log}```")
+    async def update_leaderboards(self, guild_id, game, member_won_id, member_lost_id):
+        await self.bot.leaderboards.add_leaderboard(guild_id)
 
-    async def overtime(self, gameID, extras="No Winner"):
-        self.games_log[f"ID:{gameID}"] = f"{gameID[: gameID.index('#')]}"
+        await self.bot.leaderboards.add_member(guild_id, member_won_id)
+        await self.bot.leaderboards.add_member(guild_id, member_lost_id)
 
-        await asyncio.sleep(120)
-        await self.delete_game(gameID, extras)
+        await self.bot.leaderboards.add_game(guild_id, member_won_id, game)
+        await self.bot.leaderboards.add_game(guild_id, member_lost_id, game)
+
+        await self.bot.leaderboards.incr_game_won(guild_id, member_won_id, game)
+        await self.bot.leaderboards.incr_game_lost(guild_id, member_lost_id, game)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -128,40 +141,116 @@ class Games(commands.Cog):
                             move = self.gameCalls[f"{gameType}Emojis"][
                                 str(payload.emoji)
                             ]
+                            currentGame.game_started = True
                             await self.gameCalls[f"update_{gameType}_game"](
                                 game_id, move, payload
                             )
-
                         else:
                             if str(payload.emoji) == "❌":
-                                await self.delete_game(game_id, "Game Was Deleted")
+                                await self.delete_game(
+                                    game_id,
+                                    f"{payload.member.name} closed the game",
+                                    payload.member,
+                                )
                                 return
 
                         await currentGame.message.remove_reaction(
                             member=payload.member, emoji=payload.emoji
                         )
 
-    async def delete_game(self, gameID, extras="Timed Out"):
+    async def init_game(self, ctx, member=None, identifier=None):
+        if str(ctx.guild.id) + str(ctx.author.id) in self.keys:
+            await ctx.send(
+                "You are currently in a game! Use `.leave` to leave ur current game"
+            )
+            return None
+
+        if "!" in identifier:
+            self.keys[str(ctx.guild.id) + str(ctx.author.id)] = (
+                identifier + str(ctx.guild.id) + str(ctx.author.id)
+            )
+        else:
+            if member == None or member.bot or member == ctx.author:
+                await ctx.send("tag a user you want to play against")
+                return None
+
+            elif str(ctx.guild.id) + str(member.id) in self.keys:
+                await ctx.send("The member you tagged is currently in a game!")
+                return None
+
+            self.keys[str(ctx.guild.id) + str(ctx.author.id)] = (
+                identifier + str(ctx.guild.id) + str(ctx.author.id) + str(member.id)
+            )
+
+            self.keys[str(ctx.guild.id) + str(member.id)] = (
+                identifier + str(ctx.guild.id) + str(ctx.author.id) + str(member.id)
+            )
+
+        game_id = self.keys[str(ctx.guild.id) + str(ctx.author.id)]
+        if game_id in self.games:
+            await self.games[game_id].message.delete()
+
+        return game_id
+
+    async def overtime(self, gameID, extras="No Winner"):
+        self.games_log[f"ID:{gameID}"] = f"{gameID[: gameID.index('#')]}"
+        await asyncio.sleep(120)
+        await self.delete_game(gameID, extras)
+
+    async def close_game(self, gameID):
+        gameType = gameID[: gameID.index("#")]
+        currentGame = self.games[gameID]
+
+        self.games.pop(gameID)
+        if "!" not in gameID:
+            self.keys.pop(str(currentGame.server.id) + str(currentGame.playerOne.id))
+            self.keys.pop(str(currentGame.server.id) + str(currentGame.playerTwo.id))
+        else:
+            self.keys.pop(str(currentGame.server.id) + str(currentGame.user.id))
+        try:
+            await currentGame.message.clear_reactions()
+        except discord.errors.NotFound:
+            return
+
+    async def delete_game(self, gameID, extras="Timed Out", member=None):
         gameType = gameID[: gameID.index("#")]
         try:
             currentGame = self.games[gameID]
         except KeyError:
             return
 
+        await self.close_game(gameID)
+        if "!" not in gameID:
+            if currentGame.game_started:
+                if member is None:
+                    if currentGame.current_player.id == currentGame.playerOne.id:
+                        winner = currentGame.playerTwo
+                        loser = currentGame.playerOne
+                    else:
+                        winner = currentGame.playerOne
+                        loser = currentGame.playerTwo
+
+                elif member.id == currentGame.playerOne.id:
+                    winner = currentGame.playerTwo
+                    loser = currentGame.playerOne
+                else:
+                    winner = currentGame.playerOne
+                    loser = currentGame.playerTwo
+
+                await self.update_leaderboards(
+                    currentGame.server.id, gameType, winner.id, loser.id
+                )
+                extras = f"{winner.name} won by defualt!"
+            else:
+                extras = f"No Winner"
+            content = None
+        else:
+            content = " "
         embed = discord.Embed(title=gameType.capitalize())
         embed.set_author(name=extras)
         embed.set_footer(text="Game was deleted.")
-        self.games.pop(gameID)
-        if "!" not in gameID:
-            self.keys.pop(str(currentGame.server.id) + str(currentGame.playerOne.id))
-            self.keys.pop(str(currentGame.server.id) + str(currentGame.playerTwo.id))
-            content = None
-        else:
-            self.keys.pop(str(currentGame.server.id) + str(currentGame.user.id))
-            content = " "
 
         try:
-            await currentGame.message.clear_reactions()
             await currentGame.message.edit(embed=embed, content=content)
         except discord.errors.NotFound:
             print(f"Could not delete {gameType} game!")
@@ -173,6 +262,120 @@ class Games(commands.Cog):
             await msg.add_reaction(emoji)
         await msg.add_reaction("❌")
 
+    # @commands.command()
+    # @commands.is_owner()
+    # async def gameslog(self, ctx):
+    #     log = "\n".join([f"{self.games_log[k]} | {k}" for k in self.games_log])
+    #     await ctx.send(f"```{len(self.games_log)} Games:\n{log}```")
+
+    @commands.command()
+    @commands.cooldown(2, 10, commands.BucketType.user)
+    async def leave(self, ctx):
+        """``leave`` leaves any game you are currently in."""
+        key = str(ctx.guild.id) + str(ctx.author.id)
+        if key not in self.keys:
+            await ctx.send("You are not currently in a game!")
+            return
+
+        await self.delete_game(
+            self.keys[key], f"{ctx.author.name} closed the game", ctx.author
+        )
+        await ctx.send(f"{ctx.author.mention}, you have left your game!")
+
+    @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.guild)
+    async def leaderboard(self, ctx, game="total", stat="won"):
+        """``leaderboard [game] [stat]`` a leaderboard of the servers players"""
+        leaderboard = await self.bot.leaderboards.get(ctx.guild.id)
+
+        if leaderboard is None:
+            return await ctx.send("`No games have been played on this server`")
+
+        game = game.lower()
+        stat = stat.lower()
+
+        if game in self.game_names:
+            game = game
+        elif game in ["connect", "connectfour"]:
+            game = "connect4"
+        elif game == "all":
+            game = "total"
+        else:
+            return await ctx.send(
+                "`Invalid Leaderboard Game Field` (`all`, `filler`, `chess`, `connect`)"
+            )
+
+        if stat in ["won", "wins", "win"]:
+            stat = "won"
+        elif stat in ["lose", "lost"]:
+            stat = "lost"
+        elif stat in ["skill", "rank"]:
+            stat = "skill"
+        else:
+            return await ctx.send(
+                "`Invalid Leaderboard Stat Field` (`won`, `lost`, `skill`)"
+            )
+
+        server_leaderboard = []
+        if stat != "skill":
+            for member_id in leaderboard:
+                try:
+                    if member_id != "_id" and leaderboard[member_id][game][stat] != 0:
+                        server_leaderboard.append(
+                            [
+                                leaderboard[member_id][game][stat],
+                                str(self.bot.get_user(int(member_id))),
+                            ]
+                        )
+                except KeyError:
+                    pass
+        else:
+            for member_id in leaderboard:
+                try:
+                    if member_id != "_id" and leaderboard[member_id][game]["won"] != 0:
+                        server_leaderboard.append(
+                            [
+                                int(
+                                    (
+                                        leaderboard[member_id][game]["won"]
+                                        / (leaderboard[member_id][game]["lost"] + 1)
+                                    )
+                                    * 100
+                                ),
+                                str(self.bot.get_user(int(member_id))),
+                            ]
+                        )
+                except KeyError:
+                    pass
+
+        players = len(server_leaderboard)
+        if players > 10:
+            players = 10
+        elif players == 0:
+            return await ctx.send("`not enough games have been played`")
+
+        server_leaderboard = sorted(server_leaderboard)
+        if stat == "lost":
+            server_leaderboard = server_leaderboard[:players]
+        else:
+            server_leaderboard = server_leaderboard[::-1][:players]
+
+        for i in range(len(server_leaderboard)):
+            server_leaderboard[
+                i
+            ] = f"{self.leaderboard_emojis[i]} {server_leaderboard[i][0]} - {server_leaderboard[i][1]}"
+
+        desc = "\n".join(server_leaderboard)
+
+        embed = discord.Embed(
+            title=f"Top {players} in this server ranked by {stat} - {game.capitalize()} Games",
+            description=f"{desc}",
+            color=discord.Color.gold(),
+            timestamp=ctx.message.created_at,
+        )
+
+        await ctx.send(embed=embed)
+
     # -------------------------------------------------------------------------------------------------------#
     @commands.command(aliases=["2048"])
     @checks.isAllowedCommand()
@@ -180,25 +383,12 @@ class Games(commands.Cog):
     @commands.has_permissions(embed_links=True)
     async def twenty48(self, ctx):
         """``2048`` starts a new 2048 game."""
-        if str(ctx.guild.id) + str(ctx.author.id) in self.keys:
-            await ctx.send("You are currently in a game!")
+
+        game_id = await self.init_game(ctx, identifier="2048#!")
+        if game_id is None:
             return
 
-        self.keys[str(ctx.guild.id) + str(ctx.author.id)] = (
-            "2048#!" + str(ctx.guild.id) + str(ctx.author.id)
-        )
-        game_id = self.keys[str(ctx.guild.id) + str(ctx.author.id)]
-
-        if game_id in self.games:
-            await self.games[game_id].message.delete()
-
-        # max [9, 7]
         self.games[game_id] = TwentyFortyEight(ctx.author, ctx.guild)
-
-        # msg = await ctx.send(
-        #     embed=discord.Embed(title=f"2048 | {ctx.author}"),
-        #     content=f"{ctx.author.mention} Loading... :arrows_counterclockwise:",
-        # )
 
         embed = discord.Embed(
             title=f"2048 | {ctx.author}",
@@ -235,9 +425,7 @@ class Games(commands.Cog):
 
         if not currentGame.game_end():
             currentGame.timer.cancel()
-            self.games.pop(gameID)
-            self.keys.pop(str(currentGame.server.id) + str(currentGame.user.id))
-            await currentGame.message.clear_reactions()
+            await self.close_game(gameID)
 
             msg = f"Game Over {currentGame.user}\nScore: {currentGame.score} | Moves: {currentGame.moves}"
         else:
@@ -271,18 +459,9 @@ class Games(commands.Cog):
     async def sokoban(self, ctx):
         """``sokoban`` starts a new sokoban game"""
 
-        if str(ctx.guild.id) + str(ctx.author.id) in self.keys:
-            await ctx.send("You are currently in a game!")
+        game_id = await self.init_game(ctx, identifier="sokoban#!")
+        if game_id is None:
             return
-
-        self.keys[str(ctx.guild.id) + str(ctx.author.id)] = (
-            "sokoban#!" + str(ctx.guild.id) + str(ctx.author.id)
-        )
-        game_id = self.keys[str(ctx.guild.id) + str(ctx.author.id)]
-
-        if game_id in self.games:
-            await self.games[game_id].message.delete()
-
         # max [9, 7]
         self.games[game_id] = Soko_ban([5, 3], ctx.author, ctx.guild)
         embed = discord.Embed(
@@ -357,30 +536,9 @@ class Games(commands.Cog):
     @commands.has_permissions(embed_links=True)
     async def chess(self, ctx, member: discord.Member = None):
         """``chess [@opponent]`` starts a new chess game. Use .move to play `BETA`"""
-        if member == None or member.bot or member == ctx.author:
-            await ctx.send("tag a user you want to play against")
+        game_id = await self.init_game(ctx, member=member, identifier="chess#")
+        if game_id is None:
             return
-
-        elif str(ctx.guild.id) + str(member.id) in self.keys:
-            await ctx.send("The member you tagged is currently in a game!")
-            return
-
-        elif str(ctx.guild.id) + str(ctx.author.id) in self.keys:
-            await ctx.send("You are currently in a game!")
-            return
-
-        self.keys[str(ctx.guild.id) + str(ctx.author.id)] = (
-            "chess#" + str(ctx.guild.id) + str(ctx.author.id) + str(member.id)
-        )
-
-        self.keys[str(ctx.guild.id) + str(member.id)] = (
-            "chess#" + str(ctx.guild.id) + str(ctx.author.id) + str(member.id)
-        )
-
-        game_id = self.keys[str(ctx.guild.id) + str(ctx.author.id)]
-
-        if game_id in self.games:
-            await self.games[game_id].message.delete()
 
         self.games[game_id] = _Chess(ctx.author, member, ctx.guild)
         embed = discord.Embed(
@@ -422,6 +580,7 @@ class Games(commands.Cog):
                 invalid_move = await ctx.send(msg)
             else:
                 await self.update_chess_embed(game_id)
+                currentGame.game_started = True
         else:
             invalid_move = await ctx.send("It's not your turn!")
 
@@ -438,19 +597,24 @@ class Games(commands.Cog):
         if not currentGame.run_game:
             if currentGame.winner == "DRAW":
                 msg = "Draw"
-            elif currentGame.winner == -1:
-                msg = f"<:W_:776325516118065152>{currentGame.current_player[-1]} won by {currentGame.reason}"
-                colour = discord.Color.from_rgb(245, 245, 220)
+            else:
+                if currentGame.winner == -1:
+                    msg = f"<:W_:776325516118065152>{currentGame.current_player[-1]} won by {currentGame.reason}"
+                    colour = discord.Color.from_rgb(245, 245, 220)
+                    winner = currentGame.current_player[-1]
+                    loser = currentGame.current_player[1]
 
-            elif currentGame.winner == 1:
-                msg = f"<:B_:776325516096569384>{currentGame.current_player[1]} won by {currentGame.reason}"
-                colour = discord.Color.blue()
+                elif currentGame.winner == 1:
+                    msg = f"<:B_:776325516096569384>{currentGame.current_player[1]} won by {currentGame.reason}"
+                    colour = discord.Color.blue()
+                    winner = currentGame.current_player[1]
+                    loser = currentGame.current_player[-1]
 
+                await self.update_leaderboards(
+                    currentGame.server.id, "chess", winner.id, loser.id
+                )
             currentGame.timer.cancel()
-            self.games.pop(gameID)
-            self.keys.pop(str(currentGame.server.id) + str(currentGame.playerOne.id))
-            self.keys.pop(str(currentGame.server.id) + str(currentGame.playerTwo.id))
-            await currentGame.message.clear_reactions()
+            await self.close_game(gameID)
         else:
             msg = f"{'<:B_:776325516096569384>' if currentGame.turn == 1 else '<:W_:776325516118065152>'} {currentGame.current_player[currentGame.turn]}'s Turn"
 
@@ -469,50 +633,20 @@ class Games(commands.Cog):
             description=f"**{currentGame.playerOne}** vs. **{currentGame.playerTwo}**\nuse .move to play",
             color=colour,
         )
-        # embed.set_author(
-        #     name="Chess",
-        #     icon_url="https://cdn.discordapp.com/attachments/749779300181606411/774883799347494942/unknown.png",
-        # )
-
-        # embed.add_field(
-        #     name=,
-        #     value="auto delete in 2 mins",
-        # )
 
         await currentGame.message.edit(embed=embed, content=f"{currentGame.game_board}")
 
     # -------------------------------------------------------------------------------------------------------#
 
-    @commands.command()
+    @commands.command(aliases=["connect4", "connectfour"])
     @checks.isAllowedCommand()
     @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def connect(self, ctx, member: discord.Member = None):
         """``connect [@opponent]`` starts a new connect 4 game"""
-        if member == None or member.bot or member == ctx.author:
-            await ctx.send("tag a user you want to play against")
+        game_id = await self.init_game(ctx, member=member, identifier="connect4#")
+        if game_id is None:
             return
-
-        elif str(ctx.guild.id) + str(member.id) in self.keys:
-            await ctx.send("The member you tagged is currently in a game!")
-            return
-
-        elif str(ctx.guild.id) + str(ctx.author.id) in self.keys:
-            await ctx.send("You are currently in a game!")
-            return
-
-        self.keys[str(ctx.guild.id) + str(ctx.author.id)] = (
-            "connect4#" + str(ctx.guild.id) + str(ctx.author.id) + str(member.id)
-        )
-
-        self.keys[str(ctx.guild.id) + str(member.id)] = (
-            "connect4#" + str(ctx.guild.id) + str(ctx.author.id) + str(member.id)
-        )
-
-        game_id = self.keys[str(ctx.guild.id) + str(ctx.author.id)]
-
-        if game_id in self.games:
-            await self.games[game_id].message.delete()
 
         self.games[game_id] = Connect_Four([7, 6], ctx.author, member, ctx.guild)
         embed = discord.Embed(
@@ -555,11 +689,16 @@ class Games(commands.Cog):
                     colour = self.connectColors[c]
                     msg = f"{currentGame.sprites[c]} {winner} won the game!"
 
+            if winner.id == currentGame.playerOne.id:
+                loser = currentGame.playerTwo
+            else:
+                loser = currentGame.playerOne
+
+            await self.update_leaderboards(
+                currentGame.server.id, "connect4", winner.id, loser.id
+            )
             currentGame.timer.cancel()
-            self.games.pop(gameID)
-            self.keys.pop(str(currentGame.server.id) + str(currentGame.playerOne.id))
-            self.keys.pop(str(currentGame.server.id) + str(currentGame.playerTwo.id))
-            await currentGame.message.clear_reactions()
+            await self.close_game(gameID)
         else:
 
             msg = f"{currentGame.sprites[2] if currentGame.turn == 1 else currentGame.sprites[3]} {currentGame.current_player}'s Turn"
@@ -597,31 +736,9 @@ class Games(commands.Cog):
     @commands.has_permissions(embed_links=True)
     async def filler(self, ctx, member: discord.Member = None):
         """``filler [@opponent]`` starts a new filler game"""
-        if member == None or member.bot or member == ctx.author:
-            await ctx.send("tag a user you want to play against")
+        game_id = await self.init_game(ctx, member=member, identifier="filler#")
+        if game_id is None:
             return
-
-        elif str(ctx.guild.id) + str(member.id) in self.keys:
-            await ctx.send("The member you tagged is currently in a game!")
-            return
-
-        elif str(ctx.guild.id) + str(ctx.author.id) in self.keys:
-            await ctx.send("You are currently in a game!")
-            return
-
-        self.keys[str(ctx.guild.id) + str(ctx.author.id)] = (
-            "filler#" + str(ctx.guild.id) + str(ctx.author.id) + str(member.id)
-        )
-
-        self.keys[str(ctx.guild.id) + str(member.id)] = (
-            "filler#" + str(ctx.guild.id) + str(ctx.author.id) + str(member.id)
-        )
-
-        # str(ctx.guild.id) + str(ctx.author.id) + str(member.id)
-        game_id = self.keys[str(ctx.guild.id) + str(ctx.author.id)]
-
-        if game_id in self.games:
-            await self.games[game_id].message.delete()
 
         self.games[game_id] = _Filler([8, 7], ctx.author, member, ctx.guild)
         embed = discord.Embed(
@@ -660,18 +777,22 @@ class Games(commands.Cog):
                 if winner == currentGame.playerOne:
                     msg = f"{currentGame.sprites[currentGame.one_pick]} {winner} won the game!"
                     colour = self.fillerColors[currentGame.one_pick]
+                    loser = currentGame.playerTwo
+
                 elif winner == currentGame.playerTwo:
                     colour = self.fillerColors[currentGame.two_pick]
                     msg = f"{currentGame.sprites[currentGame.two_pick]} {winner} won the game!"
+                    loser = currentGame.playerOne
+
+                await self.update_leaderboards(
+                    currentGame.server.id, "filler", winner.id, loser.id
+                )
             else:
                 msg = "It's a draw!"
                 colour = discord.Color.default()
 
             currentGame.timer.cancel()
-            self.games.pop(gameID)
-            self.keys.pop(str(currentGame.server.id) + str(currentGame.playerOne.id))
-            self.keys.pop(str(currentGame.server.id) + str(currentGame.playerTwo.id))
-            await currentGame.message.clear_reactions()
+            await self.close_game(gameID)
         else:
             msg = f"{currentGame.sprites[currentGame.current_colour]} {currentGame.current_player}'s Turn"
 
