@@ -155,7 +155,9 @@ class Leaderboards(Documents):
             except KeyError:
                 return
 
-    async def incr_game_stats(self, guild_id, member_id, game, stat, check_error=False):
+    async def incr_game_stats(
+        self, guild_id, member_id, game, stat, incr_total=True, check_error=False
+    ):
         """
         Increments the won or lost value of a member's game
         """
@@ -169,9 +171,10 @@ class Leaderboards(Documents):
                 except KeyError:
                     return
 
-        await self.db.update_one(
-            {"_id": guild_id}, {"$inc": {f"{member_id}.total.{stat}": 1}}
-        )
+        if incr_total:
+            await self.db.update_one(
+                {"_id": guild_id}, {"$inc": {f"{member_id}.total.{stat}": 1}}
+            )
         await self.db.update_one(
             {"_id": guild_id}, {"$inc": {f"{member_id}.{game}.{stat}": 1}}
         )

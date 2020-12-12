@@ -23,7 +23,7 @@ class Math(commands.Cog):
         except ValueError:
             await ctx.send("Invalid Input!")
             return
-        answer = base_conversion(number, base1, base2)
+        answer = await base_conversion(number, int(base1), int(base2))
         embed = discord.Embed(
             title=f"Base {base1} to Base {base2}:",
             description=f"**Base {base1}:** `{number}`\n**Base {base2}:** `{answer}`\n",
@@ -39,7 +39,7 @@ class Math(commands.Cog):
         """``calc [equation]`` calculates the answer to the given equation (assumes natural log unless specified [log(base, number)]"""
         content = "".join([x for x in content])
 
-        out = str(calc_eq(content))
+        out = str(await calc_eq(content))
         if len(out) > 2000:
             out = out[:1950] + " Exceded Character Limit! "
 
@@ -56,12 +56,13 @@ class Math(commands.Cog):
     @commands.command(aliases=["aliases"])
     @checks.isAllowedCommand()
     @commands.cooldown(4, 10, commands.BucketType.user)
-    async def derivative(self, ctx, number=1, *, content: commands.clean_content):
+    async def derivative(self, ctx, number, *, content: commands.clean_content):
         """``derivative [nth derivative] [equation]`` solves for the nth dervative of an equation"""
         ext = ["th", "st", "nd", "rd"]
-        answer = get_derivative(content, number)
+        number = int(number)
+        answer = await get_derivative(content, number)
         embed = discord.Embed(
-            title=f"{number}{ext[number] if int(number) <= 3 else 'th'} Derivative of :",
+            title=f"{number}{ext[number] if number <= 3 else 'th'} Derivative of :",
             description=f"{content} **=**\n```{answer}```",
             color=discord.Color.blue(),
         )
@@ -74,7 +75,7 @@ class Math(commands.Cog):
         """``solve [equation]`` solves for variables in most math equations"""
         embed = discord.Embed(
             title="Solve:",
-            description=f"**{content}**:\n```{solve_eq(content)}```",
+            description=f"**{content}**:\n```{await solve_eq(content)}```",
             color=discord.Color.blue(),
         )
         await ctx.send(embed=embed)
@@ -93,7 +94,7 @@ class Math(commands.Cog):
             elif ": " not in content[i]:
                 content[i] = [content[i]]
 
-        done, graph = graph_eq(content, f"{ctx.author}'s Graph")
+        done, graph = await graph_eq(content, f"{ctx.author}'s Graph")
         if done:
             await ctx.send(file=discord.File(graph))
             os.remove(graph)
@@ -107,12 +108,50 @@ class Math(commands.Cog):
         """``py [code]`` runs `python-3.7.2` code and outputs to the chat. 
             Execution cannot exceed 1 second!
             Included Libraries: `math, numpy, time, random`"""
-        out, time = run_code(content.strip("`"))
+
+        content = content.replace("```py", "").replace("```", "")
+
+        out, time = await run_code(content)
         if len(str(out)) > 2000:
             out = out[:1900] + " Exceded Character Limit! "
-        await ctx.send(
-            f"**Output:** {f'Completed in **{time}** seconds!' if time else ' '}```py\n{out}```"
-        )
+
+        msg = f"**Output:** {f'Completed in **{time}** seconds!' if time else ' '}```py\n{out}```"
+        # embed = discord.Embed(
+        #     title=f"{ctx.author}'s Code",
+        #     description=msg,
+        #     color=ctx.author.color,
+        #     timestamp=ctx.message.created_at,
+        # )
+        # embed.set_thumbnail(
+        #     url=carbon_code(content.replace("\n", "%0D%0A"), True)[: 2000 - len(msg)]
+        # )
+
+        await ctx.send(msg)
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(1, 30, commands.BucketType.guild)
+    async def code(self, ctx, *, content: commands.clean_content):
+        """``code [code]`` converts code from text to a prettier image. `(uses carbon)`"""
+
+        try:
+            c = await carbon_code(content.replace("```py", "").replace("```", ""))
+            await ctx.send(file=discord.File(c))
+        except Exception:
+            await ctx.send("`could not convert code`")
+        os.remove(c)
+        # content = (
+        #     content.replace("```py", "").replace("```", "").replace("\n", "%0D%0A")
+        # )
+        # embed = discord.Embed(
+        #     color=discord.Color.from_rgb(240, 240, 240),
+        #     timestamp=ctx.message.created_at,
+        # )
+        # embed.set_footer(
+        #     text=f"{ctx.author}'s code", icon_url=ctx.author.avatar_url,
+        # )
+        # embed.set_image(url=carbon_code(content[:1800], True))
+        # await ctx.send(embed=embed)
 
     @commands.command(aliases=["ltx", "fool"])
     @checks.isAllowedCommand()
@@ -120,8 +159,7 @@ class Math(commands.Cog):
     async def latex(self, ctx, *, content: commands.clean_content):
         """``latex [latex formula]`` converts latex to regular text"""
 
-        text, e = latex_to_text(content)
-
+        text, e = await latex_to_text(content)
         if e is None:
             try:
                 await ctx.send(file=discord.File(text))
@@ -131,6 +169,14 @@ class Math(commands.Cog):
             os.remove(text)
         else:
             await ctx.send(f"```{e}```")
+
+        # try:
+        #     c = await carbon_code(content.replace("```py", "").replace("```", ""))
+        #     await ctx.send(file=discord.File(c))
+        #     await ctx.message.delete()
+        # except Exception:
+        #     await ctx.send("`could not convert code")
+        # os.remove(c)
 
 
 def setup(bot):

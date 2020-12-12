@@ -1,17 +1,28 @@
 import sys
+import requests
+import json
 import io
 import os
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy import sqrt, sin, cos, tan, log
 from sympy import symbols, Eq, solve, parse_expr, integrate, diff
-
+from copy import copy
 import time, math, random
 
 import signal
 from contextlib import contextmanager
 
 import pylab
+
+from urllib.parse import quote
+
+carbon_data = json.load(
+    open(
+        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/carbon.json"
+    )
+)
+
 
 chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 symbl = "abcdefghijklmnopqrstuvwxyz"
@@ -54,7 +65,7 @@ def time_limit(seconds):
         signal.alarm(0)
 
 
-def format_eq(eq):
+async def format_eq(eq):
     eq = (
         eq.lower()
         .replace("^", "**")
@@ -102,7 +113,7 @@ def format_eq(eq):
     return eq
 
 
-def graph_eq(equations, title):
+async def graph_eq(equations, title):
     plt.clf()
     equations = equations[:5]
     roots = []
@@ -114,7 +125,7 @@ def graph_eq(equations, title):
                 ran = int(equation[1]) if 1 < int(equation[1]) < 101 else ran
 
             eq = equation
-            equation = format_eq(equation[0])
+            equation = await format_eq(equation[0])
 
             x = np.array(np.arange(-1 * ran, ran, ran / 100))
             with time_limit(1):
@@ -122,7 +133,7 @@ def graph_eq(equations, title):
 
             plt.title(title)
 
-            roots.append(solve_eq(equation))
+            roots.append(await solve_eq(equation))
 
             plt.grid(alpha=0.5, linestyle="solid")
             plt.axhline(y=0, color="k", linewidth=0.5)
@@ -143,8 +154,8 @@ def graph_eq(equations, title):
     return True, loc
 
 
-def calc_eq(equation):
-    equation = format_eq(equation)
+async def calc_eq(equation):
+    equation = await format_eq(equation)
     try:
         with time_limit(1):
             solved = eval(str(parse_expr(equation)))
@@ -154,8 +165,8 @@ def calc_eq(equation):
     return solved
 
 
-def solve_eq(equation):
-    equation = format_eq(equation)
+async def solve_eq(equation):
+    equation = await format_eq(equation)
     solved = []
 
     try:
@@ -174,15 +185,15 @@ def solve_eq(equation):
         return solved
 
 
-def base_conversion(number, base1, base2):
+async def base_conversion(number, base1, base2):
     try:
-        return np.base_repr(int(number, base1), base2)
+        return np.base_repr(int(number, base=base1), base2)
     except ValueError:
         return "Invalid Input"
 
 
-def get_derivative(equation, d):
-    equation = format_eq(equation)
+async def get_derivative(equation, d):
+    equation = await format_eq(equation)
     try:
         with time_limit(1):
             for i in range(d):
@@ -192,7 +203,7 @@ def get_derivative(equation, d):
         return "Invalid Input"
 
 
-def run_code(code):
+async def run_code(code):
     for r in restricted:
         if r in code:
             return f"code cannot contain '{r}'", None
@@ -221,7 +232,7 @@ def run_code(code):
 
 
 # implemented from https://stackoverflow.com/questions/14110709/creating-images-of-mathematical-expressions-from-tex-using-matplotlib
-def latex_to_text(formula):
+async def latex_to_text(formula):
     formula = formula.replace("`", "")
 
     if formula[0] != "$":
@@ -254,9 +265,73 @@ def latex_to_text(formula):
 
         # Save the adjusted text.
         fig.savefig(save, dpi=dpi)
+
     except Exception as e:
         return save, e
 
     plt.clf()
     plt.close()
     return save, None
+
+
+async def carbon_code(code, random_theme=False):
+    d = copy(carbon_data)
+
+    theme = random.choice(
+        [
+            "material",
+            "a11y-dark",
+            "base-16",
+            "duotone",
+            "hopscotch",
+            "lucario",
+            "monokai",
+            "synthwave-84",
+            "panda",
+            "paraiso",
+            "dracula",
+        ]
+    )
+
+    d.update({"code": code})
+    d.update({"theme": theme})
+    res = requests.post("https://carbonara.now.sh/api/cook/", json=d)
+
+    save = (
+        folder + "/" + "".join([str(random.randint(0, 9)) for i in range(9)]) + ".jpg"
+    )
+
+    with open(save, "wb") as handler:
+        handler.write(res.content)
+
+    return save
+
+    # theme = "monokai"
+    # backgroundColor = "rgba(255,255,255,255)"
+    # # language = "auto"
+    # paddingVertical = "5px"
+    # paddingHorizontal = "5px"
+    # # exportsize = "3x"
+    # lineNumbers = "true"
+    # windowControls = "false"
+
+    # if random_theme:
+    #     theme = random.choice(
+    #         [
+    #             "material",
+    #             "a11y-dark",
+    #             "base-16",
+    #             "duotone",
+    #             "hopscotch",
+    #             "lucario",
+    #             "monokai",
+    #             "synthwave-84",
+    #             "panda",
+    #             "paraiso",
+    #             "dracula",
+    #         ]
+    #     )
+
+    # url = f"https://carbonnowsh.herokuapp.com/?code={quote(code)}&theme={theme}&backgroundColor={backgroundColor}&paddingVertical={paddingVertical}&paddingHorizontal={paddingHorizontal}&windowControls=false&lineNumbers=true"
+
+    # return url
