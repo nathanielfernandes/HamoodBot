@@ -648,6 +648,9 @@ class Games(commands.Cog):
                     else:
                         loser = currentGame.playerOne
 
+                    await self.update_leaderboards(
+                        currentGame.server.id, "connect4", winner.id, loser.id
+                    )
             currentGame.timer.cancel()
             await self.close_game(gameID)
         else:
