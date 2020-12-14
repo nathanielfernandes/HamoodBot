@@ -7,7 +7,15 @@ class _Filler:
         self.game_started = False
         self.size = [size[0] + 2, size[1] + 2]
         # self.sprites = ['R ', 'O ', "Y ", 'G ', 'B ', "P "]
-        # self.sprites = [u"\U0001F494", 	u"\U0001F497", 	u"\U0001F49B", 	u"\U0001F49A", 	u"\U0001F499", 	u"\U0001F49C", u"\u2B1B"]
+        # self.sprites = [
+        #     u"\U0001F494",
+        #     u"\U0001F497",
+        #     u"\U0001F49B",
+        #     u"\U0001F49A",
+        #     u"\U0001F499",
+        #     u"\U0001F49C",
+        #     u"\u2B1B",
+        # ]
         self.oneColour = []
         self.twoColour = []
         self.turn = -1
@@ -21,6 +29,15 @@ class _Filler:
             "<:black:782108442835812374>",
             "",
         ]
+        # self.player_sprites = [
+        #     u"\U0001F494",
+        #     u"\U0001F497",
+        #     u"\U0001F49B",
+        #     u"\U0001F49A",
+        #     u"\U0001F499",
+        #     u"\U0001F49C",
+        #     u"\u2B1B",
+        # ]
         self.player_sprites = [
             "<a:redg:782108443238465556>",
             "<a:blueg:782108443045134387>",
@@ -42,9 +59,20 @@ class _Filler:
 
     def fill_board(self):
         # creates playing space
-        self.grid = []
-        for i in range(self.size[0] * self.size[1]):
-            self.grid.append(random.randint(0, 5))
+        self.grid = [random.randint(0, 5)]
+
+        for i in range(1, self.size[0] * self.size[1]):
+            temp = [0, 1, 2, 3, 4]
+
+            try:
+                temp.remove(self.grid[i - 1])
+                temp.remove(self.grid[i - self.size[0]])
+            except Exception:
+                pass
+            self.grid.append(random.choice(temp))
+
+        # for i in range(self.size[0] * self.size[1]):
+        #
 
         self.oneColour.append(71)
         self.twoColour.append(18)
@@ -155,4 +183,3 @@ class _Filler:
                 row += str(self.tempGrid[x + (self.size[0] * y)])
             row += "\n"
             self.game_grid += row
-

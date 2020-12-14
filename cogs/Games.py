@@ -285,7 +285,7 @@ class Games(commands.Cog):
         await ctx.send(f"{ctx.author.mention}, you have left your game!")
 
     @commands.command()
-    @commands.cooldown(1, 10, commands.BucketType.guild)
+    @commands.cooldown(3, 10, commands.BucketType.guild)
     async def leaderboard(self, ctx, game="total", stat="won"):
         """``leaderboard [game] [stat]`` a leaderboard of the servers players"""
         leaderboard = await self.bot.leaderboards.get(ctx.guild.id)
@@ -337,12 +337,17 @@ class Games(commands.Cog):
                     if member_id != "_id" and leaderboard[member_id][game]["won"] != 0:
                         server_leaderboard.append(
                             [
-                                int(
+                                round(
                                     (
                                         leaderboard[member_id][game]["won"]
-                                        / (leaderboard[member_id][game]["lost"] + 1)
+                                        / (
+                                            leaderboard[member_id][game]["lost"]
+                                            if leaderboard[member_id][game]["lost"] != 0
+                                            else leaderboard[member_id][game]["lost"]
+                                            + 1
+                                        )
                                     )
-                                    * 100
+                                    * 500
                                 ),
                                 str(self.bot.get_user(int(member_id))),
                             ]
@@ -365,7 +370,7 @@ class Games(commands.Cog):
         for i in range(len(server_leaderboard)):
             server_leaderboard[
                 i
-            ] = f"{self.leaderboard_emojis[i]} {server_leaderboard[i][0]} - {server_leaderboard[i][1]}"
+            ] = f"{self.leaderboard_emojis[i]} {server_leaderboard[i][0]}{' SR' if stat=='skill' else ''} - {server_leaderboard[i][1]}"
 
         desc = "\n".join(server_leaderboard)
 
@@ -375,6 +380,43 @@ class Games(commands.Cog):
             color=discord.Color.gold(),
             timestamp=ctx.message.created_at,
         )
+
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.cooldown(4, 10, commands.BucketType.guild)
+    async def stats(self, ctx, member: discord.Member = None, game="total"):
+        member = ctx.author if member is None else member
+
+        leaderboard = await self.bot.leaderboards.get(ctx.guild.id)
+        if leaderboard is None:
+            return await ctx.send("`No games have been played on this server`")
+
+        if str(member.id) not in leaderboard:
+            return await ctx.send("`The member has not played any games on this server")
+
+        if game in self.game_names:
+            game = game
+        elif game in ["connect", "connectfour"]:
+            game = "connect4"
+        elif game == "all":
+            game = "total"
+        else:
+            return await ctx.send("`Game Name` (`all`, `filler`, `chess`, `connect`)")
+
+        if game not in leaderboard[str(member.id)]:
+            return await ctx.send("`The member has no stats for that game`")
+
+        stat = leaderboard[str(member.id)][game]
+
+        embed = discord.Embed(
+            title=f"{member}'s {game.capitalize()} Stats",
+            description=f"**Wins:** {stat['won']}\n**Losses:** {stat['lost']}\n**SR:** {round((stat['won'] / (stat['lost'] if stat['lost'] != 0 else stat['lost'] + 1)) * 500)}",
+            timestamp=ctx.message.created_at,
+            color=member.color,
+        )
+
+        embed.set_thumbnail(url=member.avatar_url)
 
         await ctx.send(embed=embed)
 
@@ -409,7 +451,7 @@ class Games(commands.Cog):
     #     await self.add_reactions(currentGame.message, self.triviaEmojis)
     #     await self.update_trivia_embed(game_id)
 
-    async def update_trivia_game(self):
+    async def update_trivia_game(self,):
         pass
 
     # async def update_connect_game(self, game_id, move, payload):
