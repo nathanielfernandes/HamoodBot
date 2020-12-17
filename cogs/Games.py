@@ -296,27 +296,36 @@ class Games(commands.Cog):
         game = game.lower()
         stat = stat.lower()
 
-        if game in self.game_names:
-            game = game
-        elif game in ["connect", "connectfour"]:
-            game = "connect4"
-        elif game == "all":
-            game = "total"
-        else:
-            return await ctx.send(
-                "`Invalid Leaderboard Game Field` (`all`, `filler`, `chess`, `connect`)"
-            )
-
-        if stat in ["won", "wins", "win"]:
+        if game in ["won", "wins", "win"]:
             stat = "won"
-        elif stat in ["lose", "lost"]:
+            game = "total"
+        elif game in ["lose", "lost"]:
+            game = "total"
             stat = "lost"
-        elif stat in ["skill", "rank"]:
+        elif game in ["skill", "rank"]:
+            game = "total"
             stat = "skill"
         else:
-            return await ctx.send(
-                "`Invalid Leaderboard Stat Field` (`won`, `lost`, `skill`)"
-            )
+            if game in self.game_names:
+                game = game
+            elif game in ["connect", "connectfour"]:
+                game = "connect4"
+            elif game == "all":
+                game = "total"
+            else:
+                return await ctx.send(
+                    "`Invalid Leaderboard Game Field` (`all`, `filler`, `chess`, `connect`)"
+                )
+            if stat in ["won", "wins", "win"]:
+                stat = "won"
+            elif stat in ["lose", "lost"]:
+                stat = "lost"
+            elif stat in ["skill", "rank"]:
+                stat = "skill"
+            else:
+                return await ctx.send(
+                    "`Invalid Leaderboard Stat Field` (`won`, `lost`, `skill`)"
+                )
 
         server_leaderboard = []
         if stat != "skill":
@@ -347,7 +356,17 @@ class Games(commands.Cog):
                                             + 1
                                         )
                                     )
-                                    * 500
+                                    * (
+                                        500
+                                        * (
+                                            1
+                                            - 1
+                                            / (
+                                                leaderboard[member_id][game]["won"]
+                                                + leaderboard[member_id][game]["lost"]
+                                            )
+                                        )
+                                    )
                                 ),
                                 str(self.bot.get_user(int(member_id))),
                             ]
@@ -411,7 +430,7 @@ class Games(commands.Cog):
 
         embed = discord.Embed(
             title=f"{member}'s {game.capitalize()} Stats",
-            description=f"**Wins:** {stat['won']}\n**Losses:** {stat['lost']}\n**SR:** {round((stat['won'] / (stat['lost'] if stat['lost'] != 0 else stat['lost'] + 1)) * 500)}",
+            description=f"**Wins:** {stat['won']}\n**Losses:** {stat['lost']}\n**SR:** {round((stat['won'] / (stat['lost'] if stat['lost'] != 0 else stat['lost'] + 1)) * (500 * (1-1/(stat['won']+(stat['lost'])))))}",
             timestamp=ctx.message.created_at,
             color=member.color,
         )
@@ -798,9 +817,7 @@ class Games(commands.Cog):
             currentGame.timer = asyncio.create_task(self.overtime(gameID))
             colour = self.fillerColors[currentGame.current_colour]
 
-        embed = discord.Embed(
-            title=msg, description=f"{currentGame.game_grid}", color=colour,
-        )
+        embed = discord.Embed(title=msg, description=f"{currentGame}", color=colour,)
         embed.set_author(
             name="Filler",
             icon_url="https://cdn.discordapp.com/attachments/732309032240545883/782327997096263700/unknown.png",

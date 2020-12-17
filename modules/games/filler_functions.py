@@ -62,7 +62,7 @@ class _Filler:
         self.grid = [random.randint(0, 5)]
 
         for i in range(1, self.size[0] * self.size[1]):
-            temp = [0, 1, 2, 3, 4]
+            temp = [0, 1, 2, 3, 4, 5]
 
             try:
                 temp.remove(self.grid[i - 1])
@@ -183,3 +183,7 @@ class _Filler:
                 row += str(self.tempGrid[x + (self.size[0] * y)])
             row += "\n"
             self.game_grid += row
+
+    def __str__(self):
+        self.draw_board()
+        return self.game_grid
