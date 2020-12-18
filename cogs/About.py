@@ -97,7 +97,7 @@ class About(commands.Cog):
         )
         embed.add_field(
             name="System",
-            value=f"```py\nLatency: {round(self.bot.latency * 1000)}ms\nPlatform: {platform.system()}\nArchitecture: {platform.machine()}\nProcessor: {platform.processor()}\nRam Usage: {ram_used}```",
+            value=f"```py\nLatency: {round(self.bot.latency * 1000)}ms\nPlatform: {platform.system()}\nArchitecture: {platform.machine()}\nRam Usage: {ram_used}```",
             inline=False,
         )
 

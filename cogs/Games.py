@@ -451,6 +451,7 @@ class Games(commands.Cog):
     async def trivia(
         self, ctx, member: discord.Member = None, category="any", difficulty="any"
     ):
+        """``trivia [@opponent] [category] [difficulty]`` play a game of trivia with someone!"""
         game_id = await self.init_game(ctx, member=member, identifier="trivia#")
         if game_id is None:
             return
