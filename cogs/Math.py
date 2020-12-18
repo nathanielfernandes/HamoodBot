@@ -128,30 +128,30 @@ class Math(commands.Cog):
 
         await ctx.send(msg)
 
-    @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(1, 30, commands.BucketType.guild)
-    async def code(self, ctx, *, content: commands.clean_content):
-        """``code [code]`` converts code from text to a prettier image. `(uses carbon)`"""
+    # @commands.command()
+    # @checks.isAllowedCommand()
+    # @commands.cooldown(1, 30, commands.BucketType.guild)
+    # async def code(self, ctx, *, content: commands.clean_content):
+    #     """``code [code]`` converts code from text to a prettier image. `(uses carbon)`"""
 
-        try:
-            c = await carbon_code(content.replace("```py", "").replace("```", ""))
-            await ctx.send(file=discord.File(c))
-        except Exception:
-            await ctx.send("`could not convert code`")
-        os.remove(c)
-        # content = (
-        #     content.replace("```py", "").replace("```", "").replace("\n", "%0D%0A")
-        # )
-        # embed = discord.Embed(
-        #     color=discord.Color.from_rgb(240, 240, 240),
-        #     timestamp=ctx.message.created_at,
-        # )
-        # embed.set_footer(
-        #     text=f"{ctx.author}'s code", icon_url=ctx.author.avatar_url,
-        # )
-        # embed.set_image(url=carbon_code(content[:1800], True))
-        # await ctx.send(embed=embed)
+    #     try:
+    #         c = await carbon_code(content.replace("```py", "").replace("```", ""))
+    #         await ctx.send(file=discord.File(c))
+    #     except Exception:
+    #         await ctx.send("`could not convert code`")
+    #     os.remove(c)
+    # content = (
+    #     content.replace("```py", "").replace("```", "").replace("\n", "%0D%0A")
+    # )
+    # embed = discord.Embed(
+    #     color=discord.Color.from_rgb(240, 240, 240),
+    #     timestamp=ctx.message.created_at,
+    # )
+    # embed.set_footer(
+    #     text=f"{ctx.author}'s code", icon_url=ctx.author.avatar_url,
+    # )
+    # embed.set_image(url=carbon_code(content[:1800], True))
+    # await ctx.send(embed=embed)
 
     @commands.command(aliases=["ltx", "fool"])
     @checks.isAllowedCommand()

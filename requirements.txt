@@ -12,3 +12,4 @@ chess
 pymongo
 dnspython
 motor
+psutil

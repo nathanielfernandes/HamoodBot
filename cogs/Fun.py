@@ -5,7 +5,7 @@ import json
 import discord
 from discord.ext import commands
 
-from modules.zodiac_functions import getZodiac, getCompatibility
+# from modules.zodiac_functions import getZodiac, getCompatibility
 import modules.checks as checks
 
 
@@ -123,18 +123,18 @@ class Fun(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["sign"])
-    @checks.isAllowedCommand()
-    async def zodiac(self, ctx, month1: str, day1: int, month2: str, day2: int):
-        """``zodiac [mmm] [dd] [mmm] [dd]`` lets you test your zodiac's compatibilty with another"""
-        sign1 = getZodiac(month1, day1)
-        sign2 = getZodiac(month2, day2)
+    # @commands.command(aliases=["sign"])
+    # @checks.isAllowedCommand()
+    # async def zodiac(self, ctx, month1: str, day1: int, month2: str, day2: int):
+    #     """``zodiac [mmm] [dd] [mmm] [dd]`` lets you test your zodiac's compatibilty with another"""
+    #     sign1 = getZodiac(month1, day1)
+    #     sign2 = getZodiac(month2, day2)
 
-        compatibility = getCompatibility(sign1, sign2)
+    #     compatibility = getCompatibility(sign1, sign2)
 
-        await ctx.send(
-            f"person 1 is a **{sign1}**, person 2 is a **{sign2}**, and they are about **{compatibility}** compatible"
-        )
+    #     await ctx.send(
+    #         f"person 1 is a **{sign1}**, person 2 is a **{sign2}**, and they are about **{compatibility}** compatible"
+    #     )
 
     @commands.command()
     @checks.isAllowedCommand()

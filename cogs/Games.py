@@ -21,7 +21,7 @@ class Games(commands.Cog):
         self.games = {}
         self.keys = {}
         self.games_log = {}
-        self.game_names = ["total", "filler", "connect4", "chess"]
+        self.game_names = ["total", "filler", "connect4", "chess", "trivia"]
 
         self.leaderboard_emojis = [
             ":first_place:",
@@ -47,6 +47,7 @@ class Games(commands.Cog):
             "<:chessB:776347122341249044>": 1,
             "<:chessC:776347121694539777>": 2,
             "<:chessD:776347122496831498>": 3,
+            "🚪": 4,
         }
 
         self.twenty48Emojis = {
@@ -149,7 +150,6 @@ class Games(commands.Cog):
                             move = self.gameCalls[f"{gameType}Emojis"][
                                 str(payload.emoji)
                             ]
-                            currentGame.game_started = True
                             await self.gameCalls[f"update_{gameType}_game"](
                                 game_id, move, payload
                             )
@@ -399,7 +399,6 @@ class Games(commands.Cog):
             color=discord.Color.gold(),
             timestamp=ctx.message.created_at,
         )
-
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -445,47 +444,99 @@ class Games(commands.Cog):
     #     log = "\n".join([f"{self.games_log[k]} | {k}" for k in self.games_log])
     #     await ctx.send(f"```{len(self.games_log)} Games:\n{log}```")
     # -------------------------------------------------------------------------------------------------------#
-    # @commands.command()
-    # @checks.isAllowedCommand()
-    # @commands.cooldown(2, 60, commands.BucketType.channel)
-    # @commands.has_permissions(embed_links=True)
-    # async def trivia(self, ctx, member: discord.Member = None):
-    #     game_id = await self.init_game(ctx, member=member, identifier="trivia#")
-    #     if game_id is None:
-    #         return
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 60, commands.BucketType.channel)
+    @commands.has_permissions(embed_links=True)
+    async def trivia(
+        self, ctx, member: discord.Member = None, category="any", difficulty="any"
+    ):
+        game_id = await self.init_game(ctx, member=member, identifier="trivia#")
+        if game_id is None:
+            return
 
-    #     self.games[game_id] = _Trivia(ctx.author, member, ctx.guild)
-    #     embed = discord.Embed(
-    #         title=f"Trivia | {ctx.author} vs. {member}",
-    #         description="Loading... :arrows_counterclockwise:",
-    #     )
-    #     embed.set_thumbnail(
-    #         url="https://cdn.discordapp.com/attachments/749779300181606411/776368591557754910/unknown.png"
-    #     )
+        self.games[game_id] = _Trivia(
+            ctx.author, member, ctx.guild, category, difficulty
+        )
+        # embed = discord.Embed(
+        #     title=f"Trivia | {ctx.author} vs. {member}",
+        #     description="Loading... :arrows_counterclockwise:",
+        # )
+        currentGame = self.games[game_id]
 
-    #     msg = await ctx.send(embed=embed)
-    #     currentGame = self.games[game_id]
-    #     currentGame.message = msg
+        embed = discord.Embed(
+            title=f"Trivia",
+            description=f"**{ctx.author}** wants to start a game with **{member}**\nCategory: **{currentGame.category[1]}**\nDifficulty: **{currentGame.difficulty}**",
+        )
 
-    #     await self.add_reactions(currentGame.message, self.triviaEmojis)
-    #     await self.update_trivia_embed(game_id)
+        embed.set_thumbnail(
+            url="https://cdn.discordapp.com/attachments/749779300181606411/789384532746174464/question-marks.png"
+        )
 
-    async def update_trivia_game(self,):
-        pass
+        embed.set_footer(text=f"{member}, Click the door to join the game!")
 
-    # async def update_connect_game(self, game_id, move, payload):
-    #     currentGame = self.games[game_id]
-    #     temp = list(currentGame.grid)
-    #     if payload.user_id == currentGame.current_player.id:
-    #         currentGame.choice = move
-    #         currentGame.update_player()
-    #         if currentGame.grid != temp:
-    #             await self.update_connect_embed(game_id)
+        msg = await ctx.send(embed=embed)
+        currentGame.message = msg
+
+        await msg.add_reaction("🚪")
+        await msg.add_reaction("❌")
+        # await self.add_reactions(currentGame.message, self.triviaEmojis)
+
+    async def start_trivia_game(self, gameID):
+        currentGame = self.games[gameID]
+
+        embed = discord.Embed(
+            title=f"Trivia | {currentGame.playerOne} vs. {currentGame.playerTwo}",
+            description="Loading... :arrows_counterclockwise:\n**Get Ready!**",
+        )
+        embed.set_thumbnail(
+            url="https://cdn.discordapp.com/attachments/749779300181606411/789384532746174464/question-marks.png"
+        )
+        await currentGame.message.edit(embed=embed)
+        await self.add_reactions(currentGame.message, self.triviaEmojis)
+
+        await self.update_trivia_embed(gameID)
+
+    async def update_trivia_game(self, gameID, choice, payload):
+        currentGame = self.games[gameID]
+
+        if not currentGame.wait:
+            if choice == 4:
+                if not currentGame.game_started:
+                    if payload.user_id == currentGame.playerTwo.id:
+                        currentGame.game_started = True
+                        await currentGame.message.clear_reactions()
+                        await self.start_trivia_game(gameID)
+                    else:
+                        return
+                else:
+                    return
+            else:
+
+                ans = currentGame.current_question["correct_answer"]
+                if currentGame.check_answer(choice, payload.member):
+                    msg = f"**Correct! {payload.member}**"
+                    img = "https://cdn.discordapp.com/attachments/749779300181606411/789387042504572928/0-6616_view-samegoogleiqdbsaucenao-qcbbexbc5-green-check-mark-circle.png"
+                else:
+                    msg = f"**Incorrect! {payload.member}**"
+                    img = "https://cdn.discordapp.com/attachments/749779300181606411/789387314501386250/Incorrect_Symbol-512.png"
+
+                currentGame.wait = True
+
+                embed = discord.Embed(
+                    title=msg, description=f"***{ans}*** was the correct answer.",
+                )
+                embed.set_thumbnail(url=img)
+
+                await currentGame.message.edit(embed=embed)
+
+                await asyncio.sleep(2)
+
+                await self.update_trivia_embed(gameID)
 
     async def update_trivia_embed(self, gameID):
         currentGame = self.games[gameID]
 
-        currentGame.next_question()
         if currentGame.question_num == 10:
             if (
                 currentGame.score[currentGame.playerOne.id]
@@ -506,42 +557,46 @@ class Games(commands.Cog):
                     winner = currentGame.playerTwo
                     loser = currentGame.playerOne
 
+                await self.update_leaderboards(
+                    currentGame.server.id, "trivia", winner.id, loser.id
+                )
+
                 msg = f"{winner} won the game!"
 
             currentGame.timer.cancel()
             await self.close_game(gameID)
-        else:
-            msg = f"Question {currentGame.question_num+1}/10"
 
+            desc = None
+        else:
+            msg = f"**{currentGame.current_question['question']}**"
+            desc = f"Question **{currentGame.question_num+1}/10**"
             if currentGame.timer is not None:
                 currentGame.timer.cancel()
 
             currentGame.timer = asyncio.create_task(self.overtime(gameID))
 
-        embed = discord.Embed(
-            title=msg,
-            description=f"**{currentGame.current_question['question']}**\nCategory: {currentGame.current_question['category']}\nDifficulty: {currentGame.current_question['difficulty']}",
-            color=discord.Color.blue(),
-        )
+        embed = discord.Embed(title=msg, description=desc, color=discord.Color.blue(),)
 
-        embed.add_field(
-            name=f"Choices",
-            value=f"{currentGame.current_question['options_str']}",
-            inline=False,
-        )
+        if desc is not None:
+            embed.add_field(
+                name=f"Choices",
+                value=f"{currentGame.current_question['options_str']}",
+                inline=False,
+            )
 
         embed.set_author(
             name="Trivia",
-            icon_url="https://cdn.discordapp.com/attachments/749779300181606411/774883799347494942/unknown.png",
+            icon_url="https://cdn.discordapp.com/attachments/749779300181606411/789384532746174464/question-marks.png",
         )
 
         embed.add_field(
             name=f"{currentGame.playerOne}: **{currentGame.score[currentGame.playerOne.id]}**     {currentGame.playerTwo}: **{currentGame.score[currentGame.playerTwo.id]}**",
-            value="auto delete in 2 mins",
+            value=f"Category: {currentGame.current_question['category'].title()}\nDifficulty: {currentGame.current_question['difficulty'].capitalize()}\nauto delete in 2 mins",
             inline=False,
         )
 
         await currentGame.message.edit(embed=embed)
+        currentGame.wait = False
 
     # -------------------------------------------------------------------------------------------------------#
 
@@ -685,6 +740,7 @@ class Games(commands.Cog):
         currentGame = self.games[game_id]
         temp = list(currentGame.grid)
         if payload.user_id == currentGame.current_player.id:
+            currentGame.game_started = True
             currentGame.choice = move
             currentGame.update_player()
             if currentGame.grid != temp:
@@ -777,9 +833,12 @@ class Games(commands.Cog):
         if move != currentGame.one_pick and move != currentGame.two_pick:
             if currentGame.turn == 1 and payload.user_id == currentGame.playerOne.id:
                 currentGame.one_pick = move
+                currentGame.game_started = True
                 await self.update_filler_embed(game_id)
+
             elif currentGame.turn == -1 and payload.user_id == currentGame.playerTwo.id:
                 currentGame.two_pick = move
+                currentGame.game_started = True
                 await self.update_filler_embed(game_id)
 
     async def update_filler_embed(self, gameID):

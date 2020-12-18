@@ -5,6 +5,8 @@ from discord.ext import commands
 
 import modules.checks as checks
 
+import platform, socket, re, uuid, json, psutil, os
+
 
 class About(commands.Cog):
     """About Hamood"""
@@ -79,6 +81,9 @@ class About(commands.Cog):
         uptime = general.pretty_time_delta(
             (datetime.datetime.now() - self.start).total_seconds()
         )
+
+        ram_used = f"{round(psutil.virtual_memory().used / (1024.0 ** 3), 2)}GB / {round(psutil.virtual_memory().total / (1024.0 ** 3), 2)}GB"
+
         embed = discord.Embed(
             title="<:hamood:713523447141236867> Hamood Info",
             description=f"```py\nUptime: {uptime}```",
@@ -87,18 +92,18 @@ class About(commands.Cog):
         # embed.add_field(name="Uptime", value=f"```py\n{uptime}```", inline=True)
         embed.add_field(
             name="Discord Presence",
-            value=f"```py\nGuilds: {len(self.bot.guilds):,}\nChannels: {sum([len(g.channels) for g in self.bot.guilds]):,}\nUsers: {sum([len(g.members) for g in self.bot.guilds]):,}```",
+            value=f"```py\nGuilds: {len(self.bot.guilds):,}\nChannels: {sum([len(g.channels) for g in self.bot.guilds]):,}\nUsers: {sum([len(g.members) for g in self.bot.guilds]):,}\nShards: {self.bot.shard_count}```",
             inline=False,
         )
         embed.add_field(
-            name="Network",
-            value=f"```py\nLatency: {round(self.bot.latency * 1000)}ms\nShards: {self.bot.shard_count}```",
+            name="System",
+            value=f"```py\nLatency: {round(self.bot.latency * 1000)}ms\nPlatform: {platform.system()}\nArchitecture: {platform.machine()}\nProcessor: {platform.processor()}\nRam Usage: {ram_used}```",
             inline=False,
         )
 
         embed.add_field(
             name="Basic Info",
-            value=f"```py\nCommands: {len(self.bot.commands)}\nLibrary: discord.py v 1.5.1\nCreated On: Tue, April 14th, 2020\nCreated By: 'nathan#3724'\nRunning: {self.running}```",
+            value=f"```py\nCommands: {len(self.bot.commands)}\nLibrary: discord.py v 1.5.1\nCreated On: Tue, April 14th, 2020\nCreated By: 'nathan#3724'```",
             inline=False,
         )
 
