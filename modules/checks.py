@@ -32,6 +32,5 @@ def isAllowedCommand():
 #     f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/servers.json"
 # )
 
-
 # ["About", "Avatarmemes", "Chance", "Chemistry", "Events", "Fonts", "Fun", "Games", "General", "Images", "Math", "Memes", "Mod", "Pokemon", "Reddit", "User", "Web"]
 

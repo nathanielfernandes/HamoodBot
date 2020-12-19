@@ -1,5 +1,4 @@
 import datetime
-import platform
 import discord
 from discord.ext import commands
 
@@ -16,12 +15,12 @@ class About(commands.Cog):
         self.currentDT = str(datetime.datetime.now())
         self.start = datetime.datetime.now()
 
-        if platform.system() == "Darwin":
-            self.running = "macOS Big Sur"
-        elif platform.system() == "Linux":
-            self.running = "Heroku Linux"
-        else:
-            self.running = "?"
+        # if platform.system() == "Darwin":
+        #     self.running = "macOS Big Sur"
+        # elif platform.system() == "Linux":
+        #     self.running = "Heroku Linux"
+        # else:
+        #     self.running = "?"
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -142,87 +141,65 @@ class About(commands.Cog):
     async def ping(self, ctx):
         await ctx.send(f"Pong! **{round(self.bot.latency * 1000)}ms**")
 
-    # This help command was implemented from [https://gist.github.com/StudioMFTechnologies/ad41bfd32b2379ccffe90b0e34128b8b]
     @commands.command()
     @commands.has_permissions(embed_links=True)
-    async def help(self, ctx, *cog):
-        """Gets all cogs and commands of Hamood"""
-        cog = [c.capitalize() for c in cog]
-        try:
-            if not cog:
-                """Cog listing.  What more?"""
-                halp = discord.Embed(
-                    title="Command Categories",
-                    description="Use `help [category]` to find out more about them!\nYou can also just click [**here**](https://nathanielfernandes.github.io/HamoodBot/#commands) for info on all the commands.",
-                    color=discord.Color.blue(),
-                )
-                halp.set_footer(
-                    text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
-                )
-                cogs_desc = ""
-                for x in self.bot.cogs:
-                    cogs_desc += "`{}` - {}".format(x, self.bot.cogs[x].__doc__) + "\n"
-                halp.add_field(
-                    name="Categories",
-                    value=cogs_desc[0 : len(cogs_desc) - 1],
-                    inline=False,
-                )
-                cmds_desc = ""
-                for y in self.bot.walk_commands():
-                    if not y.cog_name and not y.hidden:
-                        cmds_desc += "`{}` - {}".format(y.name, y.help) + "\n"
-                # halp.add_field(name='Uncatergorized Commands',value=cmds_desc[0:len(cmds_desc)-1],inline=False)
-                await ctx.message.add_reaction(emoji="✉")
-                await ctx.send("", embed=halp)
-            else:
-                """Helps me remind you if you pass too many args."""
-                if len(cog) > 1:
-                    halp = discord.Embed(
-                        title="Error!",
-                        description="That is way too many categories!",
-                        color=discord.Color.red(),
-                    )
-                    halp.set_footer(
-                        text=f"Requested by {ctx.author}",
-                        icon_url=ctx.author.avatar_url,
-                    )
-                    await ctx.send("", embed=halp)
-                else:
-                    """Command listing within a Category."""
-                    found = False
-                    for x in self.bot.cogs:
-                        for y in cog:
-                            if x == y:
-                                halp = discord.Embed(
-                                    title=cog[0] + " Command Listing",
-                                    description=self.bot.cogs[cog[0]].__doc__,
-                                )
-                                halp.set_footer(
-                                    text=f"Requested by {ctx.author}",
-                                    icon_url=ctx.author.avatar_url,
-                                )
-                                for c in self.bot.get_cog(y).get_commands():
-                                    if not c.hidden:
-                                        halp.add_field(
-                                            name=c.name, value=c.help, inline=False
-                                        )
-                                found = True
-                    if not found:
-                        """Reminds you if that category doesn't exist."""
+    async def help(self, ctx, query=None):
+        """``help [category or command]``"""
+        if query is None:
+            halp = discord.Embed(
+                title="Command Categories",
+                description="Use `.help [category]` to find out more about them!\nYou can also just click [**here**](https://nathanielfernandes.github.io/HamoodBot/#commands) for info on all the commands.",
+                color=discord.Color.blue(),
+            )
+            cogs_desc = ""
+            for x in self.bot.cogs:
+                cogs_desc += "`{}` - {}".format(x, self.bot.cogs[x].__doc__) + "\n"
+            halp.add_field(
+                name="Categories",
+                value=cogs_desc[0 : len(cogs_desc) - 1],
+                inline=False,
+            )
+            cmds_desc = ""
+            for y in self.bot.walk_commands():
+                if not y.cog_name and not y.hidden:
+                    cmds_desc += "`{}` - {}".format(y.name, y.help) + "\n"
+            # halp.add_field(name='Uncatergorized Commands',value=cmds_desc[0:len(cmds_desc)-1],inline=False)
+        else:
+            command_names = [c.name for c in self.bot.commands]
+            if query.capitalize() in self.bot.cogs:
+                for cog in self.bot.cogs:
+                    if query.lower() == str(cog).lower():
                         halp = discord.Embed(
-                            title="Error!",
-                            description=f"{cog[0]} is not a category",
-                            color=discord.Color.red(),
+                            title=f"{cog} Command Listing",
+                            description=f"{self.bot.cogs[str(cog)].__doc__}\n Use `.help [command]` to find out how to use a specific command.",
+                            color=discord.Color.blue(),
                         )
-                        halp.set_footer(
-                            text=f"Requested by {ctx.author}",
-                            icon_url=ctx.author.avatar_url,
+
+                        commands = self.bot.get_cog(cog).get_commands()
+                        val = [f"`{c.name}`" for c in commands]
+                        halp.add_field(
+                            name=f"{len(commands)} Commands", value=", ".join(val)
                         )
-                    await ctx.send("", embed=halp)
-        except:
-            await ctx.send("Excuse me, I can't send embeds.")
+            elif query.lower() in command_names:
+                for command in self.bot.commands:
+                    if query.lower() == command.name:
+                        halp = discord.Embed(
+                            title=f"`{command.name.capitalize()}` Command Help",
+                            description=f"**.**{command.help}",
+                            color=discord.Color.blue(),
+                        )
+            else:
+                halp = discord.Embed(
+                    title="Error!",
+                    description=f"`{query}` is not a **category** or **command**",
+                    color=discord.Color.red(),
+                )
+
+        halp.set_footer(
+            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
+        )
+        await ctx.send("", embed=halp)
 
 
 def setup(bot):
-    # bot.remove_command("help")
     bot.add_cog(About(bot))

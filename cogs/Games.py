@@ -2,6 +2,7 @@ import os
 import json
 import asyncio
 import discord
+import random
 from discord.ext import commands
 
 from modules.games.filler_functions import _Filler
@@ -14,7 +15,7 @@ import modules.checks as checks
 
 
 class Games(commands.Cog):
-    """Play Games, all games auto delete if theres no input for 2 minutes"""
+    """Play Games!"""  # all games auto delete if theres no input for 2 minutes
 
     def __init__(self, bot):
         self.bot = bot
@@ -404,6 +405,7 @@ class Games(commands.Cog):
     @commands.command()
     @commands.cooldown(4, 10, commands.BucketType.guild)
     async def stats(self, ctx, member: discord.Member = None, game="total"):
+        """``stats [@player] [stat]`` see a players game stats"""
         member = ctx.author if member is None else member
 
         leaderboard = await self.bot.leaderboards.get(ctx.guild.id)
@@ -451,7 +453,7 @@ class Games(commands.Cog):
     async def trivia(
         self, ctx, member: discord.Member = None, category="any", difficulty="any"
     ):
-        """``trivia [@opponent] [category] [difficulty]`` play a game of trivia with someone!"""
+        """``trivia [@opponent] [category] [difficulty]`` play a game of trivia with someone!\n \n**Categories include:** `any`, `general`, `books`, `film`, `music`, `musicals`, `theatres`, `tv`, `video games`, `board games`, `nature`, `computers`, `mathematics`, `mythology`, `sports`, `geography`, `history`, `politics`, `art`, `celebrities`, `animals`, `vehicles`, `comics`, `gadgets`, `anime`, `manga`, `cartoon`, `animation`"""
         game_id = await self.init_game(ctx, member=member, identifier="trivia#")
         if game_id is None:
             return
@@ -494,7 +496,10 @@ class Games(commands.Cog):
             url="https://cdn.discordapp.com/attachments/749779300181606411/789384532746174464/question-marks.png"
         )
         await currentGame.message.edit(embed=embed)
-        await self.add_reactions(currentGame.message, self.triviaEmojis)
+        temp = dict(self.triviaEmojis)
+        del temp["🚪"]
+
+        await self.add_reactions(currentGame.message, temp)
 
         await self.update_trivia_embed(gameID)
 
@@ -518,14 +523,18 @@ class Games(commands.Cog):
                 if currentGame.check_answer(choice, payload.member):
                     msg = f"**Correct! {payload.member}**"
                     img = "https://cdn.discordapp.com/attachments/749779300181606411/789387042504572928/0-6616_view-samegoogleiqdbsaucenao-qcbbexbc5-green-check-mark-circle.png"
+                    color = discord.Color.green()
                 else:
                     msg = f"**Incorrect! {payload.member}**"
                     img = "https://cdn.discordapp.com/attachments/749779300181606411/789387314501386250/Incorrect_Symbol-512.png"
+                    color = discord.Color.red()
 
                 currentGame.wait = True
 
                 embed = discord.Embed(
-                    title=msg, description=f"***{ans}*** was the correct answer.",
+                    title=msg,
+                    description=f"***{ans}*** was the correct answer.",
+                    color=color,
                 )
                 embed.set_thumbnail(url=img)
 
@@ -576,7 +585,11 @@ class Games(commands.Cog):
 
             currentGame.timer = asyncio.create_task(self.overtime(gameID))
 
-        embed = discord.Embed(title=msg, description=desc, color=discord.Color.blue(),)
+        # color = random.choice(self.fillerColors)#random.choice[
+        #     discord.Color.purple(), discord.Colors.blue(), discord.Colors.green()
+        # ]
+
+        embed = discord.Embed(title=msg, description=desc, color=discord.Color.blue())
 
         if desc is not None:
             embed.add_field(

@@ -72,7 +72,7 @@ class Reddit(commands.Cog):
             redditSub = random.choice(self.common)
         await self.redditPrep(ctx, redditSub)
 
-    @commands.command(aliases=["memes"])
+    @commands.command()
     @checks.isAllowedCommand()
     @commands.cooldown(5, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
