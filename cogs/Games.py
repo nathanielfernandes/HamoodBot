@@ -264,7 +264,10 @@ class Games(commands.Cog):
         except discord.errors.NotFound:
             print(f"Could not delete {gameType} game!")
 
-        currentGame.timer.cancel()
+        try:
+            currentGame.timer.cancel()
+        except Exception:
+            pass
 
     async def add_reactions(self, msg, emojis):
         for emoji in emojis:
@@ -448,7 +451,7 @@ class Games(commands.Cog):
     # -------------------------------------------------------------------------------------------------------#
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(2, 60, commands.BucketType.channel)
+    @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def trivia(
         self, ctx, member: discord.Member = None, category="any", difficulty="any"
@@ -819,13 +822,13 @@ class Games(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
-    async def filler(self, ctx, member: discord.Member = None):
+    async def filler(self, ctx, member: discord.Member = None, secret=None):
         """``filler [@opponent]`` starts a new filler game"""
         game_id = await self.init_game(ctx, member=member, identifier="filler#")
         if game_id is None:
             return
 
-        self.games[game_id] = _Filler([8, 7], ctx.author, member, ctx.guild)
+        self.games[game_id] = _Filler([8, 7], ctx.author, member, ctx.guild, secret)
         embed = discord.Embed(
             title=f"Filler | {ctx.author} vs. {member}",
             description="Loading... :arrows_counterclockwise:",

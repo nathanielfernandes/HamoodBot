@@ -192,3 +192,10 @@ class Leaderboards(Documents):
                 return
 
             return stats
+
+
+# class Inventory(Documents):
+#     def __init__(self):
+#         """
+#         Connects to the inventory
+#         """
