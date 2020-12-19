@@ -828,7 +828,7 @@ class Games(commands.Cog):
         if game_id is None:
             return
 
-        self.games[game_id] = _Filler([8, 7], ctx.author, member, ctx.guild, secret)
+        self.games[game_id] = _Filler([8, 7], ctx.author, member, ctx.guild)
         embed = discord.Embed(
             title=f"Filler | {ctx.author} vs. {member}",
             description="Loading... :arrows_counterclockwise:",
