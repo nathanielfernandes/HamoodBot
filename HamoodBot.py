@@ -13,7 +13,7 @@ import discord
 from discord.ext import commands
 
 from modules.image_functions import randomFile
-from utils.mongo import Leaderboards
+from utils.mongo import *
 
 
 if __name__ == "__main__":
@@ -30,7 +30,33 @@ if __name__ == "__main__":
 
         load_dotenv()
         TOKEN = os.environ.get("BOTTOKENTEST")
+
         prefix = "/"
+
+    variation = [
+        1,
+        1,
+        1,
+        1,
+        0.85,
+        0.90,
+        0.95,
+        0.99,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1.01,
+        1.05,
+        1.10,
+        1.15,
+        1.20,
+        1,
+        1,
+        1,
+    ]
 
     bot = commands.AutoShardedBot(
         command_prefix=commands.when_mentioned_or(prefix),
@@ -42,6 +68,17 @@ if __name__ == "__main__":
     @bot.event
     async def on_ready():
         bot.leaderboards = Leaderboards()
+        bot.inventories = Inventories()
+        bot.items = json.load(open("data/items.json"))
+
+        # print("\n".join([str(bot.items[i]["price"]) for i in bot.items]))
+        for i in bot.items:
+            bot.items[i]["price"] = round(
+                bot.items[i]["price"] * random.choice(variation)
+            )
+
+        # print()
+        # print("\n".join([str(bot.items[i]["price"]) for i in bot.items]))
 
         toc = time.perf_counter()
 
@@ -101,7 +138,7 @@ if __name__ == "__main__":
 
             if profane:
                 if not nsfw:
-                    await message.add_reaction("<:trash:783097450461397052>")
+                    # await message.add_reaction("<:trash:783097450461397052>")
                     return
 
             # elif message.content in responses:
@@ -111,15 +148,15 @@ if __name__ == "__main__":
 
             await bot.process_commands(message)
 
-    @bot.event
-    async def on_raw_reaction_add(payload):
-        if payload.user_id != bot.user.id:
-            if str(payload.emoji) == "<:trash:783097450461397052>":
-                if payload.member.guild_permissions.manage_messages:
-                    channel = await bot.fetch_channel(payload.channel_id)
-                    msg = await channel.fetch_message(payload.message_id)
+    # @bot.event
+    # async def on_raw_reaction_add(payload):
+    #     if payload.user_id != bot.user.id:
+    #         if str(payload.emoji) == "<:trash:783097450461397052>":
+    #             if payload.member.guild_permissions.manage_messages:
+    #                 channel = await bot.fetch_channel(payload.channel_id)
+    #                 msg = await channel.fetch_message(payload.message_id)
 
-                    await msg.delete()
+    #                 await msg.delete()
 
     @bot.command()
     @commands.is_owner()

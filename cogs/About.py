@@ -15,17 +15,10 @@ class About(commands.Cog):
         self.currentDT = str(datetime.datetime.now())
         self.start = datetime.datetime.now()
 
-        # if platform.system() == "Darwin":
-        #     self.running = "macOS Big Sur"
-        # elif platform.system() == "Linux":
-        #     self.running = "Heroku Linux"
-        # else:
-        #     self.running = "?"
-
     @commands.command()
     @checks.isAllowedCommand()
     @commands.has_permissions(embed_links=True)
-    async def about(self, ctx):
+    async def abouthamood(self, ctx):
         """``about`` About Hamood"""
         embed = discord.Embed(
             title="Hamood",
@@ -74,7 +67,7 @@ class About(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    async def info(self, ctx):
+    async def hamoodinfo(self, ctx):
         """``info`` info about Hamood"""
         general = self.bot.get_cog("General")
         uptime = general.pretty_time_delta(
@@ -152,17 +145,19 @@ class About(commands.Cog):
                 color=discord.Color.blue(),
             )
             cogs_desc = ""
-            for x in self.bot.cogs:
-                cogs_desc += "`{}` - {}".format(x, self.bot.cogs[x].__doc__) + "\n"
+            for cog in self.bot.cogs:
+                if cog != "Events":
+                    cogs_desc += f"`{cog}` - {self.bot.cogs[cog].__doc__}\n"
+
             halp.add_field(
                 name="Categories",
                 value=cogs_desc[0 : len(cogs_desc) - 1],
                 inline=False,
             )
             cmds_desc = ""
-            for y in self.bot.walk_commands():
-                if not y.cog_name and not y.hidden:
-                    cmds_desc += "`{}` - {}".format(y.name, y.help) + "\n"
+            for cmnd in self.bot.walk_commands():
+                if not cmnd.cog_name and not cmnd.hidden:
+                    cmds_desc += f"`{cmnd.name}` - {cmnd.help}\n"
             # halp.add_field(name='Uncatergorized Commands',value=cmds_desc[0:len(cmds_desc)-1],inline=False)
         else:
             command_names = [c.name for c in self.bot.commands]

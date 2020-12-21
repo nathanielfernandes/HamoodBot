@@ -1,0 +1,74 @@
+{
+    "steak": {
+        "info": "It's a little under cooked",
+        "image": "https://cdn.discordapp.com/emojis/790684425973137469.png?v=1",
+        "emoji": "<:steak:790684425973137469>",
+        "value": 45,
+        "price": 45,
+        "rarity": "common",
+        "type": "collectable"
+    },
+    "bee": {
+        "info": "Buzzzzzzzzzzz",
+        "image": "https://cdn.discordapp.com/emojis/790678769144299530.gif?v=1",
+        "emoji": "<a:bee:790678769144299530>",
+        "value": 150,
+        "price": 150,
+        "rarity": "uncommon",
+        "type": "collectable"
+    },
+    "simp_pills": {
+        "info": "Side Effects Include:\n*Loss of dignity, tier 3 subbing, lack of physical female contact, pain.*",
+        "image": "https://cdn.discordapp.com/emojis/790422420015546419.png?v=1",
+        "emoji": "<:simppills:790422420015546419>",
+        "value": 250,
+        "price": 250,
+        "rarity": "uncommon",
+        "type": "collectable"
+    },
+    "diamond": {
+        "info": "Steve grinded hard for these",
+        "image": "https://cdn.discordapp.com/emojis/790677740692308008.gif?v=1",
+        "emoji": "<a:diamond:790677740692308008>",
+        "value": 1000,
+        "price": 1000,
+        "rarity": "rare",
+        "type": "resource"
+    },
+    "rolling_cat": {
+        "info": "I think he likes to roll",
+        "image": "https://cdn.discordapp.com/emojis/787917517334249494.gif?v=1",
+        "emoji": "<a:rollingcat:790415192038047745>",
+        "value": 2500,
+        "price": 2500,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "no_u": {
+        "info": "Does this make you invincible?",
+        "image": "https://cdn.discordapp.com/emojis/790709588168540170.gif?v=1",
+        "emoji": "<a:no_u:790709588168540170>",
+        "value": 28000,
+        "price": 28000,
+        "rarity": "epic",
+        "type": "collectable"
+    },
+    "legendary_dairy": {
+        "info": "Drinking this will be legend... wait for it... dairy!",
+        "image": "https://cdn.discordapp.com/emojis/790681387593105408.gif?v=1",
+        "emoji": "<a:melk:790681387593105408>",
+        "value": 50000,
+        "price": 50000,
+        "rarity": "legendary",
+        "type": "collectable"
+    },
+    "rgb_roach": {
+        "info": "RGB ROACH RGB ROACH RGB ROACH RGB ROACH",
+        "image": "https://cdn.discordapp.com/emojis/772950719862800405.gif?v=1",
+        "emoji": "<a:rgb:772950719862800405>",
+        "value": 420000,
+        "price": 420000,
+        "rarity": "black market",
+        "type": "collectable"
+    }
+}
