@@ -1,4 +1,31 @@
 {
+    "net": {
+        "info": "For catching things!",
+        "image": "https://cdn.discordapp.com/emojis/790726854243385354.png?v=1",
+        "emoji": "<:net:790726854243385354>",
+        "value": 10,
+        "price": 10,
+        "rarity": "common",
+        "type": "collectable"
+    },
+    "strawberry": {
+        "info": "Natural sweetness",
+        "image": "https://cdn.discordapp.com/emojis/790731855149269002.gif?v=1",
+        "emoji": "<a:shiny_strawberry:790731855149269002> ",
+        "value": 10,
+        "price": 10,
+        "rarity": "common",
+        "type": "collectable"
+    },
+    "fishing_rod": {
+        "info": "For catching things from the water!",
+        "image": "https://cdn.discordapp.com/emojis/790727523054780437.png?v=1",
+        "emoji": "<:rod:790727523054780437>",
+        "value": 15,
+        "price": 15,
+        "rarity": "common",
+        "type": "collectable"
+    },
     "steak": {
         "info": "It's a little under cooked",
         "image": "https://cdn.discordapp.com/emojis/790684425973137469.png?v=1",
@@ -35,6 +62,51 @@
         "rarity": "rare",
         "type": "resource"
     },
+    "cupcake": {
+        "info": "1 cup worth of cake",
+        "image": "https://cdn.discordapp.com/emojis/790731840075333672.png?v=1",
+        "emoji": "<:strawberry_cupcake:790731840075333672>",
+        "value": 850,
+        "price": 850,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "blue_shell": {
+        "info": "Second place feels safe",
+        "image": "https://cdn.discordapp.com/emojis/790730649362235443.png?v=1",
+        "emoji": "<:blue_shell:790730649362235443>",
+        "value": 1001,
+        "price": 1001,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "magic_wand": {
+        "info": "Yer a wizard!",
+        "image": "https://cdn.discordapp.com/emojis/790728341400453120.png?v=1",
+        "emoji": "<:wand:790728341400453120>",
+        "value": 200,
+        "price": 200,
+        "rarity": "uncommon",
+        "type": "collectable"
+    },
+    "boba": {
+        "info": "Sweet, Milky goodness",
+        "image": "https://cdn.discordapp.com/emojis/790720166937231370.png?v=1",
+        "emoji": "<:boba:790720166937231370>",
+        "value": 1200,
+        "price": 1200,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "present": {
+        "info": "For you.",
+        "image": "https://cdn.discordapp.com/emojis/790731919666839595.png?v=1",
+        "emoji": "<:present:790731919666839595>",
+        "value": 200,
+        "price": 200,
+        "rarity": "rare",
+        "type": "collectable"
+    },
     "rolling_cat": {
         "info": "I think he likes to roll",
         "image": "https://cdn.discordapp.com/emojis/787917517334249494.gif?v=1",
@@ -53,6 +125,15 @@
         "rarity": "epic",
         "type": "collectable"
     },
+    "star_marshmallow": {
+        "info": "Where's me lucky charms, they're magically delicious!",
+        "image": "https://cdn.discordapp.com/emojis/790731931653767168.gif?v=1",
+        "emoji": "<a:lcm_star:790731931653767168>",
+        "value": 500,
+        "price": 500,
+        "rarity": "epic",
+        "type": "collectable"
+    },
     "legendary_dairy": {
         "info": "Drinking this will be legend... wait for it... dairy!",
         "image": "https://cdn.discordapp.com/emojis/790681387593105408.gif?v=1",
@@ -62,13 +143,22 @@
         "rarity": "legendary",
         "type": "collectable"
     },
+    "baby_yoda": {
+        "info": "The Child",
+        "image": "https://cdn.discordapp.com/emojis/790722228387840001.png?v=1",
+        "emoji": "<:bby_yoda:790722228387840001>",
+        "value": 66000,
+        "price": 66000,
+        "rarity": "legendary",
+        "type": "collectable"
+    },
     "rgb_roach": {
         "info": "RGB ROACH RGB ROACH RGB ROACH RGB ROACH",
         "image": "https://cdn.discordapp.com/emojis/772950719862800405.gif?v=1",
         "emoji": "<a:rgb:772950719862800405>",
         "value": 420000,
         "price": 420000,
-        "rarity": "black market",
+        "rarity": "blackmarket",
         "type": "collectable"
     }
 }

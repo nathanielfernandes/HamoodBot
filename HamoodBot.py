@@ -65,20 +65,70 @@ if __name__ == "__main__":
         help_command=None,
     )
 
+    bot.all_items = json.load(open("data/items.json"))
+
+    for i in bot.all_items:
+        bot.all_items[i]["price"] = round(
+            bot.all_items[i]["price"] * random.choice(variation)
+        )
+
+    bot.common_items = {
+        i: bot.all_items[i]
+        for i in bot.all_items
+        if bot.all_items[i]["rarity"] == "common"
+    }
+
+    bot.uncommon_items = {
+        i: bot.all_items[i]
+        for i in bot.all_items
+        if bot.all_items[i]["rarity"] == "uncommon"
+    }
+
+    bot.rare_items = {
+        i: bot.all_items[i]
+        for i in bot.all_items
+        if bot.all_items[i]["rarity"] == "rare"
+    }
+
+    bot.epic_items = {
+        i: bot.all_items[i]
+        for i in bot.all_items
+        if bot.all_items[i]["rarity"] == "epic"
+    }
+
+    bot.legendary_items = {
+        i: bot.all_items[i]
+        for i in bot.all_items
+        if bot.all_items[i]["rarity"] == "legendary"
+    }
+
+    bot.blackmarket_items = {
+        i: bot.all_items[i]
+        for i in bot.all_items
+        if bot.all_items[i]["rarity"] == "blackmarket"
+    }
+
+    categs = [
+        (bot.common_items, random.randint(5, 6)),
+        (bot.uncommon_items, random.randint(3, 5)),
+        (bot.rare_items, random.randint(2, 4)),
+        (bot.epic_items, random.randint(1, 2)),
+        (bot.legendary_items, random.randint(0, 1)),
+    ]
+
+    bot.shop = {}
+    for cat in categs:
+        for i in range(cat[1]):
+            k, v = random.choice(list(cat[0].items()))
+            bot.shop[k] = v
+
     @bot.event
     async def on_ready():
         bot.leaderboards = Leaderboards()
         bot.inventories = Inventories()
-        bot.items = json.load(open("data/items.json"))
+        bot.currency = Currency()
 
-        # print("\n".join([str(bot.items[i]["price"]) for i in bot.items]))
-        for i in bot.items:
-            bot.items[i]["price"] = round(
-                bot.items[i]["price"] * random.choice(variation)
-            )
-
-        # print()
-        # print("\n".join([str(bot.items[i]["price"]) for i in bot.items]))
+        # print(bot.common_items)
 
         toc = time.perf_counter()
 

@@ -1,7 +1,5 @@
 import os
 import pymongo
-import logging
-import collections
 import motor.motor_asyncio
 
 try:
@@ -431,18 +429,27 @@ class Currency(Documents):
             bank = curr["bank"]
             bank_max = curr["bank_max"]
 
-            if amount > wallet:
-                amount = wallet
+            if wallet != 0:
+                if amount > wallet:
+                    amount = wallet
 
-            if wallet >= amount:
-                if bank_max - bank >= amount:
-                    await self.update_bank(guild_id, member_id, amount)
-                    await self.update_wallet(guild_id, member_id, -1 * amount)
-                else:
-                    await self.update_bank(guild_id, member_id, bank_max - bank)
-                    await self.update_wallet(
-                        guild_id, member_id, -1 * (bank_max - bank)
-                    )
+                if wallet >= amount:
+                    if bank_max - bank != 0:
+                        if bank_max - bank >= amount:
+                            await self.update_bank(guild_id, member_id, amount)
+                            await self.update_wallet(guild_id, member_id, -1 * amount)
+                            return amount
+                        else:
+                            await self.update_bank(guild_id, member_id, bank_max - bank)
+                            await self.update_wallet(
+                                guild_id, member_id, -1 * (bank_max - bank)
+                            )
+                            return bank_max - bank
+                    return "max"
+            else:
+                return "broke"
+        else:
+            return "broke"
 
     async def bank_to_wallet(self, guild_id, member_id, amount=1):
         """
@@ -455,12 +462,18 @@ class Currency(Documents):
             bank = curr["bank"]
             bank_max = curr["bank_max"]
 
-            if amount > bank:
-                amount = bank
+            if bank != 0:
+                if amount > bank:
+                    amount = bank
 
-            if bank >= amount:
-                await self.update_bank(guild_id, member_id, -1 * amount)
-                await self.update_wallet(guild_id, member_id, amount)
+                if bank >= amount:
+                    await self.update_bank(guild_id, member_id, -1 * amount)
+                    await self.update_wallet(guild_id, member_id, amount)
+                    return amount
+            else:
+                return
+        else:
+            return
 
     async def get_currency(self, guild_id, member_id):
         """
@@ -479,13 +492,23 @@ class Currency(Documents):
 
 # import asyncio
 
+
 # async def bruh():
-#     test = Currency()
-#     await test.add_server(12345)
-#     await test.add_member(12345, "nathan")
-#     await test.update_wallet(12345, "nathan", 340)
-#     await test.wallet_to_bank(12345, "nathan", 900)
-#     await test.update_bank(12345, "nathan", -60)
+#     test = PlayerStuff("games", "currency")
+#     # await test.add("fools_id", "foolmoment")
+#     stats = {
+#         "max_health": 10,
+#         "name": "Fool BRuh",
+#         "level": {"lvl": 900, "exp": 40, "exp_required": 170},
+#         "dmg": 10,
+#         "moves": [0, 1],
+#         "equipped_moves": [0, 1],
+#         "inventory": [],
+#         "balance": 0,
+#         "stats": {},
+#         "misc": {},
+#     }
+#     await test.update(member_id="fools_id", updated_player=stats)
 
 
 # loop = asyncio.get_event_loop()

@@ -104,7 +104,7 @@ class About(commands.Cog):
         )
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["inv"])
+    @commands.command()
     @checks.isAllowedCommand()
     async def invite(self, ctx):
         """``invite`` get the invite link for Hamood"""
