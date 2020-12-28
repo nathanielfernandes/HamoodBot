@@ -31,29 +31,28 @@ if __name__ == "__main__":
     class TopGG(commands.Cog):
         """Handles interactions with the top.gg API"""
 
-    def __init__(self, bot):
-        print("setup")
-        self.bot = bot
-        self.dblpy = dbl.DBLClient(
-            bot,
-            TOPGG,
-            autopost=False,
-            webhook_path="/dblwebhook",
-            webhook_auth="hamoodtestapi",
-            webhook_port=int(PORT),
-        )  # Autopost will post your guild count every 30 minutes
+        def __init__(self, bot):
+            print("setup")
+            self.bot = bot
+            self.dblpy = dbl.DBLClient(
+                bot,
+                TOPGG,
+                webhook_path="/dblwebhook",
+                webhook_auth="hamoodtestapi",
+                webhook_port=int(PORT),
+            )  # Autopost will post your guild count every 30 minutes
 
-    @commands.Cog.listener()
-    async def on_guild_post(self):
-        print("Server count posted successfully")
+        @commands.Cog.listener()
+        async def on_guild_post(self):
+            print("Server count posted successfully")
 
-    @commands.Cog.listener()
-    async def on_dbl_test(self, data):
-        print(data)
+        @commands.Cog.listener()
+        async def on_dbl_test(self, data):
+            print(data)
 
-    @commands.Cog.listener()
-    async def on_dbl_vote(self, data):
-        print(data)
+        @commands.Cog.listener()
+        async def on_dbl_vote(self, data):
+            print(data)
 
     bot.add_cog(TopGG(bot))
     bot.run(TOKEN)
