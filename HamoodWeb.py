@@ -38,7 +38,7 @@ if __name__ == "__main__":
             bot,
             TOPGG,
             autopost=False,
-            webhook_path="https://hamoodtest.herokuapp.com/dblwebhook",
+            webhook_path="/dblwebhook",
             webhook_auth="hamoodtestapi",
             webhook_port=PORT,
         )  # Autopost will post your guild count every 30 minutes
