@@ -17,6 +17,8 @@ class User(commands.Cog):
             "https://raw.githubusercontent.com/sindresorhus/mnemonic-words/master/words.json"
         )
         self.words = json.loads(self.url.read())
+    
+
 
     @commands.command()
     @checks.isAllowedCommand()

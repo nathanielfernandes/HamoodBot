@@ -1,4 +1,5 @@
 import os
+import datetime
 import pymongo
 import motor.motor_asyncio
 
@@ -94,9 +95,6 @@ class Leaderboards(Documents):
         Connects to the leaderboards document in the games database
         """
         super().__init__("games", "leaderboards")
-        # self.mongo = motor.motor_asyncio.AsyncIOMotorClient(str(MONGOURI))
-        # self.db = self.mongo["games"]["leaderboards"]
-
         print("Initialized Leaderboards Database")
 
     # -- Pointer Methods --
@@ -206,10 +204,6 @@ class Inventories(Documents):
         Connects to the inventories document in the games database
         """
         super().__init__("games", "inventories")
-
-        # self.mongo = motor.motor_asyncio.AsyncIOMotorClient(str(MONGOURI))
-        # self.db = self.mongo["games"]["inventories"]
-
         print("Initialized Inventories Database")
 
     # -- Pointer Methods --
@@ -367,10 +361,6 @@ class Currency(Documents):
         Connects to the inventories document in the games database
         """
         super().__init__("games", "currency")
-
-        # self.mongo = motor.motor_asyncio.AsyncIOMotorClient(str(MONGOURI))
-        # self.db = self.mongo["games"]["currency"]
-
         print("Initialized Currency Database")
 
     # -- Pointer Methods --
@@ -382,7 +372,7 @@ class Currency(Documents):
 
     async def add_member(self, guild_id, member_id):
         """
-        Points to self.add_member_to_server
+        Points to self.add_member_to_currencydat
         """
         await self.add_member_to_currencydat(guild_id, member_id)
 
@@ -490,31 +480,94 @@ class Currency(Documents):
             return item
 
 
+class Members(Documents):
+    def __init__(self):
+        """
+        Connects to the members document in the games database
+        """
+        super().__init__("games", "members")
+        print("Initialized Members Database")
+
+    # -- Actual Methods --
+    async def add_member(self, member_id):
+        """
+        Adds a member object to the members document
+        """
+        member = {"_id": member_id, "daily": datetime.datetime.now(), "streak": 0}
+        try:
+            await self.db.insert_one(member)
+        except pymongo.errors.DuplicateKeyError:
+            return
+
+        return True
+
+    async def is_daily_ready(self, member_id):
+        member = await self.get(member_id)
+        if member is not None:
+            change = (datetime.datetime.now() - member["daily"]).total_seconds()
+
+            if change > 86400:
+                return True, "Ready Now", member["streak"]
+            else:
+                return False, self.pretty_time_delta(86400 - change), member["streak"]
+        else:
+            return True, "Ready Now", 0
+
+    async def reset_daily(self, member_id):
+        await self.db.update_one(
+            {"_id": member_id}, {"$set": {"daily": datetime.datetime.now()}}
+        )
+        await self.db.update_one({"_id": member_id}, {"$inc": {"streak": 1}})
+
+    def pretty_time_delta(self, seconds):
+        s = seconds
+        seconds = round(seconds)
+        days, seconds = divmod(seconds, 86400)
+        hours, seconds = divmod(seconds, 3600)
+        minutes, seconds = divmod(seconds, 60)
+        if days > 0:
+            p = "%d days, %d hours, %d minutes, %d seconds" % (
+                days,
+                hours,
+                minutes,
+                seconds,
+            )
+        elif hours > 0:
+            p = "%d hours, %d minutes, %d seconds" % (hours, minutes, seconds)
+        elif minutes > 0:
+            p = "%d minutes, %d seconds" % (minutes, seconds)
+        else:
+            p = "%d seconds" % (seconds,)
+
+        if s < 0:
+            p = "-" + p
+        return p
+
+
 # import asyncio
 
 
 # async def bruh():
-#     test = PlayerStuff("games", "currency")
-#     # await test.add("fools_id", "foolmoment")
-#     stats = {
-#         "max_health": 10,
-#         "name": "Fool BRuh",
-#         "level": {"lvl": 900, "exp": 40, "exp_required": 170},
-#         "dmg": 10,
-#         "moves": [0, 1],
-#         "equipped_moves": [0, 1],
-#         "inventory": [],
-#         "balance": 0,
-#         "stats": {},
-#         "misc": {},
-#     }
-#     await test.update(member_id="fools_id", updated_player=stats)
+#     test = Members()
+#     # await test.add_member(12345)
+#     await test.reset_daily(12345)
+# print(await test.is_daily_ready(12345))
+
+
+# member = await test.get(12345)
+
+# = (datetime.datetime.now() - member["daily"]).total_seconds()
+# print(change)
+#   print(change.total_seconds())
+
+# print(test.pretty_time_delta(change))
+
+
+# print()
 
 
 # loop = asyncio.get_event_loop()
 # loop.run_until_complete(bruh())
-
-# test = Inventory()
 
 
 # print(await test.member_has_space(12345, "2222", 7))

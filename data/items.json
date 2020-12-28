@@ -1,4 +1,67 @@
 {
+    "spam": {
+        "info": "spam spam spam spam spam spam\nspam spam spam spam spam!",
+        "image": "https://cdn.discordapp.com/emojis/791450164282785792.png?v=1",
+        "emoji": "<:spam:791450164282785792>",
+        "value": 5,
+        "price": 5,
+        "rarity": "common",
+        "type": "collectable"
+    },
+    "watering_can": {
+        "info": "",
+        "image": "https://cdn.discordapp.com/emojis/791800991582126130.png?v=1",
+        "emoji": "<:watering_can:791800991582126130>",
+        "value": 25,
+        "price": 25,
+        "rarity": "common",
+        "type": "collectable"
+    },
+    "choco_donut": {
+        "info": "Bought this from Tim Hortons",
+        "image": "https://cdn.discordapp.com/emojis/791450163805028352.png?v=1",
+        "emoji": "<:choco_donut:791450163805028352>",
+        "value": 20,
+        "price": 20,
+        "rarity": "common",
+        "type": "collectable"
+    },
+    "ice_cream_cup": {
+        "info": "Chocolate, vanilla, and strawberry: a little bit for everyone.",
+        "image": "https://cdn.discordapp.com/emojis/791450163851034624.png?v=1",
+        "emoji": "<:ice_cream_cup:791450163851034624>",
+        "value": 30,
+        "price": 30,
+        "rarity": "common",
+        "type": "collectable"
+    },
+    "milk": {
+        "info": "Drink it to keep your ALL your bones strong and healthy.",
+        "image": "https://cdn.discordapp.com/emojis/791450163624935484.png?v=1",
+        "emoji": "<:blue_milk:791450163624935484>",
+        "value": 12,
+        "price": 12,
+        "rarity": "common",
+        "type": "collectable"
+    },
+    "rubber_ducky": {
+        "info": "You will never be lonely during bath time again",
+        "image": "https://cdn.discordapp.com/emojis/791459669217378304.png?v=1",
+        "emoji": "<:rubber_ducky:791459669217378304>",
+        "value": 50,
+        "price": 50,
+        "rarity": "common",
+        "type": "collectable"
+    },
+    "salt": {
+        "info": "Guess whose salty!",
+        "image": "https://cdn.discordapp.com/emojis/791450161930698752.png?v=1",
+        "emoji": "<:h_salt:791450161930698752>",
+        "value": 5,
+        "price": 5,
+        "rarity": "common",
+        "type": "collectable"
+    },
     "net": {
         "info": "For catching things!",
         "image": "https://cdn.discordapp.com/emojis/790726854243385354.png?v=1",
@@ -14,6 +77,33 @@
         "emoji": "<a:shiny_strawberry:790731855149269002> ",
         "value": 10,
         "price": 10,
+        "rarity": "common",
+        "type": "collectable"
+    },
+    "orange": {
+        "info": "Vitamin C for DAYZZZZ!",
+        "image": "https://cdn.discordapp.com/emojis/791450162756845579.gif?v=1",
+        "emoji": "<a:shiny_orange:791450162756845579>",
+        "value": 20,
+        "price": 20,
+        "rarity": "common",
+        "type": "collectable"
+    },
+    "grapes": {
+        "info": "Stop wine-ing about it!!",
+        "image": "https://cdn.discordapp.com/emojis/791450163117424652.gif?v=1",
+        "emoji": "<a:shiny_grape:791450163117424652>",
+        "value": 20,
+        "price": 20,
+        "rarity": "common",
+        "type": "collectable"
+    },
+    "watermelon": {
+        "info": "Fun fact: Watermelons contain 92% water!",
+        "image": "https://cdn.discordapp.com/emojis/791450162907054114.gif?v=1",
+        "emoji": "<a:shiny_watermelon:791450162907054114>",
+        "value": 25,
+        "price": 25,
         "rarity": "common",
         "type": "collectable"
     },
@@ -35,12 +125,66 @@
         "rarity": "common",
         "type": "collectable"
     },
+    "dango": {
+        "info": "A sweet Japanese desert made of rice flour. It's squishy and soft on the outside, and filled with red bean paste. YUM",
+        "image": "https://cdn.discordapp.com/emojis/791450163444187176.png?v=1",
+        "emoji": "<:sweet_dango:791450163444187176>",
+        "value": 50,
+        "price": 50,
+        "rarity": "common",
+        "type": "collectable"
+    },
     "bee": {
         "info": "Buzzzzzzzzzzz",
         "image": "https://cdn.discordapp.com/emojis/790678769144299530.gif?v=1",
         "emoji": "<a:bee:790678769144299530>",
         "value": 150,
         "price": 150,
+        "rarity": "uncommon",
+        "type": "collectable"
+    },
+    "magic_wand": {
+        "info": "Yer a wizard!",
+        "image": "https://cdn.discordapp.com/emojis/790728341400453120.png?v=1",
+        "emoji": "<:wand:790728341400453120>",
+        "value": 200,
+        "price": 200,
+        "rarity": "uncommon",
+        "type": "collectable"
+    },
+    "flambe": {
+        "info": "You either impress your friends... or burn down your house trying",
+        "image": "https://cdn.discordapp.com/emojis/791450164429717504.gif?v=1",
+        "emoji": "<a:flambe:791450164429717504>",
+        "value": 1000,
+        "price": 1000,
+        "rarity": "uncommon",
+        "type": "collectable"
+    },
+    "purple_candy_heart": {
+        "info": "",
+        "image": "https://cdn.discordapp.com/emojis/791800989254156310.png?v=1",
+        "emoji": "<:shiny_purple_heart:791800989254156310>",
+        "value": 200,
+        "price": 200,
+        "rarity": "uncommon",
+        "type": "collectable"
+    },
+    "milk_can": {
+        "info": "They have bags of milk in Canada. Why can't there be cans of milk?",
+        "image": "https://cdn.discordapp.com/emojis/791450163759415297.png?v=1",
+        "emoji": "<:can_milk:791450163759415297>",
+        "value": 100,
+        "price": 100,
+        "rarity": "uncommon",
+        "type": "collectable"
+    },
+    "gingerbread_man_cookie": {
+        "info": "Rip the head off first to prevent your cookie from running away",
+        "image": "https://cdn.discordapp.com/emojis/791450163767672873.png?v=1",
+        "emoji": "<:gingerbread_man:791450163767672873>",
+        "value": 100,
+        "price": 100,
         "rarity": "uncommon",
         "type": "collectable"
     },
@@ -71,6 +215,105 @@
         "rarity": "rare",
         "type": "collectable"
     },
+    "teddy_bear": {
+        "info": "Hug tightly when feeling alone or sad",
+        "image": "https://cdn.discordapp.com/emojis/791800991510167582.png?v=1",
+        "emoji": "<:purple_teddy_bear:791800991510167582>",
+        "value": 1073,
+        "price": 1073,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "penny_board": {
+        "info": "Not actually as small as a penny",
+        "image": "https://cdn.discordapp.com/emojis/791800987063943169.png?v=1",
+        "emoji": "<:penny_board:791800987063943169>",
+        "value": 2000,
+        "price": 2000,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "star_marshmallow": {
+        "info": "Where's me lucky charms, they're magically delicious!",
+        "image": "https://cdn.discordapp.com/emojis/790731931653767168.gif?v=1",
+        "emoji": "<a:lcm_star:790731931653767168>",
+        "value": 500,
+        "price": 500,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "rainbow_marshmallow": {
+        "info": "Where's me lucky charms, they're magically delicious!",
+        "image": "https://cdn.discordapp.com/emojis/791450162575835196.gif?v=1",
+        "emoji": "<a:lmc_rainbow:791450162575835196>",
+        "value": 500,
+        "price": 500,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "moon_marshmallow": {
+        "info": "Where's me lucky charms, they're magically delicious!",
+        "image": "https://cdn.discordapp.com/emojis/791450162412912681.gif?v=1",
+        "emoji": "<a:lmc_moon:791450162412912681>",
+        "value": 500,
+        "price": 500,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "clover_marshmallow": {
+        "info": "Where's me lucky charms, they're magically delicious!",
+        "image": "https://cdn.discordapp.com/emojis/791450162437816360.gif?v=1",
+        "emoji": "<a:lmc_clover:791450162437816360>",
+        "value": 500,
+        "price": 500,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "diamond_marshmallow": {
+        "info": "Where's me lucky charms, they're magically delicious!",
+        "image": "https://cdn.discordapp.com/emojis/791450162526289971.gif?v=1",
+        "emoji": "<a:lmc_diamond:791450162526289971>",
+        "value": 500,
+        "price": 500,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "horseshoe_marshmallow": {
+        "info": "Where's me lucky charms, they're magically delicious!",
+        "image": "https://cdn.discordapp.com/emojis/791450162077106177.gif?v=1",
+        "emoji": "<a:lmc_horseshoe:791450162077106177>",
+        "value": 500,
+        "price": 500,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "heart_marshmallow": {
+        "info": "Where's me lucky charms, they're magically delicious!",
+        "image": "https://cdn.discordapp.com/emojis/791450162530091049.gif?v=1",
+        "emoji": "<a:lmc_heart:791450162530091049>",
+        "value": 500,
+        "price": 500,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "xmas_lights": {
+        "info": "Decorate your room with these and you'll be a hit on Tik Tok!",
+        "image": "https://cdn.discordapp.com/emojis/791800989917118505.gif?v=1",
+        "emoji": "<a:xmas_lights:791800989917118505>",
+        "value": 500,
+        "price": 500,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "ornament": {
+        "info": "Decorate your tree with these balls!",
+        "image": "https://cdn.discordapp.com/emojis/791800993116979200.png?v=1",
+        "emoji": "<:xmas_ornament:791800993116979200>",
+        "value": 500,
+        "price": 500,
+        "rarity": "rare",
+        "type": "collectable"
+    },
     "blue_shell": {
         "info": "Second place feels safe",
         "image": "https://cdn.discordapp.com/emojis/790730649362235443.png?v=1",
@@ -80,13 +323,13 @@
         "rarity": "rare",
         "type": "collectable"
     },
-    "magic_wand": {
-        "info": "Yer a wizard!",
-        "image": "https://cdn.discordapp.com/emojis/790728341400453120.png?v=1",
-        "emoji": "<:wand:790728341400453120>",
-        "value": 200,
-        "price": 200,
-        "rarity": "uncommon",
+    "stocking": {
+        "info": "",
+        "image": "https://cdn.discordapp.com/emojis/791800991351308308.png?v=1",
+        "emoji": "<:stocking:791800991351308308>",
+        "value": 1000,
+        "price": 1000,
+        "rarity": "rare",
         "type": "collectable"
     },
     "boba": {
@@ -95,6 +338,15 @@
         "emoji": "<:boba:790720166937231370>",
         "value": 1200,
         "price": 1200,
+        "rarity": "rare",
+        "type": "collectable"
+    },
+    "xmas_dessert": {
+        "info": "",
+        "image": "https://cdn.discordapp.com/emojis/791800991351308298.png?v=1",
+        "emoji": "<:xmas_dessert:791800991351308298>",
+        "value": 2500,
+        "price": 2500,
         "rarity": "rare",
         "type": "collectable"
     },
@@ -116,6 +368,15 @@
         "rarity": "rare",
         "type": "collectable"
     },
+    "grave": {
+        "info": "RIP in piece",
+        "image": "https://cdn.discordapp.com/emojis/791450163427541013.png?v=1",
+        "emoji": "<:grave:791450163427541013>",
+        "value": 1300,
+        "price": 1300,
+        "rarity": "rare",
+        "type": "collectable"
+    },
     "no_u": {
         "info": "Does this make you invincible?",
         "image": "https://cdn.discordapp.com/emojis/790709588168540170.gif?v=1",
@@ -125,12 +386,30 @@
         "rarity": "epic",
         "type": "collectable"
     },
-    "star_marshmallow": {
-        "info": "Where's me lucky charms, they're magically delicious!",
-        "image": "https://cdn.discordapp.com/emojis/790731931653767168.gif?v=1",
-        "emoji": "<a:lcm_star:790731931653767168>",
-        "value": 500,
-        "price": 500,
+    "burning_money": {
+        "info": "This seems like an amazing investment of your savings.",
+        "image": "https://cdn.discordapp.com/emojis/791450164384628769.gif?v=1",
+        "emoji": "<a:burning_money:791450164384628769>",
+        "value": 16000,
+        "price": 16000,
+        "rarity": "epic",
+        "type": "collectable"
+    },
+    "gucci_hat": {
+        "info": "Made by buckets, for buckets.",
+        "image": "https://cdn.discordapp.com/emojis/791450164053016586.png?v=1",
+        "emoji": "<:gucci_hat:791450164053016586>",
+        "value": 15000,
+        "price": 15000,
+        "rarity": "epic",
+        "type": "collectable"
+    },
+    "snow_globe": {
+        "info": "We used Hamood's dandruff for the snow inside the globe",
+        "image": "https://cdn.discordapp.com/emojis/791450166246768681.gif?v=1",
+        "emoji": "<a:snow_globe:791450166246768681>",
+        "value": 20000,
+        "price": 20000,
         "rarity": "epic",
         "type": "collectable"
     },
@@ -152,13 +431,67 @@
         "rarity": "legendary",
         "type": "collectable"
     },
+    "ruby": {
+        "info": "Put it on a rail!",
+        "image": "https://cdn.discordapp.com/emojis/791450163259506718.png?v=1",
+        "emoji": "<:ruby:791450163259506718>",
+        "value": 100000,
+        "price": 100000,
+        "rarity": "legendary",
+        "type": "collectable"
+    },
+    "king_crown": {
+        "info": "It’s ok king, keep your head up your crown is falling",
+        "image": "https://cdn.discordapp.com/emojis/791450166104162324.gif?v=1",
+        "emoji": "<a:king_crown:791450166104162324>",
+        "value": 500000,
+        "price": 500000,
+        "rarity": "legendary",
+        "type": "collectable"
+    },
+    "pink_gun": {
+        "info": "Is this legal?",
+        "image": "https://cdn.discordapp.com/emojis/791532672824115201.png?v=1",
+        "emoji": "<:pink_gun:791532672824115201>",
+        "value": 250000,
+        "price": 250000,
+        "rarity": "blackmarket",
+        "type": "collectable"
+    },
     "rgb_roach": {
         "info": "RGB ROACH RGB ROACH RGB ROACH RGB ROACH",
         "image": "https://cdn.discordapp.com/emojis/772950719862800405.gif?v=1",
         "emoji": "<a:rgb:772950719862800405>",
-        "value": 420000,
-        "price": 420000,
+        "value": 4200000,
+        "price": 4200000,
         "rarity": "blackmarket",
+        "type": "collectable"
+    },
+    "cute_knife": {
+        "info": "For your Yandere moments",
+        "image": "https://cdn.discordapp.com/emojis/791450162928680981.png?v=1",
+        "emoji": "<:cute_knife:791450162928680981>",
+        "value": 10000000,
+        "price": 10000000,
+        "rarity": "blackmarket",
+        "type": "collectable"
+    },
+    "cash_gun": {
+        "info": "The only gun I'd want to get shot with!",
+        "image": "https://cdn.discordapp.com/emojis/791450164387643392.gif?v=1",
+        "emoji": "<a:cash_gun:791450164387643392>",
+        "value": 5000000,
+        "price": 5000000,
+        "rarity": "blackmarket",
+        "type": "collectable"
+    },
+    "microwave": {
+        "info": "Don't burn your popcorn! Only a fool would leave it in for too long...",
+        "image": "https://cdn.discordapp.com/emojis/791450162933268501.png?v=1",
+        "emoji": "<:mircowave:791450162933268501>",
+        "value": 100000000000,
+        "price": 100000000000,
+        "rarity": "dev",
         "type": "collectable"
     }
 }

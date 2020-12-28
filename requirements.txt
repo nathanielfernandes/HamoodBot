@@ -13,3 +13,4 @@ pymongo
 dnspython
 motor
 psutil
+dblpy
