@@ -253,15 +253,15 @@ class Money(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    # @commands.command()
-    # @checks.isAllowedCommand()
-    # async def print_money(self, ctx, amount):
-    #     """this not fo u"""
-    #     await self.bot.currency.add_server(ctx.guild.id)
-    #     await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
-    #     await self.bot.currency.update_wallet(ctx.guild.id, ctx.author.id, int(amount))
+    @commands.command()
+    @checks.isAllowedCommand()
+    async def print_money(self, ctx, amount):
+        """this not fo u"""
+        await self.bot.currency.add_server(ctx.guild.id)
+        await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
+        await self.bot.currency.update_wallet(ctx.guild.id, ctx.author.id, int(amount))
 
-    #     await ctx.send("printed da money dawg")
+        await ctx.send("printed da money dawg")
 
 
 def setup(bot):

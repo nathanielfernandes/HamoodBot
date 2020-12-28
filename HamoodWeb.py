@@ -18,10 +18,7 @@ if __name__ == "__main__":
         TOPGG = os.environ.get("TOPGG")
 
     bot = commands.AutoShardedBot(
-        command_prefix=commands.when_mentioned_or("."),
-        case_insensitive=True,
-        intents=discord.Intents().all(),
-        help_command=None,
+        command_prefix="######", intents=discord.Intents().all(), help_command=None,
     )
 
     @bot.event
