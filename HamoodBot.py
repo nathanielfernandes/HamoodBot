@@ -211,7 +211,7 @@ if __name__ == "__main__":
     @bot.command()
     @commands.is_owner()
     async def status(ctx, aType: str, uRL: str, *, aName: commands.clean_content):
-        """lets me change hamoods status"""
+        """``status [type] [url] [activity]`` lets me change hamoods status"""
         if aType == "playing":
             await bot.change_presence(activity=discord.Game(name=aName))
         elif aType == "listening":
@@ -232,7 +232,7 @@ if __name__ == "__main__":
     @bot.command()
     @commands.is_owner()
     async def reload(ctx, cog):
-        """reloads the requested cog"""
+        """``reload [cog name]`` reloads the requested cog"""
         try:
             bot.unload_extension(f"cogs.{cog}")
             bot.load_extension(f"cogs.{cog}")
@@ -244,7 +244,7 @@ if __name__ == "__main__":
     @bot.command()
     @commands.is_owner()
     async def unload(ctx, cog):
-        """unloads the requested cog"""
+        """``unload [cog name]`` unloads the requested cog"""
         try:
             bot.unload_extension(f"cogs.{cog}")
             await ctx.send(f"`{cog} got unloaded`")
@@ -255,7 +255,7 @@ if __name__ == "__main__":
     @bot.command()
     @commands.is_owner()
     async def load(ctx, cog):
-        """loads the requested cog"""
+        """``load [cog name]`` loads the requested cog"""
         try:
             bot.load_extension(f"cogs.{cog}")
             await ctx.send(f"`{cog} got loaded`")
