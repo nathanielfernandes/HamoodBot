@@ -1,3 +1,4 @@
+import os
 import dbl
 import discord
 from discord.ext import commands
@@ -8,7 +9,7 @@ if __name__ == "__main__":
     try:
         TOKEN = os.environ["TOKEN"]
         TOPGG = os.environ["TOPGG"]
-        PORT = os.environ["PORT"]
+        PORT = os.environ.get("PORT", 8000)
     except KeyError:
         from dotenv import load_dotenv
 
@@ -31,6 +32,7 @@ if __name__ == "__main__":
         """Handles interactions with the top.gg API"""
 
     def __init__(self, bot):
+        print("setup")
         self.bot = bot
         self.dblpy = dbl.DBLClient(
             bot,
