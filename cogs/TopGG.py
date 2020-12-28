@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 
 
-class TopGG(commands.Cog):
+class TopGGi(commands.Cog):
     """Handles interactions with the top.gg API"""
 
     def __init__(self, bot):
@@ -32,4 +32,4 @@ class TopGG(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(TopGG(bot))
+    bot.add_cog(TopGGi(bot))

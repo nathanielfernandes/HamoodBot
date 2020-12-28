@@ -9,7 +9,7 @@ if __name__ == "__main__":
     try:
         TOKEN = os.environ["TOKEN"]
         TOPGG = os.environ["TOPGG"]
-        PORT = os.environ.get("PORT", 8000)
+        PORT = os.environ.get("PORT", 5000)
     except KeyError:
         from dotenv import load_dotenv
 
@@ -40,7 +40,7 @@ if __name__ == "__main__":
             autopost=False,
             webhook_path="/dblwebhook",
             webhook_auth="hamoodtestapi",
-            webhook_port=PORT,
+            webhook_port=int(PORT),
         )  # Autopost will post your guild count every 30 minutes
 
     @commands.Cog.listener()

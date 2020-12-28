@@ -1,2 +1,2 @@
 worker: python3 HamoodBot.py
-web: python3 HamoodWeb.py
+web: python HamoodWeb.py
