@@ -8,6 +8,7 @@ if __name__ == "__main__":
     try:
         TOKEN = os.environ["TOKEN"]
         TOPGG = os.environ["TOPGG"]
+        PORT = os.environ["PORT"]
     except KeyError:
         from dotenv import load_dotenv
 
@@ -22,6 +23,10 @@ if __name__ == "__main__":
         help_command=None,
     )
 
+    @bot.event
+    async def on_message(message):
+        return
+
     class TopGG(commands.Cog):
         """Handles interactions with the top.gg API"""
 
@@ -29,11 +34,11 @@ if __name__ == "__main__":
         self.bot = bot
         self.dblpy = dbl.DBLClient(
             bot,
-            self.token,
+            TOPGG,
             autopost=False,
             webhook_path="https://hamoodtest.herokuapp.com/dblwebhook",
             webhook_auth="hamoodtestapi",
-            webhook_port=5000,
+            webhook_port=PORT,
         )  # Autopost will post your guild count every 30 minutes
 
     @commands.Cog.listener()
