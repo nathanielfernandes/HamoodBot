@@ -32,7 +32,7 @@ class TopGG(commands.Cog):
             bot,
             TOPGG,
             webhook_path="/dblwebhook",
-            webhook_auth="hamoodtestapi",
+            webhook_auth=TOPGGAUTH,
             webhook_port=int(PORT),
         )  # Autopost will post your guild count every 30 minutes
 
