@@ -41,7 +41,10 @@ if __name__ == "__main__":
         help_command=None,
     )
 
-    bot.all_items = json.load(open("data/items.json"))
+    every_item = json.load(open("data/items.json"))
+    bot.all_items = {
+        i: every_item[i] for i in every_item if every_item[i]["type"] not in ["crate"]
+    }
 
     @tasks.loop(seconds=7200)
     async def update_items():
@@ -92,6 +95,10 @@ if __name__ == "__main__":
             if bot.all_items[i]["rarity"] == "dev"
         }
 
+        bot.crates = {
+            i: every_item[i] for i in every_item if every_item[i]["type"] == "crate"
+        }
+
         categs = [
             (bot.common_items, random.randint(6, 7)),
             (bot.uncommon_items, random.randint(5, 6)),
@@ -105,6 +112,8 @@ if __name__ == "__main__":
             for i in range(cat[1]):
                 k, v = random.choice(list(cat[0].items()))
                 bot.shop[k] = v
+
+        bot.all_items = every_item
 
         # 10800
         # asyncio.sleep(300)
@@ -134,16 +143,21 @@ if __name__ == "__main__":
             )
         )
 
-        try:
-            await update_items.start()
-        except RuntimeError:
-            await update_items.cancel()
-            await update_items.start()
         # fp = open(
-        #     "/Users/nathaniel/Desktop/HamoodBot/tempImages/768510785667334154.png", "rb"
+        #     "/Users/nathaniel/Desktop/HamoodBot/tempImages/rsz_sddefault.jpg", "rb"
         # )
         # pfp = fp.read()
         # await bot.user.edit(avatar=pfp)
+
+        try:
+            await update_items.start()
+        except RuntimeError:
+            pass
+            # if update_items is not None:
+            #     await update_items.cancel()
+            #     await update_items.start()
+            # else:
+            #     await update_items.start()
 
     responses = {
         "bye": "goodbye {0.author.mention}",
@@ -200,68 +214,6 @@ if __name__ == "__main__":
     #                 msg = await channel.fetch_message(payload.message_id)
 
     #                 await msg.delete()
-
-    @bot.command()
-    @commands.is_owner()
-    async def logout(ctx):
-        """logs hamood out"""
-        await ctx.send("**goodbye**")
-        await bot.logout()
-
-    @bot.command()
-    @commands.is_owner()
-    async def status(ctx, aType: str, uRL: str, *, aName: commands.clean_content):
-        """``status [type] [url] [activity]`` lets me change hamoods status"""
-        if aType == "playing":
-            await bot.change_presence(activity=discord.Game(name=aName))
-        elif aType == "listening":
-            await bot.change_presence(
-                activity=discord.Activity(
-                    type=discord.ActivityType.listening, name=aName
-                )
-            )
-        elif aType == "watching":
-            await bot.change_presence(
-                activity=discord.Activity(
-                    type=discord.ActivityType.watching, name=aName
-                )
-            )
-        elif aType == "streaming":
-            await bot.change_presence(activity=discord.Streaming(name=aName, url=uRL))
-
-    @bot.command()
-    @commands.is_owner()
-    async def reload(ctx, cog):
-        """``reload [cog name]`` reloads the requested cog"""
-        try:
-            bot.unload_extension(f"cogs.{cog}")
-            bot.load_extension(f"cogs.{cog}")
-            await ctx.send(f"`{cog} got reloaded`")
-        except Exception as e:
-            await ctx.send(f"`{cog} cannot be loaded`")
-            raise e
-
-    @bot.command()
-    @commands.is_owner()
-    async def unload(ctx, cog):
-        """``unload [cog name]`` unloads the requested cog"""
-        try:
-            bot.unload_extension(f"cogs.{cog}")
-            await ctx.send(f"`{cog} got unloaded`")
-        except Exception as e:
-            await ctx.send(f"`{cog} cannot be unloaded:`")
-            raise e
-
-    @bot.command()
-    @commands.is_owner()
-    async def load(ctx, cog):
-        """``load [cog name]`` loads the requested cog"""
-        try:
-            bot.load_extension(f"cogs.{cog}")
-            await ctx.send(f"`{cog} got loaded`")
-        except Exception as e:
-            await ctx.send(f"`{cog} cannot be loaded:`")
-            raise e
 
     # loads in all cogs
     print("-------------------")

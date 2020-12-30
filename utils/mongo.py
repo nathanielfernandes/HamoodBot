@@ -320,6 +320,19 @@ class Inventories(Documents):
         )
         await self.incr_item_total(guild_id, member_id, amount)
 
+    async def incr_all_invs(self, member_id, item_id, amount=1):
+        """
+        Updates the wallet amount of a member_id
+        """
+        await self.db.update_many(
+            {str(member_id): {"$exists": True}},
+            {"$inc": {f"{member_id}.{item_id}": amount}},
+        )
+        await self.db.update_many(
+            {str(member_id): {"$exists": True}},
+            {"$inc": {f"{member_id}.item_space.total": amount}},
+        )
+
     async def decr_item_amount(self, guild_id, member_id, item_id, amount=-1):
         """
         Decrements an item's amount in a member's inventory
@@ -390,6 +403,15 @@ class Currency(Documents):
         """
         await self.db.update_one(
             {"_id": guild_id}, {"$inc": {f"{member_id}.wallet": amount}}
+        )
+
+    async def update_all_wallets(self, member_id, amount):
+        """
+        Updates the wallet amount of a member_id
+        """
+        await self.db.update_many(
+            {str(member_id): {"$exists": True}},
+            {"$inc": {f"{member_id}.wallet": amount}},
         )
 
     async def update_bank(self, guild_id, member_id, amount):
@@ -512,6 +534,19 @@ class Members(Documents):
                 return False, self.pretty_time_delta(86400 - change), member["streak"]
         else:
             return True, "Ready Now", 0
+
+    # async def is_vote_ready(self, member_id):
+    #     member = await self.get(member_id)
+    #     if member is not None:
+    #         if member.get("vote") is not None:
+    #             change = (datetime.datetime.now() - member["vote"]).total_seconds()
+
+    #             if change > 43200:
+    #                 return True, "Ready Now"
+    #             else:
+    #                 return False, self.pretty_time_delta(43200 - change)
+
+    #     return True, "Ready Now"
 
     async def reset_daily(self, member_id):
         await self.db.update_one(

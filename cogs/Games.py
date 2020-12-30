@@ -290,7 +290,7 @@ class Games(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(3, 10, commands.BucketType.guild)
+    @commands.cooldown(3, 10, commands.BucketType.channel)
     async def leaderboard(self, ctx, game="total", stat="won"):
         """``leaderboard [game] [stat]`` a leaderboard of the servers players"""
         leaderboard = await self.bot.leaderboards.get(ctx.guild.id)
@@ -1061,30 +1061,6 @@ class Games(commands.Cog):
                 gameID, f"{currentGame.user} made it to level {currentGame.level}!"
             )
         )
-
-    @commands.command()
-    async def bedwars(self, ctx, teamsize, *players):
-        players = [f"`{i.strip(',')}`" for i in players]
-        teamsize = teamsize if teamsize >= 2 else 2
-
-        teams = [
-            players[i * teamsize : (i + 1) * teamsize]
-            for i in range((len(players) + teamsize - 1) // teamsize)
-        ]
-
-        embed = discord.Embed(
-            title="Bedwars Teams",
-            color=discord.Colour.red(),
-            timestamp=ctx.message.created_at,
-        )
-        embed.set_thumbnail(
-            url="https://cdn.discordapp.com/attachments/792686378366009354/793222929931960370/latest.png"
-        )
-
-        for i in range(len(teams)):
-            embed.add_field(name=f"Team {i+1}", value="\n".join(teams[i]))
-
-        await ctx.send(embed=embed)
 
 
 def setup(bot):

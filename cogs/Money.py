@@ -5,7 +5,7 @@ import modules.checks as checks
 
 
 class Money(commands.Cog):
-    """Commands that reach into ur pockets"""
+    """Commands to manage your funds `NEW`"""
 
     def __init__(self, bot):
         self.bot = bot
@@ -38,6 +38,7 @@ class Money(commands.Cog):
 
     @commands.command(aliases=["bal", "bank", "wallet"])
     @checks.isAllowedCommand()
+    @commands.cooldown(3, 5, commands.BucketType.user)
     async def balance(self, ctx, upgrade="nah"):
         """``balance`` get your current balance."""
         bal = await self.bot.currency.get_currency(ctx.guild.id, ctx.author.id)
@@ -90,6 +91,7 @@ class Money(commands.Cog):
 
     @commands.command(aliases=["dep"])
     @checks.isAllowedCommand()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def deposit(self, ctx, amount):
         """``deposit [amount]`` deposit money into the bank for safe keeping."""
         if amount == "all" or amount == "max":
@@ -122,6 +124,7 @@ class Money(commands.Cog):
 
     @commands.command(aliases=["wit"])
     @checks.isAllowedCommand()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def withdraw(self, ctx, amount):
         """``withdraw [amount]`` withdraw's money from the bank into your wallet."""
         if amount == "all" or amount == "max":
@@ -147,6 +150,7 @@ class Money(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def transfer(self, ctx, recipient: discord.Member = None, amount=1):
         """``transfer [@member] [item_id] [amount]`` this a lil sus."""
         if recipient is not None:
@@ -181,6 +185,7 @@ class Money(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
+    @commands.cooldown(2, 5, commands.BucketType.user)
     async def richest(self, ctx):
         """``richest`` See the richest members in the server."""
         server = await self.bot.currency.get(ctx.guild.id)
@@ -220,6 +225,7 @@ class Money(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def daily(self, ctx):
         """``daily`` Get your daily reward."""
         ready, time, streak = await self.bot.members.is_daily_ready(ctx.author.id)
@@ -229,21 +235,21 @@ class Money(commands.Cog):
 
             reward = round((bal["bank_max"] / 2) + (100 * streak))
 
-            await self.bot.currency.update_wallet(ctx.guild.id, ctx.author.id, reward)
+            await self.bot.currency.update_all_wallets(ctx.author.id, reward)
 
             await self.bot.members.add_member(ctx.author.id)
             await self.bot.members.reset_daily(ctx.author.id)
 
             embed = discord.Embed(
                 title=f"Daily Reward Collected |  `⌬ {reward:,}`",
-                description=f"{ctx.author.mention} collected their daily reward of {self.cash(reward)}.\n \nUse `.daily` again in 24 hours.",
+                description=f"{ctx.author.mention}, {self.cash(reward)} was added to all your wallets.\n \nUse `.daily` again in 24 hours.\n \nYou can vote for Hamood using `.vote` for cooler rewards!",
                 color=ctx.author.color,
                 timestamp=ctx.message.created_at,
             )
         else:
             embed = discord.Embed(
                 title=f"Daily Reward Unavailable",
-                description=f"{ctx.author.mention} your daily reward can be collected in ```{time}```",
+                description=f"{ctx.author.mention} your daily reward can be collected in ```{time}```\n \nYou can vote for Hamood using `.vote` for cooler rewards!",
                 color=ctx.author.color,
                 timestamp=ctx.message.created_at,
             )

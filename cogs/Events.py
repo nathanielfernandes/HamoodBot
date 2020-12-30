@@ -9,19 +9,19 @@ class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.Cog.listener()
-    async def on_member_join(self, member):
-        channel = member.guild.system_channel
-        if channel is not None:
-            await channel.send(f"Welcome {member.mention}!")
+    # @commands.Cog.listener()
+    # async def on_member_join(self, member):
+    #     channel = member.guild.system_channel
+    #     if channel is not None:
+    #         await channel.send(f"Welcome {member.mention}!")
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         if member.id == self.bot.user.id:
             return
-        channel = member.guild.system_channel
-        if channel is not None:
-            await channel.send(f"Goodbye {member.mention}!")
+        # channel = member.guild.system_channel
+        # if channel is not None:
+        #     await channel.send(f"Goodbye {member.mention}!")
 
         await self.bot.leaderboards.delete_member(member.guild.id, member.id)
 

@@ -6,7 +6,7 @@
         "value": 5,
         "price": 5,
         "rarity": "common",
-        "type": "collectable"
+        "type": "sellable"
     },
     "watering_can": {
         "info": "",
@@ -15,7 +15,7 @@
         "value": 25,
         "price": 25,
         "rarity": "common",
-        "type": "collectable"
+        "type": "sellable"
     },
     "choco_donut": {
         "info": "Bought this from Tim Hortons",
@@ -24,7 +24,7 @@
         "value": 20,
         "price": 20,
         "rarity": "common",
-        "type": "collectable"
+        "type": "sellable"
     },
     "ice_cream_cup": {
         "info": "Chocolate, vanilla, and strawberry: a little bit for everyone.",
@@ -33,7 +33,7 @@
         "value": 30,
         "price": 30,
         "rarity": "common",
-        "type": "collectable"
+        "type": "sellable"
     },
     "milk": {
         "info": "Drink it to keep your ALL your bones strong and healthy.",
@@ -42,7 +42,7 @@
         "value": 12,
         "price": 12,
         "rarity": "common",
-        "type": "collectable"
+        "type": "sellable"
     },
     "rubber_ducky": {
         "info": "You will never be lonely during bath time again",
@@ -51,7 +51,7 @@
         "value": 50,
         "price": 50,
         "rarity": "common",
-        "type": "collectable"
+        "type": "sellable"
     },
     "salt": {
         "info": "Guess whose salty!",
@@ -60,7 +60,7 @@
         "value": 5,
         "price": 5,
         "rarity": "common",
-        "type": "collectable"
+        "type": "sellable"
     },
     "net": {
         "info": "For catching things!",
@@ -69,7 +69,7 @@
         "value": 10,
         "price": 10,
         "rarity": "common",
-        "type": "collectable"
+        "type": "sellable"
     },
     "strawberry": {
         "info": "Natural sweetness",
@@ -78,7 +78,7 @@
         "value": 10,
         "price": 10,
         "rarity": "common",
-        "type": "collectable"
+        "type": "sellable"
     },
     "orange": {
         "info": "Vitamin C for DAYZZZZ!",
@@ -87,7 +87,7 @@
         "value": 20,
         "price": 20,
         "rarity": "common",
-        "type": "collectable"
+        "type": "sellable"
     },
     "grapes": {
         "info": "Stop wine-ing about it!!",
@@ -96,7 +96,7 @@
         "value": 20,
         "price": 20,
         "rarity": "common",
-        "type": "collectable"
+        "type": "sellable"
     },
     "watermelon": {
         "info": "Fun fact: Watermelons contain 92% water!",
@@ -105,16 +105,16 @@
         "value": 25,
         "price": 25,
         "rarity": "common",
-        "type": "collectable"
+        "type": "sellable"
     },
     "fishing_rod": {
-        "info": "For catching things from the water!",
+        "info": "For catching things from the water!\nYou could fish up some crates if your lucky!",
         "image": "https://cdn.discordapp.com/emojis/790727523054780437.png?v=1",
         "emoji": "<:rod:790727523054780437>",
-        "value": 15,
-        "price": 15,
+        "value": 50,
+        "price": 50,
         "rarity": "common",
-        "type": "collectable"
+        "type": "useable"
     },
     "steak": {
         "info": "It's a little under cooked",
@@ -123,7 +123,7 @@
         "value": 45,
         "price": 45,
         "rarity": "common",
-        "type": "collectable"
+        "type": "sellable"
     },
     "dango": {
         "info": "A sweet Japanese desert made of rice flour. It's squishy and soft on the outside, and filled with red bean paste. YUM",
@@ -132,7 +132,7 @@
         "value": 50,
         "price": 50,
         "rarity": "common",
-        "type": "collectable"
+        "type": "sellable"
     },
     "bee": {
         "info": "Buzzzzzzzzzzz",
@@ -141,7 +141,7 @@
         "value": 150,
         "price": 150,
         "rarity": "uncommon",
-        "type": "collectable"
+        "type": "sellable"
     },
     "magic_wand": {
         "info": "Yer a wizard!",
@@ -150,7 +150,7 @@
         "value": 200,
         "price": 200,
         "rarity": "uncommon",
-        "type": "collectable"
+        "type": "sellable"
     },
     "flambe": {
         "info": "You either impress your friends... or burn down your house trying",
@@ -159,7 +159,7 @@
         "value": 1000,
         "price": 1000,
         "rarity": "uncommon",
-        "type": "collectable"
+        "type": "sellable"
     },
     "purple_candy_heart": {
         "info": "",
@@ -168,7 +168,7 @@
         "value": 200,
         "price": 200,
         "rarity": "uncommon",
-        "type": "collectable"
+        "type": "sellable"
     },
     "milk_can": {
         "info": "They have bags of milk in Canada. Why can't there be cans of milk?",
@@ -177,7 +177,7 @@
         "value": 100,
         "price": 100,
         "rarity": "uncommon",
-        "type": "collectable"
+        "type": "sellable"
     },
     "gingerbread_man_cookie": {
         "info": "Rip the head off first to prevent your cookie from running away",
@@ -186,7 +186,7 @@
         "value": 100,
         "price": 100,
         "rarity": "uncommon",
-        "type": "collectable"
+        "type": "sellable"
     },
     "simp_pills": {
         "info": "Side Effects Include:\n*Loss of dignity, tier 3 subbing, lack of physical female contact, pain.*",
@@ -195,7 +195,7 @@
         "value": 250,
         "price": 250,
         "rarity": "uncommon",
-        "type": "collectable"
+        "type": "sellable"
     },
     "diamond": {
         "info": "Steve grinded hard for these",
@@ -204,7 +204,7 @@
         "value": 1000,
         "price": 1000,
         "rarity": "rare",
-        "type": "resource"
+        "type": "sellable"
     },
     "cupcake": {
         "info": "1 cup worth of cake",
@@ -213,7 +213,7 @@
         "value": 850,
         "price": 850,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "teddy_bear": {
         "info": "Hug tightly when feeling alone or sad",
@@ -222,7 +222,7 @@
         "value": 1073,
         "price": 1073,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "penny_board": {
         "info": "Not actually as small as a penny",
@@ -231,7 +231,7 @@
         "value": 2000,
         "price": 2000,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "star_marshmallow": {
         "info": "Where's me lucky charms, they're magically delicious!",
@@ -240,7 +240,7 @@
         "value": 500,
         "price": 500,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "rainbow_marshmallow": {
         "info": "Where's me lucky charms, they're magically delicious!",
@@ -249,7 +249,7 @@
         "value": 500,
         "price": 500,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "moon_marshmallow": {
         "info": "Where's me lucky charms, they're magically delicious!",
@@ -258,7 +258,7 @@
         "value": 500,
         "price": 500,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "clover_marshmallow": {
         "info": "Where's me lucky charms, they're magically delicious!",
@@ -267,7 +267,7 @@
         "value": 500,
         "price": 500,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "diamond_marshmallow": {
         "info": "Where's me lucky charms, they're magically delicious!",
@@ -276,7 +276,7 @@
         "value": 500,
         "price": 500,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "horseshoe_marshmallow": {
         "info": "Where's me lucky charms, they're magically delicious!",
@@ -285,7 +285,7 @@
         "value": 500,
         "price": 500,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "heart_marshmallow": {
         "info": "Where's me lucky charms, they're magically delicious!",
@@ -294,7 +294,7 @@
         "value": 500,
         "price": 500,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "xmas_lights": {
         "info": "Decorate your room with these and you'll be a hit on Tik Tok!",
@@ -303,7 +303,7 @@
         "value": 500,
         "price": 500,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "ornament": {
         "info": "Decorate your tree with these balls!",
@@ -312,7 +312,7 @@
         "value": 500,
         "price": 500,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "blue_shell": {
         "info": "Second place feels safe",
@@ -321,7 +321,7 @@
         "value": 1001,
         "price": 1001,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "stocking": {
         "info": "",
@@ -330,7 +330,7 @@
         "value": 1000,
         "price": 1000,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "boba": {
         "info": "Sweet, Milky goodness",
@@ -339,7 +339,7 @@
         "value": 1200,
         "price": 1200,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "xmas_dessert": {
         "info": "",
@@ -348,7 +348,7 @@
         "value": 2500,
         "price": 2500,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "present": {
         "info": "For you.",
@@ -357,7 +357,7 @@
         "value": 200,
         "price": 200,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "rolling_cat": {
         "info": "I think he likes to roll",
@@ -366,7 +366,7 @@
         "value": 2500,
         "price": 2500,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "grave": {
         "info": "RIP in piece",
@@ -375,7 +375,7 @@
         "value": 1300,
         "price": 1300,
         "rarity": "rare",
-        "type": "collectable"
+        "type": "sellable"
     },
     "no_u": {
         "info": "Does this make you invincible?",
@@ -384,7 +384,7 @@
         "value": 28000,
         "price": 28000,
         "rarity": "epic",
-        "type": "collectable"
+        "type": "sellable"
     },
     "burning_money": {
         "info": "This seems like an amazing investment of your savings.",
@@ -393,7 +393,7 @@
         "value": 16000,
         "price": 16000,
         "rarity": "epic",
-        "type": "collectable"
+        "type": "sellable"
     },
     "gucci_hat": {
         "info": "Made by buckets, for buckets.",
@@ -402,7 +402,7 @@
         "value": 15000,
         "price": 15000,
         "rarity": "epic",
-        "type": "collectable"
+        "type": "sellable"
     },
     "snow_globe": {
         "info": "We used Hamood's dandruff for the snow inside the globe",
@@ -411,7 +411,7 @@
         "value": 20000,
         "price": 20000,
         "rarity": "epic",
-        "type": "collectable"
+        "type": "sellable"
     },
     "legendary_dairy": {
         "info": "Drinking this will be legend... wait for it... dairy!",
@@ -420,7 +420,7 @@
         "value": 50000,
         "price": 50000,
         "rarity": "legendary",
-        "type": "collectable"
+        "type": "sellable"
     },
     "baby_yoda": {
         "info": "The Child",
@@ -429,7 +429,7 @@
         "value": 66000,
         "price": 66000,
         "rarity": "legendary",
-        "type": "collectable"
+        "type": "sellable"
     },
     "ruby": {
         "info": "Put it on a rail!",
@@ -438,7 +438,7 @@
         "value": 100000,
         "price": 100000,
         "rarity": "legendary",
-        "type": "collectable"
+        "type": "sellable"
     },
     "king_crown": {
         "info": "It’s ok king, keep your head up your crown is falling",
@@ -447,7 +447,7 @@
         "value": 500000,
         "price": 500000,
         "rarity": "legendary",
-        "type": "collectable"
+        "type": "sellable"
     },
     "pink_gun": {
         "info": "Is this legal?",
@@ -456,7 +456,7 @@
         "value": 250000,
         "price": 250000,
         "rarity": "blackmarket",
-        "type": "collectable"
+        "type": "sellable"
     },
     "rgb_roach": {
         "info": "RGB ROACH RGB ROACH RGB ROACH RGB ROACH",
@@ -465,7 +465,7 @@
         "value": 4200000,
         "price": 4200000,
         "rarity": "blackmarket",
-        "type": "collectable"
+        "type": "sellable"
     },
     "cute_knife": {
         "info": "For your Yandere moments",
@@ -474,7 +474,7 @@
         "value": 10000000,
         "price": 10000000,
         "rarity": "blackmarket",
-        "type": "collectable"
+        "type": "sellable"
     },
     "cash_gun": {
         "info": "The only gun I'd want to get shot with!",
@@ -483,7 +483,7 @@
         "value": 5000000,
         "price": 5000000,
         "rarity": "blackmarket",
-        "type": "collectable"
+        "type": "sellable"
     },
     "microwave": {
         "info": "Don't burn your popcorn! Only a fool would leave it in for too long...",
@@ -493,5 +493,25 @@
         "price": 100000000000,
         "rarity": "dev",
         "type": "collectable"
+    },
+    "blackmarket_crate": {
+        "info": "This crate yeilds `x1` items with rarities from ***RARE*** up to ***BLACKMARKET***\n \n***RARE***: `80%`\n***EPIC***: `13%`\n***LEGENDARY***: `5%`\n***BLACKMARKET***: `2%`",
+        "image": "https://cdn.discordapp.com/emojis/793618040025645106.png?v=1",
+        "emoji": "<:blackmarketbox:793618040025645106>",
+        "value": 0,
+        "price": 0,
+        "rarity": "blackmarket",
+        "type": "crate",
+        "contains": 1
+    },
+    "rare_crate": {
+        "info": "This crate yeilds `x5` items with rarities from ***COMMON*** up to ***RARE***\n \n***COMMON***: `20%`\n***UNCOMMON***: `30%`\n***RARE***: `50%`",
+        "image": "https://cdn.discordapp.com/emojis/793619180683001876.png?v=1",
+        "emoji": "<:regularbox:793619180683001876>",
+        "value": 0,
+        "price": 0,
+        "rarity": "rare",
+        "type": "crate",
+        "contains": 5
     }
 }

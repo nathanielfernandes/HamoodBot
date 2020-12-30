@@ -1,11 +1,12 @@
 import discord
+import random
 from discord.ext import commands
 
 import modules.checks as checks
 
 
 class Items(commands.Cog):
-    """Commands that reach into ur pockets"""
+    """Commands to manage your inventory `NEW`"""
 
     def __init__(self, bot):
         self.bot = bot
@@ -42,11 +43,12 @@ class Items(commands.Cog):
     def valid_item(self, name):
         return self.to_id(name) in self.bot.all_items
 
-    # @commands.command()
-    # async def get_item(self, ctx, item, amount=1):
-    #     """pls no use"""
-    #     await self.give_item(ctx.guild.id, ctx.author.id, item, amount)
-    #     await ctx.send(f"you recieved {amount} {item} item")
+    @commands.command()
+    @commands.is_owner()
+    async def get_item(self, ctx, item, amount=1):
+        """``OWNER`` COMMAND"""
+        await self.give_item(ctx.guild.id, ctx.author.id, item, amount)
+        await ctx.send(f"you recieved {amount} {item} item")
 
     # @commands.command()
     # async def item_ids(self, ctx, sort_by="rarity"):
@@ -78,6 +80,7 @@ class Items(commands.Cog):
 
     @commands.command(aliases=["inv"])
     @checks.isAllowedCommand()
+    @commands.cooldown(2, 5, commands.BucketType.user)
     async def inventory(self, ctx, sort_by="price", page=1):
         """``inventory [sorting] [page]`` view your current inventory."""
         items = await self.bot.inventories.get_items(ctx.guild.id, ctx.author.id)
@@ -150,7 +153,7 @@ class Items(commands.Cog):
 
                     embed.add_field(
                         name=f"**{'⎻' * 30}**",
-                        value=f"**Total Value:** {self.cash(total)}\n \nUse `.inventory{f' {sort_by} ' if sort_by != 'price' else ' '}{page+1 if page+1 <= n else 1}` to view the next page.\nUse `.inventory upgrade` to increase your max inventory space from `{items['item_space']['max']}` to `{(items['item_space']['max']*2)-items['item_space']['max']//2}` for {self.cash((items['item_space']['max']**3)//(items['item_space']['max']//3))}",
+                        value=f"**Total Value:** {self.cash(total)}\n \nUse `.inventory{f' {sort_by} ' if sort_by != 'price' else ' '}{page+1 if page+1 <= n else 1}` to view the next page.\nUse `.inventory upgrade` to increase your max inventory space from `{items['item_space']['max']}` to `{(items['item_space']['max']*2)-items['item_space']['max']//2}` for {self.cash((items['item_space']['max']**3)//(items['item_space']['max']//3))}\n",
                     )
 
                     embed.set_footer(text=f"Page ({page}/{n})")
@@ -171,6 +174,7 @@ class Items(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
+    @commands.cooldown(5, 10, commands.BucketType.user)
     async def iteminfo(self, ctx, *, name: commands.clean_content):
         """``iteminfo [item name]`` get information on an item."""
         if self.valid_item(name):
@@ -187,7 +191,7 @@ class Items(commands.Cog):
 
             embed.add_field(
                 name=f"**{'⎻' * 30}**",
-                value=f"**Current Price**: {self.cash(self.bot.all_items[name]['price'])} {self.get_arrow(name)}\n**Regular Price**: {self.cash(self.bot.all_items[name]['value'])}\n \nitem_id: `{name}`\n{buy if name in self.bot.shop else ''}",
+                value=f"**Current Price**: {self.cash(self.bot.all_items[name]['price'])} {self.get_arrow(name)}\n**Regular Price**: {self.cash(self.bot.all_items[name]['value'])}\n \nitem_id: `{name}`\n{buy if name in self.bot.shop else ''}type: `{self.bot.all_items[name]['type']}`",
             )
             embed.set_thumbnail(url=self.bot.all_items[name]["image"])
 
@@ -197,6 +201,7 @@ class Items(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
+    @commands.cooldown(5, 10, commands.BucketType.user)
     async def itemlist(self, ctx, sort_by="price", page=1):
         """``itemlist [sorting] [page]`` View all the items that you could get."""
         if sort_by.isdigit():
@@ -219,6 +224,79 @@ class Items(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def open(self, ctx, item_id):
+        """``open [item_id]`` used to open crates"""
+        item_id = self.to_id(item_id)
+        if item_id in self.bot.crates:
+            inv = await self.bot.inventories.get_items(ctx.guild.id, ctx.author.id)
+
+            if inv is not None and item_id in inv:
+                if await self.bot.inventories.member_has_space(
+                    ctx.guild.id, ctx.author.id, self.bot.crates[item_id]["contains"]
+                ):
+                    reward = {}
+                    for i in range(self.bot.crates[item_id]["contains"]):
+                        ran = random.randint(1, 100)
+                        if item_id == "blackmarket_crate":
+                            if ran <= 80:
+                                choice = self.bot.rare_items
+                            elif ran <= 93:
+                                choice = self.bot.epic_items
+                            elif ran <= 98:
+                                choice = self.bot.legendary_items
+                            else:
+                                choice = self.bot.blackmarket_items
+
+                        elif item_id == "rare_crate":
+                            if ran <= 20:
+                                choice = self.bot.common_items
+                            elif ran <= 50:
+                                choice = self.bot.uncommon_items
+                            else:
+                                choice = self.bot.rare_items
+
+                        k, v = random.choice(list(choice.items()))
+
+                        reward[k] = 1 if k not in reward else reward[k] + 1
+
+                    for item in reward:
+                        await self.bot.inventories.incr_item_amount(
+                            ctx.guild.id, ctx.author.id, item, reward[item]
+                        )
+
+                    await self.bot.inventories.decr_item_amount(
+                        ctx.guild.id, ctx.author.id, item_id, 1
+                    )
+
+                    item_desc = (
+                        lambda i: f"{self.bot.all_items[i]['emoji']} - **{self.to_name(i)}** `x{reward[i]}` **|** {self.cash(self.bot.all_items[i]['price']*int(reward[i]))}"
+                    )
+
+                    desc = "\n".join([item_desc(i) for i in reward])
+
+                    embed = discord.Embed(
+                        title=f"Opened {self.to_name(item_id)}",
+                        description=f"{ctx.author.mention} opened a `{item_id}` and recieved\n**{'⎻' * 30}**\n{desc}\n**{'⎻' * 30}**",
+                        color=ctx.author.color,
+                        timestamp=ctx.message.created_at,
+                    )
+                    embed.set_thumbnail(url=self.bot.crates[item_id]["image"])
+
+                    await ctx.send(embed=embed)
+
+                else:
+                    await ctx.send("`Insufficient Space!`")
+            else:
+                await ctx.send("`Insufficient Space!`")
+        else:
+            await ctx.send(
+                "`Invalid Item` Use `.iteminfo [item name]` to find its `item_id`"
+            )
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def buy(self, ctx, item_id, amount=1):
         """``buy [item_id] [amount]`` buy an item using your bank's funds."""
         amount = abs(int(amount))
@@ -270,6 +348,7 @@ class Items(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def sell(self, ctx, item_id, amount=1):
         """``sell [item_id] [amount]`` sell your items for cash."""
         if isinstance(amount, str) and amount.lower() == "all":
@@ -277,6 +356,8 @@ class Items(commands.Cog):
         if self.valid_item(item_id):
             item_id = self.to_id(item_id)
             item = self.bot.all_items[item_id]
+            if item["type"] != "sellable":
+                return await ctx.send("`That Item cannot be sold`")
             items = await self.bot.inventories.get_items(ctx.guild.id, ctx.author.id)
             if items is not None and item_id in items:
                 if isinstance(amount, str) and amount.lower() == "all":
@@ -294,7 +375,7 @@ class Items(commands.Cog):
 
                     embed = discord.Embed(
                         title=f"Sold {self.to_name(item_id)} `x{amount}`",
-                        description=f"{ctx.author.mention} successfully sold `{item_id} `x{amount}` for {self.cash(value)}",
+                        description=f"{ctx.author.mention} successfully sold `{item_id}` `x{amount}` for {self.cash(value)}",
                         color=ctx.author.color,
                         timestamp=ctx.message.created_at,
                     )
@@ -310,6 +391,43 @@ class Items(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
+    @commands.cooldown(2, 5, commands.BucketType.user)
+    async def trash(self, ctx, item_id, amount=1):
+        """``trash [item_id] [amount]`` sell your items for cash."""
+        if isinstance(amount, str) and amount.lower() == "all":
+            amount = abs(int(amount))
+        if self.valid_item(item_id):
+            item_id = self.to_id(item_id)
+            item = self.bot.all_items[item_id]
+            items = await self.bot.inventories.get_items(ctx.guild.id, ctx.author.id)
+            if items is not None and item_id in items:
+                if isinstance(amount, str) and amount.lower() == "all":
+                    amount = item[item_id]
+                if items[item_id] >= amount:
+                    await self.bot.currency.add_server(ctx.guild.id)
+                    await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
+                    await self.bot.inventories.decr_item_amount(
+                        ctx.guild.id, ctx.author.id, item_id, amount
+                    )
+                    embed = discord.Embed(
+                        title=f"Sold {self.to_name(item_id)} `x{amount}`",
+                        description=f"{ctx.author.mention} successfully trashed `{item_id}` `x{amount}`",
+                        color=ctx.author.color,
+                        timestamp=ctx.message.created_at,
+                    )
+                    embed.set_thumbnail(url=self.bot.all_items[item_id]["image"])
+
+                    return await ctx.send(embed=embed)
+
+            await ctx.send("`Insufficient Items!`")
+        else:
+            await ctx.send(
+                "`Invalid Item` Use `.iteminfo [item name]` to find its `item_id`"
+            )
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def gift(
         self, ctx, recipient: discord.Member = None, item_id="1234", amount=1
     ):
@@ -364,6 +482,7 @@ class Items(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
+    @commands.cooldown(5, 10, commands.BucketType.user)
     async def shop(self, ctx, page=1):
         """``shop [page]`` view the current items you can buy."""
         items, n = await self.sort_items("shop", "shop", page)
@@ -405,11 +524,17 @@ class Items(commands.Cog):
             temp = self.bot.blackmarket_items
         elif sort_by == "dev":
             temp = self.bot.dev_items
+        elif sort_by == "crates":
+            temp = self.bot.crates
 
         if og == "itemlist":
-            item_desc = lambda items, i: [
-                f"{items[i]['emoji']} - **{self.to_name(i)}** **|** {self.cash(items[i]['price'])} {self.get_arrow(i)} {'`In Shop`' if i in self.bot.shop else ''}"
-            ]
+            item_desc = (
+                lambda items, i: [
+                    f"{items[i]['emoji']} - **{self.to_name(i)}** **|** {self.cash(items[i]['price'])} {self.get_arrow(i)} {'`In Shop`' if i in self.bot.shop else ''}"
+                ]
+                if items[i]["type"] != "crate"
+                else []
+            )
         elif og == "inventory":
             item_desc = (
                 lambda items, i: [

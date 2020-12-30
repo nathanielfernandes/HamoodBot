@@ -1,3 +1,4 @@
+import dbl
 import datetime
 import discord
 from discord.ext import commands
@@ -5,6 +6,16 @@ from discord.ext import commands
 import modules.checks as checks
 
 import platform, socket, re, uuid, json, psutil, os
+
+try:
+    TOKEN = os.environ["TOKEN"]
+    TOPGG = os.environ["TOPGG"]
+except KeyError:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+    TOKEN = os.environ.get("BOTTOKENTEST")
+    TOPGG = os.environ.get("TOPGG")
 
 
 class About(commands.Cog):
@@ -14,6 +25,9 @@ class About(commands.Cog):
         self.bot = bot
         self.currentDT = str(datetime.datetime.now())
         self.start = datetime.datetime.now()
+        self.dblpy = dbl.DBLClient(
+            self.bot, TOPGG,
+        )  # Autopost will post your guild count every
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -121,6 +135,30 @@ class About(commands.Cog):
         )
         await ctx.send(embed=embed)
 
+    @commands.command()
+    @checks.isAllowedCommand()
+    async def vote(self, ctx):
+        """``vote`` Vote for Hamood for special rewards."""
+        embed = discord.Embed(
+            title="Vote for Hamood",
+            description="[**Click Here To Vote**](https://top.gg/bot/699510311018823680/vote)",
+            timestamp=ctx.message.created_at,
+            color=discord.Color.green(),
+        )
+
+        w = await self.dblpy.get_weekend_status()
+
+        embed.add_field(
+            name=f"Rewards {'`x2` Weekend Multiplier' if w else ''}",
+            value=f"<:blackmarketbox:793618040025645106> Blackmarket Crate `x{1*(2 if w else 1)}`\n<:regularbox:793619180683001876> Regular Crate `x{2*(2 if w else 1)}`\n<a:coin:790679388147679272> Money: [⌬ {2500*(2 if w else 1):,}](https://top.gg/bot/699510311018823680)",
+        )
+        embed.set_thumbnail(
+            url="https://cdn.discordapp.com/emojis/778416296630157333.png?v=1"
+        )
+        embed.set_footer(text="Double Voting Rewards On Weekends")
+
+        await ctx.send(embed=embed)
+
     # @commands.command()
     # async def version(self, ctx):
     #     """``version`` sends Hamood's current version"""
@@ -146,7 +184,7 @@ class About(commands.Cog):
             )
             cogs_desc = ""
             for cog in self.bot.cogs:
-                if cog != "Events":
+                if cog not in ["Events", "TopGG", "Dev"]:
                     cogs_desc += f"`{cog}` - {self.bot.cogs[cog].__doc__}\n"
 
             halp.add_field(
@@ -186,8 +224,11 @@ class About(commands.Cog):
             else:
                 halp = discord.Embed(
                     title="Error!",
-                    description=f"`{query}` is not a **category** or **command**",
+                    description=f"I couldn't find help for that.\n`{query}` is not a **category** or **command**",
                     color=discord.Color.red(),
+                )
+                halp.set_thumbnail(
+                    url="https://cdn.discordapp.com/emojis/651694663962722304.gif?v=1"
                 )
 
         halp.set_footer(
