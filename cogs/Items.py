@@ -43,13 +43,6 @@ class Items(commands.Cog):
     def valid_item(self, name):
         return self.to_id(name) in self.bot.all_items
 
-    @commands.command()
-    @commands.is_owner()
-    async def get_item(self, ctx, item, amount=1):
-        """``OWNER`` COMMAND"""
-        await self.give_item(ctx.guild.id, ctx.author.id, item, amount)
-        await ctx.send(f"you recieved {amount} {item} item")
-
     # @commands.command()
     # async def item_ids(self, ctx, sort_by="rarity"):
     #     """A list of every item id"""

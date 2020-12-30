@@ -184,7 +184,7 @@ class About(commands.Cog):
             )
             cogs_desc = ""
             for cog in self.bot.cogs:
-                if cog not in ["Events", "TopGG", "Dev"]:
+                if cog not in ["Events", "TopGG", "Dev", "Web"]:
                     cogs_desc += f"`{cog}` - {self.bot.cogs[cog].__doc__}\n"
 
             halp.add_field(

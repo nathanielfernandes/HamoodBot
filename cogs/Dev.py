@@ -70,7 +70,29 @@ class Dev(commands.Cog):
             await ctx.send(f"`{cog} got loaded`")
         except Exception as e:
             await ctx.send(f"`{cog} cannot be loaded:`")
-            raise e
+            raise
+
+    @commands.command()
+    @commands.is_owner()
+    async def get_item(self, ctx, item_id, amount=1):
+        """``get_item [item_id] [amount]`` get any item"""
+        amount = int(amount)
+        await self.bot.inventories.add_inventory(ctx.guild.id)
+        await self.bot.inventories.add_member(ctx.guild.id, ctx.author.id)
+        await self.bot.inventories.add_item(
+            ctx.guild.id, ctx.author.id, self.to_id(item_id), amount
+        )
+        await ctx.send(f"`You recieved {item_id} x{amount}`")
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    async def print_money(self, ctx, amount):
+        """``print_money [amount]`` get any amount of money"""
+        await self.bot.currency.add_server(ctx.guild.id)
+        await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
+        await self.bot.currency.update_wallet(ctx.guild.id, ctx.author.id, int(amount))
+
+        await ctx.send(f"`You recieved ⌬ {amount:,}`")
 
 
 def setup(bot):
