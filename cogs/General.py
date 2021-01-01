@@ -9,7 +9,6 @@ from modules.image_functions import randomFile
 import modules.checks as checks
 
 
-# Messaging cog that checks for profantiy and also provide some simple chat commands
 class General(commands.Cog):
     """General Commands"""
 

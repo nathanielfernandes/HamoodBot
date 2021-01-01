@@ -103,7 +103,7 @@ class Math(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(2, 15, commands.BucketType.channel)
+    @commands.cooldown(3, 15, commands.BucketType.channel)
     async def py(self, ctx, *, content: commands.clean_content):
         """``py [code]`` runs `python-3.7.2` code and outputs to the chat. 
             Execution cannot exceed 1 second!
@@ -181,3 +181,4 @@ class Math(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Math(bot))
+

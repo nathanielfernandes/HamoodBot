@@ -1,3 +1,4 @@
+import dbl
 import datetime
 import discord
 from discord.ext import commands
@@ -5,6 +6,16 @@ from discord.ext import commands
 import modules.checks as checks
 
 import platform, socket, re, uuid, json, psutil, os
+
+try:
+    TOKEN = os.environ["TOKEN"]
+    TOPGG = os.environ["TOPGG"]
+except KeyError:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+    TOKEN = os.environ.get("BOTTOKENTEST")
+    TOPGG = os.environ.get("TOPGG")
 
 
 class About(commands.Cog):
@@ -14,19 +25,15 @@ class About(commands.Cog):
         self.bot = bot
         self.currentDT = str(datetime.datetime.now())
         self.start = datetime.datetime.now()
-
-        # if platform.system() == "Darwin":
-        #     self.running = "macOS Big Sur"
-        # elif platform.system() == "Linux":
-        #     self.running = "Heroku Linux"
-        # else:
-        #     self.running = "?"
+        self.dblpy = dbl.DBLClient(
+            self.bot, TOPGG,
+        )  # Autopost will post your guild count every
 
     @commands.command()
     @checks.isAllowedCommand()
     @commands.has_permissions(embed_links=True)
-    async def about(self, ctx):
-        """``about`` About Hamood"""
+    async def abouthamood(self, ctx):
+        """``abouthamood`` About Hamood"""
         embed = discord.Embed(
             title="Hamood",
             description="Hamood is a Discord bot written with [discord.py](https://github.com/Rapptz/discord.py) that has a variety of helpful and fun functions.",
@@ -75,7 +82,7 @@ class About(commands.Cog):
     @commands.command()
     @checks.isAllowedCommand()
     async def info(self, ctx):
-        """``info`` info about Hamood"""
+        """``info`` info on Hamood"""
         general = self.bot.get_cog("General")
         uptime = general.pretty_time_delta(
             (datetime.datetime.now() - self.start).total_seconds()
@@ -96,22 +103,24 @@ class About(commands.Cog):
         )
         embed.add_field(
             name="System",
-            value=f"```py\nLatency: {round(self.bot.latency * 1000)}ms\nPlatform: {platform.system()}\nArchitecture: {platform.machine()}\nRam Usage: {ram_used}```",
+            value=f"```py\nLatency: {round(self.bot.latency * 1000)}ms\nPlatform: {platform.system()}```",
             inline=False,
         )
 
-        embed.add_field(
-            name="Basic Info",
-            value=f"```py\nCommands: {len(self.bot.commands)}\nLibrary: discord.py v 1.5.1\nCreated On: Tue, April 14th, 2020\nCreated By: 'nathan#3724'```",
-            inline=False,
-        )
+        # embed.add_field(
+        #     name="Basic Info",
+        #     value=f"```py\nCommands: {len(self.bot.commands)}\nLibrary: discord.py v 1.5.1\nCreated On: Tue, April 14th, 2020\nCreated By: 'nathan#3724'```",
+        #     inline=False,
+        # )
+
+        embed.set_image(url="https://top.gg/api/widget/699510311018823680.png")
 
         embed.set_footer(
             text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url,
         )
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["inv"])
+    @commands.command()
     @checks.isAllowedCommand()
     async def invite(self, ctx):
         """``invite`` get the invite link for Hamood"""
@@ -126,6 +135,33 @@ class About(commands.Cog):
             name=f"Hamood is currently in **{len(self.bot.guilds)}** servers",
             value="make it one more!",
         )
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    async def vote(self, ctx):
+        """``vote`` Vote for Hamood to support development and for special rewards."""
+        await self.bot.inventories.add_member(ctx.guild.id, ctx.author.id)
+        await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
+
+        embed = discord.Embed(
+            title="Vote for Hamood",
+            description="[**Click Here To Vote**](https://top.gg/bot/699510311018823680/vote)",
+            timestamp=ctx.message.created_at,
+            color=discord.Color.green(),
+        )
+
+        w = await self.dblpy.get_weekend_status()
+        # <:blackmarketbox:793618040025645106> Blackmarket Crate `x{1*(2 if w else 1)}`\n
+        embed.add_field(
+            name=f"Rewards {'`x2` Weekend Multiplier' if w else ''}",
+            value=f"<:regularbox:793619180683001876> Regular Crate `x{2*(2 if w else 1)}`\n<a:coin:790679388147679272> Money: [⌬ {2500*(2 if w else 1):,}](https://top.gg/bot/699510311018823680)",
+        )
+        embed.set_thumbnail(
+            url="https://cdn.discordapp.com/emojis/778416296630157333.png?v=1"
+        )
+        embed.set_footer(text="Double Voting Rewards On Weekends")
+
         await ctx.send(embed=embed)
 
     # @commands.command()
@@ -152,17 +188,19 @@ class About(commands.Cog):
                 color=discord.Color.blue(),
             )
             cogs_desc = ""
-            for x in self.bot.cogs:
-                cogs_desc += "`{}` - {}".format(x, self.bot.cogs[x].__doc__) + "\n"
+            for cog in self.bot.cogs:
+                if cog not in ["Events", "TopGG", "Dev", "Web"]:
+                    cogs_desc += f"`{cog}` - {self.bot.cogs[cog].__doc__}\n"
+
             halp.add_field(
                 name="Categories",
                 value=cogs_desc[0 : len(cogs_desc) - 1],
                 inline=False,
             )
             cmds_desc = ""
-            for y in self.bot.walk_commands():
-                if not y.cog_name and not y.hidden:
-                    cmds_desc += "`{}` - {}".format(y.name, y.help) + "\n"
+            for cmnd in self.bot.walk_commands():
+                if not cmnd.cog_name and not cmnd.hidden:
+                    cmds_desc += f"`{cmnd.name}` - {cmnd.help}\n"
             # halp.add_field(name='Uncatergorized Commands',value=cmds_desc[0:len(cmds_desc)-1],inline=False)
         else:
             command_names = [c.name for c in self.bot.commands]
@@ -191,8 +229,11 @@ class About(commands.Cog):
             else:
                 halp = discord.Embed(
                     title="Error!",
-                    description=f"`{query}` is not a **category** or **command**",
+                    description=f"I couldn't find help for that.\n`{query}` is not a **category** or **command**",
                     color=discord.Color.red(),
+                )
+                halp.set_thumbnail(
+                    url="https://cdn.discordapp.com/emojis/651694663962722304.gif?v=1"
                 )
 
         halp.set_footer(

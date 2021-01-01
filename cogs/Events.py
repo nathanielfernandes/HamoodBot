@@ -9,25 +9,52 @@ class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.Cog.listener()
-    async def on_member_join(self, member):
-        channel = member.guild.system_channel
-        if channel is not None:
-            await channel.send(f"Welcome {member.mention}!")
+    # @commands.Cog.listener()
+    # async def on_member_join(self, member):
+    #     channel = member.guild.system_channel
+    #     if channel is not None:
+    #         await channel.send(f"Welcome {member.mention}!")
+    def pretty_time_delta(self, seconds):
+        s = seconds
+        seconds = round(seconds)
+        days, seconds = divmod(seconds, 86400)
+        hours, seconds = divmod(seconds, 3600)
+        minutes, seconds = divmod(seconds, 60)
+        if days > 0:
+            p = "%d days, %d hours, %d minutes, %d seconds" % (
+                days,
+                hours,
+                minutes,
+                seconds,
+            )
+        elif hours > 0:
+            p = "%d hours, %d minutes, %d seconds" % (hours, minutes, seconds)
+        elif minutes > 0:
+            p = "%d minutes, %d seconds" % (minutes, seconds)
+        else:
+            p = "%d seconds" % (seconds,)
+
+        if s < 0:
+            p = "-" + p
+        return p
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         if member.id == self.bot.user.id:
             return
-        channel = member.guild.system_channel
-        if channel is not None:
-            await channel.send(f"Goodbye {member.mention}!")
+        # channel = member.guild.system_channel
+        # if channel is not None:
+        #     await channel.send(f"Goodbye {member.mention}!")
 
         await self.bot.leaderboards.delete_member(member.guild.id, member.id)
+        await self.bot.currency.delete_member(member.guild.id, member.id)
+        await self.bot.inventories.delete_member(member.guild.id, member.id)
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
         await self.bot.leaderboards.delete_by_id(guild.id)
+        await self.bot.currency.delete_by_id(guild.id)
+        await self.bot.inventories.delete_by_id(guild.id)
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -69,9 +96,18 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(
-                f"`{ctx.command.name} is on cooldown for {str(error.retry_after)[:4]} seconds!`"
+            embed = discord.Embed(
+                title=f"`{ctx.command.name}` is on cooldown for",
+                description=f"```{self.pretty_time_delta(error.retry_after)}```",
+                colour=discord.Color.red(),
+                timestamp=ctx.message.created_at,
             )
+            embed.set_footer(text=f"{ctx.author}", icon_url=ctx.author.avatar_url)
+
+            await ctx.send(embed=embed)
+            # await ctx.send(
+            #     f"`{ctx.command.name} is on cooldown for {str(error.retry_after)[:4]} seconds!`"
+            # )
         elif isinstance(error, commands.CommandNotFound):
             return
 
@@ -94,10 +130,10 @@ class Events(commands.Cog):
                     colour=discord.Color.red(),
                     timestamp=ctx.message.created_at,
                 )
-                embed.set_author(
-                    name="Error!",
-                    icon_url="https://cdn.discordapp.com/attachments/749779629643923548/773072024922095636/images.png",
-                )
+                # embed.set_author(
+                #     name="Error!",
+                #     icon_url="https://cdn.discordapp.com/attachments/749779629643923548/773072024922095636/images.png",
+                # )
                 embed.set_footer(text=f"{ctx.author}", icon_url=ctx.author.avatar_url)
                 # await ctx.send(
                 #     f"{ctx.author.mention}, **{ctx.command.name}** is used like this:\n`.{s[start:end]}`"

@@ -155,7 +155,7 @@ class Games(commands.Cog):
                                 game_id, move, payload
                             )
                         else:
-                            if str(payload.emoji) == "❌":
+                            if str(payload.emoji) == "<:x_:790714617591496734>":
                                 await self.delete_game(
                                     game_id,
                                     f"{payload.member.name} closed the game",
@@ -272,7 +272,7 @@ class Games(commands.Cog):
     async def add_reactions(self, msg, emojis):
         for emoji in emojis:
             await msg.add_reaction(emoji)
-        await msg.add_reaction("❌")
+        await msg.add_reaction("<:x_:790714617591496734>")
 
     @commands.command()
     @commands.cooldown(2, 10, commands.BucketType.user)
@@ -289,7 +289,8 @@ class Games(commands.Cog):
         await ctx.send(f"{ctx.author.mention}, you have left your game!")
 
     @commands.command()
-    @commands.cooldown(3, 10, commands.BucketType.guild)
+    @checks.isAllowedCommand()
+    @commands.cooldown(3, 10, commands.BucketType.channel)
     async def leaderboard(self, ctx, game="total", stat="won"):
         """``leaderboard [game] [stat]`` a leaderboard of the servers players"""
         leaderboard = await self.bot.leaderboards.get(ctx.guild.id)
@@ -406,6 +407,7 @@ class Games(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @checks.isAllowedCommand()
     @commands.cooldown(4, 10, commands.BucketType.guild)
     async def stats(self, ctx, member: discord.Member = None, game="total"):
         """``stats [@player] [stat]`` see a players game stats"""
@@ -416,7 +418,9 @@ class Games(commands.Cog):
             return await ctx.send("`No games have been played on this server`")
 
         if str(member.id) not in leaderboard:
-            return await ctx.send("`The member has not played any games on this server")
+            return await ctx.send(
+                "`The member has not played any games on this server`"
+            )
 
         if game in self.game_names:
             game = game
@@ -485,7 +489,7 @@ class Games(commands.Cog):
         currentGame.message = msg
 
         await msg.add_reaction("🚪")
-        await msg.add_reaction("❌")
+        await msg.add_reaction("<:x_:790714617591496734>")
         # await self.add_reactions(currentGame.message, self.triviaEmojis)
 
     async def start_trivia_game(self, gameID):
@@ -641,7 +645,7 @@ class Games(commands.Cog):
         currentGame = self.games[game_id]
         currentGame.message = msg
 
-        await msg.add_reaction("❌")
+        await msg.add_reaction("<:x_:790714617591496734>")
 
         await self.update_chess_embed(game_id)
 

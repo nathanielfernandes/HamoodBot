@@ -16,8 +16,8 @@ class Chemistry(commands.Cog):
     @commands.command()
     @checks.isAllowedCommand()
     @commands.cooldown(5, 10, commands.BucketType.user)
-    async def balance(self, ctx, *, content: commands.clean_content):
-        """``balance [equation] ex. FeCl3 + NH4OH -> Fe(OH)3 + NH4Cl`` balances chemical equations"""
+    async def balanceeq(self, ctx, *, content: commands.clean_content):
+        """``balanceeq [equation] ex. FeCl3 + NH4OH -> Fe(OH)3 + NH4Cl`` balances chemical equations"""
         eq = balance_equation(content)
         if isinstance(eq, tuple):
             reac, prod = eq

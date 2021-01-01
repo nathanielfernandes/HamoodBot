@@ -10,10 +10,11 @@ import json
 import datetime
 import random
 import discord
-from discord.ext import commands
+import asyncio
+from discord.ext import commands, tasks
 
 from modules.image_functions import randomFile
-from utils.mongo import Leaderboards
+from utils.mongo import *
 
 
 if __name__ == "__main__":
@@ -30,6 +31,7 @@ if __name__ == "__main__":
 
         load_dotenv()
         TOKEN = os.environ.get("BOTTOKENTEST")
+
         prefix = "/"
 
     bot = commands.AutoShardedBot(
@@ -37,12 +39,95 @@ if __name__ == "__main__":
         case_insensitive=True,
         intents=discord.Intents().all(),
         help_command=None,
+        owner_ids={317144947880886274, 485138947115057162, 616148871499874310},
     )
+
+    every_item = json.load(open("data/items.json"))
+    bot.all_items = {
+        i: every_item[i] for i in every_item if every_item[i]["type"] not in ["crate"]
+    }
+
+    @tasks.loop(seconds=3600)
+    async def update_items():
+        variation = lambda: random.uniform(0.1, 2) if random.randint(1, 10) > 5 else 1
+
+        for i in bot.all_items:
+            bot.all_items[i]["price"] = round(bot.all_items[i]["value"] * variation())
+
+        bot.common_items = {
+            i: bot.all_items[i]
+            for i in bot.all_items
+            if bot.all_items[i]["rarity"] == "common"
+        }
+
+        bot.uncommon_items = {
+            i: bot.all_items[i]
+            for i in bot.all_items
+            if bot.all_items[i]["rarity"] == "uncommon"
+        }
+
+        bot.rare_items = {
+            i: bot.all_items[i]
+            for i in bot.all_items
+            if bot.all_items[i]["rarity"] == "rare"
+        }
+
+        bot.epic_items = {
+            i: bot.all_items[i]
+            for i in bot.all_items
+            if bot.all_items[i]["rarity"] == "epic"
+        }
+
+        bot.legendary_items = {
+            i: bot.all_items[i]
+            for i in bot.all_items
+            if bot.all_items[i]["rarity"] == "legendary"
+        }
+
+        bot.blackmarket_items = {
+            i: bot.all_items[i]
+            for i in bot.all_items
+            if bot.all_items[i]["rarity"] == "blackmarket"
+        }
+
+        bot.dev_items = {
+            i: bot.all_items[i]
+            for i in bot.all_items
+            if bot.all_items[i]["rarity"] == "dev"
+        }
+
+        bot.crates = {
+            i: every_item[i] for i in every_item if every_item[i]["type"] == "crate"
+        }
+
+        categs = [
+            (bot.common_items, random.randint(6, 7)),
+            (bot.uncommon_items, random.randint(5, 6)),
+            (bot.rare_items, random.randint(4, 5)),
+            (bot.epic_items, random.randint(1, 2)),
+            (bot.legendary_items, random.randint(0, 1)),
+        ]
+
+        bot.shop = {}
+        for cat in categs:
+            for i in range(cat[1]):
+                k, v = random.choice(list(cat[0].items()))
+                bot.shop[k] = v
+
+        bot.all_items = every_item
+
+        # 10800
+        # asyncio.sleep(300)
+        # await update_items()
 
     @bot.event
     async def on_ready():
         bot.leaderboards = Leaderboards()
+        bot.inventories = Inventories()
+        bot.currency = Currency()
+        bot.members = Members()
 
+        # print(bot.common_items
         toc = time.perf_counter()
 
         print("-------------------")
@@ -54,16 +139,29 @@ if __name__ == "__main__":
 
         await bot.change_presence(
             activity=discord.Activity(
-                type=discord.ActivityType.listening,
-                name=f"{sum([len(g.members) for g in bot.guilds])} Users",
+                type=discord.ActivityType.watching, name=".help items, money, jobs"
             )
         )
-
-        # fp = open(
-        #     "/Users/nathaniel/Desktop/HamoodBot/tempImages/768510785667334154.png", "rb"
+        # await bot.change_presence(
+        #     activity=discord.Activity(
+        #         type=discord.ActivityType.listening,
+        #         name=f"{sum([len(g.members) for g in bot.guilds])} Users",
+        #     )
         # )
+
+        # fp = open("/Users/nathaniel/Desktop/HamoodBot/tempImages/newyears.jpg", "rb")
         # pfp = fp.read()
         # await bot.user.edit(avatar=pfp)
+
+        try:
+            await update_items.start()
+        except RuntimeError:
+            pass
+            # if update_items is not None:
+            #     await update_items.cancel()
+            #     await update_items.start()
+            # else:
+            #     await update_items.start()
 
     responses = {
         "bye": "goodbye {0.author.mention}",
@@ -104,10 +202,10 @@ if __name__ == "__main__":
                     await message.add_reaction("<:trash:783097450461397052>")
                     return
 
-            # elif message.content in responses:
-            #     await message.channel.send(responses[message.content].format(message))
-            # elif message.content.startswith("im "):
-            #     await message.channel.send(f"hi{message.content[2:]}, im hamood")
+            elif message.content in responses:
+                await message.channel.send(responses[message.content].format(message))
+            elif message.content.startswith("im "):
+                await message.channel.send(f"hi{message.content[2:]}, im hamood")
 
             await bot.process_commands(message)
 
@@ -120,68 +218,6 @@ if __name__ == "__main__":
                     msg = await channel.fetch_message(payload.message_id)
 
                     await msg.delete()
-
-    @bot.command()
-    @commands.is_owner()
-    async def logout(ctx):
-        """logs hamood out"""
-        await ctx.send("**goodbye**")
-        await bot.logout()
-
-    @bot.command()
-    @commands.is_owner()
-    async def status(ctx, aType: str, uRL: str, *, aName: commands.clean_content):
-        """lets me change hamoods status"""
-        if aType == "playing":
-            await bot.change_presence(activity=discord.Game(name=aName))
-        elif aType == "listening":
-            await bot.change_presence(
-                activity=discord.Activity(
-                    type=discord.ActivityType.listening, name=aName
-                )
-            )
-        elif aType == "watching":
-            await bot.change_presence(
-                activity=discord.Activity(
-                    type=discord.ActivityType.watching, name=aName
-                )
-            )
-        elif aType == "streaming":
-            await bot.change_presence(activity=discord.Streaming(name=aName, url=uRL))
-
-    @bot.command()
-    @commands.is_owner()
-    async def reload(ctx, cog):
-        """reloads the requested cog"""
-        try:
-            bot.unload_extension(f"cogs.{cog}")
-            bot.load_extension(f"cogs.{cog}")
-            await ctx.send(f"`{cog} got reloaded`")
-        except Exception as e:
-            await ctx.send(f"`{cog} cannot be loaded`")
-            raise e
-
-    @bot.command()
-    @commands.is_owner()
-    async def unload(ctx, cog):
-        """unloads the requested cog"""
-        try:
-            bot.unload_extension(f"cogs.{cog}")
-            await ctx.send(f"`{cog} got unloaded`")
-        except Exception as e:
-            await ctx.send(f"`{cog} cannot be unloaded:`")
-            raise e
-
-    @bot.command()
-    @commands.is_owner()
-    async def load(ctx, cog):
-        """loads the requested cog"""
-        try:
-            bot.load_extension(f"cogs.{cog}")
-            await ctx.send(f"`{cog} got loaded`")
-        except Exception as e:
-            await ctx.send(f"`{cog} cannot be loaded:`")
-            raise e
 
     # loads in all cogs
     print("-------------------")

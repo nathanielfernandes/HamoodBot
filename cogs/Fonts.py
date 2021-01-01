@@ -30,7 +30,7 @@ class Fonts(commands.Cog):
         self.save_location = f"{self.direct}/tempImages"
         self.fonts = f"{self.direct}/fonts"
 
-    async def text_prep(self, ctx, text, font, font_size, colour, wrap=100):
+    async def text_prep(self, ctx, text, font, font_size, colour, wrap=100, send=True):
         async with ctx.typing():
             if text == ():
                 return
@@ -66,10 +66,14 @@ class Fonts(commands.Cog):
 
             textImg = makeText(text, font, font_size, colour, name)
 
-            await ctx.send(file=discord.File(textImg))
+            if send:
+                await ctx.send(file=discord.File(textImg))
 
-        await ctx.message.delete()
-        os.remove(textImg)
+        if send:
+            await ctx.message.delete()
+            os.remove(textImg)
+        else:
+            return textImg
 
     @commands.command()
     @checks.isAllowedCommand()

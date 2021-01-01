@@ -107,6 +107,8 @@
             </div>
             <div class="command-section">
                 <h1><i class="fas fa-gamepad"></i> Games</h1>
+                <li><b>trivia [@opponent] [category] [difficulty]</b> starts a new game of trivia with a tagged user
+                </li>
                 <li><b>2048</b> starts a new 2048 game</li>
                 <li><b>connect [@opponent]</b> starts a new connect 4 game</li>
                 <li><b>filler [@oponent]</b> lets you play filler with a tagged user</li>
@@ -120,8 +122,33 @@
                     chess match!
                 </li>
             </div>
-
-
+            <div class="command-section">
+                <h1><i class="fas fa-box-open"></i> Items</h1>
+                <li><b>inventory [sorting] [page]</b> view your current inventory</li>
+                <li><b>iteminfo [item name]</b> get information on an item.</li>
+                <li><b>itemlist [sorting] [page]</b> view all the items that you could get</li>
+                <li><b>shop [page]</b> view the current items you can buy</li>
+                <li><b>open [crate_id]</b> used to open crates</li>
+                <li><b>buy [item_id] [amount]</b> buy an item using your bank's funds</li>
+                <li><b>sell [item_id] [amount]</b> sell your items for cash</li>
+                <li><b>trash [item_id] [amount]</b> throw out unwanted items</li>
+                <li><b>gift [@member] [item_id] [amount]</b> gift items to other members</li>
+            </div>
+            <div class="command-section">
+                <h1><i class="fas fa-wallet"></i> Money</h1>
+                <li><b>balance</b> get your current balance</li>
+                <li><b>deposit [amount]</b> deposit money into the bank for safe keeping</li>
+                <li><b>withdraw [amount]</b> withdraws money from the bank into your wallet</li>
+                <li><b>transfer [@member] [amount]</b> transfer funds to another member</li>
+                <li><b>richest</b> see the richest members in the server</li>
+            </div>
+            <div class="command-section">
+                <h1><i class="fas fa-briefcase"></i> Jobs</h1>
+                <li><b>daily</b> get your daily reward</li>
+                <li><b>work</b> earn some money</li>
+                <li><b>steal [@member]</b> stealing isnt't very nice</li>
+                <li><b>fish</b> maybe you'll catch something</li>
+            </div>
             <div class="command-section">
                 <h1><i class="fas fa-grin-squint"></i> Text Memes</h1>
                 <li><b>bonk [text1], [text2]</b> adds your own text to the 'bonk' meme format</li>
@@ -176,11 +203,12 @@
                     equations</li>
                 <li><b>py [code]</b> runs python-3.7.2 code and outputs to the chat. Execution cannot exceed 1 second!
                 </li>
+                <li><b>latex [latex formula]</b> converts latex to regular text</li>
             </div>
 
             <div class="command-section">
                 <h1><i class="fas fa-atom"></i> Chemistry</h1>
-                <li><b>balance [equation]</b> ex. FeCl3 + NH4OH -> Fe(OH)3 + NH4Cl balances chemical equations</li>
+                <li><b>balanceeq [equation]</b> ex. FeCl3 + NH4OH -> Fe(OH)3 + NH4Cl balances chemical equations</li>
                 <li><b>stoich [equation]</b> ex. FeCl3 + NH4OH -> Fe(OH)3 + NH4Cl balances chemical equations and
                     returns extra info</li>
                 <li><b>molar [compound]</b> returns the molar mass of the compound</li>
@@ -203,6 +231,9 @@
                     that joins it</li>
                 <li><b>fullcategory [category]</b> Creates a text channel and a ➕ voice channel under a category which
                     instantly creates a quick voice channel for the user that joins it</li>
+                <li><b>pinboard</b> sets up a pin-board-📌 channel in the server which allows members to 'pin' messages
+                    there without needing extra permisions. Add messages to the star board by reacting to them with 📌
+                </li>
             </div>
 
             <div class="command-section">
@@ -227,7 +258,7 @@
                 <li><b>vibe</b> vibechecks you but better</li>
                 <li><b>roast</b> roasts/insults you</li>
                 <li><b>bubblewrap [height] [width]</b> makes bubblewrap</li>
-                <li><b>zodiac [mmm] [dd] [mmm] [dd]</b> lets you test your zodiac's compatibilty with another</li>
+                <!-- <li><b>zodiac [mmm] [dd] [mmm] [dd]</b> lets you test your zodiac's compatibilty with another</li> -->
                 <li><b>match [person1] [person2]</b> randomly gives a match percentage between two people
                 </li>
             </div>
@@ -245,6 +276,7 @@
                 <li><b>clown [msg]</b> clown someones text</li>
                 <li><b>lengthen [sentence]</b> makes words long</li>
                 <li><b>nnn</b> dont nut</li>
+                <li><b>christmas</b> Christmas Countdown</li>
             </div>
 
             <div class="command-section">
@@ -256,18 +288,20 @@
                 <li><b>listening [@user]</b> returns a users spotify listening activity</li>
             </div>
 
-            <div class="command-section">
+            <!-- <div class="command-section">
                 <h1><i class="fas fa-ethernet"></i> Web</h1>
                 <li><b>covid [country]</b> gets the latest covid 19 statistics</li>
-            </div>
+            </div> -->
 
             <div class="command-section">
                 <h1><i class="fas fa-info"></i> About</h1>
-                <li><b>about</b> about Hamood</li>
+                <li><b>vote</b> vote for Hamood to support development and for special rewards</li>
+                <li><b>abouthamood</b> about Hamood</li>
                 <li><b>invite</b> get the invite link for this bot</li>
                 <!-- <li><b>version</b> sends Hamood's current version</li> -->
                 <li><b>ping</b> returns hamood's ping</li>
                 <li><b>info</b> info on Hamood</li>
+                <li><b>help</b> helps you out with commands</li>
             </div>
 
         </div>

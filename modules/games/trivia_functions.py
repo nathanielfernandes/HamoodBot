@@ -5,7 +5,14 @@ import html
 
 
 class _Trivia:
-    def __init__(self, playerOne, playerTwo, server, category="any", difficulty="any"):
+    def __init__(
+        self,
+        playerOne="one",
+        playerTwo="two",
+        server="server",
+        category="any",
+        difficulty="any",
+    ):
 
         self.category = self.check_category(category)
         self.difficulty = self.check_difficulty(difficulty)
@@ -18,7 +25,11 @@ class _Trivia:
         self.question_num = 0
         self.current_question = self.questions[self.question_num]
 
-        self.score = {playerOne.id: 0, playerTwo.id: 0}
+        try:
+            self.score = {playerOne.id: 0, playerTwo.id: 0}
+        except AttributeError:
+            self.score = {playerOne: 0, playerTwo: 0}
+            pass
 
         self.playerOne = playerOne
         self.playerTwo = playerTwo

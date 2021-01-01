@@ -1,5 +1,7 @@
+import re
 import discord
 from discord.ext import commands
+
 
 # from modules.database import *
 import modules.checks as checks
@@ -156,9 +158,7 @@ class Mod(commands.Cog):
         )
 
     @commands.Cog.listener()
-    @commands.has_permissions(manage_channels=True)
     async def on_voice_state_update(self, member, before, after):
-
         if before.channel != after.channel:
             if before.channel is not None:
                 if str(before.channel.name) == f"{member.name}'s channel":
@@ -171,6 +171,120 @@ class Mod(commands.Cog):
                 if "\u2795" in str(after.channel.name):
                     channel = await after.channel.clone(name=f"{member.name}'s channel")
                     await member.move_to(channel, reason=None)
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.has_permissions(manage_channels=True, manage_messages=True)
+    async def pinboard(self, ctx):
+        """``pinboard`` Sets up a pin-board-📌 channel in the server which allows members to 'pin' messages there without needing extra permisions. Add messages to the star board by reacting to them with 📌"""
+        channel = discord.utils.get(ctx.guild.channels, name="pin-board-📌")
+        if channel is None:
+            overwrites = {
+                ctx.guild.default_role: discord.PermissionOverwrite(send_messages=False)
+            }
+            await ctx.guild.create_text_channel(
+                "pin-board-📌",
+                topic="React to a message with '📌' and it will pop up here.",
+                overwrites=overwrites,
+            )
+            await ctx.send(
+                f"{ctx.author.mention} has setup the `pin-board-📌`. Add messages to it by reacting to it with 📌."
+            )
+
+    @commands.Cog.listener()
+    async def on_raw_reaction_add(self, payload):
+        if payload.user_id != self.bot.user.id:
+            if str(payload.emoji) == "📌":
+                channel = discord.utils.get(
+                    payload.member.guild.channels, name="pin-board-📌"
+                )
+                if channel is not None and payload.channel_id != channel.id:
+                    try:
+                        c = await self.bot.fetch_channel(payload.channel_id)
+                        msg = await c.fetch_message(payload.message_id)
+                    except discord.errors.NotFound:
+                        return
+
+                    messages = await channel.history(limit=100).flatten()
+
+                    for m in messages:
+                        if len(m.embeds) >= 1:
+                            if m.embeds[0].footer.text == f"ID: {msg.id}":
+                                return
+
+                    if len(msg.embeds) >= 1 and "tenor" not in msg.content:
+                        embed_dict = msg.embeds[0].to_dict()
+
+                        tit = embed_dict.get("title")
+                        desc = embed_dict.get("description")
+                        img = embed_dict.get("image")
+                        thumb = embed_dict.get("thumbnail")
+                        url = embed_dict.get("url")
+                        video = embed_dict.get("video")
+                        feilds = embed_dict.get("fields")
+
+                        v = (
+                            f"[**(link)**]({video['url']})'"
+                            if video is not None
+                            else ""
+                        )
+                        embed = discord.Embed(
+                            title=tit if tit is not None else None,
+                            description=f"{desc if desc is not None else ''}\n{f'[**(link)**]({url})' if url is not None else ''}\n{v}",
+                            color=discord.Color.red(),
+                            timestamp=msg.created_at,
+                        )
+
+                        if img is not None:
+                            embed.set_image(url=img["url"])
+
+                        if thumb is not None:
+                            embed.set_thumbnail(url=thumb["url"])
+
+                        if feilds is not None and len(feilds) >= 1:
+                            for f in feilds:
+                                embed.add_field(
+                                    name=f["name"],
+                                    value=f["value"],
+                                    inline=f["inline"],
+                                )
+                    else:
+                        links = re.findall(r"(https?://[^\s]+)", msg.content)
+                        new_msg = str(msg.content)
+                        for i in range(len(links)):
+                            new_msg = new_msg.replace(links[i], f"[(link)]({links[i]})")
+
+                        embed = discord.Embed(
+                            description=f"{new_msg[:1800]}",
+                            color=discord.Color.red(),
+                            timestamp=msg.created_at,
+                        )
+
+                        if len(msg.attachments) >= 1:
+                            embed.set_image(url=msg.attachments[0].url)
+                        else:
+                            if len(links) >= 1:
+                                for l in links:
+                                    if (
+                                        "gif" in l.lower()
+                                        or "png" in l.lower()
+                                        or "jpg" in l.lower()
+                                        or "jpeg" in l.lower()
+                                    ):
+                                        embed.set_image(url=l)
+
+                    embed.add_field(
+                        name="⌵",
+                        value=f"{msg.channel.mention} **|** [**#message**]({msg.jump_url}) **|** {msg.author.mention}",
+                        inline=False,
+                    )
+                    embed.set_author(
+                        name=f"{msg.author} 📌", icon_url=msg.author.avatar_url
+                    )
+
+                    embed.set_footer(text=f"ID: {msg.id}")
+
+                    await channel.send(embed=embed)
 
     # @commands.command()
     # @checks.isAllowedCommand()

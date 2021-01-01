@@ -1,6 +1,6 @@
 praw
 asyncio
-Discord
+discord
 google_images_search
 pillow
 bs4
@@ -13,3 +13,4 @@ pymongo
 dnspython
 motor
 psutil
+dblpy

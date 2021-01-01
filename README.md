@@ -1,4 +1,4 @@
-# Hamood
+# Hamood [![Discord Bots](https://top.gg/api/widget/servers/699510311018823680.svg)](https://top.gg/bot/699510311018823680)
 
 Hamood is a Discord bot written with [discord.py](https://github.com/Rapptz/discord.py) that has a variety of helpful and fun [functions](#Commands).
 
@@ -36,7 +36,7 @@ Grab the latest [files](https://github.com/nathanielfernandes/HamoodBot) and pip
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Feel free to create a fork and use the code for any noncommercial purposes.
 
-## Commands
+<!-- ## Commands
 These commands are organized from thier corresponding [Cog](https://discordpy.readthedocs.io/en/latest/ext/commands/cogs.html)
 ### Hamood's Prefix for the following commands is "``.``"
 ### Games
@@ -147,7 +147,7 @@ These commands are organized from thier corresponding [Cog](https://discordpy.re
 - ``info`` get some background information on Hamood
 - ``invite`` get the invite link for this bot
 - ``version`` sends Hamood's current version
-- ``ping`` returns hamood's ping
+- ``ping`` returns hamood's ping -->
 
 <!-- ## Screenshots
 ![level1](https://cdn.discordapp.com/attachments/699770186227646465/741028512609206282/unknown.png)
