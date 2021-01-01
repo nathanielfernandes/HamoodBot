@@ -17,8 +17,6 @@ class User(commands.Cog):
             "https://raw.githubusercontent.com/sindresorhus/mnemonic-words/master/words.json"
         )
         self.words = json.loads(self.url.read())
-    
-
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -149,12 +147,6 @@ class User(commands.Cog):
 
         if not done:
             await ctx.send(f"{member.mention} is not listening to spotify!")
-
-    # @commands.command(aliases=["items"])
-    # @checks.isAllowedCommand()
-    # @commands.has_permissions(embed_links=True)
-    # async def inventory(self, ctx):
-    #     pass
 
 
 def setup(bot):

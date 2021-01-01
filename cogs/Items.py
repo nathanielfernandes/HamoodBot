@@ -218,7 +218,7 @@ class Items(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def open(self, ctx, item_id):
-        """``open [item_id]`` used to open crates"""
+        """``open [crate_id]`` used to open crates"""
         item_id = self.to_id(item_id)
         if item_id in self.bot.crates:
             inv = await self.bot.inventories.get_items(ctx.guild.id, ctx.author.id)
@@ -389,7 +389,7 @@ class Items(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def trash(self, ctx, item_id, amount=1):
-        """``trash [item_id] [amount]`` sell your items for cash."""
+        """``trash [item_id] [amount]`` Throw out unwanted items."""
         if isinstance(amount, str) and amount.lower() == "all":
             amount = abs(int(amount))
         if self.valid_item(item_id):
@@ -427,7 +427,7 @@ class Items(commands.Cog):
     async def gift(
         self, ctx, recipient: discord.Member = None, item_id="1234", amount=1
     ):
-        """``gift [@member] [item_id] [amount]`` Be generous."""
+        """``gift [@member] [item_id] [amount]`` Gift items to other members."""
         if recipient is not None and recipient.id != ctx.author.id:
             if self.valid_item(item_id):
                 amount = abs(int(amount))

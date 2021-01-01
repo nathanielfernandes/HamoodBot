@@ -31,7 +31,10 @@ def cachePosts(sub):
         post_submissions = [
             p.url
             for p in post_submissions
-            if ".jpg" in p.url or ".jpeg" in p.url or ".png" in p.url or ".gif" in p.url
+            if ".jpg" in p.url
+            or ".jpeg" in p.url
+            or ".png" in p.url
+            or (".gif" in p.url and "tenor" not in p.url and "giphy" not in p.url)
         ]
     except Exception:
         post_submissions = []

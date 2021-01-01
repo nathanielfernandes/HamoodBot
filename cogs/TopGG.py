@@ -33,7 +33,9 @@ class TopGG(commands.Cog):
             webhook_path="/dblwebhook",
             webhook_auth=TOPGGAUTH,
             webhook_port=int(PORT),
+            autopost=True,
         )  # Autopost will post your guild count every 30 minutes
+        #
 
     @commands.Cog.listener()
     async def on_guild_post(self):
@@ -44,9 +46,10 @@ class TopGG(commands.Cog):
         await self.bot.currency.update_all_wallets(
             data["user"], 2500 * (2 if data["isWeekend"] else 1)
         )
-        await self.bot.inventories.incr_all_invs(
-            data["user"], "blackmarket_crate", 1 * (2 if data["isWeekend"] else 1)
-        )
+        # if data["isWeekend"]:
+        #     await self.bot.inventories.incr_all_invs(
+        #         data["user"], "blackmarket_crate", 1
+        #     )
         await self.bot.inventories.incr_all_invs(
             data["user"], "rare_crate", 2 * (2 if data["isWeekend"] else 1)
         )
@@ -56,12 +59,15 @@ class TopGG(commands.Cog):
         await self.bot.currency.update_all_wallets(
             data["user"], 2500 * (2 if data["isWeekend"] else 1)
         )
-        await self.bot.inventories.incr_all_invs(
-            data["user"], "blackmarket_crate", 1 * (2 if data["isWeekend"] else 1)
-        )
+        # await self.bot.inventories.incr_all_invs(
+        #     data["user"], "blackmarket_crate", 1 * (2 if data["isWeekend"] else 1)
+        # )
         await self.bot.inventories.incr_all_invs(
             data["user"], "rare_crate", 2 * (2 if data["isWeekend"] else 1)
         )
+
+    # @commands.command()
+    # async def bruh(self, ctx):
 
     #     self.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5OTUxMDMxMTAxODgyMzY4MCIsImJvdCI6dHJ1ZSwiaWF0IjoxNjA2MzQzODMwfQ.B2IBmdp1T1CCcTagF7u8Qhh3DwgyAMJFKuOXTbVS-1A"  # set this to your DBL token
     #     self.dblpy = dbl.DBLClient(

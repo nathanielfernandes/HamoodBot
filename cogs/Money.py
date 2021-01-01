@@ -126,7 +126,7 @@ class Money(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def withdraw(self, ctx, amount):
-        """``withdraw [amount]`` withdraw's money from the bank into your wallet."""
+        """``withdraw [amount]`` withdraws money from the bank into your wallet."""
         if amount == "all" or amount == "max":
             amount = 100000000000000000000000000
 
@@ -152,7 +152,7 @@ class Money(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def transfer(self, ctx, recipient: discord.Member = None, amount=1):
-        """``transfer [@member] [item_id] [amount]`` this a lil sus."""
+        """``transfer [@member] [amount]`` Transfer funds to another member."""
         if recipient is not None and recipient.id != ctx.author.id:
             amount = abs(int(amount))
             sender = ctx.author

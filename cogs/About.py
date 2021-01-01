@@ -33,7 +33,7 @@ class About(commands.Cog):
     @checks.isAllowedCommand()
     @commands.has_permissions(embed_links=True)
     async def abouthamood(self, ctx):
-        """``about`` About Hamood"""
+        """``abouthamood`` About Hamood"""
         embed = discord.Embed(
             title="Hamood",
             description="Hamood is a Discord bot written with [discord.py](https://github.com/Rapptz/discord.py) that has a variety of helpful and fun functions.",
@@ -81,8 +81,8 @@ class About(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    async def hamoodinfo(self, ctx):
-        """``info`` info about Hamood"""
+    async def info(self, ctx):
+        """``info`` info on Hamood"""
         general = self.bot.get_cog("General")
         uptime = general.pretty_time_delta(
             (datetime.datetime.now() - self.start).total_seconds()
@@ -103,15 +103,17 @@ class About(commands.Cog):
         )
         embed.add_field(
             name="System",
-            value=f"```py\nLatency: {round(self.bot.latency * 1000)}ms\nPlatform: {platform.system()}\nArchitecture: {platform.machine()}\nRam Usage: {ram_used}```",
+            value=f"```py\nLatency: {round(self.bot.latency * 1000)}ms\nPlatform: {platform.system()}```",
             inline=False,
         )
 
-        embed.add_field(
-            name="Basic Info",
-            value=f"```py\nCommands: {len(self.bot.commands)}\nLibrary: discord.py v 1.5.1\nCreated On: Tue, April 14th, 2020\nCreated By: 'nathan#3724'```",
-            inline=False,
-        )
+        # embed.add_field(
+        #     name="Basic Info",
+        #     value=f"```py\nCommands: {len(self.bot.commands)}\nLibrary: discord.py v 1.5.1\nCreated On: Tue, April 14th, 2020\nCreated By: 'nathan#3724'```",
+        #     inline=False,
+        # )
+
+        embed.set_image(url="https://top.gg/api/widget/699510311018823680.png")
 
         embed.set_footer(
             text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url,
@@ -138,7 +140,10 @@ class About(commands.Cog):
     @commands.command()
     @checks.isAllowedCommand()
     async def vote(self, ctx):
-        """``vote`` Vote for Hamood for special rewards."""
+        """``vote`` Vote for Hamood to support development and for special rewards."""
+        await self.bot.inventories.add_member(ctx.guild.id, ctx.author.id)
+        await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
+
         embed = discord.Embed(
             title="Vote for Hamood",
             description="[**Click Here To Vote**](https://top.gg/bot/699510311018823680/vote)",

@@ -139,10 +139,15 @@ if __name__ == "__main__":
 
         await bot.change_presence(
             activity=discord.Activity(
-                type=discord.ActivityType.listening,
-                name=f"{sum([len(g.members) for g in bot.guilds])} Users",
+                type=discord.ActivityType.watching, name=".help items, money, jobs"
             )
         )
+        # await bot.change_presence(
+        #     activity=discord.Activity(
+        #         type=discord.ActivityType.listening,
+        #         name=f"{sum([len(g.members) for g in bot.guilds])} Users",
+        #     )
+        # )
 
         # fp = open("/Users/nathaniel/Desktop/HamoodBot/tempImages/newyears.jpg", "rb")
         # pfp = fp.read()
@@ -194,25 +199,25 @@ if __name__ == "__main__":
 
             if profane:
                 if not nsfw:
-                    # await message.add_reaction("<:trash:783097450461397052>")
+                    await message.add_reaction("<:trash:783097450461397052>")
                     return
 
-            # elif message.content in responses:
-            #     await message.channel.send(responses[message.content].format(message))
-            # elif message.content.startswith("im "):
-            #     await message.channel.send(f"hi{message.content[2:]}, im hamood")
+            elif message.content in responses:
+                await message.channel.send(responses[message.content].format(message))
+            elif message.content.startswith("im "):
+                await message.channel.send(f"hi{message.content[2:]}, im hamood")
 
             await bot.process_commands(message)
 
-    # @bot.event
-    # async def on_raw_reaction_add(payload):
-    #     if payload.user_id != bot.user.id:
-    #         if str(payload.emoji) == "<:trash:783097450461397052>":
-    #             if payload.member.guild_permissions.manage_messages:
-    #                 channel = await bot.fetch_channel(payload.channel_id)
-    #                 msg = await channel.fetch_message(payload.message_id)
+    @bot.event
+    async def on_raw_reaction_add(payload):
+        if payload.user_id != bot.user.id:
+            if str(payload.emoji) == "<:trash:783097450461397052>":
+                if payload.member.guild_permissions.manage_messages:
+                    channel = await bot.fetch_channel(payload.channel_id)
+                    msg = await channel.fetch_message(payload.message_id)
 
-    #                 await msg.delete()
+                    await msg.delete()
 
     # loads in all cogs
     print("-------------------")
