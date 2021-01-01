@@ -153,7 +153,7 @@ class Money(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def transfer(self, ctx, recipient: discord.Member = None, amount=1):
         """``transfer [@member] [item_id] [amount]`` this a lil sus."""
-        if recipient is not None:
+        if recipient is not None and recipient.id != ctx.author.id:
             amount = abs(int(amount))
             sender = ctx.author
             sender_bal = await self.bot.currency.get_currency(ctx.guild.id, sender.id)
@@ -221,42 +221,6 @@ class Money(commands.Cog):
             color=discord.Color.gold(),
             timestamp=ctx.message.created_at,
         )
-        await ctx.send(embed=embed)
-
-    @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def daily(self, ctx):
-        """``daily`` Get your daily reward."""
-        ready, time, streak = await self.bot.members.is_daily_ready(ctx.author.id)
-        if ready:
-            await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
-            bal = await self.bot.currency.get_currency(ctx.guild.id, ctx.author.id)
-
-            reward = round((bal["bank_max"] / 2) + (100 * streak))
-
-            await self.bot.currency.update_all_wallets(ctx.author.id, reward)
-
-            await self.bot.members.add_member(ctx.author.id)
-            await self.bot.members.reset_daily(ctx.author.id)
-
-            embed = discord.Embed(
-                title=f"Daily Reward Collected |  `⌬ {reward:,}`",
-                description=f"{ctx.author.mention}, {self.cash(reward)} was added to all your wallets.\n \nUse `.daily` again in 24 hours.\n \nYou can vote for Hamood using `.vote` for cooler rewards!",
-                color=ctx.author.color,
-                timestamp=ctx.message.created_at,
-            )
-        else:
-            embed = discord.Embed(
-                title=f"Daily Reward Unavailable",
-                description=f"{ctx.author.mention} your daily reward can be collected in ```{time}```\n \nYou can vote for Hamood using `.vote` for cooler rewards!",
-                color=ctx.author.color,
-                timestamp=ctx.message.created_at,
-            )
-
-        embed.set_footer(text=f"Streak: {streak} Days")
-        embed.set_thumbnail(url=ctx.author.avatar_url)
-
         await ctx.send(embed=embed)
 
 

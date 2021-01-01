@@ -272,6 +272,7 @@ class Inventories(Documents):
         Adds a member object to a server inventory document
         """
         member = {str(member_id): {"item_space": {"total": 0, "max": 10}}}
+        await self.upsert_server(guild_id)
         await self.upsert_member(guild_id, member_id, member)
 
     async def add_item_to_member(self, guild_id, member_id, item_id, amount=1):
@@ -394,6 +395,7 @@ class Currency(Documents):
         """
         Adds a member object to a server currency document
         """
+        await self.upsert_server(guild_id)
         member = {str(member_id): {"wallet": 0, "bank": 0, "bank_max": 500}}
         await self.upsert_member(guild_id, member_id, member)
 

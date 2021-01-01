@@ -39,6 +39,7 @@ if __name__ == "__main__":
         case_insensitive=True,
         intents=discord.Intents().all(),
         help_command=None,
+        owner_ids={317144947880886274, 485138947115057162, 616148871499874310},
     )
 
     every_item = json.load(open("data/items.json"))
@@ -46,7 +47,7 @@ if __name__ == "__main__":
         i: every_item[i] for i in every_item if every_item[i]["type"] not in ["crate"]
     }
 
-    @tasks.loop(seconds=7200)
+    @tasks.loop(seconds=3600)
     async def update_items():
         variation = lambda: random.uniform(0.1, 2) if random.randint(1, 10) > 5 else 1
 
@@ -143,9 +144,7 @@ if __name__ == "__main__":
             )
         )
 
-        # fp = open(
-        #     "/Users/nathaniel/Desktop/HamoodBot/tempImages/rsz_sddefault.jpg", "rb"
-        # )
+        # fp = open("/Users/nathaniel/Desktop/HamoodBot/tempImages/newyears.jpg", "rb")
         # pfp = fp.read()
         # await bot.user.edit(avatar=pfp)
 

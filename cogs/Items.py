@@ -58,14 +58,14 @@ class Items(commands.Cog):
     #             await self.bot.inventories.add_member(guild_id, member_id)
     #             await self.bot.inventories.add_item(
     #                 guild_id, member_id, self.to_id(item_id), amount
-    #             )
+    #             )ƒ\
     #             return True
     #         else:
     #             return False
 
     async def give_item(self, guild_id, member_id, item_id, amount):
         amount = int(amount)
-        await self.bot.inventories.add_inventory(guild_id)
+        # await self.bot.inventories.add_inventory(guild_id)
         await self.bot.inventories.add_member(guild_id, member_id)
         await self.bot.inventories.add_item(
             guild_id, member_id, self.to_id(item_id), amount
@@ -79,6 +79,7 @@ class Items(commands.Cog):
         items = await self.bot.inventories.get_items(ctx.guild.id, ctx.author.id)
 
         if sort_by.lower() == "upgrade":
+            await self.bot.inventories.add_member(ctx.guild.id, ctx.author.id)
             bal = await self.bot.currency.get_currency(ctx.guild.id, ctx.author.id)
             if bal is not None:
                 cost = (items["item_space"]["max"] ** 3) // (
@@ -131,9 +132,7 @@ class Items(commands.Cog):
                     desc, n = await self.sort_items("inventory", sort_by, page, items)
 
                     if desc != None:
-                        msg = (
-                            f"Sorted by {sort_by.capitalize()}\n**{'⎻' * 30}**\n{desc}"
-                        )
+                        msg = f"Sorted by {sort_by.capitalize()}\n{desc}"
                     else:
                         msg = f"`No items that match the criteria`"
 
@@ -145,7 +144,7 @@ class Items(commands.Cog):
                     )
 
                     embed.add_field(
-                        name=f"**{'⎻' * 30}**",
+                        name=f"<:blank:794679084890193930>",
                         value=f"**Total Value:** {self.cash(total)}\n \nUse `.inventory{f' {sort_by} ' if sort_by != 'price' else ' '}{page+1 if page+1 <= n else 1}` to view the next page.\nUse `.inventory upgrade` to increase your max inventory space from `{items['item_space']['max']}` to `{(items['item_space']['max']*2)-items['item_space']['max']//2}` for {self.cash((items['item_space']['max']**3)//(items['item_space']['max']//3))}\n",
                     )
 
@@ -183,7 +182,7 @@ class Items(commands.Cog):
             buy = f"Use `.buy {name} 1` to purchase."
 
             embed.add_field(
-                name=f"**{'⎻' * 30}**",
+                name=f"<:blank:794679084890193930>",
                 value=f"**Current Price**: {self.cash(self.bot.all_items[name]['price'])} {self.get_arrow(name)}\n**Regular Price**: {self.cash(self.bot.all_items[name]['value'])}\n \nitem_id: `{name}`\n{buy if name in self.bot.shop else ''}type: `{self.bot.all_items[name]['type']}`",
             )
             embed.set_thumbnail(url=self.bot.all_items[name]["image"])
@@ -207,7 +206,7 @@ class Items(commands.Cog):
 
         embed = discord.Embed(
             title=f"All Items | Sorted by {sort_by.capitalize()} ({page}/{n})",
-            description=f"**{'⎻' * 30}**\n{items}\n**{'⎻' * 30}**\nUse `.itemlist{f' {sort_by} ' if sort_by != 'price' else ' '}{page+1 if page+1 <= n else 1}` to view the next page.\nUse `.iteminfo [item name]` to find out more about an item.",
+            description=f"{items}\n<:blank:794679084890193930>\nUse `.itemlist{f' {sort_by} ' if sort_by != 'price' else ' '}{page+1 if page+1 <= n else 1}` to view the next page.\nUse `.iteminfo [item name]` to find out more about an item.",
             color=ctx.author.color,
             timestamp=ctx.message.created_at,
         )
@@ -270,7 +269,7 @@ class Items(commands.Cog):
 
                     embed = discord.Embed(
                         title=f"Opened {self.to_name(item_id)}",
-                        description=f"{ctx.author.mention} opened a `{item_id}` and recieved\n**{'⎻' * 30}**\n{desc}\n**{'⎻' * 30}**",
+                        description=f"{ctx.author.mention} opened a `{item_id}` and recieved\n<:blank:794679084890193930>\n{desc}",
                         color=ctx.author.color,
                         timestamp=ctx.message.created_at,
                     )
@@ -281,7 +280,7 @@ class Items(commands.Cog):
                 else:
                     await ctx.send("`Insufficient Space!`")
             else:
-                await ctx.send("`Insufficient Space!`")
+                await ctx.send("`You dont have that item!`")
         else:
             await ctx.send(
                 "`Invalid Item` Use `.iteminfo [item name]` to find its `item_id`"
@@ -293,6 +292,8 @@ class Items(commands.Cog):
     async def buy(self, ctx, item_id, amount=1):
         """``buy [item_id] [amount]`` buy an item using your bank's funds."""
         amount = abs(int(amount))
+        if amount == 0:
+            amount = 1
         if self.valid_item(item_id):
             if self.to_id(item_id) in self.bot.shop:
                 if await self.bot.inventories.member_has_space(
@@ -346,6 +347,8 @@ class Items(commands.Cog):
         """``sell [item_id] [amount]`` sell your items for cash."""
         if isinstance(amount, str) and amount.lower() == "all":
             amount = abs(int(amount))
+            if amount == 0:
+                amount = 1
         if self.valid_item(item_id):
             item_id = self.to_id(item_id)
             item = self.bot.all_items[item_id]
@@ -357,7 +360,7 @@ class Items(commands.Cog):
                     amount = items[item_id]
                 if items[item_id] >= amount:
                     value = item["price"] * amount
-                    await self.bot.currency.add_server(ctx.guild.id)
+                    # await self.bot.currency.add_server(ctx.guild.id)
                     await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
                     await self.bot.currency.update_wallet(
                         ctx.guild.id, ctx.author.id, value
@@ -397,13 +400,13 @@ class Items(commands.Cog):
                 if isinstance(amount, str) and amount.lower() == "all":
                     amount = item[item_id]
                 if items[item_id] >= amount:
-                    await self.bot.currency.add_server(ctx.guild.id)
+                    # await self.bot.currency.add_server(ctx.guild.id)
                     await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
                     await self.bot.inventories.decr_item_amount(
                         ctx.guild.id, ctx.author.id, item_id, amount
                     )
                     embed = discord.Embed(
-                        title=f"Sold {self.to_name(item_id)} `x{amount}`",
+                        title=f"Trashed {self.to_name(item_id)} `x{amount}`",
                         description=f"{ctx.author.mention} successfully trashed `{item_id}` `x{amount}`",
                         color=ctx.author.color,
                         timestamp=ctx.message.created_at,
@@ -425,7 +428,7 @@ class Items(commands.Cog):
         self, ctx, recipient: discord.Member = None, item_id="1234", amount=1
     ):
         """``gift [@member] [item_id] [amount]`` Be generous."""
-        if recipient is not None:
+        if recipient is not None and recipient.id != ctx.author.id:
             if self.valid_item(item_id):
                 amount = abs(int(amount))
                 sender = ctx.author
@@ -482,12 +485,12 @@ class Items(commands.Cog):
 
         embed = discord.Embed(
             title=f"Item Shop ({page}/{n})",
-            description=f"**{'⎻' * 30}**\n{items}\n**{'⎻' * 30}**\nUse `.buy [item_id] [amount]` to buy an item.\nUse `.shop {page+1 if page+1 <= n else 1}` to view the next page.\nUse `.iteminfo [item name]` to find out more about an item.",
+            description=f"<:blank:794679084890193930>\n{items}\n<:blank:794679084890193930>\nUse `.buy [item_id] [amount]` to buy an item.\nUse `.shop {page+1 if page+1 <= n else 1}` to view the next page.\nUse `.iteminfo [item name]` to find out more about an item.",
             color=ctx.author.color,
             timestamp=ctx.message.created_at,
         )
 
-        embed.set_footer(text=f"Page ({page}/{n})")
+        embed.set_footer(text=f"Page ({page}/{n}). Prices and stock change hourly")
         await ctx.send(embed=embed)
 
     async def sort_items(self, og="itemlist", sort_by="price", page=1, inv=None):
@@ -525,7 +528,7 @@ class Items(commands.Cog):
                 lambda items, i: [
                     f"{items[i]['emoji']} - **{self.to_name(i)}** **|** {self.cash(items[i]['price'])} {self.get_arrow(i)} {'`In Shop`' if i in self.bot.shop else ''}"
                 ]
-                if items[i]["type"] != "crate"
+                if items[i]["type"] != "crate" or sort_by == "crates"
                 else []
             )
         elif og == "inventory":

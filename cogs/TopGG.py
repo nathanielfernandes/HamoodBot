@@ -26,7 +26,6 @@ class TopGG(commands.Cog):
         self.bot = bot
 
     def __init__(self, bot):
-        print("setup")
         self.bot = bot
         self.dblpy = dbl.DBLClient(
             bot,

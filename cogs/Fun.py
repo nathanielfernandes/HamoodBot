@@ -94,8 +94,14 @@ class Fun(commands.Cog):
         member = ctx.author if not member else member
         fonts = self.bot.get_cog("Fonts")
         random_word = random.choice(self.words)
-        await ctx.send(f"{member.mention} your vibe checked out to be:")
-        await fonts.text_prep(ctx, (random_word), "random", 500, "random", 100)
+        img = await fonts.text_prep(
+            ctx, (random_word), "random", 500, "random", 100, False
+        )
+        await ctx.send(
+            file=discord.File(img),
+            content=f"{member.mention} your vibe checked out to be:",
+        )
+        os.remove(img)
 
     @commands.command(aliases=["roast me", "roastme"])
     @checks.isAllowedCommand()

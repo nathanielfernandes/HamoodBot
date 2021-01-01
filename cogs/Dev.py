@@ -8,6 +8,9 @@ class Dev(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    def to_id(self, name):
+        return name.replace(" ", "_").lower()
+
     @commands.command()
     @commands.is_owner()
     async def logout(self, ctx):
@@ -80,19 +83,29 @@ class Dev(commands.Cog):
         await self.bot.inventories.add_inventory(ctx.guild.id)
         await self.bot.inventories.add_member(ctx.guild.id, ctx.author.id)
         await self.bot.inventories.add_item(
-            ctx.guild.id, ctx.author.id, self.to_id(item_id), amount
+            ctx.guild.id, ctx.author.id, self.to_id(item_id), int(amount)
         )
         await ctx.send(f"`You recieved {item_id} x{amount}`")
 
     @commands.command()
-    @checks.isAllowedCommand()
+    @commands.is_owner()
     async def print_money(self, ctx, amount):
         """``print_money [amount]`` get any amount of money"""
         await self.bot.currency.add_server(ctx.guild.id)
         await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
         await self.bot.currency.update_wallet(ctx.guild.id, ctx.author.id, int(amount))
 
-        await ctx.send(f"`You recieved ⌬ {amount:,}`")
+        await ctx.send(f"`You recieved ⌬ {int(amount):,}`")
+
+    @commands.command()
+    @commands.is_owner()
+    async def wipe(self, ctx, member: discord.Member = None):
+        if member is not None:
+            # await self.bot.leaderboards.delete_member(member.guild.id, member.id)
+            await self.bot.currency.delete_member(member.guild.id, member.id)
+            await self.bot.inventories.delete_member(member.guild.id, member.id)
+
+            await ctx.send(f"{member.mention} has been wiped from the db")
 
 
 def setup(bot):

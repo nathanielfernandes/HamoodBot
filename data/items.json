@@ -494,6 +494,15 @@
         "rarity": "dev",
         "type": "collectable"
     },
+    "deadly_walrus": {
+        "info": "This is a deadly walrus. They are so fast they go nyooom.",
+        "image": "https://cdn.discordapp.com/emojis/794669837753384980.png?v=1",
+        "emoji": "<:walrus:794669837753384980>",
+        "value": 696969696969696969,
+        "price": 696969696969696969,
+        "rarity": "dev",
+        "type": "collectable"
+    },
     "blackmarket_crate": {
         "info": "This crate yeilds `x1` items with rarities from ***RARE*** up to ***BLACKMARKET***\n \n***RARE***: `80%`\n***EPIC***: `13%`\n***LEGENDARY***: `5%`\n***BLACKMARKET***: `2%`",
         "image": "https://cdn.discordapp.com/emojis/793618040025645106.png?v=1",
