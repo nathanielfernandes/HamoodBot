@@ -1,5 +1,6 @@
 import random
 import discord
+import time
 import asyncio
 from discord.ext import commands
 
@@ -49,7 +50,7 @@ class Jobs(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(1, 20, commands.BucketType.user)
+    @commands.cooldown(1, 300, commands.BucketType.user)
     async def work(self, ctx):
         """``work`` earn some money"""
         game_id = str(ctx.guild.id) + str(ctx.author.id)
@@ -57,10 +58,10 @@ class Jobs(commands.Cog):
         payout = (
             167
             if payout is None
-            else round((payout["bank_max"] // 3) * random.uniform(1.1, 1.5))
+            else round((payout["bank_max"] // 3) * random.uniform(0.8, 1.6))
         )
 
-        game = _Trivia().get_questions(category="any", difficulty="any", amount=1)[0]
+        game = _Trivia().get_questions(category="any", difficulty="easy", amount=1)[0]
 
         category = game["category"]
 
@@ -88,6 +89,8 @@ class Jobs(commands.Cog):
             "msg": msg,
             "game": game,
             "payout": payout,
+            "ctx": ctx,
+            "time": time.time() + 15,
         }
         for e in self.triviaEmojis:
             await msg.add_reaction(e)
@@ -102,7 +105,7 @@ class Jobs(commands.Cog):
                 timestamp=ctx.message.created_at,
             )
             embed.set_thumbnail(url=ctx.author.avatar_url)
-            embed.set_footer(text="You can work again soon")
+            embed.set_footer(text="You can work again in 5 minutes")
 
             try:
                 await msg.edit(embed=embed)
@@ -134,10 +137,12 @@ class Jobs(commands.Cog):
                             tit = "Correct"
                             desc = f"{work['member'].mention} you completed the job and earned {self.cash(work['payout'])}"
                             color = discord.Color.green()
+                            tim = "You can work again in a few seconds"
                         else:
                             tit = "Incorrect"
                             desc = f"{work['member'].mention} you failed the job :("
                             color = discord.Color.red()
+                            tim = "You can work again in 5 minutes"
 
                         embed = discord.Embed(
                             title=f"{tit}",
@@ -146,7 +151,7 @@ class Jobs(commands.Cog):
                             timestamp=work["msg"].created_at,
                         )
                         embed.set_thumbnail(url=work["member"].avatar_url)
-                        embed.set_footer(text="You can work again soon")
+                        embed.set_footer(text=tim)
 
                         try:
                             await work["msg"].edit(embed=embed)
@@ -155,6 +160,9 @@ class Jobs(commands.Cog):
                         except Exception:
                             return
 
+                        if tit == "Correct":
+                            await asyncio.sleep(work["time"] - time.time())
+                            work["ctx"].command.reset_cooldown(work["ctx"])
         # print(game)
         # self.jobs[game_id] = _Trivia(
         #     ctx.author, member, ctx.guild, category, difficulty
@@ -216,7 +224,7 @@ class Jobs(commands.Cog):
                     f"{ctx.author.mention} you failed at stealing from {member.mention}"
                 )
         else:
-            await ctx.commands.reset_cooldown(ctx)
+            ctx.command.reset_cooldown(ctx)
             return await ctx.send(
                 f"{ctx.author.mention}, who are you trying to steal from?"
             )
@@ -316,7 +324,7 @@ class Jobs(commands.Cog):
 
                 return await ctx.send(embed=embed)
 
-        await ctx.commands.reset_cooldown(ctx)
+        ctx.command.reset_cooldown(ctx)
         await ctx.send("`You do not own a fishing rod`")
 
 
