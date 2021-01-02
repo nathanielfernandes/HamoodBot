@@ -12,7 +12,7 @@ import random
 import discord
 import asyncio
 from discord.ext import commands, tasks
-
+from copy import copy
 from modules.image_functions import randomFile
 from utils.mongo import *
 
@@ -49,6 +49,12 @@ if __name__ == "__main__":
 
     @tasks.loop(seconds=3600)
     async def update_items():
+        bot.all_items = {
+            i: every_item[i]
+            for i in every_item
+            if every_item[i]["type"] not in ["crate"]
+        }
+
         variation = lambda: random.uniform(0.1, 2) if random.randint(1, 10) > 5 else 1
 
         for i in bot.all_items:
@@ -114,7 +120,7 @@ if __name__ == "__main__":
                 k, v = random.choice(list(cat[0].items()))
                 bot.shop[k] = v
 
-        bot.all_items = every_item
+        bot.all_items = copy(every_item)
 
         # 10800
         # asyncio.sleep(300)

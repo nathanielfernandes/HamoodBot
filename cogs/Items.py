@@ -25,6 +25,22 @@ class Items(commands.Cog):
 
         self.cash = lambda n: f"[⌬ {n:,}](https://top.gg/bot/699510311018823680)"
 
+    def get_percent(self, item_id):
+        if self.bot.all_items[item_id]["value"] > 0:
+            percent = round(
+                (
+                    (
+                        self.bot.all_items[item_id]["price"]
+                        - self.bot.all_items[item_id]["value"]
+                    )
+                    / self.bot.all_items[item_id]["value"]
+                )
+                * 100
+            )
+            return f"`{'+' if percent > 0 else ''}{percent}%`" if percent != 0 else ""
+        else:
+            return ""
+
     def get_arrow(self, name):
         name = self.to_id(name)
         if self.bot.all_items[name]["price"] > self.bot.all_items[name]["value"]:
@@ -183,7 +199,7 @@ class Items(commands.Cog):
 
             embed.add_field(
                 name=f"<:blank:794679084890193930>",
-                value=f"**Current Price**: {self.cash(self.bot.all_items[name]['price'])} {self.get_arrow(name)}\n**Regular Price**: {self.cash(self.bot.all_items[name]['value'])}\n \nitem_id: `{name}`\n{buy if name in self.bot.shop else ''}type: `{self.bot.all_items[name]['type']}`",
+                value=f"**Current Price**: {self.cash(self.bot.all_items[name]['price'])} {self.get_arrow(name)}{self.get_percent(name)}\n**Regular Price**: {self.cash(self.bot.all_items[name]['value'])}\n \nitem_id: `{name}`\n{buy if name in self.bot.shop else ''}type: `{self.bot.all_items[name]['type']}`",
             )
             embed.set_thumbnail(url=self.bot.all_items[name]["image"])
 
@@ -534,14 +550,14 @@ class Items(commands.Cog):
         elif og == "inventory":
             item_desc = (
                 lambda items, i: [
-                    f"{items[i]['emoji']} - **{self.to_name(i)}** `x{inv[i]}` **|** {self.cash(self.bot.all_items[i]['price']*int(inv[i]))}"
+                    f"{items[i]['emoji']} - **{self.to_name(i)}** `x{inv[i]}` **|** {self.cash(self.bot.all_items[i]['price']*int(inv[i]))} {self.get_arrow(i)}{self.get_percent(i)}"
                 ]
                 if i in inv
                 else []
             )
         elif og == "shop":
             item_desc = lambda items, i: [
-                f"{items[i]['emoji']} - **{self.to_name(i)}** **|** {self.cash(items[i]['price'])} {self.get_arrow(i)}\n    **↳** `{self.to_id(i)}` ***{items[i]['rarity']}***\n"
+                f"{items[i]['emoji']} - **{self.to_name(i)}** **|** {self.cash(items[i]['price'])} {self.get_arrow(i)}{self.get_percent(i)}\n    **↳** `{self.to_id(i)}` ***{items[i]['rarity']}***\n"
             ]
         # elif og == "shop":
         #     item_desc = lambda items, i: [

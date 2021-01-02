@@ -279,11 +279,11 @@ class Jobs(commands.Cog):
 
                 ran = random.randint(1, 100)
 
-                if ran <= 60:
+                if ran <= 40:
                     choice = None
-                elif ran <= 85:
+                elif ran <= 65:
                     choice = self.bot.common_items
-                elif ran <= 95:
+                elif ran <= 85:
                     choice = self.bot.uncommon_items
                 elif ran <= 98:
                     choice = self.bot.rare_items
