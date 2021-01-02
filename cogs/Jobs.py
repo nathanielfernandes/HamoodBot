@@ -49,7 +49,7 @@ class Jobs(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(1, 25, commands.BucketType.user)
+    @commands.cooldown(1, 20, commands.BucketType.user)
     async def work(self, ctx):
         """``work`` earn some money"""
         game_id = str(ctx.guild.id) + str(ctx.author.id)
@@ -216,6 +216,7 @@ class Jobs(commands.Cog):
                     f"{ctx.author.mention} you failed at stealing from {member.mention}"
                 )
         else:
+            await ctx.commands.reset_cooldown(ctx)
             return await ctx.send(
                 f"{ctx.author.mention}, who are you trying to steal from?"
             )
@@ -270,7 +271,7 @@ class Jobs(commands.Cog):
 
                 ran = random.randint(1, 100)
 
-                if ran <= 70:
+                if ran <= 60:
                     choice = None
                 elif ran <= 85:
                     choice = self.bot.common_items
@@ -315,6 +316,7 @@ class Jobs(commands.Cog):
 
                 return await ctx.send(embed=embed)
 
+        await ctx.commands.reset_cooldown(ctx)
         await ctx.send("`You do not own a fishing rod`")
 
 

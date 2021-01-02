@@ -342,7 +342,7 @@ class Items(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def sell(self, ctx, item_id, amount=1):
         """``sell [item_id] [amount]`` sell your items for cash."""
         if isinstance(amount, str) and amount.lower() == "all":
