@@ -92,7 +92,7 @@ class Jobs(commands.Cog):
             "game": game,
             "payout": payout,
             "ctx": ctx,
-            "time": time.time() + 15,
+            # "time": time.time() + 15,
         }
         for e in self.triviaEmojis:
             await msg.add_reaction(e)
@@ -139,7 +139,7 @@ class Jobs(commands.Cog):
                             tit = "Correct"
                             desc = f"{work['member'].mention} you completed the job and earned {self.cash(work['payout'])}"
                             color = discord.Color.green()
-                            tim = "You can work again in a few seconds"
+                            tim = "You can work again in 5 minutes"
                         else:
                             tit = "Incorrect"
                             desc = f"{work['member'].mention} you failed the job :("
@@ -156,15 +156,15 @@ class Jobs(commands.Cog):
                         embed.set_footer(text=tim)
 
                         try:
+                            self.jobs.pop(game_id)
                             await work["msg"].edit(embed=embed)
                             await work["msg"].clear_reactions()
-                            self.jobs.pop(game_id)
                         except Exception:
                             return
 
-                        if tit == "Correct":
-                            await asyncio.sleep(work["time"] - time.time())
-                            work["ctx"].command.reset_cooldown(work["ctx"])
+                        # if tit == "Correct":
+                        #     await asyncio.sleep(work["time"] - time.time())
+                        #     work["ctx"].command.reset_cooldown(work["ctx"])
         # print(game)
         # self.jobs[game_id] = _Trivia(
         #     ctx.author, member, ctx.guild, category, difficulty
