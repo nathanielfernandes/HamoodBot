@@ -50,7 +50,7 @@ class Jobs(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(1, 300, commands.BucketType.user)
+    @commands.cooldown(1, 1800, commands.BucketType.user)
     async def work(self, ctx):
         """``work`` earn some money"""
         game_id = str(ctx.guild.id) + str(ctx.author.id)
@@ -59,7 +59,7 @@ class Jobs(commands.Cog):
             167
             if payout is None
             else round(
-                (payout["bank_max"] / random.randint(4, 8)) * random.uniform(0.8, 1.6)
+                (payout["bank_max"] / random.randint(3, 5)) * random.uniform(0.8, 1.6)
             )
         )
 
@@ -107,7 +107,7 @@ class Jobs(commands.Cog):
                 timestamp=ctx.message.created_at,
             )
             embed.set_thumbnail(url=ctx.author.avatar_url)
-            embed.set_footer(text="You can work again in 5 minutes")
+            embed.set_footer(text="You can work again in 30 minutes")
 
             try:
                 await msg.edit(embed=embed)
@@ -139,12 +139,12 @@ class Jobs(commands.Cog):
                             tit = "Correct"
                             desc = f"{work['member'].mention} you completed the job and earned {self.cash(work['payout'])}"
                             color = discord.Color.green()
-                            tim = "You can work again in 5 minutes"
+                            tim = "You can work again in 30 minutes"
                         else:
                             tit = "Incorrect"
                             desc = f"{work['member'].mention} you failed the job :("
                             color = discord.Color.red()
-                            tim = "You can work again in 5 minutes"
+                            tim = "You can work again in 30 minutes"
 
                         embed = discord.Embed(
                             title=f"{tit}",

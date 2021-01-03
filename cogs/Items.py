@@ -169,7 +169,7 @@ class Items(commands.Cog):
 
             if not done:
                 embed = discord.Embed(
-                    title=f"{ctx.author}'s Inventory (0/10)",
+                    title=f"{ctx.author}'s Inventory",
                     description="This inventory is empty!",
                     timestamp=ctx.message.created_at,
                     color=ctx.author.color,
