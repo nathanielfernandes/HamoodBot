@@ -58,7 +58,9 @@ class Jobs(commands.Cog):
         payout = (
             167
             if payout is None
-            else round((payout["bank_max"] // 3) * random.uniform(0.8, 1.6))
+            else round(
+                (payout["bank_max"] / random.randint(4, 8)) * random.uniform(0.8, 1.6)
+            )
         )
 
         game = _Trivia().get_questions(category="any", difficulty="easy", amount=1)[0]
