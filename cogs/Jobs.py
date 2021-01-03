@@ -48,20 +48,18 @@ class Jobs(commands.Cog):
             "Entertainment: Cartoon & Animations": "Animator",
         }
 
+    # @commands.command()
+    # @checks.isAllowedCommand()
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(1, 1800, commands.BucketType.user)
+    @commands.cooldown(1, 20, commands.BucketType.user)
     async def work(self, ctx):
         """``work`` earn some money"""
+        await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
+
         game_id = str(ctx.guild.id) + str(ctx.author.id)
         payout = await self.bot.currency.get_currency(ctx.guild.id, ctx.author.id)
-        payout = (
-            167
-            if payout is None
-            else round(
-                (payout["bank_max"] / random.randint(3, 5)) * random.uniform(0.8, 1.6)
-            )
-        )
+        payout = round(payout["bank_max"] * random.uniform(0.01, 0.15))
 
         game = _Trivia().get_questions(category="any", difficulty="easy", amount=1)[0]
 
@@ -107,7 +105,7 @@ class Jobs(commands.Cog):
                 timestamp=ctx.message.created_at,
             )
             embed.set_thumbnail(url=ctx.author.avatar_url)
-            embed.set_footer(text="You can work again in 30 minutes")
+            embed.set_footer(text="You can work again soon")
 
             try:
                 await msg.edit(embed=embed)
@@ -139,12 +137,12 @@ class Jobs(commands.Cog):
                             tit = "Correct"
                             desc = f"{work['member'].mention} you completed the job and earned {self.cash(work['payout'])}"
                             color = discord.Color.green()
-                            tim = "You can work again in 30 minutes"
+                            tim = "You can work again soon"
                         else:
                             tit = "Incorrect"
                             desc = f"{work['member'].mention} you failed the job :("
                             color = discord.Color.red()
-                            tim = "You can work again in 30 minutes"
+                            tim = "You can work again soon"
 
                         embed = discord.Embed(
                             title=f"{tit}",
@@ -178,7 +176,7 @@ class Jobs(commands.Cog):
         if member is not None and member.id != ctx.author.id:
             ran = random.randint(1, 100)
 
-            if ran >= 50:
+            if ran >= 30:
                 victim_bal = await self.bot.currency.get_currency(
                     ctx.guild.id, member.id
                 )
@@ -269,7 +267,7 @@ class Jobs(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(1, 300, commands.BucketType.user)
+    @commands.cooldown(1, 120, commands.BucketType.user)
     async def fish(self, ctx):
         """``fish`` Maybe you'll catch something"""
         items = await self.bot.inventories.get_items(ctx.guild.id, ctx.author.id)
@@ -281,19 +279,21 @@ class Jobs(commands.Cog):
 
                 ran = random.randint(1, 100)
 
-                if ran <= 40:
+                if ran <= 30:
                     choice = None
-                elif ran <= 65:
+                elif ran <= 60:
                     choice = self.bot.common_items
-                elif ran <= 85:
+                elif ran <= 80:
                     choice = self.bot.uncommon_items
-                elif ran <= 98:
+                elif ran <= 90:
                     choice = self.bot.rare_items
-                elif ran <= 99:
+                elif ran <= 95:
                     choice = self.bot.epic_items
+                elif ran <= 98:
+                    choice = self.bot.legendary_items
                 else:
                     ran2 = random.randint(1, 10)
-                    if ran2 <= 8:
+                    if ran2 <= 6:
                         choice = "rare_crate"
                     else:
                         choice = "blackmarket_crate"

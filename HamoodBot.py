@@ -47,7 +47,7 @@ if __name__ == "__main__":
         i: every_item[i] for i in every_item if every_item[i]["type"] not in ["crate"]
     }
 
-    @tasks.loop(seconds=3600)
+    @tasks.loop(seconds=1800)
     async def update_items():
         bot.all_items = {
             i: every_item[i]
@@ -107,11 +107,11 @@ if __name__ == "__main__":
         }
 
         categs = [
-            (bot.common_items, random.randint(6, 7)),
-            (bot.uncommon_items, random.randint(5, 6)),
-            (bot.rare_items, random.randint(4, 5)),
-            (bot.epic_items, random.randint(1, 2)),
-            (bot.legendary_items, random.randint(0, 1)),
+            (bot.common_items, random.randint(5, 8)),
+            (bot.uncommon_items, random.randint(4, 7)),
+            (bot.rare_items, random.randint(3, 6)),
+            (bot.epic_items, random.randint(2, 5)),
+            (bot.legendary_items, random.randint(0, 2)),
         ]
 
         bot.shop = {}

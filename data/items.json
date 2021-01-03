@@ -449,6 +449,15 @@
         "rarity": "legendary",
         "type": "sellable"
     },
+    "one_up": {
+        "info": "Don't do mushrooms",
+        "image": "https://cdn.discordapp.com/emojis/795088615407353906.png?",
+        "emoji": "<:1up:795088615407353906>",
+        "value": 75000,
+        "price": 75000,
+        "rarity": "legendary",
+        "type": "sellable"
+    },
     "pink_gun": {
         "info": "Is this legal?",
         "image": "https://cdn.discordapp.com/emojis/791532672824115201.png?v=1",
