@@ -152,10 +152,10 @@ class About(commands.Cog):
         )
 
         w = await self.dblpy.get_weekend_status()
-        # <:blackmarketbox:793618040025645106> Blackmarket Crate `x{1*(2 if w else 1)}`\n
+        #
         embed.add_field(
             name=f"Rewards {'`x2` Weekend Multiplier' if w else ''}",
-            value=f"<:regularbox:793619180683001876> Regular Crate `x{2*(2 if w else 1)}`\n<a:coin:790679388147679272> Money: [⌬ {2500*(2 if w else 1):,}](https://top.gg/bot/699510311018823680)",
+            value=f"<:blackmarketbox:793618040025645106> Blackmarket Crate `x{1*(2 if w else 1)}`\n<:regularbox:793619180683001876> Regular Crate `x{2*(2 if w else 1)}`\n<a:coin:790679388147679272> Money: [⌬ {2500*(2 if w else 1):,}](https://top.gg/bot/699510311018823680)",
         )
         embed.set_thumbnail(
             url="https://cdn.discordapp.com/emojis/778416296630157333.png?v=1"
@@ -184,7 +184,7 @@ class About(commands.Cog):
         if query is None:
             halp = discord.Embed(
                 title="Command Categories",
-                description="Use `.help [category]` to find out more about them!\nYou can also just click [**here**](https://nathanielfernandes.github.io/HamoodBot/#commands) for info on all the commands.",
+                description="Use `.help [category]` to find out more about them!\nYou can also just click [**here**](https://nathanielfernandes.github.io/HamoodBot/#commands) for info on all the commands. [Support Server](https://discord.gg/7dEuxNq3)",
                 color=discord.Color.blue(),
             )
             cogs_desc = ""

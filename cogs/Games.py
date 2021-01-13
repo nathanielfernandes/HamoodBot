@@ -201,6 +201,12 @@ class Games(commands.Cog):
 
         return game_id
 
+    # async def init_invite(self, host, player, gamename, extra_desc, thumb, *fields):
+    #     embed = discord.embed(
+    #         title=f"{gamename} Invite",
+    #         description=f"{host.mention} want to start a {gamename} game with {player}",
+    #     )
+
     async def overtime(self, gameID, extras="No Winner"):
         self.games_log[f"ID:{gameID}"] = f"{gameID[: gameID.index('#')]}"
         await asyncio.sleep(120)

@@ -24,16 +24,13 @@ class TopGG(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
-    def __init__(self, bot):
-        self.bot = bot
         self.dblpy = dbl.DBLClient(
             bot,
             TOPGG,
+            autopost=True,
             webhook_path="/dblwebhook",
             webhook_auth=TOPGGAUTH,
             webhook_port=int(PORT),
-            autopost=True,
         )  # Autopost will post your guild count every 30 minutes
         #
 
@@ -46,10 +43,10 @@ class TopGG(commands.Cog):
         await self.bot.currency.update_all_wallets(
             data["user"], 2500 * (2 if data["isWeekend"] else 1)
         )
-        # if data["isWeekend"]:
-        #     await self.bot.inventories.incr_all_invs(
-        #         data["user"], "blackmarket_crate", 1
-        #     )
+        if data["isWeekend"]:
+            await self.bot.inventories.incr_all_invs(
+                data["user"], "blackmarket_crate", 1
+            )
         await self.bot.inventories.incr_all_invs(
             data["user"], "rare_crate", 2 * (2 if data["isWeekend"] else 1)
         )
@@ -59,9 +56,9 @@ class TopGG(commands.Cog):
         await self.bot.currency.update_all_wallets(
             data["user"], 2500 * (2 if data["isWeekend"] else 1)
         )
-        # await self.bot.inventories.incr_all_invs(
-        #     data["user"], "blackmarket_crate", 1 * (2 if data["isWeekend"] else 1)
-        # )
+        await self.bot.inventories.incr_all_invs(
+            data["user"], "blackmarket_crate", 1 * (2 if data["isWeekend"] else 1)
+        )
         await self.bot.inventories.incr_all_invs(
             data["user"], "rare_crate", 2 * (2 if data["isWeekend"] else 1)
         )

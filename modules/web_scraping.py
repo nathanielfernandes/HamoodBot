@@ -4,6 +4,39 @@ import re
 import random
 import json
 
+# import matplotlib
+# import finnhub
+
+# import pandas as pd
+# import plotly.graph_objects as go
+
+# from datetime import datetime
+
+# finnhub_client = finnhub.Client(api_key="sandbox_bvp71ln48v6s8216vnfg")
+
+# res = finnhub_client.stock_candles("AAPL", "D", 0, 1)
+# # print(res)
+
+
+# # res["t"] = [datetime.fromtimestamp(i) for i in res["t"]]
+# print(res)
+# print(datetime.fromtimestamp(res["t"][0]))
+
+# df = pd.DataFrame(res)
+
+# # print(df)
+
+# fig = go.Figure(
+#     data=[
+#         go.Candlestick(
+#             x=df["t"], open=df["o"], high=df["h"], low=df["l"], close=df["c"],
+#         )
+#     ]
+# )
+
+# fig.write_image("tempImages/figtest.webp")
+
+
 # from instaloader import Instaloader, Profile, Hashtag
 
 # L = Instaloader()
