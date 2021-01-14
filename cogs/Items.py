@@ -99,7 +99,7 @@ class Items(commands.Cog):
             bal = await self.bot.currency.get_currency(ctx.guild.id, ctx.author.id)
             if bal is not None:
                 cost = (items["item_space"]["max"] ** 3) // (
-                    items["item_space"]["max"] // 3
+                    items["item_space"]["max"] // 6
                 )
 
                 if bal["bank"] >= cost:

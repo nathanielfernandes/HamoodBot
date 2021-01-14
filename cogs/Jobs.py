@@ -192,16 +192,25 @@ class Jobs(commands.Cog):
                             else 0.2
                         )
                     else:
-                        amount = attacker_bal["wallet"] * -1 * random.uniform(0.2, 0.8)
+                        await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
 
-                    amount = round(amount)
+                        if attacker_bal["wallet"] >= attacker_bal["bank"]:
+                            amount = round(
+                                attacker_bal["wallet"] * -1 * random.uniform(0.2, 0.8)
+                            )
+                            await self.bot.currency.update_wallet(
+                                ctx.guild.id, ctx.author.id, amount
+                            )
+                        else:
+                            amount = round(
+                                attacker_bal["bank"] * -1 * random.uniform(0.2, 0.8)
+                            )
+                            await self.bot.currency.update_bank(
+                                ctx.guild.id, ctx.author.id, amount
+                            )
 
-                    await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
                     await self.bot.currency.add_member(ctx.guild.id, member.id)
 
-                    await self.bot.currency.update_wallet(
-                        ctx.guild.id, ctx.author.id, amount
-                    )
                     await self.bot.currency.update_wallet(
                         ctx.guild.id, member.id, -1 * amount
                     )
@@ -239,7 +248,7 @@ class Jobs(commands.Cog):
             await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
             bal = await self.bot.currency.get_currency(ctx.guild.id, ctx.author.id)
 
-            reward = round((bal["bank_max"] / 2) + (100 * streak))
+            reward = round((bal["bank_max"] / 4) + (100 * streak))
 
             await self.bot.currency.update_all_wallets(ctx.author.id, reward)
 

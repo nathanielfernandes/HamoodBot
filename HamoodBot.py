@@ -47,15 +47,19 @@ if __name__ == "__main__":
         i: every_item[i] for i in every_item if every_item[i]["type"] not in ["crate"]
     }
 
-    @tasks.loop(seconds=1800)
+    variation = (
+        lambda: random.uniform(0.1, 1)
+        if random.randint(1, 10) < 7
+        else random.uniform(1, 2)
+    )
+
+    @tasks.loop(seconds=10)
     async def update_items():
         bot.all_items = {
             i: every_item[i]
             for i in every_item
             if every_item[i]["type"] not in ["crate"]
         }
-
-        variation = lambda: random.uniform(0.1, 2) if random.randint(1, 10) > 5 else 1
 
         for i in bot.all_items:
             bot.all_items[i]["price"] = round(bot.all_items[i]["value"] * variation())
@@ -128,6 +132,8 @@ if __name__ == "__main__":
 
     @bot.event
     async def on_ready():
+        # @ global variation
+
         bot.leaderboards = Leaderboards()
         bot.inventories = Inventories()
         bot.currency = Currency()
@@ -163,11 +169,18 @@ if __name__ == "__main__":
             await update_items.start()
         except RuntimeError:
             pass
-            # if update_items is not None:
-            #     await update_items.cancel()
-            #     await update_items.start()
-            # else:
-            #     await update_items.start()
+
+        # variation = (
+        #     lambda: random.uniform(0.8, 1.2)
+        #     if random.randint(1, 10) > 7
+        #     else (0.2 if random.randint(1, 10) > 6 else 1.8)
+        # )
+
+        # if update_items is not None:
+        #     await update_items.cancel()
+        #     await update_items.start()
+        # else:
+        #     await update_items.start()
 
     responses = {
         "bye": "goodbye {0.author.mention}",
