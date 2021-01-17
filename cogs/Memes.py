@@ -116,6 +116,16 @@ class Memes(commands.Cog):
             ctx, "amongUsShoot.gif", content, [(10, 150), (170, 150)], 20, wrap=13
         )
 
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 5, commands.BucketType.user)
+    @commands.has_permissions(attach_files=True)
+    async def uno(self, ctx, *, content: commands.clean_content):
+        """`uno [text1], [text2]`"""
+        await self.meme_prep(
+            ctx, "unoImage.png", content, [(50, 170), (280, 20)], 25, wrap=15
+        )
+
 
 def setup(bot):
     bot.add_cog(Memes(bot))

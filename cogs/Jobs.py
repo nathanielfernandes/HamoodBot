@@ -186,10 +186,13 @@ class Jobs(commands.Cog):
 
                 if victim_bal is not None and victim_bal["wallet"] != 0:
                     if ran <= 80:
-                        amount = victim_bal["wallet"] * (
-                            random.uniform(0.1, 0.7)
-                            if random.randint(1, 10) > 5
-                            else 0.2
+                        amount = round(
+                            victim_bal["wallet"]
+                            * (
+                                random.uniform(0.1, 0.7)
+                                if random.randint(1, 10) > 5
+                                else 0.2
+                            )
                         )
                     else:
                         await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)

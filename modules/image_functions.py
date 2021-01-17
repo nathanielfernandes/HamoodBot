@@ -452,3 +452,12 @@ def randomFile(folder):
     card = f"{folder}/{random.choice(os.listdir(folder))}"
     return card
 
+
+# path = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/memePics/"
+
+# bruh = Modify(image_location=f"{path}/furniture copy.png")
+
+# # bruh.image.show()
+
+
+# new.show()

@@ -18,6 +18,8 @@ class Images(commands.Cog):
         self.fonts = f"{self.direct}/fonts"
         self.memes = f"{self.direct}/memePics"
 
+        self.test123 = Modify(image_location=f"{self.memes}/furniture.png")
+
     async def find_image(self, ctx, member, depth):
         if member is None:
             message1 = await ctx.message.channel.history(limit=depth).find(
@@ -229,26 +231,46 @@ class Images(commands.Cog):
 
         await self.send_image(ctx, image, "edit")
 
-    # @commands.command()
-    # @commands.cooldown(3, 10, commands.BucketType.user)
-    # @commands.has_permissions(attach_files=True)
-    # async def toptext(self, ctx, *, text: commands.clean_content = "top text"):
-    #     image = await self.find_image(ctx, None, 40)
-    #     if image is None:
-    #         return
 
-    #     image.set_font(
-    #         font_location=f"{self.fonts}/arialbold.ttf",
-    #         font_size=image.image.size[1] // 5,
-    #     )
-    #     image.add_text(
-    #         text=text,
-    #         stroke_width=4,
-    #         coordinates=(image.image.size[0] // 10, image.image.size[1] // 10),
-    #     )
-    #     image = image.save_image(location=self.save_location)
+#     @commands.command()
+#     @checks.isAllowedCommand()
+#     async def test(self, ctx, x, y):
+#         """test [test] [test]"""
 
-    #     await self.send_image(ctx, image, "add text to")
+#         square = lambda x, y: [
+#             x * 125,
+#             y * 105,
+#             (x * 125) + 125,
+#             (y * 105) + 105,
+#         ]
+
+#         new = self.test123.image.crop(square(int(x), int(y)))
+#         new = Modify(image=new)
+#         image = new.save_image(location=self.save_location, file_format="png")
+
+#         await self.send_image(ctx, image, "test")
+
+
+# # @commands.command()
+# @commands.cooldown(3, 10, commands.BucketType.user)
+# @commands.has_permissions(attach_files=True)
+# async def toptext(self, ctx, *, text: commands.clean_content = "top text"):
+#     image = await self.find_image(ctx, None, 40)
+#     if image is None:
+#         return
+
+#     image.set_font(
+#         font_location=f"{self.fonts}/arialbold.ttf",
+#         font_size=image.image.size[1] // 5,
+#     )
+#     image.add_text(
+#         text=text,
+#         stroke_width=4,
+#         coordinates=(image.image.size[0] // 10, image.image.size[1] // 10),
+#     )
+#     image = image.save_image(location=self.save_location)
+
+#     await self.send_image(ctx, image, "add text to")
 
 
 def setup(bot):

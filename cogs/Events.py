@@ -126,7 +126,7 @@ class Events(commands.Cog):
 
                 embed = discord.Embed(
                     title="Command Failed",
-                    description=f"**{ctx.command.name}** is used like this: `.{s[start:end]}`",
+                    description=f"**{ctx.command.name}** is used like this: ```ini\n.{s[start:end]}```",
                     colour=discord.Color.red(),
                     timestamp=ctx.message.created_at,
                 )
@@ -135,6 +135,9 @@ class Events(commands.Cog):
                 #     icon_url="https://cdn.discordapp.com/attachments/749779629643923548/773072024922095636/images.png",
                 # )
                 embed.set_footer(text=f"{ctx.author}", icon_url=ctx.author.avatar_url)
+                embed.set_thumbnail(
+                    url="https://cdn.discordapp.com/attachments/749779300181606411/799902760837316628/tumblr_01a3fd42036dbeac4d74baff3a2497ff_ecd049b3_500.gif"
+                )
                 # await ctx.send(
                 #     f"{ctx.author.mention}, **{ctx.command.name}** is used like this:\n`.{s[start:end]}`"
                 # )
@@ -144,6 +147,10 @@ class Events(commands.Cog):
 
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send("`I don't have the permission to do that`")
+        else:
+            await ctx.send("`Error`")
+
+        ctx.command.reset_cooldown(ctx)
 
 
 def setup(bot):
