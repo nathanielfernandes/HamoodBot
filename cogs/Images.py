@@ -18,7 +18,7 @@ class Images(commands.Cog):
         self.fonts = f"{self.direct}/fonts"
         self.memes = f"{self.direct}/memePics"
 
-        self.test123 = Modify(image_location=f"{self.memes}/furniture.png")
+    # self.test123 = Modify(image_location=f"{self.memes}/furniture.png")
 
     async def find_image(self, ctx, member, depth):
         if member is None:
