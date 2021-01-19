@@ -136,7 +136,7 @@ class Math(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(3, 15, commands.BucketType.channel)
     async def java(self, ctx, *, content: commands.clean_content):
-        """``java [code]``` Compiles and runs your java code."""
+        """``java [code]`` Compiles and runs your java code."""
         content = content.replace("```java", "").replace("```", "")
         out = await java_code(content)
         if len(str(out)) > 2000:
