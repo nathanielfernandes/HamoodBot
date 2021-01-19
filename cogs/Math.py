@@ -115,18 +115,46 @@ class Math(commands.Cog):
         if len(str(out)) > 2000:
             out = out[:1900] + " Exceded Character Limit! "
 
-        msg = f"**Output:** {f'Completed in **{time}** seconds!' if time else ' '}```py\n{out}```"
-        # embed = discord.Embed(
-        #     title=f"{ctx.author}'s Code",
-        #     description=msg,
-        #     color=ctx.author.color,
-        #     timestamp=ctx.message.created_at,
-        # )
+        msg = f"**Output:** {f'Completed in **{time}** seconds!' if time else ' '}```\n{out}```"
+        embed = discord.Embed(
+            title=f"{ctx.author}'s Code",
+            description=msg,
+            color=ctx.author.color,
+            timestamp=ctx.message.created_at,
+        )
+        embed.set_author(
+            name="Python",
+            icon_url="https://cdn.discordapp.com/attachments/749779300181606411/800982444823937024/768px-Python-logo-notext.png",
+        )
         # embed.set_thumbnail(
         #     url=carbon_code(content.replace("\n", "%0D%0A"), True)[: 2000 - len(msg)]
         # )
 
-        await ctx.send(msg)
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(3, 15, commands.BucketType.channel)
+    async def java(self, ctx, *, content: commands.clean_content):
+        """``java [code]```"""
+        content = content.replace("```java", "").replace("```", "")
+        out = await java_code(content)
+        if len(str(out)) > 2000:
+            out = out[:1900] + " Exceded Character Limit! "
+
+        msg = f"**Output:** ```\n{out}```"
+        embed = discord.Embed(
+            title=f"{ctx.author}'s Code",
+            description=msg,
+            color=ctx.author.color,
+            timestamp=ctx.message.created_at,
+        )
+        embed.set_author(
+            name="Java",
+            icon_url="https://cdn.discordapp.com/attachments/749779300181606411/800983689348513822/java-logo-transparent-png-5-Transparent-Images.png",
+        )
+
+        await ctx.send(embed=embed)
 
     # @commands.command()
     # @checks.isAllowedCommand()

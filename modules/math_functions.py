@@ -306,6 +306,42 @@ async def carbon_code(code, random_theme=False):
 
     return save
 
+
+async def java_code(code):
+    # code = """
+    # public class Javaboi {
+    #     public static void main(String[] args) {
+    #         System.out.println("Hello World");
+    #     }
+    # }
+
+    # """
+    headers = {
+        "accept": "*/*",
+        "accept-language": "en-US, en;q=0.9",
+        "connection": "keep-alive",
+        "accept-encoding": "gzip, deflate, br",
+        "content-length": str(len(code)),
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "host": "www.compilejava.net",
+        "origin": "https://www.compilejava.net",
+        "referer": "https://www.compilejava.net/",
+        "sec-ch-ua": '"Google Chrome";v="87", ""Not;A\\Brand";v="99", "Chromium";v="87"',
+        "sec-ch-ua-mobile": "?1",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36",
+        "x-requested-with": "XMLHttpRequest",
+    }
+
+    data = {"code": code, "passargs": "", "respond": "respond"}
+
+    response = requests.post("https://www.compilejava.net/", headers=headers, data=data)
+    response = response.json()
+
+    return response["execsout"]
+
     # theme = "monokai"
     # backgroundColor = "rgba(255,255,255,255)"
     # # language = "auto"
