@@ -506,9 +506,7 @@ class Items(commands.Cog):
             timestamp=ctx.message.created_at,
         )
 
-        embed.set_footer(
-            text=f"Page ({page}/{n}). Prices and stock change every 30 min"
-        )
+        embed.set_footer(text=f"Page ({page}/{n}). Prices and stock change every hour")
         await ctx.send(embed=embed)
 
     async def sort_items(self, og="itemlist", sort_by="price", page=1, inv=None):

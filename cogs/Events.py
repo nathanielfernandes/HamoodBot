@@ -95,6 +95,8 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+
+        timeout = False
         if isinstance(error, commands.CommandOnCooldown):
             embed = discord.Embed(
                 title=f"`{ctx.command.name}` is on cooldown for",
@@ -108,6 +110,7 @@ class Events(commands.Cog):
             # await ctx.send(
             #     f"`{ctx.command.name} is on cooldown for {str(error.retry_after)[:4]} seconds!`"
             # )
+            timeout = True
         elif isinstance(error, commands.CommandNotFound):
             return
 
@@ -150,7 +153,8 @@ class Events(commands.Cog):
         else:
             await ctx.send("`Error`")
 
-        ctx.command.reset_cooldown(ctx)
+        if not timeout:
+            ctx.command.reset_cooldown(ctx)
 
 
 def setup(bot):

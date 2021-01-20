@@ -40,16 +40,19 @@ class TopGG(commands.Cog):
 
     @commands.Cog.listener()
     async def on_dbl_test(self, data):
-        await self.bot.currency.update_all_wallets(
-            data["user"], 2500 * (2 if data["isWeekend"] else 1)
-        )
-        if data["isWeekend"]:
-            await self.bot.inventories.incr_all_invs(
-                data["user"], "blackmarket_crate", 1
-            )
-        await self.bot.inventories.incr_all_invs(
-            data["user"], "rare_crate", 2 * (2 if data["isWeekend"] else 1)
-        )
+        c = await self.bot.fetch_channel(732309032240545883)
+        await c.send("got some :coffee:")
+
+        # await self.bot.currency.update_all_wallets(
+        #     data["user"], 2500 * (2 if data["isWeekend"] else 1)
+        # )
+        # if data["isWeekend"]:
+        #     await self.bot.inventories.incr_all_invs(
+        #         data["user"], "blackmarket_crate", 1
+        #     )
+        # await self.bot.inventories.incr_all_invs(
+        #     data["user"], "rare_crate", 2 * (2 if data["isWeekend"] else 1)
+        # )
 
     @commands.Cog.listener()
     async def on_dbl_vote(self, data):

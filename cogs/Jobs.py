@@ -52,14 +52,13 @@ class Jobs(commands.Cog):
     # @checks.isAllowedCommand()
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(1, 20, commands.BucketType.user)
+    @commands.cooldown(1, 1800, commands.BucketType.user)
     async def work(self, ctx):
         """``work`` earn some money"""
         await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
 
-        game_id = str(ctx.guild.id) + str(ctx.author.id)
         payout = await self.bot.currency.get_currency(ctx.guild.id, ctx.author.id)
-        payout = round(payout["bank_max"] * random.uniform(0.001, 0.01))
+        payout = round(payout["bank_max"] * random.uniform(0.01, 0.1))
 
         game = _Trivia().get_questions(category="any", difficulty="easy", amount=1)[0]
 
@@ -84,6 +83,7 @@ class Jobs(commands.Cog):
         )
 
         msg = await ctx.send(embed=embed)
+        game_id = str(msg.id) + str(ctx.author.id)
         self.jobs[game_id] = {
             "member": ctx.author,
             "msg": msg,
@@ -108,6 +108,7 @@ class Jobs(commands.Cog):
             embed.set_footer(text="You can work again soon")
 
             try:
+                ctx.command.reset_cooldown(ctx)
                 await msg.edit(embed=embed)
                 await msg.clear_reactions()
                 self.jobs.pop(game_id)
@@ -117,7 +118,7 @@ class Jobs(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         if payload.user_id != self.bot.user.id:
-            game_id = str(payload.guild_id) + str(payload.user_id)
+            game_id = str(payload.message_id) + str(payload.user_id)
             work = self.jobs.get(game_id)
             if work is not None:
                 if payload.message_id == work["msg"].id:
@@ -143,6 +144,7 @@ class Jobs(commands.Cog):
                             desc = f"{work['member'].mention} you failed the job :("
                             color = discord.Color.red()
                             tim = "You can work again soon"
+                            work["ctx"].command.reset_cooldown(work["ctx"])
 
                         embed = discord.Embed(
                             title=f"{tit}",
@@ -279,7 +281,7 @@ class Jobs(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(1, 120, commands.BucketType.user)
+    @commands.cooldown(1, 60, commands.BucketType.user)
     async def fish(self, ctx):
         """``fish`` Maybe you'll catch something"""
         items = await self.bot.inventories.get_items(ctx.guild.id, ctx.author.id)

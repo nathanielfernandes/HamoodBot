@@ -53,7 +53,7 @@ if __name__ == "__main__":
         else random.uniform(1, 2)
     )
 
-    @tasks.loop(seconds=1800)
+    @tasks.loop(seconds=3600)
     async def update_items():
         bot.all_items = {
             i: every_item[i]
@@ -150,9 +150,7 @@ if __name__ == "__main__":
         print("-------------------")
 
         await bot.change_presence(
-            activity=discord.Activity(
-                type=discord.ActivityType.watching, name=".help items, money, jobs"
-            )
+            activity=discord.Activity(type=discord.ActivityType.watching, name=".help")
         )
         # await bot.change_presence(
         #     activity=discord.Activity(
