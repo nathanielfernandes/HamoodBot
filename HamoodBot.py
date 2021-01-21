@@ -34,10 +34,13 @@ if __name__ == "__main__":
 
         prefix = "/"
 
+    intents = discord.Intents()
+    intents.members = True
+
     bot = commands.AutoShardedBot(
         command_prefix=commands.when_mentioned_or(prefix),
         case_insensitive=True,
-        intents=discord.Intents().all(),
+        intents=intents,
         help_command=None,
         owner_ids={317144947880886274, 485138947115057162, 616148871499874310},
     )
