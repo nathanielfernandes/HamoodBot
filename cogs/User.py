@@ -108,45 +108,45 @@ class User(commands.Cog):
     # async def activity(self, ctx, member: discord.Member = None):
     #     """``activity [@user]`` returns a users activity"""
 
-    @commands.command(aliases=["listen"])
-    @checks.isAllowedCommand()
-    @commands.has_permissions(embed_links=True)
-    async def listening(self, ctx, member: discord.Member = None):
-        """``listening [@user]`` returns a users spotify listening activity"""
-        member = ctx.author if not member else member
-        done = False
-        for activity in member.activities:
-            if isinstance(activity, discord.Spotify):
-                done = True
+    # @commands.command(aliases=["listen"])
+    # @checks.isAllowedCommand()
+    # @commands.has_permissions(embed_links=True)
+    # async def listening(self, ctx, member: discord.Member = None):
+    #     """``listening [@user]`` returns a users spotify listening activity"""
+    #     member = ctx.author if not member else member
+    #     done = False
+    #     for activity in member.activities:
+    #         if isinstance(activity, discord.Spotify):
+    #             done = True
 
-                if "(" in activity.title:
-                    title = activity.title.find("(")
-                    title = activity.title[:title]
-                else:
-                    title = activity.title
+    #             if "(" in activity.title:
+    #                 title = activity.title.find("(")
+    #                 title = activity.title[:title]
+    #             else:
+    #                 title = activity.title
 
-                song = f"**[{activity.title}](https://open.spotify.com/search/{title.replace(' ', '_')})**"
-                artist = f"**Artists:** {', '.join(activity.artists)}"
-                album = f"**Album:** {activity.album}"
+    #             song = f"**[{activity.title}](https://open.spotify.com/search/{title.replace(' ', '_')})**"
+    #             artist = f"**Artists:** {', '.join(activity.artists)}"
+    #             album = f"**Album:** {activity.album}"
 
-                embed = discord.Embed(
-                    title=f"{member} is listening to:",
-                    description=f"{song}\n{artist}\n{album}",
-                    colour=discord.Color.green(),
-                    timestamp=ctx.message.created_at,
-                )
+    #             embed = discord.Embed(
+    #                 title=f"{member} is listening to:",
+    #                 description=f"{song}\n{artist}\n{album}",
+    #                 colour=discord.Color.green(),
+    #                 timestamp=ctx.message.created_at,
+    #             )
 
-                embed.set_thumbnail(url=activity.album_cover_url)
-                embed.set_author(
-                    name="Spotify",
-                    icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756607817611346051/1200px-Spotify_logo_without_text.svg.jpg",
-                )
-                embed.set_footer(text=f"Requested by {ctx.author}")
+    #             embed.set_thumbnail(url=activity.album_cover_url)
+    #             embed.set_author(
+    #                 name="Spotify",
+    #                 icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756607817611346051/1200px-Spotify_logo_without_text.svg.jpg",
+    #             )
+    #             embed.set_footer(text=f"Requested by {ctx.author}")
 
-                await ctx.send(embed=embed)
+    #             await ctx.send(embed=embed)
 
-        if not done:
-            await ctx.send(f"{member.mention} is not listening to spotify!")
+    #     if not done:
+    #         await ctx.send(f"{member.mention} is not listening to spotify!")
 
 
 def setup(bot):

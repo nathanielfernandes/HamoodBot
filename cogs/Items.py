@@ -161,7 +161,7 @@ class Items(commands.Cog):
 
                     embed.add_field(
                         name=f"<:blank:794679084890193930>",
-                        value=f"**Total Value:** {self.cash(total)}\n \nUse `.inventory{f' {sort_by} ' if sort_by != 'price' else ' '}{page+1 if page+1 <= n else 1}` to view the next page.\nUse `.inventory upgrade` to increase your max inventory space from `{items['item_space']['max']}` to `{(items['item_space']['max']*2)-items['item_space']['max']//2}` for {self.cash((items['item_space']['max']**3)//(items['item_space']['max']//3))}\n",
+                        value=f"**Total Value:** {self.cash(total)}\n \nUse `.inventory{f' {sort_by} ' if sort_by != 'price' else ' '}{page+1 if page+1 <= n else 1}` to view the next page.\nUse `.inventory upgrade` to increase your max inventory space from `{items['item_space']['max']}` to `{(items['item_space']['max']*2)-items['item_space']['max']//2}` for {self.cash((items['item_space']['max'] ** 3) // (items['item_space']['max'] // 6))}\n",
                     )
 
                     embed.set_footer(text=f"Page ({page}/{n})")

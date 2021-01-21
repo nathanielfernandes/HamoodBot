@@ -25,7 +25,7 @@ class Dev(commands.Cog):
         if aType == "playing":
             await self.bot.change_presence(activity=discord.Game(name=aName))
         elif aType == "listening":
-            await bot.change_presence(
+            await self.bot.change_presence(
                 activity=discord.Activity(
                     type=discord.ActivityType.listening, name=aName
                 )

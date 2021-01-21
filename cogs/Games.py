@@ -672,7 +672,7 @@ class Games(commands.Cog):
 
         if ctx.author.id == currentGame.current_player[currentGame.turn].id:
             currentGame.move = content.lower().replace(" ", "").replace(",", "")
-            msg = await currentGame.update_game()
+            msg = currentGame.update_game()
             if msg is not None:
                 invalid_move = await ctx.send(msg)
             else:
