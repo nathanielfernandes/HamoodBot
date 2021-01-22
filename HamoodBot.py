@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
         prefix = "/"
 
-    intents = discord.Intents()
+    intents = discord.Intents().default()
     intents.members = True
 
     bot = commands.AutoShardedBot(
