@@ -3,8 +3,9 @@ import random
 import discord
 from discord.ext import commands
 
-from modules.reddit_functions import findPost, cachePosts, do_cache
+# from modules.reddit_functions import findPost, cachePosts, do_cache
 import modules.checks as checks
+from utils.reddit import Redditing
 
 
 class Reddit(commands.Cog):
@@ -34,44 +35,44 @@ class Reddit(commands.Cog):
             "dog",
             "minecraft",
         ]
+        self.red = Redditing()
 
-        if do_cache:
-            pass
-            # print("\nCaching Reddit Posts:")
-            # for i in self.common:
-            #     p = cachePosts(i)
-            #     print(f"    {len(p)} r/{i} posts have been cached!")
-            # print("All Posts Cached\n")
-
-    async def redditPrep(self, ctx, subRedd):
-        embed = discord.Embed(title=f"Post from r/{subRedd}:", colour=16729344)
+    async def redditPrep(self, ctx, subRedd, image=True):
+        embed = discord.Embed(colour=16729344)
         embed.set_author(
-            name="Reddit",
+            name=f"Reddit | r/{subRedd}",
             icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756609606922535057/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png",
         )
-        embed.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
-        )
 
-        post = findPost(subRedd)
-        msg = None
+        post = self.red.get_post(subRedd, image)
         if post is None:
             embed.title = f"Could not find a recent post from **r/{subRedd}!**"
-
         else:
-            embed.set_image(url=post)
+            embed.title = post["title"]
+            embed.description = (
+                f"{post['text'][:1980]}{'...' if len(post['text']) >= 1980 else ''}"
+            )
+            if self.red.url_contains_image(post["url"]):
+                embed.set_image(url=post["url"])
+
+            embed.set_footer(text=f"⬆{post['upvotes']} | {post['ratio']:0.0%} upvoted")
+
+        embed.set_author(
+            name=f"Reddit | r/{subRedd}",
+            icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756609606922535057/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png",
+        )
 
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["reddit"])
+    @commands.command(aliases=["red", "r"])
     @checks.isAllowedCommand()
     @commands.cooldown(3, 5, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
-    async def red(self, ctx, redditSub=None):
-        """``red [subreddit]`` finds a post from your specified subreddit"""
+    async def reddit(self, ctx, redditSub=None):
+        """``reddit [subreddit]`` finds a post from your specified subreddit"""
         if redditSub == None:
             redditSub = random.choice(self.common)
-        await self.redditPrep(ctx, redditSub)
+        await self.redditPrep(ctx, redditSub, False)
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -170,7 +171,27 @@ class Reddit(commands.Cog):
                 r = random.choice(self.common)
             else:
                 r = redditSub
-            await self.redditPrep(ctx, r)
+            await self.redditPrep(ctx, r, False)
+
+    # @commands.command()
+    # async def rvdl(self, ctx):
+    #     """``rvdl``"""
+    #     embed = discord.Embed(title=f"Post from r/[subreddit]:", colour=16729344)
+    #     embed.set_author(
+    #         name="Reddit",
+    #         icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756609606922535057/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png",
+    #     )
+    #     embed.set_footer(
+    #         text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
+    #     )
+    #     embed.set_image(
+    #         url="https://cdn.discordapp.com/avatars/485138947115057162/a_a04f5ec2c6d48c9fa298d12c63f62231.gif?size=1024"
+    #     )
+    #     embed.set_thumbnail(
+    #         url="https://cdn.discordapp.com/attachments/749779300181606411/802050446381940786/test3.png"
+    #     )
+
+    #     await ctx.send(embed=embed)
 
 
 def setup(bot):

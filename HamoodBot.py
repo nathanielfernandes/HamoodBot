@@ -153,14 +153,11 @@ if __name__ == "__main__":
         print("-------------------")
 
         await bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.watching, name=".help")
+            activity=discord.Activity(
+                type=discord.ActivityType.listening,
+                name=f"{sum([len(g.members) for g in bot.guilds])} Users",
+            )
         )
-        # await bot.change_presence(
-        #     activity=discord.Activity(
-        #         type=discord.ActivityType.listening,
-        #         name=f"{sum([len(g.members) for g in bot.guilds])} Users",
-        #     )
-        # )
 
         # fp = open("/Users/nathaniel/Desktop/HamoodBot/tempImages/newyears.jpg", "rb")
         # pfp = fp.read()
@@ -170,18 +167,6 @@ if __name__ == "__main__":
             await update_items.start()
         except RuntimeError:
             pass
-
-        # variation = (
-        #     lambda: random.uniform(0.8, 1.2)
-        #     if random.randint(1, 10) > 7
-        #     else (0.2 if random.randint(1, 10) > 6 else 1.8)
-        # )
-
-        # if update_items is not None:
-        #     await update_items.cancel()
-        #     await update_items.start()
-        # else:
-        #     await update_items.start()
 
     responses = {
         "bye": "goodbye {0.author.mention}",
