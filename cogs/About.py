@@ -113,7 +113,7 @@ class About(commands.Cog):
         #     inline=False,
         # )
 
-        embed.set_image(url="https://top.gg/api/widget/699510311018823680.png")
+        # embed.set_image(url="https://top.gg/api/widget/699510311018823680.png")
 
         embed.set_footer(
             text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url,

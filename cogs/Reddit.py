@@ -49,6 +49,7 @@ class Reddit(commands.Cog):
             embed.title = f"Could not find a recent post from **r/{subRedd}!**"
         else:
             embed.title = post["title"]
+            embed.url = post["url"]
             embed.description = (
                 f"{post['text'][:1980]}{'...' if len(post['text']) >= 1980 else ''}"
             )
@@ -73,6 +74,16 @@ class Reddit(commands.Cog):
         if redditSub == None:
             redditSub = random.choice(self.common)
         await self.redditPrep(ctx, redditSub, False)
+
+    @commands.command(aliases=["redpic", "rp"])
+    @checks.isAllowedCommand()
+    @commands.cooldown(3, 5, commands.BucketType.channel)
+    @commands.has_permissions(embed_links=True)
+    async def redditpic(self, ctx, redditSub=None):
+        """``redditpic [subreddit]`` finds a picture post from your specified subreddit"""
+        if redditSub == None:
+            redditSub = random.choice(self.common)
+        await self.redditPrep(ctx, redditSub, True)
 
     @commands.command()
     @checks.isAllowedCommand()
