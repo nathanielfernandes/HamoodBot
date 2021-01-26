@@ -81,7 +81,7 @@ class Fonts(commands.Cog):
     async def arial(self, ctx, *, content: commands.clean_content):
         """``arial [msg]`` send a message in a arial font"""
         await self.text_prep(
-            ctx, content, "arial", 500, "black",
+            ctx, content[:45], "arial", 500, "black",
         )
 
     @commands.command(aliases=["craft"])
@@ -90,7 +90,7 @@ class Fonts(commands.Cog):
     async def minec(self, ctx, *, content: commands.clean_content):
         """``minec [msg]`` send a message in a minecraft font"""
         await self.text_prep(
-            ctx, content, "minecraft", 500, "yellow2",
+            ctx, content[:45], "minecraft", 500, "yellow2",
         )
 
     @commands.command(aliases=["tale"])
@@ -99,7 +99,7 @@ class Fonts(commands.Cog):
     async def undertale(self, ctx, *, content: commands.clean_content):
         """``undertale [msg]`` send a message in a undertale font"""
         await self.text_prep(
-            ctx, content, "undertale", 500, "white",
+            ctx, content[:45], "undertale", 500, "white",
         )
 
     @commands.command(aliases=["rick"])
@@ -108,7 +108,7 @@ class Fonts(commands.Cog):
     async def morty(self, ctx, *, content: commands.clean_content):
         """``morty [msg]`` send a message in a morty font"""
         await self.text_prep(
-            ctx, content, "get_schwhifty.ttf", 500, "green1",
+            ctx, content[:45], "get_schwhifty.ttf", 500, "green1",
         )
 
     @commands.command()
@@ -117,7 +117,7 @@ class Fonts(commands.Cog):
     async def gta(self, ctx, *, content: commands.clean_content):
         """``gta [msg]`` send a message in a gta font"""
         await self.text_prep(
-            ctx, content, "gta", 500, "white",
+            ctx, content[:45], "gta", 500, "white",
         )
 
     @commands.command()
@@ -126,7 +126,7 @@ class Fonts(commands.Cog):
     async def enchant(self, ctx, *, content: commands.clean_content):
         """``enchant [msg]`` send a message in a enchant font"""
         await self.text_prep(
-            ctx, content, "minecraft-enchantment.ttf", 500, "white",
+            ctx, content[:45], "minecraft-enchantment.ttf", 500, "white",
         )
 
     @commands.command()
@@ -134,56 +134,56 @@ class Fonts(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def unknown(self, ctx, *, content: commands.clean_content):
         """``unknown [msg]`` send a message in a unknown font"""
-        await self.text_prep(ctx, content, "unown.ttf", 500, "black", 100)
+        await self.text_prep(ctx, content[:45], "unown.ttf", 500, "black", 100)
 
     @commands.command()
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def pokefont(self, ctx, *, content: commands.clean_content):
         """``pokefont [msg]`` send a message in a pokemon font"""
-        await self.text_prep(ctx, content, "pokemon", 500, "steelblue2", 100)
+        await self.text_prep(ctx, content[:45], "pokemon", 500, "steelblue2", 100)
 
     @commands.command(aliases=["sonic"])
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def sega(self, ctx, *, content: commands.clean_content):
         """``sega [msg]`` send a message in a sega font"""
-        await self.text_prep(ctx, content, "sega", 500, "navy", 100)
+        await self.text_prep(ctx, content[:45], "sega", 500, "navy", 100)
 
     @commands.command(aliases=["sponge"])
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def spongebob(self, ctx, *, content: commands.clean_content):
         """``spongebob [msg]`` send a message in a spongebob font"""
-        await self.text_prep(ctx, content, "spongebob", 500, "lightblue", 100)
+        await self.text_prep(ctx, content[:45], "spongebob", 500, "lightblue", 100)
 
     @commands.command()
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def avenger(self, ctx, *, content: commands.clean_content):
         """``avenger [msg]`` send a message in a avenger font"""
-        await self.text_prep(ctx, content, "avenger", 500, "red4", 100)
+        await self.text_prep(ctx, content[:45], "avenger", 500, "red4", 100)
 
     @commands.command()
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def batman(self, ctx, *, content: commands.clean_content):
         """``batman [msg]`` send a message in a batman font"""
-        await self.text_prep(ctx, content, "batman", 500, "black", 100)
+        await self.text_prep(ctx, content[:45], "batman", 500, "black", 100)
 
     @commands.command()
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def text(self, ctx, *, content: commands.clean_content):
         """``text [msg]`` send a message in a random font"""
-        await self.text_prep(ctx, content, "random", 500, "random", 100)
+        await self.text_prep(ctx, content[:45], "random", 500, "random", 100)
 
     @commands.command()
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def font(self, ctx, font, colour, *, content: commands.clean_content):
         """``font [font] [colour] [msg]`` send a message in a selected font and colour"""
-        await self.text_prep(ctx, content, font, 500, colour, 100)
+        await self.text_prep(ctx, content[:45], font, 500, colour, 100)
 
 
 def setup(bot):
