@@ -308,14 +308,6 @@ async def carbon_code(code, random_theme=False):
 
 
 async def java_code(code):
-    # code = """
-    # public class Javaboi {
-    #     public static void main(String[] args) {
-    #         System.out.println("Hello World");
-    #     }
-    # }
-
-    # """
     headers = {
         "accept": "*/*",
         "accept-language": "en-US, en;q=0.9",
@@ -342,32 +334,34 @@ async def java_code(code):
 
     return response["execsout"]
 
-    # theme = "monokai"
-    # backgroundColor = "rgba(255,255,255,255)"
-    # # language = "auto"
-    # paddingVertical = "5px"
-    # paddingHorizontal = "5px"
-    # # exportsize = "3x"
-    # lineNumbers = "true"
-    # windowControls = "false"
 
-    # if random_theme:
-    #     theme = random.choice(
-    #         [
-    #             "material",
-    #             "a11y-dark",
-    #             "base-16",
-    #             "duotone",
-    #             "hopscotch",
-    #             "lucario",
-    #             "monokai",
-    #             "synthwave-84",
-    #             "panda",
-    #             "paraiso",
-    #             "dracula",
-    #         ]
-    #     )
+# theme = "monokai"
+# backgroundColor = "rgba(255,255,255,255)"
+# # language = "auto"
+# paddingVertical = "5px"
+# paddingHorizontal = "5px"
+# # exportsize = "3x"
+# lineNumbers = "true"
+# windowControls = "false"
 
-    # url = f"https://carbonnowsh.herokuapp.com/?code={quote(code)}&theme={theme}&backgroundColor={backgroundColor}&paddingVertical={paddingVertical}&paddingHorizontal={paddingHorizontal}&windowControls=false&lineNumbers=true"
+# if random_theme:
+#     theme = random.choice(
+#         [
+#             "material",
+#             "a11y-dark",
+#             "base-16",
+#             "duotone",
+#             "hopscotch",
+#             "lucario",
+#             "monokai",
+#             "synthwave-84",
+#             "panda",
+#             "paraiso",
+#             "dracula",
+#         ]
+#     )
 
-    # return url
+# url = f"https://carbonnowsh.herokuapp.com/?code={quote(code)}&theme={theme}&backgroundColor={backgroundColor}&paddingVertical={paddingVertical}&paddingHorizontal={paddingHorizontal}&windowControls=false&lineNumbers=true"
+
+# return url
+

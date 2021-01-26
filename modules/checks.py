@@ -14,9 +14,9 @@ blacklist = json.load(
 
 def isAllowedCommand():
     async def predicate(ctx):
-        return (ctx.guild.id not in blacklist[ctx.command.cog.__class__.__name__]) or (
-            ctx.author.id == 485138947115057162
-        )
+        return (
+            ctx.channel.id not in blacklist[ctx.command.cog.__class__.__name__]
+        ) or (ctx.author.id == 485138947115057162)
 
     return commands.check(predicate)
 

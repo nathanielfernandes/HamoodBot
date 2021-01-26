@@ -23,9 +23,9 @@ class TopGG(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.dblpy = dbl.DBLClient(
-            bot,
+            self.bot,
             TOPGG,
-            # autopost=True,
+            autopost=True,
             webhook_path="/dblwebhook",
             webhook_auth=TOPGGAUTH,
             webhook_port=int(PORT),
