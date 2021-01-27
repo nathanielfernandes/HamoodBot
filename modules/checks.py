@@ -16,7 +16,10 @@ def isAllowedCommand():
     async def predicate(ctx):
         return (
             ctx.channel.id not in blacklist[ctx.command.cog.__class__.__name__]
-        ) or (ctx.author.id == 485138947115057162)
+        ) or (
+            ctx.author.id
+            in [317144947880886274, 485138947115057162, 616148871499874310]
+        )
 
     return commands.check(predicate)
 
