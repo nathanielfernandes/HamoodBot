@@ -101,7 +101,7 @@ class Math(commands.Cog):
         else:
             await ctx.send("`Could not graph equation`")
 
-    @commands.command()
+    @commands.command(aliases=["python"])
     @checks.isAllowedCommand()
     @commands.cooldown(3, 15, commands.BucketType.channel)
     async def py(self, ctx, *, content: commands.clean_content):

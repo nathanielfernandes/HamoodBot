@@ -309,10 +309,10 @@ class General(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    async def cliffhanger(self, ctx):
+    async def kade(self, ctx):
         """ ``cliffhanger`` the day hamood died"""
         await ctx.send(
-            "https://cdn.discordapp.com/attachments/749779300181606411/774512600411144222/unknown.png"
+            "https://cdn.discordapp.com/attachments/767568685568753664/804049220424040448/unknown.png"
         )
 
 

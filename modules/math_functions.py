@@ -28,6 +28,7 @@ chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 symbl = "abcdefghijklmnopqrstuvwxyz"
 colors = ["b", "g", "r", "c", "m"]
 folder = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages"
+
 restricted = [
     "exit",
     "__",
@@ -48,6 +49,8 @@ restricted = [
     "calloc",
     "malloc",
     "sleep",
+    "raise",
+    "SystemExit",
 ]
 
 
