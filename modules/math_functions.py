@@ -51,6 +51,7 @@ restricted = [
     "sleep",
     "raise",
     "SystemExit",
+    "quit",
 ]
 
 

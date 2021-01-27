@@ -46,7 +46,9 @@ class General(commands.Cog):
             await ctx.send("There is a max of 6 options for a poll!")
             return
         elif poll_id in self.polls:
-            await ctx.send("This channel aldready has a poll in progress")
+            await ctx.send(
+                f"This channel aldready has a poll in progress\n{self.poll[poll_id].message.jump_url}"
+            )
             return
 
         self.polls[poll_id] = Poll(content, ctx.guild, ctx.author)
@@ -63,7 +65,7 @@ class General(commands.Cog):
 
         for i in range(len(currentPoll.results)):
             await currentPoll.message.add_reaction(self.emojis[i])
-        await currentPoll.message.add_reaction("❌")
+        # await currentPoll.message.add_reaction("❌")
 
         await self.create_poll(poll_id)
         currentPoll.timer = asyncio.create_task(self.poll_timer(poll_id))
@@ -309,10 +311,10 @@ class General(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    async def kade(self, ctx):
+    async def cliffhanger(self, ctx):
         """ ``cliffhanger`` the day hamood died"""
         await ctx.send(
-            "https://cdn.discordapp.com/attachments/767568685568753664/804049220424040448/unknown.png"
+            "https://cdn.discordapp.com/attachments/767568685568753664/804052279195467796/unknown.png"
         )
 
 
