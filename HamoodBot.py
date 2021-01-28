@@ -201,7 +201,6 @@ if __name__ == "__main__":
                 nsfw = False
 
             if profCheck((message.content).lower()):
-                print("bruhs")
                 if not nsfw:
                     await message.add_reaction("<:profane:804446468014473246>")
                     return
