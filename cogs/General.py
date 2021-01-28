@@ -47,7 +47,7 @@ class General(commands.Cog):
             return
         elif poll_id in self.polls:
             await ctx.send(
-                f"This channel aldready has a poll in progress\n{self.poll[poll_id].message.jump_url}"
+                f"This channel aldready has a poll in progress:\n{self.polls[poll_id].message.jump_url}"
             )
             return
 
@@ -98,10 +98,10 @@ class General(commands.Cog):
                             currentPoll.voted[user] = key
 
                         await self.create_poll(poll_id)
-                    else:
-                        if str(payload.emoji) == "❌":
-                            currentPoll.timer.cancel()
-                            await self.create_poll(poll_id, True)
+                    # else:
+                    #     if str(payload.emoji) == "❌":
+                    #         currentPoll.timer.cancel()
+                    #         await self.create_poll(poll_id, True)
 
                     await currentPoll.message.remove_reaction(
                         member=payload.member, emoji=payload.emoji

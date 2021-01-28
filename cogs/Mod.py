@@ -209,7 +209,7 @@ class Mod(commands.Cog):
 
                     for m in messages:
                         if len(m.embeds) >= 1:
-                            if m.embeds[0].footer.text == f"ID: {msg.id}":
+                            if str(msg.id) in str(m.embeds[0].footer.text):
                                 return
 
                     if len(msg.embeds) >= 1 and "tenor" not in msg.content:
@@ -257,7 +257,7 @@ class Mod(commands.Cog):
                         embed = discord.Embed(
                             description=f"{new_msg[:1800]}",
                             color=discord.Color.red(),
-                            timestamp=msg.created_at,
+                            # timestamp=msg.created_at,
                         )
 
                         if len(msg.attachments) >= 1:
@@ -282,9 +282,13 @@ class Mod(commands.Cog):
                         name=f"{msg.author} 📌", icon_url=msg.author.avatar_url
                     )
 
-                    embed.set_footer(text=f"ID: {msg.id}")
+                    embed.set_footer(
+                        text=f"{payload.member} pinned this | ID: {msg.id}",
+                        icon_url=payload.member.avatar_url,
+                    )
 
-                    await channel.send(embed=embed)
+                    pinned = await channel.send(embed=embed)
+                    await pinned.add_reaction("<:trash:783097450461397052>")
 
     # @commands.command()
     # @checks.isAllowedCommand()
