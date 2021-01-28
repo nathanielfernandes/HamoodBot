@@ -15,7 +15,7 @@ from discord.ext import commands, tasks
 from copy import copy
 from modules.image_functions import randomFile
 from utils.mongo import *
-
+from profanity_check import predict, predict_prob
 
 if __name__ == "__main__":
     tic = time.perf_counter()
@@ -177,17 +177,18 @@ if __name__ == "__main__":
     }
 
     file = f"{os.path.dirname(os.path.realpath(__file__))}/data/profanity.txt"
-    badWords = [
+    profane_words = [
         badword.strip("\n") for badword in open(file, "r", encoding="utf-8").readlines()
     ]
 
     def profCheck(content):
-        badword = [bad for bad in badWords if bad in content and len(bad) > 4]
-        badword += [bad for bad in badWords if bad in content.split() and len(bad) <= 4]
-        badword = list(dict.fromkeys(badword))
-
-        profane = True if badword else False
-        return profane, badword
+        return max(
+            [
+                (len(badword) > 4 and badword in content)
+                or (len(badword) <= 4 and badword in content.split())
+                for badword in profane_words
+            ]
+        )
 
     @bot.event
     async def on_message(message):
@@ -200,24 +201,28 @@ if __name__ == "__main__":
             except Exception:
                 nsfw = False
 
-            profane, badword = profCheck((message.content).lower())
-
-            if profane:
+            if profCheck((message.content).lower()):
+                print("bruhs")
                 if not nsfw:
-                    await message.add_reaction("<:trash:783097450461397052>")
+                    await message.add_reaction("<:profane:804446468014473246>")
                     return
 
             elif message.content in responses:
                 await message.channel.send(responses[message.content].format(message))
-            # elif message.content.startswith("im "):
-            #     await message.channel.send(f"hi{message.content[2:]}, im hamood")
+
+            elif (message.content).lower().startswith("im") or (
+                message.content
+            ).lower().startswith("i'm"):
+                await message.channel.send(
+                    f'hi {" ".join((message.content).split()[1: 10])}, im hamood'
+                )
 
             await bot.process_commands(message)
 
     @bot.event
     async def on_raw_reaction_add(payload):
         if payload.user_id != bot.user.id:
-            if str(payload.emoji) == "<:trash:783097450461397052>":
+            if str(payload.emoji) == "<:profane:804446468014473246>":
                 if payload.member.guild_permissions.manage_messages:
                     channel = await bot.fetch_channel(payload.channel_id)
                     msg = await channel.fetch_message(payload.message_id)
