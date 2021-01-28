@@ -15,7 +15,6 @@ from discord.ext import commands, tasks
 from copy import copy
 from modules.image_functions import randomFile
 from utils.mongo import *
-from profanity_check import predict, predict_prob
 
 if __name__ == "__main__":
     tic = time.perf_counter()
