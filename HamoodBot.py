@@ -44,6 +44,8 @@ if __name__ == "__main__":
         owner_ids={317144947880886274, 485138947115057162, 616148871499874310},
     )
 
+    bot.timeout_list = []
+
     every_item = json.load(open("data/items.json"))
     bot.all_items = {
         i: every_item[i] for i in every_item if every_item[i]["type"] not in ["crate"]
@@ -193,7 +195,9 @@ if __name__ == "__main__":
     async def on_message(message):
         if message.guild is not None:
             # checks again to make sure the bot does not reply to itself
-            if message.author.id == bot.user.id:
+            if (message.author.id == bot.user.id) or (
+                message.author.id in bot.timeout_list
+            ):
                 return
             try:
                 nsfw = message.channel.is_nsfw()
@@ -202,7 +206,7 @@ if __name__ == "__main__":
 
             if profCheck((message.content).lower()):
                 if not nsfw:
-                    await message.add_reaction("<:profane:804446468014473246>")
+                    # await message.add_reaction("<:profane:804446468014473246>")
                     return
 
             elif message.content in responses:
@@ -217,15 +221,15 @@ if __name__ == "__main__":
 
             await bot.process_commands(message)
 
-    @bot.event
-    async def on_raw_reaction_add(payload):
-        if payload.user_id != bot.user.id:
-            if str(payload.emoji) == "<:profane:804446468014473246>":
-                if payload.member.guild_permissions.manage_messages:
-                    channel = await bot.fetch_channel(payload.channel_id)
-                    msg = await channel.fetch_message(payload.message_id)
+    # @bot.event
+    # async def on_raw_reaction_add(payload):
+    #     if payload.user_id != bot.user.id:
+    #         if str(payload.emoji) == "<:profane:804446468014473246>":
+    #             if payload.member.guild_permissions.manage_messages:
+    #                 channel = await bot.fetch_channel(payload.channel_id)
+    #                 msg = await channel.fetch_message(payload.message_id)
 
-                    await msg.delete()
+    #                 await msg.delete()
 
     # loads in all cogs
     print("-------------------")

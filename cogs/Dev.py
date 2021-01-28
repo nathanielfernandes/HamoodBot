@@ -16,7 +16,7 @@ class Dev(commands.Cog):
     async def logout(self, ctx):
         """``logout`` logs hamood out"""
         await ctx.send("**goodbye**")
-        await bot.logout()
+        await self.bot.logout()
 
     @commands.command()
     @commands.is_owner()
@@ -106,6 +106,25 @@ class Dev(commands.Cog):
             await self.bot.inventories.delete_member(member.guild.id, member.id)
 
             await ctx.send(f"{member.mention} has been wiped from the db")
+
+    @commands.command()
+    @commands.is_owner()
+    async def timeout(self, ctx, member: discord.Member = None):
+        if member is not None:
+            if member.id in self.bot.timeout_list:
+                self.bot.timeout_list.remove(member.id)
+                await ctx.send(f"**{member}** has been taken out of time out.")
+            else:
+                self.bot.timeout_list.append(member.id)
+                await ctx.send(f"**{member}** has been put in time out.")
+
+    @commands.command()
+    @commands.is_owner()
+    async def timeout_corner(self, ctx):
+        corner = "\n".join(
+            [str(self.bot.get_user(id_)) for id_ in self.bot.timeout_list]
+        )
+        await ctx.send(f"```{corner}```")
 
 
 def setup(bot):
