@@ -126,6 +126,14 @@ class Memes(commands.Cog):
             ctx, "unoImage.png", content, [(50, 170), (280, 20)], 25, wrap=15
         )
 
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 5, commands.BucketType.user)
+    @commands.has_permissions(attach_files=True)
+    async def present(self, ctx, *, content: commands.clean_content):
+        """`present [text1]`"""
+        await self.meme_prep(ctx, "presentImage.jpg", content, [(120, 65)], 22, wrap=40)
+
 
 def setup(bot):
     bot.add_cog(Memes(bot))

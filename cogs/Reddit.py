@@ -65,12 +65,12 @@ class Reddit(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["red", "r"])
+    @commands.command(aliases=["red", "r", "reddit"])
     @checks.isAllowedCommand()
     @commands.cooldown(3, 5, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
-    async def reddit(self, ctx, redditSub=None):
-        """``reddit [subreddit]`` finds a post from your specified subreddit"""
+    async def redit(self, ctx, redditSub=None):
+        """``redit [subreddit]`` finds a post from your specified subreddit"""
         if redditSub == None:
             redditSub = random.choice(self.common)
         await self.redditPrep(ctx, redditSub, False)

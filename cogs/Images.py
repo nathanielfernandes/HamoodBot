@@ -96,14 +96,21 @@ class Images(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(2, 15, commands.BucketType.channel)
     @commands.has_permissions(attach_files=True)
-    async def pixelate(self, ctx, member: discord.Member = None):
-        """``pixelate [@someone or send image]`` pixelates any image"""
+    async def pixelate(self, ctx, amount=None):
+        """``pixelate [image]`` pixelates any image"""
 
-        image, ext = await self.find_image(ctx, member, 40)
+        image, ext = await self.find_image(ctx, None, 40)
         if image is None:
             return
 
-        level = random.randint(10, 100)
+        amount = int(amount)
+        if amount is None:
+            level = random.randint(10, 100)
+        else:
+            if amount > 100:
+                level = 100
+            elif amount < 3:
+                level = 2
 
         getattr(image, f"resize_{ext}")(
             size=(int(image.image.size[0] / level), int(image.image.size[0] / level)),
@@ -115,6 +122,30 @@ class Images(commands.Cog):
         )
 
         await self.send_image(ctx, image, "pixelate")
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 15)
+    @commands.has_permissions(attach_files=True)
+    async def disgusting(self, ctx, member: discord.Member = None):
+        """``disgusting [@someone or send image]`` thats disgusting!"""
+        main_image, ext = await self.find_image(ctx, member, 40)
+        if main_image is None:
+            return
+
+        base_image = Modify(image_location=f"{self.memes}/disgustingImage.png")
+        top_image = copy(base_image)
+
+        base_image.image_add_image(
+            top_image=main_image.image,
+            coordinates=(185, -20),
+            top_image_size=(600, 450),
+        )
+        base_image.image_add_image(top_image=top_image.image)
+
+        base_image = base_image.save_image(location=self.save_location,)
+
+        await self.send_image(ctx, base_image, "use")
 
     @commands.command()
     @checks.isAllowedCommand()

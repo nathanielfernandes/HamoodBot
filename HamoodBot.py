@@ -205,6 +205,11 @@ if __name__ == "__main__":
                 nsfw = False
 
             if profCheck((message.content).lower()):
+                if "hamood" in (message.content).lower():
+                    await message.channel.send(
+                        f"{message.author.mention} **No U!** <a:no_u:790709588168540170>"
+                    )
+
                 if not nsfw:
                     await message.add_reaction("<:profane:804446468014473246>")
                     return
@@ -212,12 +217,12 @@ if __name__ == "__main__":
             elif message.content in responses:
                 await message.channel.send(responses[message.content].format(message))
 
-            elif (message.content).lower().startswith("im") or (
-                message.content
-            ).lower().startswith("i'm"):
-                await message.channel.send(
-                    f'hi {" ".join((message.content).split()[1: 10])}, im hamood'
-                )
+            # elif (message.content).lower().startswith("im") or (
+            #     message.content
+            # ).lower().startswith("i'm"):
+            #     await message.channel.send(
+            #         f'hi {" ".join((message.content).split()[1: 10])}, im hamood'
+            #     )
 
             await bot.process_commands(message)
 

@@ -90,10 +90,41 @@ class Avatarmemes(commands.Cog):
     @commands.command()
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(attach_files=True)
+    async def quiz(self, ctx, *avamember: discord.Member):
+        """``quiz [@user]`` adds a tagged discord avatar to the 'quiz answer' meme"""
+        await self.meme_prep(
+            ctx, "quizImage.jpg", avamember, [[(355, 390), -32]], (250, 250)
+        )
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(attach_files=True)
+    async def step(self, ctx, *avamember: discord.Member):
+        """``step [@user]`` adds a tagged discord avatar to the 'stepped in sh*t' meme"""
+        await self.meme_prep(
+            ctx, "steppedImage.png", avamember, [[(200, 640), -38]], (250, 250)
+        )
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(attach_files=True)
     async def compare(self, ctx, *avamember: discord.Member):
         """``compare [@user1] [@user2]`` compares discord avatars"""
         await self.meme_prep(
             ctx, "blankAvatar.jpg", avamember, [[(0, 0), 0], [(405, 0), 0]], (400, 400)
+        )
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(attach_files=True)
+    async def coffin(self, ctx, *avamember: discord.Member):
+        """`coffin [text1], [text2]`"""
+        await self.meme_prep(
+            ctx, "coffinImage.jpg", avamember, [[(240, 160), -7]], (100, 100)
         )
 
 
