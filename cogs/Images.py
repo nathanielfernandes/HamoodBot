@@ -103,14 +103,16 @@ class Images(commands.Cog):
         if image is None:
             return
 
-        amount = int(amount)
         if amount is None:
             level = random.randint(10, 100)
         else:
+            amount = int(amount)
             if amount > 100:
                 level = 100
             elif amount < 3:
                 level = 2
+            else:
+                level = amount
 
         getattr(image, f"resize_{ext}")(
             size=(int(image.image.size[0] / level), int(image.image.size[0] / level)),
