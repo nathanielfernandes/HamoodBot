@@ -205,13 +205,17 @@ if __name__ == "__main__":
                 nsfw = False
 
             if profCheck((message.content).lower()):
-                if "hamood" in (message.content).lower():
+                if (
+                    "hamood" in (message.content).lower()
+                    or "<@699510311018823680>" in (message.content).lower()
+                ):
                     await message.channel.send(
                         f"{message.author.mention} **No U!** <a:no_u:790709588168540170>"
                     )
 
                 if not nsfw:
-                    await message.add_reaction("<:profane:804446468014473246>")
+                    if (message.content).startswith("."):
+                        await message.add_reaction("<:profane:804446468014473246>")
                     return
 
             elif message.content in responses:
@@ -226,15 +230,15 @@ if __name__ == "__main__":
 
             await bot.process_commands(message)
 
-    @bot.event
-    async def on_raw_reaction_add(payload):
-        if payload.user_id != bot.user.id:
-            if str(payload.emoji) == "<:profane:804446468014473246>":
-                if payload.member.guild_permissions.manage_messages:
-                    channel = await bot.fetch_channel(payload.channel_id)
-                    msg = await channel.fetch_message(payload.message_id)
+    # @bot.event
+    # async def on_raw_reaction_add(payload):
+    #     if payload.user_id != bot.user.id:
+    #         if str(payload.emoji) == "<:profane:804446468014473246>":
+    #             if payload.member.guild_permissions.manage_messages:
+    #                 channel = await bot.fetch_channel(payload.channel_id)
+    #                 msg = await channel.fetch_message(payload.message_id)
 
-                    await msg.delete()
+    #                 await msg.delete()
 
     # loads in all cogs
     print("-------------------")
