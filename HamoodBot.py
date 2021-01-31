@@ -137,7 +137,6 @@ if __name__ == "__main__":
     @bot.event
     async def on_ready():
         # @ global variation
-
         bot.leaderboards = Leaderboards()
         bot.inventories = Inventories()
         bot.currency = Currency()

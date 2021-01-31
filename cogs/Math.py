@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 
 from modules.math_functions import *
-
 import modules.checks as checks
 
 
@@ -101,86 +100,6 @@ class Math(commands.Cog):
         else:
             await ctx.send("`Could not graph equation`")
 
-    @commands.command(aliases=["python"])
-    @checks.isAllowedCommand()
-    @commands.cooldown(3, 15, commands.BucketType.channel)
-    async def py(self, ctx, *, content: commands.clean_content):
-        """``py [code]`` runs `python-3.7.2` code and outputs to the chat. 
-            Execution cannot exceed 1 second!
-            Included Libraries: `math, numpy, time, random`"""
-
-        content = content.replace("```py", "").replace("```", "")
-
-        out, time = await run_code(content)
-        if len(str(out)) > 2000:
-            out = out[:1900] + " Exceded Character Limit! "
-
-        msg = f"**Output:** {f'Completed in **{time}** seconds!' if time else ' '}```\n{out}```"
-        embed = discord.Embed(
-            title=f"{ctx.author}'s Code",
-            description=msg,
-            color=ctx.author.color,
-            timestamp=ctx.message.created_at,
-        )
-        embed.set_author(
-            name="Python",
-            icon_url="https://cdn.discordapp.com/attachments/749779300181606411/800982444823937024/768px-Python-logo-notext.png",
-        )
-        # embed.set_thumbnail(
-        #     url=carbon_code(content.replace("\n", "%0D%0A"), True)[: 2000 - len(msg)]
-        # )
-
-        await ctx.send(embed=embed)
-
-    @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(3, 15, commands.BucketType.channel)
-    async def java(self, ctx, *, content: commands.clean_content):
-        """``java [code]`` Compiles and runs your java code."""
-        content = content.replace("```java", "").replace("```", "")
-        out = await java_code(content)
-        if len(str(out)) > 2000:
-            out = out[:1900] + " Exceded Character Limit! "
-
-        msg = f"**Output:** ```\n{out}```"
-        embed = discord.Embed(
-            title=f"{ctx.author}'s Code",
-            description=msg,
-            color=ctx.author.color,
-            timestamp=ctx.message.created_at,
-        )
-        embed.set_author(
-            name="Java",
-            icon_url="https://cdn.discordapp.com/attachments/749779300181606411/800983689348513822/java-logo-transparent-png-5-Transparent-Images.png",
-        )
-
-        await ctx.send(embed=embed)
-
-    # @commands.command()
-    # @checks.isAllowedCommand()
-    # @commands.cooldown(1, 30, commands.BucketType.guild)
-    # async def code(self, ctx, *, content: commands.clean_content):
-    #     """``code [code]`` converts code from text to a prettier image. `(uses carbon)`"""
-
-    #     try:
-    #         c = await carbon_code(content.replace("```py", "").replace("```", ""))
-    #         await ctx.send(file=discord.File(c))
-    #     except Exception:
-    #         await ctx.send("`could not convert code`")
-    #     os.remove(c)
-    # content = (
-    #     content.replace("```py", "").replace("```", "").replace("\n", "%0D%0A")
-    # )
-    # embed = discord.Embed(
-    #     color=discord.Color.from_rgb(240, 240, 240),
-    #     timestamp=ctx.message.created_at,
-    # )
-    # embed.set_footer(
-    #     text=f"{ctx.author}'s code", icon_url=ctx.author.avatar_url,
-    # )
-    # embed.set_image(url=carbon_code(content[:1800], True))
-    # await ctx.send(embed=embed)
-
     @commands.command(aliases=["ltx", "fool"])
     @checks.isAllowedCommand()
     @commands.cooldown(2, 10, commands.BucketType.channel)
@@ -197,14 +116,6 @@ class Math(commands.Cog):
             os.remove(text)
         else:
             await ctx.send(f"```{e}```")
-
-        # try:
-        #     c = await carbon_code(content.replace("```py", "").replace("```", ""))
-        #     await ctx.send(file=discord.File(c))
-        #     await ctx.message.delete()
-        # except Exception:
-        #     await ctx.send("`could not convert code")
-        # os.remove(c)
 
 
 def setup(bot):

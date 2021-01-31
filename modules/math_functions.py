@@ -207,7 +207,7 @@ async def get_derivative(equation, d):
         return "Invalid Input"
 
 
-async def run_code(code):
+async def run_code_py(code):
     for r in restricted:
         if r in code:
             return f"code cannot contain '{r}'", None
@@ -338,6 +338,14 @@ async def java_code(code):
 
     return response["execsout"]
 
+
+# data = {
+#     "language": "python3",
+#     "source": "while True: print('hello')",
+# }
+
+# r = requests.post("https://emkc.org/api/v1/piston/execute", data=data)
+# print(r.json()["output"])
 
 # theme = "monokai"
 # backgroundColor = "rgba(255,255,255,255)"
