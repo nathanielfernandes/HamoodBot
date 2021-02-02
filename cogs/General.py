@@ -189,7 +189,7 @@ class General(commands.Cog):
             content = await ctx.message.channel.history(limit=5).find(
                 lambda m: ".clown" not in m.content.lower()
             )
-        content = content.content
+            content = content.content
 
         content = content.lower()
         for i in range(len(content)):

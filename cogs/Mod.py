@@ -288,7 +288,7 @@ class Mod(commands.Cog):
                     )
 
                     pinned = await channel.send(embed=embed)
-                    await pinned.add_reaction("<:trash:783097450461397052>")
+                    await pinned.add_reaction("<:profane:804446468014473246>")
 
     # @commands.command()
     # @checks.isAllowedCommand()

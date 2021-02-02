@@ -3,7 +3,7 @@ from copy import copy
 import random
 import discord
 from discord.ext import commands
-
+from math import sqrt
 from modules.image_functions import Modify, Modify_Gif
 import modules.checks as checks
 
@@ -247,22 +247,78 @@ class Images(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(2, 15, commands.BucketType.channel)
     @commands.has_permissions(attach_files=True)
-    async def edit(
-        self, ctx, sharpness=1.0, contrast=1.0, color=1.0, brightness=1.0,
-    ):
-        """``edit [sharpness] [contrast] [color] [brightness]`` work in progress"""
-        image, ext = await self.find_image(ctx, None, 40)
+    async def grayscale(self, ctx, member: discord.Member = None):
+        """``grayscale [@someone or send image]`` the opposite of the pride command tbh"""
+        image, ext = await self.find_image(ctx, member, 40)
         if image is None:
             return
 
-        getattr(image, f"enhance_{ext}")(
-            sharpness=sharpness, contrast=contrast, color=color, brightness=brightness
-        )
-        image = getattr(image, f"save_{ext}")(
-            location=self.save_location, compression_level=10
-        )
+        image.image_grayscale()
+        image = image.save_image(location=self.save_location, compression_level=100)
+        await self.send_image(ctx, image, "grayscale")
 
-        await self.send_image(ctx, image, "edit")
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 10, commands.BucketType.channel)
+    @commands.has_permissions(attach_files=True)
+    async def ascii(self, ctx, member: discord.Member = None):
+        """``ascii [@someone or send image]`` converts an image into text"""
+        image, ext = await self.find_image(ctx, member, 40)
+        if image is None:
+            return
+
+        image.regulate_size()
+
+        x, y = image.image.size
+        s = sqrt(2000 / (x * y))
+        image.resize_image(size=(int(x * s), int(y * s)))
+
+        image.image_grayscale()
+        text = image.image_to_ascii()
+
+        await ctx.send(f"```{text}```")
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 15, commands.BucketType.channel)
+    @commands.has_permissions(attach_files=True)
+    async def asciifull(self, ctx, member: discord.Member = None):
+        """``ascii [@someone or send image]`` converts an image into text but in a larger size txt file"""
+        image, ext = await self.find_image(ctx, member, 40)
+        if image is None:
+            return
+
+        image.regulate_size()
+        image.image_grayscale()
+        text = image.image_to_ascii()
+
+        name = "a" + "".join(random.choice("123456789") for i in range(12)) + ".txt"
+        save = f"{self.save_location}/{name}"
+        with open(save, "w") as f:
+            f.write(text)
+
+        await self.send_image(ctx, save, "asciify")
+
+    # @commands.command()
+    # @checks.isAllowedCommand()
+    # @commands.cooldown(2, 15, commands.BucketType.channel)
+    # @commands.has_permissions(attach_files=True)
+    # async def edit(
+    #     self, ctx, sharpness=1.0, contrast=1.0, color=1.0, brightness=1.0,
+    # ):
+    #     """``edit [sharpness] [contrast] [color] [brightness]`` work in progress"""
+    #     image, ext = await self.find_image(ctx, None, 40)
+    #     if image is None:
+    #         return
+
+    #     getattr(image, f"enhance_{ext}")(
+    #         sharpness=sharpness, contrast=contrast, color=color, brightness=brightness
+    #     )
+    #     image = getattr(image, f"save_{ext}")(
+    #         location=self.save_location, compression_level=10
+    #     )
+
+    #     await self.send_image(ctx, image, "edit")
 
 
 #     @commands.command()

@@ -229,15 +229,15 @@ if __name__ == "__main__":
 
             await bot.process_commands(message)
 
-    # @bot.event
-    # async def on_raw_reaction_add(payload):
-    #     if payload.user_id != bot.user.id:
-    #         if str(payload.emoji) == "<:profane:804446468014473246>":
-    #             if payload.member.guild_permissions.manage_messages:
-    #                 channel = await bot.fetch_channel(payload.channel_id)
-    #                 msg = await channel.fetch_message(payload.message_id)
+    @bot.event
+    async def on_raw_reaction_add(payload):
+        if payload.user_id != bot.user.id:
+            if str(payload.emoji) == "<:profane:804446468014473246>":
+                if payload.member.guild_permissions.manage_messages:
+                    channel = await bot.fetch_channel(payload.channel_id)
+                    msg = await channel.fetch_message(payload.message_id)
 
-    #                 await msg.delete()
+                    await msg.delete()
 
     # loads in all cogs
     print("-------------------")

@@ -24,6 +24,7 @@ class Modify:
         """
         self.image = None
         self.font = None
+        self.ASCII_CHARS = ["@", "#", "S", "%", "?", "*", "+", ";", ":", ",", ".", " "]
 
         if image:
             self.image = image
@@ -246,6 +247,39 @@ class Modify:
         self.image = resized
         return self.image
 
+    def regulate_size(self, image=None, scale=100):
+        if image is None:
+            image = self.image
+
+        w, h = image.size
+        r = h / w
+        height_f = int(scale * r)
+        resized_image = image.resize((int(scale * 1.75), height_f))
+
+        self.image = resized_image
+        return self.image
+
+    def image_grayscale(self, image=None):
+        if image is None:
+            image = self.image
+        g_image = image.convert("L")
+        self.image = g_image
+        return self.image
+
+    def image_to_ascii(self, image=None, scale=None):
+        if image is None:
+            image = self.image
+
+        if scale is None:
+            scale = image.size[0]
+
+        pixels = image.getdata()
+
+        ascii_pixels = "".join([self.ASCII_CHARS[p // 25] for p in pixels])
+        return "\n".join(
+            ascii_pixels[i : (i + scale)] for i in range(0, len(ascii_pixels), scale)
+        )
+
 
 class Modify_Gif(Modify):
     def __init__(self, gif=None, gif_location=None, gif_url=None):
@@ -452,12 +486,3 @@ def randomFile(folder):
     card = f"{folder}/{random.choice(os.listdir(folder))}"
     return card
 
-
-# path = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/memePics/"
-
-# bruh = Modify(image_location=f"{path}/furniture copy.png")
-
-# # bruh.image.show()
-
-
-# new.show()

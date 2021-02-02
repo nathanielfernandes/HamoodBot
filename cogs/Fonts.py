@@ -31,45 +31,43 @@ class Fonts(commands.Cog):
         self.fonts = f"{self.direct}/fonts"
 
     async def text_prep(self, ctx, text, font, font_size, colour, wrap=100, send=True):
-        async with ctx.typing():
-            if text == ():
-                return
 
-            if font == "random":
-                font = random.choice(list(self.fontDict.values()))
-            elif font in self.fontDict:
-                font = self.fontDict[font]
+        if text == ():
+            return
 
-            font = f"{self.fonts}/{font}"
+        if font == "random":
+            font = random.choice(list(self.fontDict.values()))
+        elif font in self.fontDict:
+            font = self.fontDict[font]
 
-            if colour == "random":
-                colour = tuple(random.choice(list(self.colourDict.values())))
-            elif colour not in self.colourDict:
-                colour = (255, 255, 255, 255)
-            else:
-                colour = tuple(self.colourDict[colour])
+        font = f"{self.fonts}/{font}"
 
-            text = [text]
-            for i in range(len(text)):
-                text[i] = textwrap.wrap(text[i], width=wrap)
-                for a in range(1, len(text[i])):
-                    text[i][a] = "\n" + text[i][a]
-                text[i] = " ".join(text[i])
-            text = text[0]
+        if colour == "random":
+            colour = tuple(random.choice(list(self.colourDict.values())))
+        elif colour not in self.colourDict:
+            colour = (255, 255, 255, 255)
+        else:
+            colour = tuple(self.colourDict[colour])
 
-            name = (
-                self.save_location
-                + "/"
-                + "".join(random.choice("123456789") for i in range(12))
-                + ".png"
-            )
+        text = [text]
+        for i in range(len(text)):
+            text[i] = textwrap.wrap(text[i], width=wrap)
+            for a in range(1, len(text[i])):
+                text[i][a] = "\n" + text[i][a]
+            text[i] = " ".join(text[i])
+        text = text[0]
 
-            textImg = makeText(text, font, font_size, colour, name)
+        name = (
+            self.save_location
+            + "/"
+            + "".join(random.choice("123456789") for i in range(12))
+            + ".png"
+        )
 
-            if send:
-                await ctx.send(file=discord.File(textImg))
+        textImg = makeText(text, font, font_size, colour, name)
 
         if send:
+            await ctx.send(file=discord.File(textImg))
             await ctx.message.delete()
             os.remove(textImg)
         else:
