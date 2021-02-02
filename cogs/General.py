@@ -327,7 +327,7 @@ class General(commands.Cog):
             "https://cdn.discordapp.com/attachments/767568685568753664/804052279195467796/unknown.png"
         )
 
-    @commands.command()
+    @commands.command(aliases=["soggs"])
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def define(self, ctx, *, content: commands.clean_content):
@@ -367,27 +367,30 @@ class General(commands.Cog):
             params=query,
         )
 
-        definitions = r.json()["list"]
-        d = definitions[random.randint(0, len(definitions) - 1)]
+        if r.status_code == 200:
+            definitions = r.json()["list"]
+            d = definitions[random.randint(0, len(definitions) - 1)]
 
-        embed = discord.Embed(
-            title=d["word"].title(),
-            description=f'**{fix_desc(d["definition"])}**',
-            url=d["permalink"],
-            timestamp=ctx.message.created_at,
-            color=discord.Color.blue(),
-        )
+            embed = discord.Embed(
+                title=d["word"].title(),
+                description=f'**{fix_desc(d["definition"])}**',
+                url=d["permalink"],
+                timestamp=ctx.message.created_at,
+                color=discord.Color.blue(),
+            )
 
-        embed.add_field(name="Example", value=fix_desc(d["example"]))
+            embed.add_field(name="Example", value=fix_desc(d["example"]))
 
-        embed.set_author(
-            name="Urban Dictionary",
-            icon_url="https://cdn.discordapp.com/attachments/741384050387714162/806013278396350464/297387706245_85899a44216ce1604c93_512.png",
-        )
+            embed.set_author(
+                name="Urban Dictionary",
+                icon_url="https://cdn.discordapp.com/attachments/741384050387714162/806013278396350464/297387706245_85899a44216ce1604c93_512.png",
+            )
 
-        embed.set_footer(text=f"👍 {d['thumbs_up']} | 👎 {d['thumbs_up']}")
+            embed.set_footer(text=f"👍 {d['thumbs_up']} | 👎 {d['thumbs_down']}")
 
-        await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send(f"`no results found for '{content}'`")
 
 
 class Poll:
