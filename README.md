@@ -1,6 +1,6 @@
-# Hamood [![Discord Bots](https://top.gg/api/widget/servers/699510311018823680.svg)](https://top.gg/bot/699510311018823680)
+# Hamood [![Discord Bots](https://top.gg/api/widget/servers/699510311018823680.svg)](https://top.gg/bot/699510311018823680) [![Discord Bots](https://top.gg/api/widget/status/699510311018823680.svg?noavatar=true)](https://top.gg/bot/699510311018823680) [![Discord Bots](https://top.gg/api/widget/upvotes/699510311018823680.svg?noavatar=true)](https://top.gg/bot/699510311018823680) [![Discord Bots](https://top.gg/api/widget/owner/699510311018823680.svg?noavatar=true)](https://top.gg/bot/699510311018823680)
 
-Hamood is a Discord bot written with [discord.py](https://github.com/Rapptz/discord.py) that has a variety of helpful and fun [functions](#Commands).
+Hamood is a Discord bot written with [discord.py](https://github.com/Rapptz/discord.py) that has a variety of helpful and fun [functions](#Commands). 
 
 ### Background
 Hamood's name and profile picture is an inside joke based off the [Yotube](https://knowyourmeme.com/memes/yotube) kid meme.
