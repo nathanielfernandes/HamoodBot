@@ -121,7 +121,7 @@ class Memes(commands.Cog):
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def uno(self, ctx, *, content: commands.clean_content):
-        """`uno [text1], [text2]`"""
+        """``uno [text1], [text2]`` draw 25"""
         await self.meme_prep(
             ctx, "unoImage.png", content, [(50, 170), (280, 20)], 25, wrap=15
         )
@@ -131,7 +131,7 @@ class Memes(commands.Cog):
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def present(self, ctx, *, content: commands.clean_content):
-        """`present [text1]`"""
+        """``present [text1]`` this is important"""
         await self.meme_prep(ctx, "presentImage.jpg", content, [(120, 65)], 22, wrap=40)
 
 
