@@ -375,4 +375,3 @@ async def java_code(code):
 
 # url = f"https://carbonnowsh.herokuapp.com/?code={quote(code)}&theme={theme}&backgroundColor={backgroundColor}&paddingVertical={paddingVertical}&paddingHorizontal={paddingHorizontal}&windowControls=false&lineNumbers=true"
 
-# return url

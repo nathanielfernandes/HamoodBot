@@ -4,9 +4,19 @@ import random
 import discord
 import asyncio
 from discord.ext import commands
-
+import requests
 from modules.image_functions import randomFile
 import modules.checks as checks
+
+try:
+    URBANDICTKEY = os.environ["URBANDICTKEY"]
+    URBANDICTHOST = os.environ["URBANDICTHOST"]
+except KeyError:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+    URBANDICTKEY = os.environ.get("URBANDICTKEY")
+    URBANDICTHOST = os.environ.get("URBANDICTHOST")
 
 
 class General(commands.Cog):
@@ -316,6 +326,68 @@ class General(commands.Cog):
         await ctx.send(
             "https://cdn.discordapp.com/attachments/767568685568753664/804052279195467796/unknown.png"
         )
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def define(self, ctx, *, content: commands.clean_content):
+        """``define [word or phrase]`` get the difinition of a word or phrase from urban dictionary"""
+
+        def fix_desc(desc):
+            d = desc
+            bracketedword = ""
+            start = False
+            for i in d:
+                if i == "[":
+                    start = True
+                elif i == "]":
+                    start = False
+                    bracketedword += i
+                    d = d.replace(
+                        bracketedword,
+                        f"{bracketedword}(https://www.urbandictionary.com/define.php?term={bracketedword[1:-1].replace(' ', '')})",
+                    )
+                    bracketedword = ""
+                if start:
+                    bracketedword += i
+
+            return d
+
+        query = {"term": content}
+
+        headers = {
+            "x-rapidapi-key": URBANDICTKEY,
+            "x-rapidapi-host": URBANDICTHOST,
+        }
+
+        r = requests.request(
+            "GET",
+            "https://mashape-community-urban-dictionary.p.rapidapi.com/define",
+            headers=headers,
+            params=query,
+        )
+
+        definitions = r.json()["list"]
+        d = definitions[random.randint(0, len(definitions) - 1)]
+
+        embed = discord.Embed(
+            title=d["word"].title(),
+            description=f'**{fix_desc(d["definition"])}**',
+            url=d["permalink"],
+            timestamp=ctx.message.created_at,
+            color=discord.Color.blue(),
+        )
+
+        embed.add_field(name="Example", value=fix_desc(d["example"]))
+
+        embed.set_author(
+            name="Urban Dictionary",
+            icon_url="https://cdn.discordapp.com/attachments/741384050387714162/806013278396350464/297387706245_85899a44216ce1604c93_512.png",
+        )
+
+        embed.set_footer(text=f"👍 {d['thumbs_up']} | 👎 {d['thumbs_up']}")
+
+        await ctx.send(embed=embed)
 
 
 class Poll:
