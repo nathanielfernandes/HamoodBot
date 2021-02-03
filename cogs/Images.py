@@ -270,8 +270,9 @@ class Images(commands.Cog):
         image.regulate_size()
 
         x, y = image.image.size
-        s = sqrt(2000 / (x * y))
-        image.resize_image(size=(int(x * s), int(y * s)))
+        if x * y > 1990:
+            s = sqrt(1990 / (x * y))
+            image.resize_image(size=(int(x * s), int(y * s)))
 
         image.image_grayscale()
         text = image.image_to_ascii()

@@ -24,7 +24,9 @@ class Modify:
         """
         self.image = None
         self.font = None
-        self.ASCII_CHARS = ["@", "#", "S", "%", "?", "*", "+", ";", ":", ",", ".", " "]
+        self.ASCII_CHARS = ["@", "#", "S", "%", "?", "*", "+", ";", ":", ",", ".", " "][
+            ::-1
+        ]
 
         if image:
             self.image = image

@@ -368,29 +368,30 @@ class General(commands.Cog):
         )
 
         if r.status_code == 200:
-            definitions = r.json()["list"]
-            d = definitions[random.randint(0, len(definitions) - 1)]
+            try:
+                definitions = r.json()["list"]
+                d = definitions[random.randint(0, len(definitions) - 1)]
 
-            embed = discord.Embed(
-                title=d["word"].title(),
-                description=f'**{fix_desc(d["definition"])}**',
-                url=d["permalink"],
-                timestamp=ctx.message.created_at,
-                color=discord.Color.blue(),
-            )
+                embed = discord.Embed(
+                    title=d["word"].title(),
+                    description=f'**{fix_desc(d["definition"])}**',
+                    url=d["permalink"],
+                    timestamp=ctx.message.created_at,
+                    color=discord.Color.blue(),
+                )
 
-            embed.add_field(name="Example", value=fix_desc(d["example"]))
+                embed.add_field(name="Example", value=fix_desc(d["example"]))
 
-            embed.set_author(
-                name="Urban Dictionary",
-                icon_url="https://cdn.discordapp.com/attachments/741384050387714162/806013278396350464/297387706245_85899a44216ce1604c93_512.png",
-            )
+                embed.set_author(
+                    name="Urban Dictionary",
+                    icon_url="https://cdn.discordapp.com/attachments/741384050387714162/806013278396350464/297387706245_85899a44216ce1604c93_512.png",
+                )
 
-            embed.set_footer(text=f"👍 {d['thumbs_up']} | 👎 {d['thumbs_down']}")
+                embed.set_footer(text=f"👍 {d['thumbs_up']} | 👎 {d['thumbs_down']}")
 
-            await ctx.send(embed=embed)
-        else:
-            await ctx.send(f"`no results found for '{content}'`")
+                await ctx.send(embed=embed)
+            except Exception:
+                await ctx.send(f"`no results found for '{content}'`")
 
 
 class Poll:
