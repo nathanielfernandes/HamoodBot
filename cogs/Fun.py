@@ -129,6 +129,42 @@ class Fun(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=["statuscode"])
+    @checks.isAllowedCommand()
+    async def statuscat(self, ctx, *, code: commands.clean_content):
+        """``statuscat [status code]`` status cats > status codes"""
+        embed = discord.Embed(
+            color=discord.Color.from_rgb(
+                random.randint(0, 255), random.randint(0, 255), random.randint(0, 255),
+            )
+        )
+        embed.set_image(url=f"https://http.cat/{code[:3]}.jpg")
+        embed.set_footer(text=f"status-code: {code[:3]}")
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=["placecat"])
+    @checks.isAllowedCommand()
+    async def placekitten(self, ctx, x=None, y=None):
+        """``placekitten [width] [height]`` Get a random kitten image of any size"""
+        if x is None:
+            x = str(random.randint(1, 1000))
+        if y is None:
+            y = str(random.randint(1, 1000))
+
+        if x.isdigit() and y.isdigit():
+            embed = discord.Embed(
+                color=discord.Color.from_rgb(
+                    random.randint(0, 255),
+                    random.randint(0, 255),
+                    random.randint(0, 255),
+                )
+            )
+            embed.set_image(url=f"http://placekitten.com/{x}/{y}")
+            embed.set_footer(text=f"random kitten | {x}px by {y}px")
+            return await ctx.send(embed=embed)
+
+        await ctx.send("`invalid dimensions`")
+
     # @commands.command(aliases=["sign"])
     # @checks.isAllowedCommand()
     # async def zodiac(self, ctx, month1: str, day1: int, month2: str, day2: int):
