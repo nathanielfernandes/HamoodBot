@@ -8,6 +8,8 @@ import requests
 from modules.image_functions import randomFile
 import modules.checks as checks
 
+from gtts import gTTS
+
 try:
     URBANDICTKEY = os.environ["URBANDICTKEY"]
     URBANDICTHOST = os.environ["URBANDICTHOST"]
@@ -322,10 +324,29 @@ class General(commands.Cog):
     @commands.command()
     @checks.isAllowedCommand()
     async def cliffhanger(self, ctx):
-        """ ``cliffhanger`` the day hamood died"""
+        """``cliffhanger`` the day hamood died"""
         await ctx.send(
             "https://cdn.discordapp.com/attachments/767568685568753664/804052279195467796/unknown.png"
         )
+
+    @commands.command(aliases=["texttospeech", "say"])
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 15, commands.BucketType.user)
+    async def tts(self, ctx, *, content: commands.clean_content):
+        """``tts [text]`` text to speech"""
+        speech = gTTS(text=content[:145], lang="en", slow=False)
+        save = (
+            f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages/"
+            + "".join([str(random.randint(0, 9)) for i in range(12)])
+            + ".mp3"
+        )
+        speech.save(save)
+        try:
+            await ctx.send(file=discord.File(save))
+        except Exception:
+            await ctx.send("`error converting to speech`")
+
+        os.remove(save)
 
     @commands.command(aliases=["soggs"])
     @checks.isAllowedCommand()

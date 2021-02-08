@@ -25,13 +25,15 @@ if __name__ == "__main__":
             f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages/placeholder.txt"
         )
         prefix = "."
+        live = True
     except KeyError:
         from dotenv import load_dotenv
 
         load_dotenv()
         TOKEN = os.environ.get("BOTTOKENTEST")
 
-        prefix = "/"
+        prefix = "?"
+        live = False
 
     intents = discord.Intents().default()
     intents.members = True
@@ -45,6 +47,7 @@ if __name__ == "__main__":
     )
 
     bot.timeout_list = []
+    bot.islive = live
 
     every_item = json.load(open("data/items.json"))
     bot.all_items = {
@@ -137,10 +140,11 @@ if __name__ == "__main__":
     @bot.event
     async def on_ready():
         # @ global variation
-        bot.leaderboards = Leaderboards()
-        bot.inventories = Inventories()
-        bot.currency = Currency()
-        bot.members = Members()
+        if bot.islive:
+            bot.leaderboards = Leaderboards()
+            bot.inventories = Inventories()
+            bot.currency = Currency()
+            bot.members = Members()
 
         # print(bot.common_items
         toc = time.perf_counter()
