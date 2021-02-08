@@ -112,7 +112,7 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=["pop", "bubble"])
     @checks.isAllowedCommand()
-    async def bubblewrap(self, ctx, w=3, h=3, inside="pop"):
+    async def bubblewrap(self, ctx, w=3, h=3, inside="      "):
         """``bubblewrap [height] [width]`` makes bubblewrap"""
         if w > 12:
             w = 12

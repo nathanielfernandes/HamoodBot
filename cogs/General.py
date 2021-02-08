@@ -334,7 +334,7 @@ class General(commands.Cog):
     @commands.cooldown(2, 15, commands.BucketType.user)
     async def tts(self, ctx, *, content: commands.clean_content):
         """``tts [text]`` text to speech"""
-        speech = gTTS(text=content[:145], lang="en", slow=False)
+        speech = gTTS(text=content[:600], lang="en", slow=False)
         save = (
             f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages/"
             + "".join([str(random.randint(0, 9)) for i in range(12)])
