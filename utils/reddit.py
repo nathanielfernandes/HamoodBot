@@ -32,6 +32,9 @@ class Redditing:
             "url": post.url,
             "upvotes": post.score,
             "ratio": post.upvote_ratio,
+            "nsfw": post.over_18,
+            "author": post.author.name,
+            "author_icon": post.author.icon_img,
         }
 
     def url_contains_image(self, url):

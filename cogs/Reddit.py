@@ -39,12 +39,14 @@ class Reddit(commands.Cog):
 
     async def redditPrep(self, ctx, subRedd, image=True):
         embed = discord.Embed(colour=16729344)
-        embed.set_author(
-            name=f"Reddit | r/{subRedd}",
-            icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756609606922535057/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png",
-        )
 
         post = self.red.get_post(subRedd, image)
+
+        if post["nsfw"] and not ctx.channel.is_nsfw():
+            return await ctx.send(
+                "<:nsfw:809897270245326928> `Cannot send NSFW posts in a non NSFW channel!`"
+            )
+
         if post is None:
             embed.title = f"Could not find a recent post from **r/{subRedd}!**"
         else:
@@ -56,7 +58,15 @@ class Reddit(commands.Cog):
             if self.red.url_contains_image(post["url"]):
                 embed.set_image(url=post["url"])
 
-            embed.set_footer(text=f"⬆{post['upvotes']} | {post['ratio']:0.0%} upvoted")
+            embed.set_footer(
+                text=f"{post['author']} | ⬆{post['upvotes']} | {post['ratio']:0.0%} upvoted",
+                icon_url=post["author_icon"],
+            )
+
+            if post["nsfw"]:
+                embed.set_thumbnail(
+                    url="https://cdn.discordapp.com/attachments/741384050387714162/809895718403047514/253-2530675_badge-badge-badge-badge-sign.png"
+                )
 
         embed.set_author(
             name=f"Reddit | r/{subRedd}",

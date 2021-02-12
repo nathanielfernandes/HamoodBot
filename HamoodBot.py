@@ -237,7 +237,11 @@ if __name__ == "__main__":
     async def on_raw_reaction_add(payload):
         if payload.user_id != bot.user.id:
             if str(payload.emoji) == "<:profane:804446468014473246>":
-                if payload.member.guild_permissions.manage_messages:
+                if (
+                    payload.member.guild_permissions.manage_messages
+                    or payload.user_id
+                    in [317144947880886274, 485138947115057162, 616148871499874310]
+                ):
                     channel = await bot.fetch_channel(payload.channel_id)
                     msg = await channel.fetch_message(payload.message_id)
 
