@@ -1,4 +1,4 @@
-praw
+asyncpraw
 asyncio
 discord
 google_images_search

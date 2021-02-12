@@ -40,16 +40,15 @@ class Reddit(commands.Cog):
     async def redditPrep(self, ctx, subRedd, image=True):
         embed = discord.Embed(colour=16729344)
 
-        post = self.red.get_post(subRedd, image)
-
-        if post["nsfw"] and not ctx.channel.is_nsfw():
-            return await ctx.send(
-                "<:nsfw:809897270245326928> `Cannot send NSFW posts in a non NSFW channel!`"
-            )
+        post = await self.red.get_post(subRedd, image)
 
         if post is None:
             embed.title = f"Could not find a recent post from **r/{subRedd}!**"
         else:
+            if post["nsfw"] and not ctx.channel.is_nsfw():
+                return await ctx.send(
+                    "<:nsfw:809897270245326928> `Cannot send NSFW posts in a non NSFW channel!`"
+                )
             embed.title = post["title"]
             embed.url = post["url"]
             embed.description = (
@@ -59,8 +58,8 @@ class Reddit(commands.Cog):
                 embed.set_image(url=post["url"])
 
             embed.set_footer(
-                text=f"{post['author']} | ⬆{post['upvotes']} | {post['ratio']:0.0%} upvoted",
-                icon_url=post["author_icon"],
+                text=f"⬆{post['upvotes']} | {post['ratio']:0.0%} upvoted",
+                # icon_url=post["author_icon"],
             )
 
             if post["nsfw"]:

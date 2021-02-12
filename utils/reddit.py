@@ -1,5 +1,5 @@
 import random
-import praw
+import asyncpraw
 import os
 import pathlib
 
@@ -19,7 +19,7 @@ except KeyError:
 
 class Redditing:
     def __init__(self):
-        self.red = praw.Reddit(
+        self.red = asyncpraw.Reddit(
             client_id=CLIENTID, client_secret=CLIENTSECRET, user_agent=USERAGENT
         )
         self.all_posts_cache = {}
@@ -33,8 +33,6 @@ class Redditing:
             "upvotes": post.score,
             "ratio": post.upvote_ratio,
             "nsfw": post.over_18,
-            "author": post.author.name,
-            "author_icon": post.author.icon_img,
         }
 
     def url_contains_image(self, url):
@@ -50,9 +48,15 @@ class Redditing:
             return True
         return False
 
-    def cache_posts(self, sub, image_only=False):
+    async def cache_posts(self, sub, image_only=False):
         try:
-            post_submissions = list(self.red.subreddit(sub).hot())
+            subreddit = await self.red.subreddit(sub)
+
+            post_submissions = []
+            async for post in subreddit.hot():
+                post_submissions.append(post)
+
+            # post_submissions = [async for sub in subreddit.hot()]
             if image_only:
                 temp_image_posts = {
                     post.id: self.to_dict(post)
@@ -80,7 +84,7 @@ class Redditing:
         except Exception:
             return False
 
-    def get_post(self, sub, image_only=False):
+    async def get_post(self, sub, image_only=False):
         if image_only:
             posts = self.image_posts_cache
         else:
@@ -93,7 +97,7 @@ class Redditing:
             if len(posts[sub]) <= 0:
                 posts.pop(sub)
         else:
-            cached = self.cache_posts(sub, image_only)
+            cached = await self.cache_posts(sub, image_only)
             if cached:
                 print(f"Cached {len(posts[sub])} posts from r/{sub}")
                 post_id = random.choice(list(posts[sub].keys()))
