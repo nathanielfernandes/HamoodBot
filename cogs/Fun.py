@@ -112,7 +112,7 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=["pop", "bubble"])
     @checks.isAllowedCommand()
-    async def bubblewrap(self, ctx, w=3, h=3, inside="      "):
+    async def bubblewrap(self, ctx, w=3, h=3, inside="pop"):
         """``bubblewrap [height] [width]`` makes bubblewrap"""
         if w > 12:
             w = 12
@@ -138,7 +138,7 @@ class Fun(commands.Cog):
                 random.randint(0, 255), random.randint(0, 255), random.randint(0, 255),
             )
         )
-        embed.set_image(url=f"https://http.cat/{code[:3]}.jpg")
+        embed.set_image(url=f"https://http.cat/{code[:3]}")
         embed.set_footer(text=f"status-code: {code[:3]}")
         await ctx.send(embed=embed)
 

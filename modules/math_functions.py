@@ -17,11 +17,11 @@ import pylab
 
 from urllib.parse import quote
 
-carbon_data = json.load(
-    open(
-        f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/carbon.json"
-    )
-)
+# carbon_data = json.load(
+#     open(
+#         f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/carbon.json"
+#     )
+# )
 
 
 chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -278,65 +278,37 @@ async def latex_to_text(formula):
     return save, None
 
 
-async def carbon_code(code, random_theme=False):
-    d = copy(carbon_data)
+# async def carbon_code(code, random_theme=False):
+#     d = copy(carbon_data)
 
-    theme = random.choice(
-        [
-            "material",
-            "a11y-dark",
-            "base-16",
-            "duotone",
-            "hopscotch",
-            "lucario",
-            "monokai",
-            "synthwave-84",
-            "panda",
-            "paraiso",
-            "dracula",
-        ]
-    )
+#     theme = random.choice(
+#         [
+#             "material",
+#             "a11y-dark",
+#             "base-16",
+#             "duotone",
+#             "hopscotch",
+#             "lucario",
+#             "monokai",
+#             "synthwave-84",
+#             "panda",
+#             "paraiso",
+#             "dracula",
+#         ]
+#     )
 
-    d.update({"code": code})
-    d.update({"theme": theme})
-    res = requests.post("https://carbonara.now.sh/api/cook/", json=d)
+#     d.update({"code": code})
+#     d.update({"theme": theme})
+#     res = requests.post("https://carbonara.now.sh/api/cook/", json=d)
 
-    save = (
-        folder + "/" + "".join([str(random.randint(0, 9)) for i in range(9)]) + ".jpg"
-    )
+#     save = (
+#         folder + "/" + "".join([str(random.randint(0, 9)) for i in range(9)]) + ".jpg"
+#     )
 
-    with open(save, "wb") as handler:
-        handler.write(res.content)
+#     with open(save, "wb") as handler:
+#         handler.write(res.content)
 
-    return save
-
-
-async def java_code(code):
-    headers = {
-        "accept": "*/*",
-        "accept-language": "en-US, en;q=0.9",
-        "connection": "keep-alive",
-        "accept-encoding": "gzip, deflate, br",
-        "content-length": str(len(code)),
-        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-        "host": "www.compilejava.net",
-        "origin": "https://www.compilejava.net",
-        "referer": "https://www.compilejava.net/",
-        "sec-ch-ua": '"Google Chrome";v="87", ""Not;A\\Brand";v="99", "Chromium";v="87"',
-        "sec-ch-ua-mobile": "?1",
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-origin",
-        "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36",
-        "x-requested-with": "XMLHttpRequest",
-    }
-
-    data = {"code": code, "passargs": "", "respond": "respond"}
-
-    response = requests.post("https://www.compilejava.net/", headers=headers, data=data)
-    response = response.json()
-
-    return response["execsout"]
+#     return save
 
 
 # data = {
@@ -374,4 +346,75 @@ async def java_code(code):
 #     )
 
 # url = f"https://carbonnowsh.herokuapp.com/?code={quote(code)}&theme={theme}&backgroundColor={backgroundColor}&paddingVertical={paddingVertical}&paddingHorizontal={paddingHorizontal}&windowControls=false&lineNumbers=true"
+# s = """af: Afrikaans
+#   ar: Arabic
+#   bn: Bengali
+#   bs: Bosnian
+#   ca: Catalan
+#   cs: Czech
+#   cy: Welsh
+#   da: Danish
+#   de: German
+#   el: Greek
+#   en: English
+#   eo: Esperanto
+#   es: Spanish
+#   et: Estonian
+#   fi: Finnish
+#   fr: French
+#   gu: Gujarati
+#   hi: Hindi
+#   hr: Croatian
+#   hu: Hungarian
+#   hy: Armenian
+#   id: Indonesian
+#   is: Icelandic
+#   it: Italian
+#   ja: Japanese
+#   jw: Javanese
+#   km: Khmer
+#   kn: Kannada
+#   ko: Korean
+#   la: Latin
+#   lv: Latvian
+#   mk: Macedonian
+#   ml: Malayalam
+#   mr: Marathi
+#   my: Myanmar (Burmese)
+#   ne: Nepali
+#   nl: Dutch
+#   no: Norwegian
+#   pl: Polish
+#   pt: Portuguese
+#   ro: Romanian
+#   ru: Russian
+#   si: Sinhala
+#   sk: Slovak
+#   sq: Albanian
+#   sr: Serbian
+#   su: Sundanese
+#   sv: Swedish
+#   sw: Swahili
+#   ta: Tamil
+#   te: Telugu
+#   th: Thai
+#   tl: Filipino
+#   tr: Turkish
+#   uk: Ukrainian
+#   ur: Urdu
+#   vi: Vietnamese
+#   zh-CN: Chinese
+#   zh-TW: Chinese (Mandarin/Taiwan)
+#   zh: Chinese (Mandarin)
+#   """
+
+# stuff = s
+
+
+# mydict = {
+#     l[0].replace(" ", ""): l[1].lstrip()
+#     for l in [i.split(":") for i in stuff.split("\n")][:-1]
+# }
+
+# print(mydict)
 

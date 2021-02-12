@@ -1,4 +1,5 @@
 import os
+import random
 import discord
 import textwrap
 from discord.ext import commands
@@ -17,6 +18,15 @@ class Memes(commands.Cog):
         self.memes = f"{self.direct}/memePics"
         self.save_location = f"{self.direct}/tempImages"
         self.fonts = f"{self.direct}/fonts"
+        self.cards = {
+            "billnyeCard.jpg": [[(320, 200), (355, 245)], 28],
+            "caprioCard.jpg": [[(290, 152), (320, 252)], 28],
+            "cucumberCard.jpg": [[(323, 120), (340, 178)], 28],
+            "oldCard.jpeg": [[(93, 116), (108, 156)], 18],
+            "lettuceCard.jpg": [[(350, 283), (380, 320)], 24],
+            "sharpCard.png": [[(600, 465), (690, 555)], 60],
+            "sharpieCard.jpg": [[(386, 245), (434, 310)], 34],
+        }
 
     async def meme_prep(
         self, ctx, meme_image, text, coords, size, color=(0, 0, 0), wrap=12
@@ -40,7 +50,7 @@ class Memes(commands.Cog):
 
         for i in range(len(text)):
             getattr(meme, f"{ext}_add_text")(
-                text=text[i], coordinates=coords[i], stroke_width=4
+                text=text[i], coordinates=coords[i], stroke_width=4, font_color=color
             )
 
         meme = getattr(meme, f"save_{ext}")(location=self.save_location)
@@ -133,6 +143,17 @@ class Memes(commands.Cog):
     async def present(self, ctx, *, content: commands.clean_content):
         """``present [text1]`` this is important"""
         await self.meme_prep(ctx, "presentImage.jpg", content, [(120, 65)], 22, wrap=40)
+
+    @commands.command(aliases=["love", "val", "<3", "valentine"])
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 5, commands.BucketType.user)
+    @commands.has_permissions(attach_files=True)
+    async def valentines(self, ctx, *, content: commands.clean_content):
+        """``valentines [text1], [text2]`` send a valentines card <3"""
+        name = random.choice(list(self.cards.keys()))
+        card = self.cards[name]
+
+        await self.meme_prep(ctx, name, content, card[0], card[1], wrap=15)
 
 
 def setup(bot):

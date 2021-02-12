@@ -488,3 +488,21 @@ def randomFile(folder):
     card = f"{folder}/{random.choice(os.listdir(folder))}"
     return card
 
+
+# direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
+# fonts = f"{direct}/fonts"
+# memes = f"{direct}/memePics"
+
+# size = 34
+
+# one = "Nathaniel"
+# two = "Fool"
+
+
+# card = Modify(image_location=f"{memes}/sharpieCard.jpg")
+# card.set_font(font_location=f"{fonts}/arialbold.ttf", font_size=size)
+# card.image_add_text(text=one, coordinates=(386, 245), font_color=(255, 255, 255))
+# card.image_add_text(text=two, coordinates=(434, 310), font_color=(255, 255, 255))
+
+# card.image.show()
+
