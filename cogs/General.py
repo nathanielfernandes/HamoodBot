@@ -5,7 +5,7 @@ import discord
 import asyncio
 from discord.ext import commands
 import requests
-from modules.image_functions import randomFile
+from modules.image_functions import randomFile, makeColorImg
 import modules.checks as checks
 
 from gtts import gTTS
@@ -148,6 +148,27 @@ class General(commands.Cog):
                 await currentPoll.message.clear_reactions()
             except discord.errors.NotFound:
                 print("Could not remove poll!")
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    async def color(self, ctx, r=None, g=None, b=None, a=255):
+        """``color [r] [g] [b] [a]`` sends the color with the specified rbga values"""
+        rgba = [r, g, b, a]
+        for i in range(len(rgba)):
+            if rgba[i] is None:
+                rgba[i] = random.randint(0, 255)
+            else:
+                if rgba[i] < 0:
+                    rgba[i] = 0
+                elif rgba[i] > 255:
+                    rgba[i] = 255
+
+        img = makeColorImg(
+            rgba,
+            f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages",
+        )
+        await ctx.send(file=discord.File(img))
+        os.remove(img)
 
     @commands.command(aliases=["hi", "hey", "yo"])
     @checks.isAllowedCommand()

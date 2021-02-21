@@ -483,6 +483,13 @@ def makeText(content, font, font_size, colour, final):
     return final
 
 
+def makeColorImg(rgba, path):
+    img = Image.new("RGBA", (100, 100), color=tuple(rgba))
+    img_name = path + "".join(random.choice("123456789") for i in range(12)) + ".png"
+    img.save(img_name)
+    return img_name
+
+
 def randomFile(folder):
     """selects a random file from a folder"""
     card = f"{folder}/{random.choice(os.listdir(folder))}"

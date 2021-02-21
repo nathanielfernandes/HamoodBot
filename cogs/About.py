@@ -88,7 +88,7 @@ class About(commands.Cog):
             (datetime.datetime.now() - self.start).total_seconds()
         )
 
-        ram_used = f"{round(psutil.virtual_memory().used / (1024.0 ** 3), 2)}GB / {round(psutil.virtual_memory().total / (1024.0 ** 3), 2)}GB"
+        # ram_used = f"{round(psutil.virtual_memory().used / (1024.0 ** 3), 2)}GB / {round(psutil.virtual_memory().total / (1024.0 ** 3), 2)}GB"
 
         embed = discord.Embed(
             title="<:hamood:713523447141236867> Hamood Info",
@@ -98,7 +98,7 @@ class About(commands.Cog):
         # embed.add_field(name="Uptime", value=f"```py\n{uptime}```", inline=True)
         embed.add_field(
             name="Discord Presence",
-            value=f"```py\nGuilds: {len(self.bot.guilds):,}\nChannels: {sum([len(g.channels) for g in self.bot.guilds]):,}\nUsers: {sum([len(g.members) for g in self.bot.guilds]):,}\nShards: {self.bot.shard_count}```",
+            value=f"```py\nServers: {len(self.bot.guilds):,}\nChannels: {sum([len(g.channels) for g in self.bot.guilds]):,}\nUsers: {sum([len(g.members) for g in self.bot.guilds]):,}\nShards: {self.bot.shard_count}```",
             inline=False,
         )
         embed.add_field(
