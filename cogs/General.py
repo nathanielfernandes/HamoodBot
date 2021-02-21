@@ -149,7 +149,7 @@ class General(commands.Cog):
             except discord.errors.NotFound:
                 print("Could not remove poll!")
 
-    @commands.command()
+    @commands.command(aliases=["colour"])
     @checks.isAllowedCommand()
     async def color(self, ctx, r=None, g=None, b=None, a=255):
         """``color [r] [g] [b] [a]`` sends the color with the specified rbga values"""
@@ -158,6 +158,7 @@ class General(commands.Cog):
             if rgba[i] is None:
                 rgba[i] = random.randint(0, 255)
             else:
+                rgba[i] = int(rgba[i])
                 if rgba[i] < 0:
                     rgba[i] = 0
                 elif rgba[i] > 255:
