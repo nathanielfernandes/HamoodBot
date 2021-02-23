@@ -1,9 +1,9 @@
-import requests
+# import requests
+import aiohttp
 import discord
 from discord.ext import commands
 import os
 import json
-
 import modules.checks as checks
 
 
@@ -20,7 +20,12 @@ class Code(commands.Cog):
 
     async def run_code(self, ctx, language, code):
         data = {"language": language, "source": code}
-        r = requests.post("https://emkc.org/api/v1/piston/execute", data=data).json()
+
+        async with self.bot.aioSession.post(
+            "https://emkc.org/api/v1/piston/execute", data=data
+        ) as response:
+            r = await response.json()
+        # r = requests.post("https://emkc.org/api/v1/piston/execute", data=data).json()
 
         if "message" not in r:
             output = (
@@ -275,7 +280,7 @@ class Code(commands.Cog):
         content = content.replace("```php", "").replace("```", "")
         await self.run_code(ctx, "php", content)
 
-    @commands.command(aliases=["py"])
+    @commands.command(aliases=["py2"])
     @checks.isAllowedCommand()
     async def python2(self, ctx, *, content: commands.clean_content):
         """``python2 [code]`` executes your Python2 code"""
@@ -284,7 +289,7 @@ class Code(commands.Cog):
         )
         await self.run_code(ctx, "python2", content)
 
-    @commands.command()
+    @commands.command(aliases=["py", "py3"])
     @checks.isAllowedCommand()
     @commands.cooldown(3, 15, commands.BucketType.channel)
     async def python3(self, ctx, *, content: commands.clean_content):

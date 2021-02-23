@@ -4,7 +4,9 @@ import random
 import discord
 import asyncio
 from discord.ext import commands
-import requests
+import aiohttp
+
+# import requests
 from modules.image_functions import randomFile, makeColorImg
 import modules.checks as checks
 
@@ -403,16 +405,23 @@ class General(commands.Cog):
             "x-rapidapi-host": URBANDICTHOST,
         }
 
-        r = requests.request(
-            "GET",
+        async with self.bot.aioSession.get(
             "https://mashape-community-urban-dictionary.p.rapidapi.com/define",
             headers=headers,
             params=query,
-        )
+        ) as r:
+            j = await r.json()
 
-        if r.status_code == 200:
+        # r = requests.request(
+        #     "GET",
+        #     "https://mashape-community-urban-dictionary.p.rapidapi.com/define",
+        #     headers=headers,
+        #     params=query,
+        # )
+
+        if r.status == 200:
             try:
-                definitions = r.json()["list"]
+                definitions = j["list"]
                 d = definitions[random.randint(0, len(definitions) - 1)]
 
                 embed = discord.Embed(

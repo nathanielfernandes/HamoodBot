@@ -16,6 +16,7 @@ class Dev(commands.Cog):
     async def logout(self, ctx):
         """``logout`` logs hamood out"""
         await ctx.send("**goodbye**")
+        await self.bot.aioSession.close()
         await self.bot.logout()
 
     @commands.command()

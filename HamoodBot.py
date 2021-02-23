@@ -9,6 +9,7 @@ import os
 import json
 import datetime
 import random
+import aiohttp
 import discord
 import asyncio
 from discord.ext import commands, tasks
@@ -140,6 +141,9 @@ if __name__ == "__main__":
     @bot.event
     async def on_ready():
         # @ global variation
+
+        bot.aioSession = aiohttp.ClientSession()
+
         if bot.islive:
             bot.leaderboards = Leaderboards()
             bot.inventories = Inventories()
