@@ -141,14 +141,25 @@ if __name__ == "__main__":
     @bot.event
     async def on_ready():
         # @ global variation
+        await bot.change_presence(
+            activity=discord.Streaming(
+                name="Starting Up", url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+            )
+        )
 
         bot.aioSession = aiohttp.ClientSession()
-
+        unloadList = ["Games", "Jobs", "Items", "Money"]
         if bot.islive:
+            for cog in unloadList:
+                bot.unload_extension(f"cogs.{cog}")
+
             bot.leaderboards = Leaderboards()
             bot.inventories = Inventories()
             bot.currency = Currency()
             bot.members = Members()
+
+            for cog in unloadList:
+                bot.load_extension(f"cogs.{cog}")
 
         # print(bot.common_items
         toc = time.perf_counter()
