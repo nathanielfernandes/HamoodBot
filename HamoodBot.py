@@ -33,7 +33,7 @@ if __name__ == "__main__":
         load_dotenv()
         TOKEN = os.environ.get("BOTTOKENTEST")
 
-        prefix = "?"
+        prefix = "/"
         live = False
 
     intents = discord.Intents().default()

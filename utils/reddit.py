@@ -39,13 +39,10 @@ class Redditing:
         for i in [".jpg", ".jpeg", ".png", ".webp" ".JPG", ".JPEG", ".PNG", ".WEBP"]:
             if i in url:
                 return True
-        if (
-            (".gif" in url)
-            and ("tenor" not in url)
-            and ("giphy" not in url)
-            and ("imgur" not in url)
-        ):
+
+        if (".gif" in url) and not any(u in url for u in ["tenor", "giphy", "imgur"]):
             return True
+
         return False
 
     async def cache_posts(self, sub, image_only=False):

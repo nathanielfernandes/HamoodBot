@@ -131,4 +131,3 @@ def scrape(imgURL, saveDir):
     img_data = requests.get(imgURL).content
     with open(saveDir, "wb") as handler:
         handler.write(img_data)
-

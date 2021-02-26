@@ -22,26 +22,14 @@ class Images(commands.Cog):
 
     async def find_image(self, ctx, member, depth):
         if member is None:
+            types = [".jpg", ".jpeg", ".png", ".gif", ".JPG", ".JPEG", ".PNG", ".GIF"]
+
             message1 = await ctx.message.channel.history(limit=depth).find(
-                lambda m: ".jpg" in str(m.attachments)
-                or ".png" in str(m.attachments)
-                or ".jpeg" in str(m.attachments)
-                or ".gif" in str(m.attachments)
-                or ".JPG" in str(m.attachments)
-                or ".PNG" in str(m.attachments)
-                or ".JPEG" in str(m.attachments)
-                or ".GIF" in str(m.attachments)
+                lambda m: any(url in str(m.attachments) for url in types)
             )
 
             message2 = await ctx.message.channel.history(limit=depth).find(
-                lambda m: ".jpg" in str(m.content)
-                or ".png" in str(m.content)
-                or ".jpeg" in str(m.content)
-                or ".gif" in str(m.content)
-                or ".JPG" in str(m.content)
-                or ".PNG" in str(m.content)
-                or ".JPEG" in str(m.content)
-                or ".GIF" in str(m.content)
+                lambda m: any(url in str(m.content) for url in types)
             )
 
             if message1 is None:
