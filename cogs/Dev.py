@@ -127,6 +127,26 @@ class Dev(commands.Cog):
         )
         await ctx.send(f"```{corner}```")
 
+    @commands.command(aliases=["binTotext"])
+    async def binTotxt(self, ctx, *, content: commands.clean_content):
+        """``binTotxt [hex code from .bin file]`` Converts .bin hex code into assembly."""
+        content = content.replace("```\n", "").replace("```", "")
+        out = (
+            f"```c\nAddress\t\t\t  Memory  Content\n{'-'*49}"
+            + "\n ".join(
+                [
+                    (
+                        f'{int(j[0], 16)}\t{" ".join([str(bin(int(j[1], 16))).lstrip("0b").zfill(32)[m:m + 4] for m in range(0, 32, 4)])}'
+                        if len(j) > 1
+                        else ""
+                    )
+                    for j in [i.split() for i in content.split("\n")]
+                ]
+            )
+            + "```"
+        )
+        await ctx.send(out)
+
 
 def setup(bot):
     bot.add_cog(Dev(bot))
