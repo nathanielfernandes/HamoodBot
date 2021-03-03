@@ -7,6 +7,27 @@ class Dev(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.c310 = {
+            "SETHI": [[21, 24, 29], ["op", "rd", "op2", "imm22"]],
+            "Branch": [[21, 24, 28], ["op", "cond", "op2", "disp22"]],
+            "CALL": [[29], ["op", "disp30"]],
+            "Arithmetic1": [
+                [4, 12, 13, 18, 24, 29],
+                ["op", "rd", "op3", "rs1", "i", "00000000", "rs2"],
+            ],
+            "Arithmetic2": [
+                [12, 13, 18, 24, 29],
+                ["op", "rd", "op3", "rs1", "i", "simm13"],
+            ],
+            "Memory1": [
+                [4, 12, 13, 18, 24, 29],
+                ["op", "rd", "op3", "rs1", "i", "00000000", "rs2"],
+            ],
+            "Memory2": [
+                [12, 13, 18, 24, 29],
+                ["op", "rd", "op3", "rs1", "i", "simm13"],
+            ],
+        }
 
     def to_id(self, name):
         return name.replace(" ", "_").lower()
@@ -146,6 +167,79 @@ class Dev(commands.Cog):
             + "```"
         )
         await ctx.send(out)
+
+    def arrange(self, code: str, positions: list):
+        spaces = positions[0] + [31]
+        values = positions[1]
+        code = code[::-1]
+        j = 0
+        new_code = ""
+        for i in range(len(code)):
+            if i == spaces[j]:
+                new_code += code[i] + " "
+                j += 1
+            else:
+                new_code += code[i]
+
+        new_code = new_code[::-1].strip().split()
+
+        top = []
+        for i in range(len(new_code)):
+            n = lambda x: int(len(x) / 2)
+            if len(values[i]) != len(new_code[i]):
+                top.append(
+                    ((n(new_code[i]) - n(values[i])) * " ")
+                    + values[i]
+                    + (
+                        (
+                            n(values[i])
+                            + (
+                                1
+                                if (len(new_code[i]) in (5, 7) and len(values[i]) != 3)
+                                else 0
+                            )
+                        )
+                        * " "
+                    )
+                )
+            else:
+                top.append(values[i])
+
+        return " ".join(top) + "\n" + " ".join(new_code)
+
+    @commands.command(aliases=["310"])
+    async def format(self, ctx, *, content: commands.clean_content):
+        content = content.replace(" ", "")
+        forms = []
+
+        if content[0] == "0":
+            if content[1] == "0":
+                forms.append("SETHI")
+                if content[2] == "0":
+                    forms.append("Branch")
+            else:
+                forms.append("CALL")
+        else:
+            if content[1] == "0":
+                if content[18] == "0":
+                    forms.append("Arithmetic1")
+                else:
+                    forms.append("Arithmetic2")
+            else:
+                if content[18] == "0":
+                    forms.append("Memory1")
+                else:
+                    forms.append("Memory2")
+
+        text = []
+        for form in forms:
+            a = self.arrange(content, self.c310[form]).split("\n")
+            t = f"{form} Format: "
+            text.append(f"{' '*20}{a[0]}\n{' '*(20-len(t))}{t}{a[1]}")
+
+        output = "```java\n" + "\n".join(text) + "\n```"
+
+        await ctx.send(output)
 
 
 def setup(bot):
