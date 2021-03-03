@@ -209,35 +209,34 @@ class Dev(commands.Cog):
 
     @commands.command(aliases=["310"])
     async def format(self, ctx, *, content: commands.clean_content):
+        """``format [binary machine code]`` tries to find format of machine code"""
         content = content.replace(" ", "")
-        forms = []
 
         if content[0] == "0":
             if content[1] == "0":
-                forms.append("SETHI")
-                if content[2] == "0":
-                    forms.append("Branch")
+                if content[7] == "1":
+                    form = "SETHI"
+                else:
+                    form = "Branch"
             else:
-                forms.append("CALL")
+                form = "CALL"
         else:
             if content[1] == "0":
                 if content[18] == "0":
-                    forms.append("Arithmetic1")
+                    form = "Arithmetic1"
                 else:
-                    forms.append("Arithmetic2")
+                    form = "Arithmetic2"
             else:
                 if content[18] == "0":
-                    forms.append("Memory1")
+                    form = "Memory1"
                 else:
-                    forms.append("Memory2")
+                    form = "Memory2"
 
-        text = []
-        for form in forms:
-            a = self.arrange(content, self.c310[form]).split("\n")
-            t = f"{form} Format: "
-            text.append(f"{' '*20}{a[0]}\n{' '*(20-len(t))}{t}{a[1]}")
+        a = self.arrange(content, self.c310[form]).split("\n")
+        t = f"{form} Format: "
+        text = f"{' '*len(t)}{a[0]}\n{t}{a[1]}"
 
-        output = "```java\n" + "\n".join(text) + "\n```"
+        output = "```java\n" + text + "\n```"
 
         await ctx.send(output)
 
