@@ -646,7 +646,10 @@ class Games(commands.Cog):
         embed.set_thumbnail(
             url="https://cdn.discordapp.com/attachments/749779300181606411/776368591557754910/unknown.png"
         )
-        msg = await ctx.send(content="Use `.move` to begin.", embed=embed)
+        msg = await ctx.send(
+            content=f"Use `{self.bot.find_prefix(ctx.guild.id)}move` to begin.",
+            embed=embed,
+        )
 
         currentGame = self.games[game_id]
         currentGame.message = msg

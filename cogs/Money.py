@@ -69,9 +69,10 @@ class Money(commands.Cog):
             )
 
         else:
+            p = self.bot.find_prefix(ctx.guild.id)
             items_v = await self.get_items_value(ctx)
             if bal is not None:
-                ask = f"\n \nUse `.balance upgrade` to increase your max bank storage from ⌬ {bal['bank_max']:,} to ⌬ {(bal['bank_max']*2) - (bal['bank_max']//2):,} for {self.cash(bal['bank_max'])}"
+                ask = f"\n \nUse `{p}balance upgrade` to increase your max bank storage from ⌬ {bal['bank_max']:,} to ⌬ {(bal['bank_max']*2) - (bal['bank_max']//2):,} for {self.cash(bal['bank_max'])}"
 
                 embed = discord.Embed(
                     title=f"{ctx.author}'s Balance",
@@ -226,6 +227,4 @@ class Money(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Money(bot))
-
-
 

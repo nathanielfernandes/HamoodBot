@@ -248,6 +248,7 @@ class Jobs(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def daily(self, ctx):
         """``daily`` Get your daily reward."""
+        p = self.bot.prefixes_list.get(ctx.guild.id, ".")
         ready, time, streak = await self.bot.members.is_daily_ready(ctx.author.id)
         if ready:
             await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
@@ -262,14 +263,14 @@ class Jobs(commands.Cog):
 
             embed = discord.Embed(
                 title=f"Daily Reward Collected |  `⌬ {reward:,}`",
-                description=f"{ctx.author.mention}, {self.cash(reward)} was added to all your wallets.\n \nUse `.daily` again in 24 hours.\n \nYou can vote for Hamood using `.vote` for cooler rewards!",
+                description=f"{ctx.author.mention}, {self.cash(reward)} was added to all your wallets.\n \nUse `{p}daily` again in 24 hours.\n \nYou can vote for Hamood using `{p}vote` for cooler rewards!",
                 color=ctx.author.color,
                 timestamp=ctx.message.created_at,
             )
         else:
             embed = discord.Embed(
                 title=f"Daily Reward Unavailable",
-                description=f"{ctx.author.mention} your daily reward can be collected in ```{time}```\nYou can vote for Hamood using `.vote` for cooler rewards!",
+                description=f"{ctx.author.mention} your daily reward can be collected in ```{time}```\nYou can vote for Hamood using `{p}vote` for cooler rewards!",
                 color=ctx.author.color,
                 timestamp=ctx.message.created_at,
             )

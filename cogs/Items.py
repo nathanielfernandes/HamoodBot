@@ -152,6 +152,7 @@ class Items(commands.Cog):
                     else:
                         msg = f"`No items that match the criteria`"
 
+                    p = self.bot.find_prefix(ctx.guild.id)
                     embed = discord.Embed(
                         title=f"{ctx.author}'s Inventory ({items['item_space']['total']}/{items['item_space']['max']})",
                         description=msg,
@@ -161,7 +162,7 @@ class Items(commands.Cog):
 
                     embed.add_field(
                         name=f"<:blank:794679084890193930>",
-                        value=f"**Total Value:** {self.cash(total)}\n \nUse `.inventory{f' {sort_by} ' if sort_by != 'price' else ' '}{page+1 if page+1 <= n else 1}` to view the next page.\nUse `.inventory upgrade` to increase your max inventory space from `{items['item_space']['max']}` to `{(items['item_space']['max']*2)-items['item_space']['max']//2}` for {self.cash((items['item_space']['max'] ** 3) // (items['item_space']['max'] // 6))}\n",
+                        value=f"**Total Value:** {self.cash(total)}\n \nUse `{p}inventory{f' {sort_by} ' if sort_by != 'price' else ' '}{page+1 if page+1 <= n else 1}` to view the next page.\nUse `{p}inventory upgrade` to increase your max inventory space from `{items['item_space']['max']}` to `{(items['item_space']['max']*2)-items['item_space']['max']//2}` for {self.cash((items['item_space']['max'] ** 3) // (items['item_space']['max'] // 6))}\n",
                     )
 
                     embed.set_footer(text=f"Page ({page}/{n})")
@@ -194,8 +195,8 @@ class Items(commands.Cog):
                 color=self.colors[self.bot.all_items[name]["rarity"]],
                 timestamp=ctx.message.created_at,
             )
-
-            buy = f"Use `.buy {name} 1` to purchase."
+            p = self.bot.find_prefix(ctx.guild.id)
+            buy = f"Use `{p}buy {name} 1` to purchase."
 
             embed.add_field(
                 name=f"<:blank:794679084890193930>",
@@ -219,10 +220,10 @@ class Items(commands.Cog):
         sort_by = sort_by.lower()
 
         items, n = await self.sort_items("itemlist", sort_by, page)
-
+        p = self.bot.find_prefix(ctx.guild.id)
         embed = discord.Embed(
             title=f"All Items | Sorted by {sort_by.capitalize()} ({page}/{n})",
-            description=f"{items}\n<:blank:794679084890193930>\nUse `.itemlist{f' {sort_by} ' if sort_by != 'price' else ' '}{page+1 if page+1 <= n else 1}` to view the next page.\nUse `.iteminfo [item name]` to find out more about an item.",
+            description=f"{items}\n<:blank:794679084890193930>\nUse `{p}itemlist{f' {sort_by} ' if sort_by != 'price' else ' '}{page+1 if page+1 <= n else 1}` to view the next page.\nUse `{p}iteminfo [item name]` to find out more about an item.",
             color=ctx.author.color,
             timestamp=ctx.message.created_at,
         )
@@ -299,7 +300,7 @@ class Items(commands.Cog):
                 await ctx.send("`You dont have that item!`")
         else:
             await ctx.send(
-                "`Invalid Item` Use `.iteminfo [item name]` to find its `item_id`"
+                f"`Invalid Item` Use `{self.bot.find_prefix(ctx.guild.id)}iteminfo [item name]` to find its `item_id`"
             )
 
     @commands.command()
@@ -352,8 +353,9 @@ class Items(commands.Cog):
             else:
                 await ctx.send("`That item cannot currently be bought`")
         else:
+
             await ctx.send(
-                "`Invalid Item` Use `.iteminfo [item name]` to find its `item_id`"
+                f"`Invalid Item` Use `{self.bot.find_prefix(ctx.guild.id)}iteminfo [item name]` to find its `item_id`"
             )
 
     @commands.command()
@@ -398,7 +400,7 @@ class Items(commands.Cog):
             await ctx.send("`Insufficient Items!`")
         else:
             await ctx.send(
-                "`Invalid Item` Use `.iteminfo [item name]` to find its `item_id`"
+                f"`Invalid Item` Use `{self.bot.find_prefix(ctx.guild.id)}iteminfo [item name]` to find its `item_id`"
             )
 
     @commands.command()
@@ -434,7 +436,7 @@ class Items(commands.Cog):
             await ctx.send("`Insufficient Items!`")
         else:
             await ctx.send(
-                "`Invalid Item` Use `.iteminfo [item name]` to find its `item_id`"
+                f"`Invalid Item` Use `{self.bot.find_prefix(ctx.guild.id)}iteminfo [item name]` to find its `item_id`"
             )
 
     @commands.command()
@@ -498,10 +500,10 @@ class Items(commands.Cog):
     async def shop(self, ctx, page=1):
         """``shop [page]`` view the current items you can buy."""
         items, n = await self.sort_items("shop", "shop", page)
-
+        p = self.bot.find_prefix(ctx.guild.id)
         embed = discord.Embed(
             title=f"Item Shop ({page}/{n})",
-            description=f"<:blank:794679084890193930>\n{items}\n<:blank:794679084890193930>\nUse `.buy [item_id] [amount]` to buy an item.\nUse `.shop {page+1 if page+1 <= n else 1}` to view the next page.\nUse `.iteminfo [item name]` to find out more about an item.",
+            description=f"<:blank:794679084890193930>\n{items}\n<:blank:794679084890193930>\nUse `{p}buy [item_id] [amount]` to buy an item.\nUse `{p}shop {page+1 if page+1 <= n else 1}` to view the next page.\nUse `{p}iteminfo [item name]` to find out more about an item.",
             color=ctx.author.color,
             timestamp=ctx.message.created_at,
         )

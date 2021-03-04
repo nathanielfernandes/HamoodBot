@@ -25,9 +25,9 @@ class About(commands.Cog):
         self.bot = bot
         self.currentDT = str(datetime.datetime.now())
         self.start = datetime.datetime.now()
-        self.dblpy = dbl.DBLClient(
-            self.bot, TOPGG,
-        )  # Autopost will post your guild count every
+        # self.dblpy = dbl.DBLClient(
+        #     self.bot, TOPGG,
+        # )  # Autopost will post your guild count every
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -181,10 +181,11 @@ class About(commands.Cog):
     @commands.has_permissions(embed_links=True)
     async def help(self, ctx, query=None):
         """``help [category or command]``"""
+        p = self.bot.find_prefix(ctx.guild.id)
         if query is None:
             halp = discord.Embed(
                 title="Command Categories",
-                description="Use `.help [category]` to find out more about them!\nYou can also just click [**here**](https://nathanielfernandes.github.io/HamoodBot/#commands) for info on all the commands. [Support Server](https://discord.gg/7dEuxNq3)",
+                description=f"Use `{p}help [category]` to find out more about them!\nYou can also just click [**here**](https://nathanielfernandes.github.io/HamoodBot/#commands) for info on all the commands. [Support Server](https://discord.gg/7dEuxNq3)",
                 color=discord.Color.blue(),
             )
             cogs_desc = ""
@@ -209,7 +210,7 @@ class About(commands.Cog):
                     if query.lower() == str(cog).lower():
                         halp = discord.Embed(
                             title=f"{cog} Command Listing",
-                            description=f"{self.bot.cogs[str(cog)].__doc__}\n Use `.help [command]` to find out how to use a specific command.",
+                            description=f"{self.bot.cogs[str(cog)].__doc__}\n Use `{p}help [command]` to find out how to use a specific command.",
                             color=discord.Color.blue(),
                         )
 
@@ -223,7 +224,7 @@ class About(commands.Cog):
                     if query.lower() == command.name:
                         halp = discord.Embed(
                             title=f"`{command.name.capitalize()}` Command Help",
-                            description=f"**.**{command.help}",
+                            description=f"**{p}**{command.help}",
                             color=discord.Color.blue(),
                         )
             else:

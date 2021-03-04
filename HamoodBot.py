@@ -57,7 +57,7 @@ if __name__ == "__main__":
     )
 
     bot.prefixes_list = {}
-
+    bot.find_prefix = lambda guild_id: bot.prefixes_list.get(guild_id, ".")
     connected = False
     bot.timeout_list = []
     bot.islive = live
@@ -232,6 +232,8 @@ if __name__ == "__main__":
             except Exception:
                 nsfw = False
 
+            p = bot.find_prefix(message.guild.id)
+
             if profCheck((message.content).lower()):
                 if (
                     "hamood" in (message.content).lower()
@@ -242,7 +244,8 @@ if __name__ == "__main__":
                     )
 
                 if not nsfw:
-                    if (message.content).startswith("."):
+
+                    if (message.content).startswith(p):
                         await message.add_reaction("<:profane:804446468014473246>")
                     return
 
@@ -250,9 +253,10 @@ if __name__ == "__main__":
                 await message.channel.send(responses[message.content].format(message))
 
             elif message.content.replace(" ", "") == f"<@!{bot.user.id}>":
-                p = await get_prefix(bot, message)
                 await message.channel.send(f"**The Server Prefix is `{p}`**")
                 return
+            elif message.content.startswith(".help") and p != ".":
+                await message.channel.send(f"Use `{p}help` instead!")
 
             # elif (message.content).lower().startswith("im") or (
             #     message.content

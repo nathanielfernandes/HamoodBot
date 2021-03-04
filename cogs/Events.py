@@ -95,7 +95,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-
+        p = self.bot.find_prefix(ctx.guild.id)
         timeout = False
         if isinstance(error, commands.CommandOnCooldown):
             embed = discord.Embed(
@@ -129,7 +129,7 @@ class Events(commands.Cog):
 
                 embed = discord.Embed(
                     title="Command Failed",
-                    description=f"**{ctx.command.name}** is used like this: ```ini\n.{s[start:end]}```",
+                    description=f"**{ctx.command.name}** is used like this: ```ini\n{p}{s[start:end]}```",
                     colour=discord.Color.red(),
                     timestamp=ctx.message.created_at,
                 )
