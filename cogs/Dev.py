@@ -207,37 +207,48 @@ class Dev(commands.Cog):
 
         return " ".join(top) + "\n" + " ".join(new_code)
 
-    @commands.command(aliases=["310"])
-    async def format(self, ctx, *, content: commands.clean_content):
-        """``format [binary machine code]`` tries to find format of machine code"""
-        content = content.replace(" ", "")
-
-        if content[0] == "0":
-            if content[1] == "0":
-                if content[7] == "1":
-                    form = "SETHI"
-                else:
-                    form = "Branch"
-            else:
-                form = "CALL"
+    def format(self, content):
+        if "\n" not in content:
+            contents = [content]
         else:
-            if content[1] == "0":
-                if content[18] == "0":
-                    form = "Arithmetic1"
+            contents = content.split("\n")
+        i = 1
+        text = []
+
+        for content in contents:
+            if content[0] == "0":
+                if content[1] == "0":
+                    if content[7] == "1":
+                        form = "SETHI"
+                    else:
+                        form = "Branch"
                 else:
-                    form = "Arithmetic2"
+                    form = "CALL"
             else:
-                if content[18] == "0":
-                    form = "Memory1"
+                if content[1] == "0":
+                    if content[18] == "0":
+                        form = "Arithmetic1"
+                    else:
+                        form = "Arithmetic2"
                 else:
-                    form = "Memory2"
+                    if content[18] == "0":
+                        form = "Memory1"
+                    else:
+                        form = "Memory2"
 
-        a = self.arrange(content, self.c310[form]).split("\n")
-        t = f"{form} Format: "
-        text = f"{' '*len(t)}{a[0]}\n{t}{a[1]}"
+            a = self.arrange(content, self.c310[form]).split("\n")
+            t = f"{i}{(21-len(form + ' Format: '))*' '}{form} Format: "
+            text.append(f"{' '*22}{a[0]}\n{(22-len(t))*' '}{t}{a[1]}")
+            i += 1
+        s = f'\n{60*"-"}\n'
+        output = "```java\n" + s.join(text) + "\n```"
+        return output
 
-        output = "```java\n" + text + "\n```"
-
+    @commands.command()
+    async def formatbin(self, ctx, *, content: commands.clean_content):
+        """``formatbin [binary machine code]`` tries to find format of machine code"""
+        content = content.replace(" ", "").replace("```", "")
+        output = self.format(content)
         await ctx.send(output)
 
 

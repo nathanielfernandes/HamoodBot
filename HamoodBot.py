@@ -36,17 +36,29 @@ if __name__ == "__main__":
         prefix = "/"
         live = False
 
+    async def get_prefix(bot, message):
+        if message.guild.id not in bot.prefixes_list:
+            server = await bot.prefixdb.find_by_id(str(message.guild.id))
+            if server is None:
+                bot.prefixes_list[message.guild.id] = "."
+            else:
+                bot.prefixes_list[message.guild.id] = server["prefix"]
+        return bot.prefixes_list.get(message.guild.id, ".")
+
     intents = discord.Intents().default()
     intents.members = True
 
     bot = commands.AutoShardedBot(
-        command_prefix=commands.when_mentioned_or(prefix),
+        command_prefix=get_prefix,
         case_insensitive=True,
         intents=intents,
         help_command=None,
         owner_ids={317144947880886274, 485138947115057162, 616148871499874310},
     )
 
+    bot.prefixes_list = {}
+
+    connected = False
     bot.timeout_list = []
     bot.islive = live
 
@@ -140,26 +152,23 @@ if __name__ == "__main__":
 
     @bot.event
     async def on_ready():
+        global connected
         # @ global variation
-        await bot.change_presence(
-            activity=discord.Streaming(
-                name="Starting Up", url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-            )
-        )
 
         bot.aioSession = aiohttp.ClientSession()
-        unloadList = ["Games", "Jobs", "Items", "Money"]
-        if bot.islive:
-            for cog in unloadList:
-                bot.unload_extension(f"cogs.{cog}")
+        # unloadList = ["Games", "Jobs", "Items", "Money"]
+        # if bot.islive:
+        #     for cog in unloadList:
+        #         bot.unload_extension(f"cogs.{cog}")
 
-            bot.leaderboards = Leaderboards()
-            bot.inventories = Inventories()
-            bot.currency = Currency()
-            bot.members = Members()
+        bot.prefixdb = Prefixes()
+        bot.leaderboards = Leaderboards()
+        bot.inventories = Inventories()
+        bot.currency = Currency()
+        bot.members = Members()
 
-            for cog in unloadList:
-                bot.load_extension(f"cogs.{cog}")
+        # for cog in unloadList:
+        #     bot.load_extension(f"cogs.{cog}")
 
         # print(bot.common_items
         toc = time.perf_counter()
@@ -177,6 +186,7 @@ if __name__ == "__main__":
                 name=f"{sum([len(g.members) for g in bot.guilds])} Users",
             )
         )
+        connected = True
 
         # fp = open("/Users/nathaniel/Desktop/HamoodBot/tempImages/newyears.jpg", "rb")
         # pfp = fp.read()
@@ -211,7 +221,7 @@ if __name__ == "__main__":
 
     @bot.event
     async def on_message(message):
-        if message.guild is not None:
+        if message.guild is not None and connected:
             # checks again to make sure the bot does not reply to itself
             if (message.author.id == bot.user.id) or (
                 message.author.id in bot.timeout_list
@@ -225,7 +235,7 @@ if __name__ == "__main__":
             if profCheck((message.content).lower()):
                 if (
                     "hamood" in (message.content).lower()
-                    or "<@699510311018823680>" in (message.content).lower()
+                    or f"<@!{bot.user.id}>" in (message.content).lower()
                 ):
                     await message.channel.send(
                         f"{message.author.mention} **No U!** <a:no_u:790709588168540170>"
@@ -238,6 +248,11 @@ if __name__ == "__main__":
 
             elif message.content in responses:
                 await message.channel.send(responses[message.content].format(message))
+
+            elif message.content.replace(" ", "") == f"<@!{bot.user.id}>":
+                p = await get_prefix(bot, message)
+                await message.channel.send(f"**The Server Prefix is `{p}`**")
+                return
 
             # elif (message.content).lower().startswith("im") or (
             #     message.content

@@ -32,6 +32,28 @@ class Mod(commands.Cog):
             "Web",
         ]
 
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.has_permissions(manage_guild=True)
+    async def prefix(self, ctx, *, content: commands.clean_content = None):
+        """``prefix [new prefix]`` changes the server prefix for Hamood"""
+        if content is None:
+            return await ctx.send(
+                f"**The Server Prefix is: **`{self.bot.prefixes_list.get(ctx.guild.id, '.')}`"
+            )
+
+        content = content.replace("@", "").replace("/", "").replace("\\", "")
+        if len(content) > 10:
+            content = content[:10]
+
+        if content == "":
+            return await ctx.send(f"**Cannot Change Server Prefix To: **`{content}`")
+
+        self.bot.prefixes_list[ctx.guild.id] = content
+        await self.bot.prefixdb.change_prefix(str(ctx.guild.id), content)
+
+        await ctx.send(f"**Changed Server Prefix To:** `{content}`")
+
     # @commands.command()
     # @commands.has_permissions(manage_roles=True)
     # async def rainbowroles(self, ctx):
