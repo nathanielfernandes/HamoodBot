@@ -60,6 +60,11 @@ class Mod(commands.Cog):
     #     """``rainbowroles`` adds a role color picker"""
     #     await server.create_role(name="it!", hoist=True)
 
+    # @commands.command()
+    # @checks.isAllowedCommand()
+    # @commands.has_permissions(manage_guild=True)
+    # async def subscribe(self, ctx, *, url: commands.clean_content=None):
+
     @commands.command()
     @checks.isAllowedCommand()
     @commands.has_permissions(kick_members=True)

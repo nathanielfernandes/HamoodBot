@@ -2,7 +2,7 @@ import os
 import discord
 from discord.ext import commands
 
-from modules.image_functions import Modify, Modify_Gif
+from modules.image_functions import Modify, Modify_Gif, makeColorImg
 import modules.checks as checks
 
 
@@ -113,8 +113,43 @@ class Avatarmemes(commands.Cog):
     @commands.has_permissions(attach_files=True)
     async def compare(self, ctx, *avamember: discord.Member):
         """``compare [@user1] [@user2]`` compares discord avatars"""
+        if len(avamember) > 9:
+            avamember = avamember[:9]
+
+        l = len(avamember)
+        scale = 200 * (9 - l)
+        square = l ** 0.5
+        half = l / 2
+        if square.is_integer():
+            x = scale * int(square)
+            y = scale * int(square)
+            dim = int(square)
+        elif half.is_integer():
+            x = scale * int(half)
+            y = scale * 2
+            dim = int(half)
+        else:
+            x = l * scale
+            y = scale
+            dim = l
+
+        plate = makeColorImg(
+            rgba=(255, 255, 255, 255), path=self.memes + "/", size=(x, y)
+        )
+        plate = plate.strip(self.memes + "/")
+
+        coords = []
+        j = 0
+        k = 0
+        for i in range(l):
+            if i == dim:
+                j += 1
+                k = i
+
+            coords.append([(((i - k) * scale), j * scale), 0])
+
         await self.meme_prep(
-            ctx, "blankAvatar.jpg", avamember, [[(0, 0), 0], [(405, 0), 0]], (400, 400)
+            ctx, plate, avamember, coords, (scale, scale),
         )
 
     @commands.command()
