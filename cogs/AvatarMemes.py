@@ -16,17 +16,21 @@ class Avatarmemes(commands.Cog):
         self.memes = f"{self.direct}/memePics"
         self.save_location = f"{self.direct}/tempImages"
 
-    async def meme_prep(self, ctx, meme_image, members, positions, size):
+    async def meme_prep(
+        self, ctx, meme_image, members, positions, size, delete_og=False
+    ):
         async with ctx.typing():
             members = list(members)
             if len(members) == 0:
                 members.append(ctx.author)
 
             ext = meme_image[-3:]
+            meme_save = f"{self.memes}/{meme_image}"
+
             if ext == "gif":
-                meme = Modify_Gif(gif_location=f"{self.memes}/{meme_image}")
+                meme = Modify_Gif(gif_location=meme_save)
             else:
-                meme = Modify(image_location=f"{self.memes}/{meme_image}")
+                meme = Modify(image_location=meme_save)
                 ext = "image"
 
             for i in range(len(members)):
@@ -45,6 +49,8 @@ class Avatarmemes(commands.Cog):
 
             await ctx.send(file=discord.File(meme))
         os.remove(meme)
+        if delete_og:
+            os.remove(meme_save)
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -117,7 +123,7 @@ class Avatarmemes(commands.Cog):
             avamember = avamember[:9]
 
         l = len(avamember)
-        scale = 200 * (9 - l)
+        scale = 200 * (10 - l)
         square = l ** 0.5
         half = l / 2
         if square.is_integer():
@@ -125,9 +131,14 @@ class Avatarmemes(commands.Cog):
             y = scale * int(square)
             dim = int(square)
         elif half.is_integer():
-            x = scale * int(half)
-            y = scale * 2
-            dim = int(half)
+            if int(half) == 1:
+                x = scale * 2
+                y = scale
+                dim = l
+            else:
+                x = scale * int(half)
+                y = scale * 2
+                dim = int(half)
         else:
             x = l * scale
             y = scale
@@ -142,14 +153,14 @@ class Avatarmemes(commands.Cog):
         j = 0
         k = 0
         for i in range(l):
-            if i == dim:
+            if i == dim or i == dim * (j + 1):
                 j += 1
                 k = i
 
             coords.append([(((i - k) * scale), j * scale), 0])
 
         await self.meme_prep(
-            ctx, plate, avamember, coords, (scale, scale),
+            ctx, plate, avamember, coords, (scale, scale), delete_og=True
         )
 
     @commands.command()
