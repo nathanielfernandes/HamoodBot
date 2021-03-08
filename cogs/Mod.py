@@ -1,3 +1,4 @@
+import os
 import re
 import discord
 from discord.ext import commands
@@ -5,6 +6,14 @@ from discord.ext import commands
 
 # from modules.database import *
 import modules.checks as checks
+
+try:
+    DISCORDSUBHUB = os.environ["DISCORDSUBHUB"]
+except KeyError:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+    DISCORDSUBHUB = os.environ.get("DISCORDSUBHUB")
 
 
 class Mod(commands.Cog):
@@ -316,6 +325,107 @@ class Mod(commands.Cog):
 
                     pinned = await channel.send(embed=embed)
                     await pinned.add_reaction("<:profane:804446468014473246>")
+
+    # @commands.command()
+    # async def hooks(self, ctx):
+    #     # content = "\n".join(
+    #     #     [
+    #     #         f"**{w.name}** - Bound To: **{w.channel.name}**"
+    #     #         for w in await ctx.guild.webhooks()
+    #     #     ]
+    #     # )
+    #     try:
+    #         webhook = await ctx.channel.create_webhook(name="Hamood's Hook")
+    #         print(webhook.url)
+    #     except Exception:
+    #         print("failed")
+    #         pass
+
+    #     bruh = [
+    #         w.name for w in await ctx.guild.webhooks() if w.channel_id == ctx.channel.id
+    #     ]
+
+    #     await ctx.send(bruh)
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.has_permissions(manage_guild=True)
+    @commands.cooldown(2, 60, commands.BucketType.guild)
+    async def subscribe(self, ctx, *, channel_url: commands.clean_content):
+        """``subscribe [youtube channel url]`` Subscribes the current channel to a youtube channel. Any uploads from the channel will be sent here."""
+        if (
+            channel_url.startswith("https://www.youtube.com/channel/")
+            or channel_url.startswith("https://www.youtube.com/user/")
+            or channel_url.startswith("https://www.youtube.com/c/")
+        ):
+            webhooks = [
+                w for w in await ctx.guild.webhooks() if w.channel_id == ctx.channel.id
+            ]
+
+            if len(webhooks) >= 1:
+                webhook_url = webhooks[0].url
+            else:
+                try:
+                    webhook = await ctx.channel.create_webhook(name="Hamood's Hook")
+                    webhook_url = webhook.url
+                except Exception:
+                    return await ctx.send("`Could not setup webhook!`")
+
+            headers = {
+                "channel_url": channel_url,
+                "webhook_url": webhook_url,
+                "mode": "subscribe",
+                "token": DISCORDSUBHUB,
+            }
+
+            async with self.bot.aioSession.post(
+                "https://discordsubhub.herokuapp.com/subscribe", headers=headers,
+            ) as response:
+                content = await response.text()
+
+            await ctx.send(f"**{content}**")
+        else:
+            return await ctx.send("`Invalid Channel Url`")
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.has_permissions(manage_guild=True)
+    @commands.cooldown(2, 60, commands.BucketType.guild)
+    async def unsubscribe(self, ctx, *, channel_url: commands.clean_content):
+        """``subscribe [youtube channel url]`` Unsubscribes the current channel from a youtube channel."""
+        if (
+            channel_url.startswith("https://www.youtube.com/channel/")
+            or channel_url.startswith("https://www.youtube.com/user/")
+            or channel_url.startswith("https://www.youtube.com/c/")
+        ):
+            webhooks = [
+                w for w in await ctx.guild.webhooks() if w.channel_id == ctx.channel.id
+            ]
+
+            if len(webhooks) >= 1:
+                webhook_url = webhooks[0].url
+            else:
+                try:
+                    webhook = await ctx.channel.create_webhook(name="Hamood's Hook")
+                    webhook_url = webhook.url
+                except Exception:
+                    return await ctx.send("`Could not setup webhook!`")
+
+            headers = {
+                "channel_url": channel_url,
+                "webhook_url": webhook_url,
+                "mode": "unsubscribe",
+                "token": DISCORDSUBHUB,
+            }
+
+            async with self.bot.aioSession.post(
+                "https://discordsubhub.herokuapp.com/subscribe", headers=headers,
+            ) as response:
+                content = await response.text()
+
+            await ctx.send(f"**{content}**")
+        else:
+            return await ctx.send("`Invalid Channel Url`")
 
     # @commands.command()
     # @checks.isAllowedCommand()

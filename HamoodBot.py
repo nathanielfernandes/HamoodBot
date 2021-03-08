@@ -162,10 +162,10 @@ if __name__ == "__main__":
         #         bot.unload_extension(f"cogs.{cog}")
 
         bot.prefixdb = Prefixes()
-        bot.leaderboards = Leaderboards()
-        bot.inventories = Inventories()
-        bot.currency = Currency()
-        bot.members = Members()
+        # bot.leaderboards = Leaderboards()
+        # bot.inventories = Inventories()
+        # bot.currency = Currency()
+        # bot.members = Members()
 
         # for cog in unloadList:
         #     bot.load_extension(f"cogs.{cog}")
