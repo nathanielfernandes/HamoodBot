@@ -14,6 +14,22 @@ c310 = {
     "Memory2": [[12, 13, 18, 24, 29], ["op", "rd", "op3", "rs1", "i", "simm13"],],
 }
 
+codes = {
+    "010000": "addcc",
+    "010001": "andcc",
+    "010010": "orcc",
+    "010110": "orncc",
+    "100110": "srl",
+    "111000": "jmpl",
+    "000000": "ld",
+    "000100": "st",
+    "0001": "be",
+    "0101": "bcs",
+    "0110": "bneg",
+    "0111": "bvs",
+    "1000": "ba",
+}
+
 
 def arrange(code: str, positions: list):
     spaces = positions[0] + [31]
@@ -53,23 +69,6 @@ def arrange(code: str, positions: list):
             top.append(values[i])
 
     return " ".join(top) + "\n" + " ".join(new_code)
-
-
-codes = {
-    "010000": "addcc",
-    "010001": "andcc",
-    "010010": "orcc",
-    "010110": "orncc",
-    "100110": "srl",
-    "111000": "jmpl",
-    "000000": "ld",
-    "000100": "st",
-    "0001": "be",
-    "0101": "bcs",
-    "0110": "bneg",
-    "0111": "bvs",
-    "1000": "ba",
-}
 
 
 def get_inst(ops):
@@ -131,7 +130,61 @@ def format(content):
     return output
 
 
-b = "00000010100000000000000000000101"
-bruh = format(b)
-print(bruh)
+def twos_compliment(og_binary):
+    if og_binary[0] == "1":
+        binary = og_binary.replace("0", "$").replace("1", "0").replace("$", "1")
+        val = int(binary, 2) + 1
+        n = "{0:b}".format(val)
+        binary = og_binary[0] * (len(og_binary) - len(n)) + n
+    else:
+        binary = og_binary
+    return binary
+
+
+def ones_compliment(og_binary):
+    if og_binary[0] == "1":
+        temp = og_binary[1:]
+        binary = og_binary[0] + temp.replace("0", "$").replace("1", "0").replace(
+            "$", "1"
+        )
+    else:
+        binary = og_binary
+
+    return binary
+
+
+def float_to_bin(num):
+    num1 = bin(int(str(num).split(".")[0])).split("b")
+
+    num2 = float("0" + "." + str(num).split(".")[1])
+    sign = ["-", "1"] if num < 0 else ["", "0"]
+
+    b = ""
+    for i in range(23):
+        num2 *= 2
+        b += str(int(str(num2)[0]) // int(str(num2)[0])) if str(num2)[0] != "0" else "0"
+        num2 = float("0" + "." + str(num2).split(".")[1])
+        if num2 == 0:
+            break
+
+    if num1[1][0] == "1":
+        exponent = len(num1[1]) - 1
+        b2 = b
+    else:
+        exponent = b.find("1") - 1
+        b2 = b[abs(int(exponent)) :]
+
+    step1 = f"{sign[0]}{num1[1]}.{b})2"
+    step2 = f"{sign[0]}{num1[1][0]}.{num1[1][1:]}{b2})2 x2^{exponent}"
+
+    exponent_b = bin(exponent + 127).split("b")[1].zfill(8)
+
+    bin_float = f"{num1[1][1:]}{b2}"
+
+    step3 = f"{sign[1]} {exponent_b} {bin_float}{'0'*(23-len(bin_float))}"
+
+    return f"Step 1 - Convert to target base: {step1}\nStep 2 - Normalize: {step2}\nStep 3 - Fill in bits: {step3}\n\n{num})10 => {step3}"
+
+
+print(float_to_bin(-12.625))
 

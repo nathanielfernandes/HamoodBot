@@ -68,7 +68,7 @@ class Cps310(commands.Cog):
         """``binTotxt [hex code from .bin file]`` Converts .bin hex code into assembly."""
         content = content.replace("```\n", "").replace("```", "")
         out = (
-            f"```c\nAddress\t\t\t  Memory  Content\n{'-'*49}"
+            f"```c\nAddress\t\t\t  Memory  Content\n{'-'*49}\n"
             + "\n ".join(
                 [
                     (
@@ -207,6 +207,84 @@ class Cps310(commands.Cog):
             await ctx.send(
                 f"`Unkown instruction! Possible instructions are {list(self.instructions.keys())}`"
             )
+
+    def twos_compliment(self, og_binary):
+        if og_binary[0] == "1":
+            binary = og_binary.replace("0", "$").replace("1", "0").replace("$", "1")
+            val = int(binary, 2) + 1
+            n = "{0:b}".format(val)
+            binary = og_binary[0] * (len(og_binary) - len(n)) + n
+        else:
+            binary = og_binary
+        return binary
+
+    def ones_compliment(self, og_binary):
+        if og_binary[0] == "1":
+            temp = og_binary[1:]
+            binary = og_binary[0] + temp.replace("0", "$").replace("1", "0").replace(
+                "$", "1"
+            )
+        else:
+            binary = og_binary
+
+        return binary
+
+    @commands.command()
+    async def twoscomp(self, ctx, *, content: commands.clean_content):
+        """``twoscomp [binary number]`` resturns the twos compliment representation of a binary number. Requires the sign bit."""
+        content = content.replace(" ", "")
+        await ctx.send("```java\n" + self.twos_compliment(content) + "```")
+
+    @commands.command()
+    async def onescomp(self, ctx, *, content: commands.clean_content):
+        """``onescomp [binary number]`` resturns the twos compliment representation of a binary number"""
+        content = content.replace(" ", "")
+        await ctx.send("```java\n" + self.ones_compliment(content) + "```")
+
+    def float_to_bin(self, num):
+        num1 = bin(int(str(num).split(".")[0])).split("b")
+
+        num2 = float("0" + "." + str(num).split(".")[1])
+        sign = ["-", "1"] if num < 0 else ["", "0"]
+
+        b = ""
+        for i in range(23):
+            num2 *= 2
+            b += (
+                str(int(str(num2)[0]) // int(str(num2)[0]))
+                if str(num2)[0] != "0"
+                else "0"
+            )
+            num2 = float("0" + "." + str(num2).split(".")[1])
+            if num2 == 0:
+                break
+
+        if num1[1][0] == "1":
+            exponent = len(num1[1]) - 1
+            b2 = b
+        else:
+            exponent = b.find("1") - 1
+            b2 = b[abs(int(exponent)) :]
+
+        step1 = f"{sign[0]}{num1[1]}.{b})2"
+        step2 = f"{sign[0]}{num1[1][0]}.{num1[1][1:]}{b2})2 x2^{exponent}"
+
+        exponent_b = bin(exponent + 127).split("b")[1].zfill(8)
+
+        bin_float = f"{num1[1][1:]}{b2}"
+
+        step3 = f"{sign[1]} {exponent_b} {bin_float}{'0'*(23-len(bin_float))}"
+
+        return step1, step2, step3
+
+    @commands.command()
+    async def floattobin(self, ctx, *, content: commands.clean_content):
+        """``floattobin [float]`` Converts a float (+/-) into its binary representation with steps. (Single) (IEE754)"""
+        content = float(content.replace(" ", ""))
+        step1, step2, step3 = self.float_to_bin(content)
+        await ctx.send(
+            f"Step 1 - Convert to target base: `{step1}`\nStep 2 - Normalize: `{step2}`\nStep 3 - Fill in bits: `{step3}`\n\n```{' '*(len(str(content))+7)}s exponent   mantissa/fraction  \n{content})10 => {step3}```"
+        )
 
 
 def setup(bot):
