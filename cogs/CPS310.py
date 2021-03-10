@@ -7,6 +7,9 @@ class Cps310(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.flag = False
+        self.cheaters = []
+        self.names = []
         self.c310 = {
             "SETHI": [[21, 24, 29], ["op", "rd", "op2", "imm22"]],
             "Branch": [[21, 24, 28], ["op", "cond", "op2", "disp22"]],
@@ -63,9 +66,26 @@ class Cps310(commands.Cog):
             "ba": f"\n[Description]: Branch to the address computed by adding 4 ´ disp22 in the Branch instruction format to the address of the current instruction.\n\nExample usage: ba label\n\n[Meaning]: Branch to label regardless of the settings of the condition codes. For the object code shown below, label is five words earlier in memory than the ba instruction.\n\nObject code: {self.format('00010000101111111111111111111011')}",
         }
 
+    async def checklol(self, ctx):
+        if self.flag:
+            if ctx.author.id not in self.cheaters:
+                await ctx.send(
+                    "Oh you got caught lacking already?\nOn test day?\nYou thought you could get this shit easy, didn't you?\nClose discord, there are no answers available.\nClose discord, you are not passing.\n"
+                    "https://tenor.com/view/caught-in-4k-caught-in4k-chungus-gif-19840038"
+                )
+                self.cheaters.append(ctx.author.id)
+                self.names.append(
+                    f"{ctx.author} - {ctx.guild.name} | {ctx.message.created_at.strftime('%a, %d %B %Y, %I:%M %p UTC')}"
+                )
+
+                return True
+        return False
+
     @commands.command(aliases=["binTotext"])
     async def binTotxt(self, ctx, *, content: commands.clean_content):
         """``binTotxt [hex code from .bin file]`` Converts .bin hex code into assembly."""
+        if await self.checklol(ctx):
+            return
         content = content.replace("```\n", "").replace("```", "")
         out = (
             f"```c\nAddress\t\t\t  Memory  Content\n{'-'*49}\n"
@@ -184,6 +204,8 @@ class Cps310(commands.Cog):
     @commands.command()
     async def formatbin(self, ctx, *, content: commands.clean_content):
         """``formatbin [binary machine code]`` tries to find format of machine code"""
+        if await self.checklol(ctx):
+            return
         content = content.replace("```", "")
         output = self.format(content, True)
         await ctx.send(output)
@@ -191,6 +213,8 @@ class Cps310(commands.Cog):
     @commands.command()
     async def spaceout(self, ctx, *, content: commands.clean_content):
         """``spaceout [binary machine code]`` spaces out your binary code"""
+        if await self.checklol(ctx):
+            return
         c = content.replace(" ", "").replace("```", "")
         x = " ".join([c[i : i + 4] for i in range(0, len(c), 4)])
         await ctx.send(f"```java\n{x}```")
@@ -198,6 +222,8 @@ class Cps310(commands.Cog):
     @commands.command(aliases=["instruct"])
     async def instruction(self, ctx, *, content: commands.clean_content):
         """``instruction [arc instruction]`` get info on an arc command"""
+        if await self.checklol(ctx):
+            return
         content = content.replace(" ", "").lower()
         if content in self.instructions:
             await ctx.send(
@@ -232,12 +258,16 @@ class Cps310(commands.Cog):
     @commands.command()
     async def twoscomp(self, ctx, *, content: commands.clean_content):
         """``twoscomp [binary number]`` resturns the twos compliment representation of a binary number. Requires the sign bit."""
+        if await self.checklol(ctx):
+            return
         content = content.replace(" ", "")
         await ctx.send("```java\n" + self.twos_compliment(content) + "```")
 
     @commands.command()
     async def onescomp(self, ctx, *, content: commands.clean_content):
         """``onescomp [binary number]`` resturns the twos compliment representation of a binary number"""
+        if await self.checklol(ctx):
+            return
         content = content.replace(" ", "")
         await ctx.send("```java\n" + self.ones_compliment(content) + "```")
 
@@ -267,11 +297,14 @@ class Cps310(commands.Cog):
             b2 = b[abs(int(exponent)) :]
 
         step1 = f"{sign[0]}{num1[1]}.{b})2"
-        step2 = f"{sign[0]}{num1[1][0]}.{num1[1][1:]}{b2})2 x2^{exponent}"
+
+        step2 = f"{sign[0]}1.{num1[1][1:]}{b2})2 x2^{exponent}"
 
         exponent_b = bin(exponent + 127).split("b")[1].zfill(8)
 
         bin_float = f"{num1[1][1:]}{b2}"
+        if len(bin_float) > 23:
+            bin_float = bin_float[:23]
 
         step3 = f"{sign[1]} {exponent_b} {bin_float}{'0'*(23-len(bin_float))}"
 
@@ -280,11 +313,27 @@ class Cps310(commands.Cog):
     @commands.command()
     async def floattobin(self, ctx, *, content: commands.clean_content):
         """``floattobin [float]`` Converts a float (+/-) into its binary representation with steps. (Single) (IEE754)"""
+        if await self.checklol(ctx):
+            return
         content = float(content.replace(" ", ""))
         step1, step2, step3 = self.float_to_bin(content)
         await ctx.send(
             f"Step 1 - Convert to target base: `{step1}`\nStep 2 - Normalize: `{step2}`\nStep 3 - Fill in bits: `{step3}`\n\n```{' '*(len(str(content))+7)}s exponent   mantissa/fraction  \n{content})10 => {step3}```"
         )
+
+    @commands.command()
+    @commands.is_owner()
+    async def caught(self, ctx):
+        """owner only"""
+        await ctx.send("```" + "\n".join(self.names) + "```")
+
+    @commands.command()
+    @commands.is_owner()
+    async def snap(self, ctx):
+        """owner only"""
+        self.flag = True if not self.flag else False
+        self.cheaters = []
+        await ctx.send("Flag is " + str(self.flag))
 
 
 def setup(bot):
