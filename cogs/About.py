@@ -25,9 +25,9 @@ class About(commands.Cog):
         self.bot = bot
         self.currentDT = str(datetime.datetime.now())
         self.start = datetime.datetime.now()
-        # self.dblpy = dbl.DBLClient(
-        #     self.bot, TOPGG,
-        # )  # Autopost will post your guild count every
+        self.dblpy = dbl.DBLClient(
+            self.bot, TOPGG,
+        )  # Autopost will post your guild count every
 
     @commands.command()
     @checks.isAllowedCommand()

@@ -52,13 +52,13 @@ class Jobs(commands.Cog):
     # @checks.isAllowedCommand()
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(1, 1800, commands.BucketType.user)
+    @commands.cooldown(1, 15, commands.BucketType.user)
     async def work(self, ctx):
         """``work`` earn some money"""
         await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
 
         payout = await self.bot.currency.get_currency(ctx.guild.id, ctx.author.id)
-        payout = round(payout["bank_max"] * random.uniform(0.01, 0.1))
+        payout = round(payout["bank_max"] * random.uniform(0.001, 0.01))
 
         game = _Trivia().get_questions(category="any", difficulty="easy", amount=1)[0]
 
@@ -187,6 +187,8 @@ class Jobs(commands.Cog):
                 )
 
                 if victim_bal is not None and victim_bal["wallet"] != 0:
+                    await self.bot.currency.add_member(ctx.guild.id, member.id)
+
                     if ran <= 80:
                         amount = round(
                             victim_bal["wallet"]
@@ -196,9 +198,10 @@ class Jobs(commands.Cog):
                                 else 0.2
                             )
                         )
+                        await self.bot.currency.update_wallet(
+                            ctx.guild.id, ctx.author.id, amount
+                        )
                     else:
-                        await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
-
                         if attacker_bal["wallet"] >= attacker_bal["bank"]:
                             amount = round(
                                 attacker_bal["wallet"] * -1 * random.uniform(0.2, 0.8)
@@ -213,8 +216,6 @@ class Jobs(commands.Cog):
                             await self.bot.currency.update_bank(
                                 ctx.guild.id, ctx.author.id, amount
                             )
-
-                    await self.bot.currency.add_member(ctx.guild.id, member.id)
 
                     await self.bot.currency.update_wallet(
                         ctx.guild.id, member.id, -1 * amount

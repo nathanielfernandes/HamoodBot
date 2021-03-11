@@ -320,6 +320,7 @@ class Cps310(commands.Cog):
         ans = float(f"{ans:0.6f}")
         return f"{sign}{ans}"
 
+    @commands.command()
     async def bintofloat(self, ctx, *, content: commands.clean_content):
         """``bintofloat [bin]`` Converts a binary single (+/-) into its decimal representation.(Single) (IEE754)"""
         if await self.checklol(ctx):
