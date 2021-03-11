@@ -310,6 +310,23 @@ class Cps310(commands.Cog):
 
         return step1, step2, step3
 
+    def bin_to_float(self, bits):
+        bits = bits.replace(" ", "")
+        sign = "-" if bits[0] == "1" else ""
+        exponent = (int(bits[1:9], 2) - 127) - 23
+        mantissa = int("1" + bits[9:], 2)
+
+        ans = mantissa * 2 ** exponent
+        ans = float(f"{ans:0.6f}")
+        return f"{sign}{ans}"
+
+    async def bintofloat(self, ctx, *, content: commands.clean_content):
+        """``bintofloat [bin]`` Converts a binary single (+/-) into its decimal representation.(Single) (IEE754)"""
+        if await self.checklol(ctx):
+            return
+        content = content.replace(" ", "")
+        await ctx.send(bin_to_float(content))
+
     @commands.command()
     async def floattobin(self, ctx, *, content: commands.clean_content):
         """``floattobin [float]`` Converts a float (+/-) into its binary representation with steps. (Single) (IEE754)"""
@@ -324,20 +341,20 @@ class Cps310(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def caught(self, ctx):
-        """owner only"""
+        """``owner only``"""
         await ctx.send("```" + "\n".join(self.names) + "```")
 
     @commands.command()
     @commands.is_owner()
     async def snap(self, ctx):
-        """owner only"""
+        """``owner only``"""
         self.flag = True if not self.flag else False
         self.cheaters = []
         await ctx.send("Flag is " + str(self.flag))
 
     @commands.command()
     async def sethi(self, ctx, *, content: commands.clean_content):
-        """```sethi [hex number]``` sends how a register would look after sethi has been run"""
+        """``sethi [hex number]`` sets high the first 22 bits and low the last 10"""
         if await self.checklol(ctx):
             return
         if "0x" not in content:
@@ -349,6 +366,7 @@ class Cps310(commands.Cog):
 
     @commands.command()
     async def psr(self, ctx, *, content: commands.clean_content):
+        """``psr [psr code]`` tells you what flags have been set."""
         if await self.checklol(ctx):
             return
 
@@ -367,6 +385,12 @@ class Cps310(commands.Cog):
             msg += "**C:** `operation has resulted in a requirement to carry`\n"
 
         await ctx.send(msg)
+
+    @commands.command()
+    async def srl(self, ctx, bits, *, content: commands.clean_content):
+        """``srl [bits to shift (base 10)] [binary number]`` shifts a binary number down filling in zeros from the left"""
+        content = content.replace(" ", "")[: 32 - int(bits)].zfill(32)
+        await ctx.send(f"```java\n{content}```")
 
 
 def setup(bot):
