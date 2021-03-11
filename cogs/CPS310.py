@@ -335,6 +335,39 @@ class Cps310(commands.Cog):
         self.cheaters = []
         await ctx.send("Flag is " + str(self.flag))
 
+    @commands.command()
+    async def sethi(self, ctx, *, content: commands.clean_content):
+        """```sethi [hex number]``` sends how a register would look after sethi has been run"""
+        if await self.checklol(ctx):
+            return
+        if "0x" not in content:
+            content = "0x" + content
+        content = bin(int(content, 16)).split("b")[1]
+
+        num = (content + ("0" * 10)).zfill(32)
+        await ctx.send("```java\n" + num + "```")
+
+    @commands.command()
+    async def psr(self, ctx, *, content: commands.clean_content):
+        if await self.checklol(ctx):
+            return
+
+        c = content.replace(" ", "").replace("```", "")
+        x = [c[i : i + 4] for i in range(0, len(c), 4)]
+
+        # nzvc
+        msg = ""
+        if x[2][0] == "1":
+            msg += "**N:** `operation has resulted in a negative number`\n"
+        if x[2][1] == "1":
+            msg += "**Z:** `operation has resulted to zero`\n"
+        if x[2][2] == "1":
+            msg += "**V:** `operation has resulted to an overflow`\n"
+        if x[2][3] == "1":
+            msg += "**C:** `operation has resulted in a requirement to carry`\n"
+
+        await ctx.send(msg)
+
 
 def setup(bot):
     bot.add_cog(Cps310(bot))
