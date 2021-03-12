@@ -187,7 +187,7 @@ class Jobs(commands.Cog):
                 )
 
                 if victim_bal is not None and victim_bal["wallet"] != 0:
-                    await self.bot.currency.add_member(ctx.guild.id, member.id)
+                    await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
 
                     if ran <= 80:
                         amount = round(
