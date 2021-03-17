@@ -189,13 +189,13 @@ class Jobs(commands.Cog):
                 if victim_bal is not None and victim_bal["wallet"] != 0:
                     await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
 
-                    if ran <= 80:
+                    if ran <= 85:
                         amount = round(
                             victim_bal["wallet"]
                             * (
-                                random.uniform(0.1, 0.7)
+                                random.uniform(0.05, 0.5)
                                 if random.randint(1, 10) > 5
-                                else 0.2
+                                else 0.1
                             )
                         )
                         await self.bot.currency.update_wallet(
@@ -252,19 +252,16 @@ class Jobs(commands.Cog):
         p = self.bot.prefixes_list.get(ctx.guild.id, ".")
         ready, time, streak = await self.bot.members.is_daily_ready(ctx.author.id)
         if ready:
-            await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
-            bal = await self.bot.currency.get_currency(ctx.guild.id, ctx.author.id)
+            await self.bot.inventories.add_member(ctx.guild.id, ctx.author.id)
 
-            reward = round((bal["bank_max"] / 4) + (100 * streak))
-
-            await self.bot.currency.update_all_wallets(ctx.author.id, reward)
+            await self.bot.inventories.incr_all_invs(ctx.author.id, "cheque", 1)
 
             await self.bot.members.add_member(ctx.author.id)
             await self.bot.members.reset_daily(ctx.author.id)
 
             embed = discord.Embed(
-                title=f"Daily Reward Collected |  `⌬ {reward:,}`",
-                description=f"{ctx.author.mention}, {self.cash(reward)} was added to all your wallets.\n \nUse `{p}daily` again in 24 hours.\n \nYou can vote for Hamood using `{p}vote` for cooler rewards!",
+                title=f"Daily Reward Collected",
+                description=f"{ctx.author.mention}, a **Cheque** was added to all your inventories.\n \nUse `{p}daily` again in 24 hours.\n \nYou can vote for Hamood using `{p}vote` for cooler rewards!",
                 color=ctx.author.color,
                 timestamp=ctx.message.created_at,
             )

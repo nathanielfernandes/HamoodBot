@@ -53,7 +53,7 @@ if __name__ == "__main__":
         case_insensitive=True,
         intents=intents,
         help_command=None,
-        owner_ids={317144947880886274, 485138947115057162, 616148871499874310},
+        owner_ids={485138947115057162, 616148871499874310},
     )
 
     bot.prefixes_list = {}
@@ -78,7 +78,7 @@ if __name__ == "__main__":
         bot.all_items = {
             i: every_item[i]
             for i in every_item
-            if every_item[i]["type"] not in ["crate"]
+            if every_item[i]["type"] not in ["crate", "claimable"]
         }
 
         for i in bot.all_items:
@@ -273,8 +273,7 @@ if __name__ == "__main__":
             if str(payload.emoji) == "<:profane:804446468014473246>":
                 if (
                     payload.member.guild_permissions.manage_messages
-                    or payload.user_id
-                    in [317144947880886274, 485138947115057162, 616148871499874310]
+                    or payload.user_id in [485138947115057162, 616148871499874310]
                 ):
                     channel = await bot.fetch_channel(payload.channel_id)
                     msg = await channel.fetch_message(payload.message_id)

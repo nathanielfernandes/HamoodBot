@@ -512,6 +512,15 @@
         "rarity": "dev",
         "type": "collectable"
     },
+    "cheque": {
+        "info": "I wonder where these come from. Use `cheque` to claim it.",
+        "image": "https://cdn.discordapp.com/emojis/821591185624793108.png?v=1",
+        "emoji": "<:cheque:821591185624793108>",
+        "value": 0,
+        "price": 0,
+        "rarity": "blackmarket",
+        "type": "claimable"
+    },
     "blackmarket_crate": {
         "info": "This crate yeilds `x1` items with rarities from ***RARE*** up to ***BLACKMARKET***\n \n***RARE***: `80%`\n***EPIC***: `13%`\n***LEGENDARY***: `5%`\n***BLACKMARKET***: `2%`",
         "image": "https://cdn.discordapp.com/emojis/793618040025645106.png?v=1",

@@ -155,7 +155,7 @@ class About(commands.Cog):
         #
         embed.add_field(
             name=f"Rewards {'`x2` Weekend Multiplier' if w else ''}",
-            value=f"<:blackmarketbox:793618040025645106> Blackmarket Crate `x{1*(2 if w else 1)}`\n<:regularbox:793619180683001876> Regular Crate `x{2*(2 if w else 1)}`\n<a:coin:790679388147679272> Money: [⌬ {2500*(2 if w else 1):,}](https://top.gg/bot/699510311018823680)",
+            value=f"<:blackmarketbox:793618040025645106> Blackmarket Crate `x{1*(2 if w else 1)}`\n<:regularbox:793619180683001876> Regular Crate `x{2*(2 if w else 1)}`\n<:cheque:821591185624793108> Cheque: `x{(2 if w else 1)}`",
         )
         embed.set_thumbnail(
             url="https://cdn.discordapp.com/emojis/778416296630157333.png?v=1"

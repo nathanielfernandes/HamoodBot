@@ -441,14 +441,16 @@ class Items(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 1800, commands.BucketType.user)
     async def gift(
         self, ctx, recipient: discord.Member = None, item_id="1234", amount=1
     ):
-        """``gift [@member] [item_id] [amount]`` Gift items to other members."""
+        """``gift [@member] [item_id] [amount]`` Gift items to other members. 5 items max."""
         if recipient is not None and recipient.id != ctx.author.id:
             if self.valid_item(item_id):
                 amount = abs(int(amount))
+                if amount > 5:
+                    amount = 5
                 sender = ctx.author
                 sender_items = await self.bot.inventories.get_items(
                     ctx.guild.id, sender.id
@@ -493,6 +495,7 @@ class Items(commands.Cog):
                 await ctx.send("`That item does not exist`")
         else:
             await ctx.send("`The gift recipient was not specified`")
+        ctx.command.reset_cooldown(ctx)
 
     @commands.command()
     @checks.isAllowedCommand()

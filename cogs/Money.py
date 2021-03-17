@@ -90,6 +90,37 @@ class Money(commands.Cog):
             embed.set_thumbnail(url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
 
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def cheque(self, ctx):
+        """``cheque`` Claims a cheque if you have one."""
+        items = await self.bot.inventories.get_items(ctx.guild.id, ctx.author.id)
+        if items is not None:
+            if items.get("cheque") is not None:
+                await self.bot.inventories.decr_item_amount(
+                    ctx.guild.id, ctx.author.id, "cheque", 1
+                )
+
+                await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
+                bal = await self.bot.currency.get_currency(ctx.guild.id, ctx.author.id)
+
+                reward = round((bal["bank_max"] / 4))
+                embed = discord.Embed(
+                    title=f"Cheque Claimed | `⌬ {reward:,}`",
+                    description=f"{ctx.author.mention}, a {self.cash(reward)} was added to your wallet",
+                    color=ctx.author.color,
+                    timestamp=ctx.message.created_at,
+                )
+
+                await self.bot.currency.update_wallet(
+                    ctx.guild.id, ctx.author.id, reward
+                )
+                return await ctx.send(embed=embed)
+
+        ctx.command.reset_cooldown(ctx)
+        await ctx.send("`You do not have a cheque to claim.`")
+
     @commands.command(aliases=["dep"])
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -151,9 +182,9 @@ class Money(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 900, commands.BucketType.user)
     async def transfer(self, ctx, recipient: discord.Member = None, amount=1):
-        """``transfer [@member] [amount]`` Transfer funds to another member."""
+        """``transfer [@member] [amount]`` Transfer funds to another member. There is a 40% tax on transfering."""
         if recipient is not None and recipient.id != ctx.author.id:
             amount = abs(int(amount))
             sender = ctx.author
@@ -161,16 +192,17 @@ class Money(commands.Cog):
 
             if sender_bal is not None and sender_bal["bank"] >= amount:
                 await self.bot.currency.add_member(ctx.guild.id, recipient.id)
-                await self.bot.currency.update_wallet(
-                    ctx.guild.id, recipient.id, amount
-                )
+
+                tax = 0.4
+                taxed = round(amount * tax)
+                await self.bot.currency.update_wallet(ctx.guild.id, recipient.id, taxed)
                 await self.bot.currency.update_bank(
                     ctx.guild.id, sender.id, -1 * amount
                 )
 
                 embed = discord.Embed(
-                    title=f"`{sender}` transfered `⌬ {amount}` to `{recipient}`",
-                    description=f"{sender.mention} successfully transfered {self.cash(amount)} to {recipient.mention}",
+                    title=f"`{sender}` transfered `⌬ {taxed}` to `{recipient}`",
+                    description=f"{sender.mention} successfully transfered {self.cash(taxed)} to {recipient.mention}.\n{self.cash(round(amount*tax))} was taxed.",
                     color=ctx.author.color,
                     timestamp=ctx.message.created_at,
                 )
@@ -178,10 +210,12 @@ class Money(commands.Cog):
                 return await ctx.send(embed=embed)
 
             else:
+                ctx.command.reset_cooldown(ctx)
                 await ctx.send(
                     "`Insufficient Funds` Your bank balance can only be transfered."
                 )
         else:
+            ctx.command.reset_cooldown(ctx)
             await ctx.send("`The transfer recipient was not specified`")
 
     @commands.command()
@@ -190,6 +224,7 @@ class Money(commands.Cog):
     async def richest(self, ctx):
         """``richest`` See the richest members in the server."""
         server = await self.bot.currency.get(ctx.guild.id)
+        gdp = 0
 
         members = []
         if server is not None:
@@ -201,6 +236,7 @@ class Money(commands.Cog):
                             str(self.bot.get_user(int(i))),
                         ]
                     )
+                    gdp += server[i]["wallet"] + server[i]["bank"]
         else:
             return await ctx.send("`not enough members have money`")
 
@@ -218,7 +254,8 @@ class Money(commands.Cog):
 
         embed = discord.Embed(
             title=f"{players} Richest Members in this server",
-            description="\n".join(members),
+            description="\n".join(members)
+            + f"\n\nThis server currently has {self.cash(gdp)} in circulation.",
             color=discord.Color.gold(),
             timestamp=ctx.message.created_at,
         )
