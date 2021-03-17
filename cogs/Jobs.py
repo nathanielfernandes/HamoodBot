@@ -280,7 +280,7 @@ class Jobs(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
-    @commands.cooldown(1, 60, commands.BucketType.user)
+    @commands.cooldown(1, 180, commands.BucketType.user)
     async def fish(self, ctx):
         """``fish`` Maybe you'll catch something"""
         items = await self.bot.inventories.get_items(ctx.guild.id, ctx.author.id)

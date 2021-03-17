@@ -193,7 +193,7 @@ class Money(commands.Cog):
             if sender_bal is not None and sender_bal["bank"] >= amount:
                 await self.bot.currency.add_member(ctx.guild.id, recipient.id)
 
-                tax = 0.4
+                tax = 0.6
                 taxed = round(amount * tax)
                 await self.bot.currency.update_wallet(ctx.guild.id, recipient.id, taxed)
                 await self.bot.currency.update_bank(
@@ -202,7 +202,7 @@ class Money(commands.Cog):
 
                 embed = discord.Embed(
                     title=f"`{sender}` transfered `⌬ {taxed}` to `{recipient}`",
-                    description=f"{sender.mention} successfully transfered {self.cash(taxed)} to {recipient.mention}.\n{self.cash(round(amount*tax))} was taxed.",
+                    description=f"{sender.mention} successfully transfered {self.cash(taxed)} to {recipient.mention}.\n{self.cash(round(amount*(1-tax)))} was taxed.",
                     color=ctx.author.color,
                     timestamp=ctx.message.created_at,
                 )
