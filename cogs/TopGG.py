@@ -42,8 +42,8 @@ class TopGG(commands.Cog):
 
     @commands.Cog.listener()
     async def on_dbl_vote(self, data):
-        await self.bot.currency.update_all_wallets(
-            data["user"], 2500 * (2 if data["isWeekend"] else 1)
+        await self.bot.inventories.incr_all_invs(
+            data["user"], "cheque", 1 * (2 if data["isWeekend"] else 1)
         )
         await self.bot.inventories.incr_all_invs(
             data["user"], "blackmarket_crate", 1 * (2 if data["isWeekend"] else 1)
