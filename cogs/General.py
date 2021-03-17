@@ -166,10 +166,7 @@ class General(commands.Cog):
                 elif rgba[i] > 255:
                     rgba[i] = 255
 
-        img = makeColorImg(
-            rgba,
-            f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages",
-        )
+        img = makeColorImg(rgba, f"{self.bot.filepath}/temp",)
         await ctx.send(file=discord.File(img))
         os.remove(img)
 
@@ -255,13 +252,11 @@ class General(commands.Cog):
     @commands.command()
     @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
-    async def no(self, ctx, content: str):
+    async def no(self, ctx, content: str = None):
         """``no u`` sends an uno reverse card"""
         if content == "u" or content == "you":
             # await ctx.channel.purge(limit=1)
-            uno = randomFile(
-                folder=f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/memePics/unoCards"
-            )
+            uno = randomFile(folder=f"{self.bot.filepath}/memePics/unoCards")
             await ctx.send(file=discord.File(uno))
 
     @commands.command(aliases=["movie time"])
@@ -289,7 +284,7 @@ class General(commands.Cog):
 
             timeLeft = end - today
             embed.description = (
-                f"```{self.pretty_time_delta(timeLeft.total_seconds())}```"
+                f"```{self.bot.pretty_time_delta(timeLeft.total_seconds())}```"
             )
 
         await ctx.send(embed=embed)
@@ -317,7 +312,7 @@ class General(commands.Cog):
 
             timeLeft = end - today
             embed.description = (
-                f"```{self.pretty_time_delta(timeLeft.total_seconds())}```"
+                f"```{self.bot.pretty_time_delta(timeLeft.total_seconds())}```"
             )
 
         await ctx.send(embed=embed)
@@ -325,25 +320,6 @@ class General(commands.Cog):
     # @commands.command(aliases=["clock"])
     # async def time(self, ctx):
     #     """``time`` sends the current time"""
-
-    def pretty_time_delta(self, seconds):
-        seconds = int(seconds)
-        days, seconds = divmod(seconds, 86400)
-        hours, seconds = divmod(seconds, 3600)
-        minutes, seconds = divmod(seconds, 60)
-        if days > 0:
-            return "%d days, %d hours, %d minutes, %d seconds" % (
-                days,
-                hours,
-                minutes,
-                seconds,
-            )
-        elif hours > 0:
-            return "%d hours, %d minutes, %d seconds" % (hours, minutes, seconds)
-        elif minutes > 0:
-            return "%d minutes, %d seconds" % (minutes, seconds)
-        else:
-            return "%d seconds" % (seconds,)
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -360,7 +336,7 @@ class General(commands.Cog):
         """``tts [text]`` text to speech"""
         speech = gTTS(text=content[:600], lang="en", slow=False)
         save = (
-            f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages/"
+            f"{self.bot.filepath}/temp/"
             + "".join([str(random.randint(0, 9)) for i in range(12)])
             + ".mp3"
         )

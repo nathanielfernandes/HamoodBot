@@ -83,8 +83,8 @@ class About(commands.Cog):
     @checks.isAllowedCommand()
     async def info(self, ctx):
         """``info`` info on Hamood"""
-        general = self.bot.get_cog("General")
-        uptime = general.pretty_time_delta(
+
+        uptime = self.bot.pretty_time_delta(
             (datetime.datetime.now() - self.start).total_seconds()
         )
 
@@ -205,6 +205,10 @@ class About(commands.Cog):
             # halp.add_field(name='Uncatergorized Commands',value=cmds_desc[0:len(cmds_desc)-1],inline=False)
         else:
             command_names = [c.name for c in self.bot.commands]
+            for i in self.bot.commands:
+                for j in i.aliases:
+                    command_names.append(j)
+
             if query.capitalize() in self.bot.cogs:
                 for cog in self.bot.cogs:
                     if query.lower() == str(cog).lower():
@@ -221,10 +225,17 @@ class About(commands.Cog):
                         )
             elif query.lower() in command_names:
                 for command in self.bot.commands:
-                    if query.lower() == command.name:
+                    if (
+                        query.lower() == command.name
+                        or query.lower() in command.aliases
+                    ):
+                        if len(command.aliases) > 0:
+                            a = ", ".join(["`" + i + "`" for i in command.aliases])
+                        else:
+                            a = ""
                         halp = discord.Embed(
                             title=f"`{command.name.capitalize()}` Command Help",
-                            description=f"**{p}**{command.help}",
+                            description=f"**{p}**{command.help}\n\nAliases: {a}",
                             color=discord.Color.blue(),
                         )
             else:

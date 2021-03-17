@@ -14,21 +14,10 @@ class Fonts(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
-        self.fontDict = json.load(
-            open(
-                f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/fonts.json"
-            )
-        )
-        self.colourDict = json.load(
-            open(
-                f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/colours.json"
-            )
-        )
-
-        self.direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
-        self.save_location = f"{self.direct}/tempImages"
-        self.fonts = f"{self.direct}/fonts"
+        self.fontDict = json.load(open(f"{self.bot.filepath}/data/fonts.json"))
+        self.colourDict = json.load(open(f"{self.bot.filepath}/data/colours.json"))
+        self.save_location = f"{self.bot.filepath}/temp"
+        self.fonts = f"{self.bot.filepath}/fonts"
 
     async def text_prep(self, ctx, text, font, font_size, colour, wrap=100, send=True):
 

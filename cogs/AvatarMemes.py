@@ -11,10 +11,8 @@ class Avatarmemes(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
-        self.direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
-        self.memes = f"{self.direct}/memePics"
-        self.save_location = f"{self.direct}/tempImages"
+        self.memes = f"{self.bot.filepath}/memePics"
+        self.save_location = f"{self.bot.filepath}/temp"
 
     async def meme_prep(
         self, ctx, meme_image, members, positions, size, delete_og=False

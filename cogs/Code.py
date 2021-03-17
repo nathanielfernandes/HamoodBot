@@ -13,9 +13,7 @@ class Code(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.language_info = json.load(
-            open(
-                f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/languageinfo.json"
-            )
+            open(f"{self.bot.filepath}/data/languageinfo.json")
         )
 
     async def run_code(self, ctx, language, code):

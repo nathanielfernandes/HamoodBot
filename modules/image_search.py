@@ -16,10 +16,7 @@ except KeyError:
 def ImgSearch(query):
     gis = GoogleImagesSearch(GTOKEN, GUSER)
     folder = (
-        os.path.split(os.getcwd())[0]
-        + "/"
-        + os.path.split(os.getcwd())[1]
-        + "/tempImages"
+        os.path.split(os.getcwd())[0] + "/" + os.path.split(os.getcwd())[1] + "/temp"
     )
 
     _search_params = {

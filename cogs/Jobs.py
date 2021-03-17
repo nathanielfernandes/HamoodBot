@@ -58,7 +58,7 @@ class Jobs(commands.Cog):
         await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
 
         payout = await self.bot.currency.get_currency(ctx.guild.id, ctx.author.id)
-        payout = round(payout["bank_max"] * random.uniform(0.001, 0.01))
+        payout = round(payout["bank_max"] * random.uniform(0.005, 0.02))
 
         game = _Trivia().get_questions(category="any", difficulty="easy", amount=1)[0]
 
@@ -268,7 +268,7 @@ class Jobs(commands.Cog):
         else:
             embed = discord.Embed(
                 title=f"Daily Reward Unavailable",
-                description=f"{ctx.author.mention} your daily reward can be collected in ```{time}```\nYou can vote for Hamood using `{p}vote` for cooler rewards!",
+                description=f"{ctx.author.mention} your daily reward can be collected in ```{self.bot.pretty_time_delta(time)}```\nYou can vote for Hamood using `{p}vote` for cooler rewards!",
                 color=ctx.author.color,
                 timestamp=ctx.message.created_at,
             )
@@ -295,15 +295,15 @@ class Jobs(commands.Cog):
                 if ran <= 30:
                     choice = None
                 elif ran <= 60:
-                    choice = self.bot.common_items
+                    choice = self.bot.market.common_items
                 elif ran <= 80:
-                    choice = self.bot.uncommon_items
+                    choice = self.bot.market.uncommon_items
                 elif ran <= 90:
-                    choice = self.bot.rare_items
+                    choice = self.bot.market.rare_items
                 elif ran <= 95:
-                    choice = self.bot.epic_items
+                    choice = self.bot.market.epic_items
                 elif ran <= 98:
-                    choice = self.bot.legendary_items
+                    choice = self.bot.market.legendary_items
                 else:
                     ran2 = random.randint(1, 10)
                     if ran2 <= 6:
@@ -322,12 +322,12 @@ class Jobs(commands.Cog):
                     )
 
                     embed = discord.Embed(
-                        title=f"You Fished `x1` {reward.replace('_', ' ').title()} | ***{self.bot.all_items[reward]['rarity'].upper()}***",
+                        title=f"You Fished `x1` {reward.replace('_', ' ').title()} | ***{self.bot.market.all_items[reward]['rarity'].upper()}***",
                         description=f"{ctx.author.mention} recieved `{reward}` from fishing!",
                         color=ctx.author.color,
                         timestamp=ctx.message.created_at,
                     )
-                    embed.set_thumbnail(url=self.bot.all_items[reward]["image"])
+                    embed.set_thumbnail(url=self.bot.market.all_items[reward]["image"])
 
                 else:
                     embed = discord.Embed(

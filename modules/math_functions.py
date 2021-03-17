@@ -17,17 +17,11 @@ import pylab
 
 from urllib.parse import quote
 
-# carbon_data = json.load(
-#     open(
-#         f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/carbon.json"
-#     )
-# )
-
 
 chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 symbl = "abcdefghijklmnopqrstuvwxyz"
 colors = ["b", "g", "r", "c", "m"]
-folder = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/tempImages"
+folder = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/temp"
 
 restricted = [
     "exit",

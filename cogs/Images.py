@@ -13,10 +13,9 @@ class Images(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
-        self.save_location = f"{self.direct}/tempImages"
-        self.fonts = f"{self.direct}/fonts"
-        self.memes = f"{self.direct}/memePics"
+        self.save_location = f"{self.bot.filepath}/temp"
+        self.fonts = f"{self.bot.filepath}/fonts"
+        self.memes = f"{self.bot.filepath}/memePics"
 
     # self.test123 = Modify(image_location=f"{self.memes}/furniture.png")
 

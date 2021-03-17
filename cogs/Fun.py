@@ -20,9 +20,7 @@ class Fun(commands.Cog):
         self.words = json.loads(self.url.read())
 
         self.roasts = open(
-            f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/roasts.txt",
-            "r",
-            encoding="utf-8",
+            f"{self.bot.filepath}/data/roasts.txt", "r", encoding="utf-8",
         ).readlines()
 
     @commands.command()

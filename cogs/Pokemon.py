@@ -13,11 +13,7 @@ class Pokemon(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.data = json.load(
-            open(
-                f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/pokemon.json"
-            )
-        )
+        self.data = json.load(open(f"{self.bot.filepath}/data/pokemon.json"))
 
     @commands.command()
     @checks.isAllowedCommand()

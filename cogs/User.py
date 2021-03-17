@@ -25,7 +25,7 @@ class User(commands.Cog):
         member = ctx.author if not member else member
         await ctx.send(f"{member.name} joined in {member.joined_at}")
 
-    @commands.command()
+    @commands.command(aliases=["pfp"])
     @checks.isAllowedCommand()
     @commands.has_permissions(embed_links=True)
     async def avatar(self, ctx, member: discord.Member = None):

@@ -14,10 +14,9 @@ class Memes(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
-        self.memes = f"{self.direct}/memePics"
-        self.save_location = f"{self.direct}/tempImages"
-        self.fonts = f"{self.direct}/fonts"
+        self.memes = f"{self.bot.filepath}/memePics"
+        self.save_location = f"{self.bot.filepath}/temp"
+        self.fonts = f"{self.bot.filepath}/fonts"
         self.cards = {
             "billnyeCard.jpg": [[(320, 200), (355, 245)], 28],
             "caprioCard.jpg": [[(290, 152), (320, 252)], 28],

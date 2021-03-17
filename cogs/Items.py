@@ -1,7 +1,7 @@
 import discord
 import random
 from discord.ext import commands
-
+from datetime import datetime
 import modules.checks as checks
 
 
@@ -21,19 +21,19 @@ class Items(commands.Cog):
             "dev": discord.Color.from_rgb(1, 1, 1),
         }
 
-        self.rare_ranking = dict(list(self.bot.all_items.items())[::-1])
+        self.rare_ranking = dict(list(self.bot.market.all_items.items())[::-1])
 
         self.cash = lambda n: f"[⌬ {n:,}](https://top.gg/bot/699510311018823680)"
 
     def get_percent(self, item_id):
-        if self.bot.all_items[item_id]["value"] > 0:
+        if self.bot.market.all_items[item_id]["value"] > 0:
             percent = round(
                 (
                     (
-                        self.bot.all_items[item_id]["price"]
-                        - self.bot.all_items[item_id]["value"]
+                        self.bot.market.all_items[item_id]["price"]
+                        - self.bot.market.all_items[item_id]["value"]
                     )
-                    / self.bot.all_items[item_id]["value"]
+                    / self.bot.market.all_items[item_id]["value"]
                 )
                 * 100
             )
@@ -43,9 +43,15 @@ class Items(commands.Cog):
 
     def get_arrow(self, name):
         name = self.to_id(name)
-        if self.bot.all_items[name]["price"] > self.bot.all_items[name]["value"]:
+        if (
+            self.bot.market.all_items[name]["price"]
+            > self.bot.market.all_items[name]["value"]
+        ):
             return "<:up:790784452321476628>"
-        elif self.bot.all_items[name]["price"] < self.bot.all_items[name]["value"]:
+        elif (
+            self.bot.market.all_items[name]["price"]
+            < self.bot.market.all_items[name]["value"]
+        ):
             return "<:down:790784452132732959>"
         else:
             return ""
@@ -57,7 +63,7 @@ class Items(commands.Cog):
         return name.replace("_", " ").title()
 
     def valid_item(self, name):
-        return self.to_id(name) in self.bot.all_items
+        return self.to_id(name) in self.bot.market.all_items
 
     # @commands.command()
     # async def item_ids(self, ctx, sort_by="rarity"):
@@ -140,7 +146,7 @@ class Items(commands.Cog):
             if items is not None:
                 if items["item_space"]["total"] != 0:
                     total = sum(
-                        self.bot.all_items[i]["price"] * int(items[i])
+                        self.bot.market.all_items[i]["price"] * int(items[i])
                         for i in items
                         if i != "item_space"
                     )
@@ -188,11 +194,11 @@ class Items(commands.Cog):
         """``iteminfo [item name]`` get information on an item."""
         if self.valid_item(name):
             name = self.to_id(name)
-            desc = "\n".join([f"{self.bot.all_items[name]['info']}"])
+            desc = "\n".join([f"{self.bot.market.all_items[name]['info']}"])
             embed = discord.Embed(
-                title=f"{self.to_name(name)} | ***{self.bot.all_items[name]['rarity'].upper()}*** {' | `In Shop`' if name in self.bot.shop else ''}",
+                title=f"{self.to_name(name)} | ***{self.bot.market.all_items[name]['rarity'].upper()}*** {' | `In Shop`' if name in self.bot.market.shop else ''}",
                 description=f"{desc}",
-                color=self.colors[self.bot.all_items[name]["rarity"]],
+                color=self.colors[self.bot.market.all_items[name]["rarity"]],
                 timestamp=ctx.message.created_at,
             )
             p = self.bot.find_prefix(ctx.guild.id)
@@ -200,9 +206,9 @@ class Items(commands.Cog):
 
             embed.add_field(
                 name=f"<:blank:794679084890193930>",
-                value=f"**Current Price**: {self.cash(self.bot.all_items[name]['price'])} {self.get_arrow(name)}{self.get_percent(name)}\n**Regular Price**: {self.cash(self.bot.all_items[name]['value'])}\n \nitem_id: `{name}`\n{buy if name in self.bot.shop else ''}type: `{self.bot.all_items[name]['type']}`",
+                value=f"**Current Price**: {self.cash(self.bot.market.all_items[name]['price'])} {self.get_arrow(name)}{self.get_percent(name)}\n**Regular Price**: {self.cash(self.bot.market.all_items[name]['value'])}\n \nitem_id: `{name}`\n{buy if name in self.bot.market.shop else ''}type: `{self.bot.market.all_items[name]['type']}`",
             )
-            embed.set_thumbnail(url=self.bot.all_items[name]["image"])
+            embed.set_thumbnail(url=self.bot.market.all_items[name]["image"])
 
             await ctx.send(embed=embed)
         else:
@@ -237,33 +243,35 @@ class Items(commands.Cog):
     async def open(self, ctx, item_id):
         """``open [crate_id]`` used to open crates"""
         item_id = self.to_id(item_id)
-        if item_id in self.bot.crates:
+        if item_id in self.bot.market.crates:
             inv = await self.bot.inventories.get_items(ctx.guild.id, ctx.author.id)
 
             if inv is not None and item_id in inv:
                 if await self.bot.inventories.member_has_space(
-                    ctx.guild.id, ctx.author.id, self.bot.crates[item_id]["contains"]
+                    ctx.guild.id,
+                    ctx.author.id,
+                    self.bot.market.crates[item_id]["contains"],
                 ):
                     reward = {}
-                    for i in range(self.bot.crates[item_id]["contains"]):
+                    for i in range(self.bot.market.crates[item_id]["contains"]):
                         ran = random.randint(1, 100)
                         if item_id == "blackmarket_crate":
                             if ran <= 80:
-                                choice = self.bot.rare_items
+                                choice = self.bot.market.rare_items
                             elif ran <= 93:
-                                choice = self.bot.epic_items
+                                choice = self.bot.market.epic_items
                             elif ran <= 98:
-                                choice = self.bot.legendary_items
+                                choice = self.bot.market.legendary_items
                             else:
-                                choice = self.bot.blackmarket_items
+                                choice = self.bot.market.blackmarket_items
 
                         elif item_id == "rare_crate":
                             if ran <= 20:
-                                choice = self.bot.common_items
+                                choice = self.bot.market.common_items
                             elif ran <= 50:
-                                choice = self.bot.uncommon_items
+                                choice = self.bot.market.uncommon_items
                             else:
-                                choice = self.bot.rare_items
+                                choice = self.bot.market.rare_items
 
                         k, v = random.choice(list(choice.items()))
 
@@ -279,7 +287,7 @@ class Items(commands.Cog):
                     )
 
                     item_desc = (
-                        lambda i: f"{self.bot.all_items[i]['emoji']} - **{self.to_name(i)}** `x{reward[i]}` **|** {self.cash(self.bot.all_items[i]['price']*int(reward[i]))}"
+                        lambda i: f"{self.bot.market.all_items[i]['emoji']} - **{self.to_name(i)}** `x{reward[i]}` **|** {self.cash(self.bot.market.all_items[i]['price']*int(reward[i]))}"
                     )
 
                     desc = "\n".join([item_desc(i) for i in reward])
@@ -290,7 +298,7 @@ class Items(commands.Cog):
                         color=ctx.author.color,
                         timestamp=ctx.message.created_at,
                     )
-                    embed.set_thumbnail(url=self.bot.crates[item_id]["image"])
+                    embed.set_thumbnail(url=self.bot.market.crates[item_id]["image"])
 
                     await ctx.send(embed=embed)
 
@@ -312,7 +320,7 @@ class Items(commands.Cog):
         if amount == 0:
             amount = 1
         if self.valid_item(item_id):
-            if self.to_id(item_id) in self.bot.shop:
+            if self.to_id(item_id) in self.bot.market.shop:
                 if await self.bot.inventories.member_has_space(
                     ctx.guild.id, ctx.author.id, amount
                 ):
@@ -321,7 +329,7 @@ class Items(commands.Cog):
                     )
                     if bal is not None:
                         item_id = self.to_id(item_id)
-                        item = self.bot.all_items[item_id]
+                        item = self.bot.market.all_items[item_id]
 
                         cost = item["price"] * amount
 
@@ -341,7 +349,7 @@ class Items(commands.Cog):
                             )
 
                             embed.set_thumbnail(
-                                url=self.bot.all_items[item_id]["image"]
+                                url=self.bot.market.all_items[item_id]["image"]
                             )
 
                             return await ctx.send(embed=embed)
@@ -369,7 +377,7 @@ class Items(commands.Cog):
                 amount = 1
         if self.valid_item(item_id):
             item_id = self.to_id(item_id)
-            item = self.bot.all_items[item_id]
+            item = self.bot.market.all_items[item_id]
             if item["type"] != "sellable":
                 return await ctx.send("`That Item cannot be sold`")
             items = await self.bot.inventories.get_items(ctx.guild.id, ctx.author.id)
@@ -393,7 +401,7 @@ class Items(commands.Cog):
                         color=ctx.author.color,
                         timestamp=ctx.message.created_at,
                     )
-                    embed.set_thumbnail(url=self.bot.all_items[item_id]["image"])
+                    embed.set_thumbnail(url=self.bot.market.all_items[item_id]["image"])
 
                     return await ctx.send(embed=embed)
 
@@ -412,7 +420,7 @@ class Items(commands.Cog):
             amount = abs(int(amount))
         if self.valid_item(item_id):
             item_id = self.to_id(item_id)
-            item = self.bot.all_items[item_id]
+            item = self.bot.market.all_items[item_id]
             items = await self.bot.inventories.get_items(ctx.guild.id, ctx.author.id)
             if items is not None and item_id in items:
                 if isinstance(amount, str) and amount.lower() == "all":
@@ -429,7 +437,7 @@ class Items(commands.Cog):
                         color=ctx.author.color,
                         timestamp=ctx.message.created_at,
                     )
-                    embed.set_thumbnail(url=self.bot.all_items[item_id]["image"])
+                    embed.set_thumbnail(url=self.bot.market.all_items[item_id]["image"])
 
                     return await ctx.send(embed=embed)
 
@@ -478,7 +486,7 @@ class Items(commands.Cog):
                                 timestamp=ctx.message.created_at,
                             )
                             embed.set_thumbnail(
-                                url=self.bot.all_items[item_id]["image"]
+                                url=self.bot.market.all_items[item_id]["image"]
                             )
 
                             return await ctx.send(embed=embed)
@@ -508,46 +516,53 @@ class Items(commands.Cog):
             title=f"Item Shop ({page}/{n})",
             description=f"<:blank:794679084890193930>\n{items}\n<:blank:794679084890193930>\nUse `{p}buy [item_id] [amount]` to buy an item.\nUse `{p}shop {page+1 if page+1 <= n else 1}` to view the next page.\nUse `{p}iteminfo [item name]` to find out more about an item.",
             color=ctx.author.color,
-            timestamp=ctx.message.created_at,
         )
 
-        embed.set_footer(text=f"Page ({page}/{n}). Prices and stock change every hour")
+        time_left = (
+            3600 - (datetime.now() - self.bot.market.last_refresh).total_seconds()
+        )
+        embed.set_footer(
+            text=f"Page ({page}/{n}). Prices refresh in {self.bot.pretty_time_delta(time_left)}"
+        )
         await ctx.send(embed=embed)
 
     async def sort_items(self, og="itemlist", sort_by="price", page=1, inv=None):
         n = 12
         if sort_by == "price":
             temp = sorted(
-                [[self.bot.all_items[i]["price"], i] for i in self.bot.all_items]
+                [
+                    [self.bot.market.all_items[i]["price"], i]
+                    for i in self.bot.market.all_items
+                ]
             )
 
-            temp = {i[1]: self.bot.all_items[i[1]] for i in temp}
+            temp = {i[1]: self.bot.market.all_items[i[1]] for i in temp}
         elif sort_by == "shop":
             n = 10
-            temp = self.bot.shop
+            temp = self.bot.market.shop
         elif sort_by == "rarity":
             temp = self.rare_ranking
         elif sort_by == "common":
-            temp = self.bot.common_items
+            temp = self.bot.market.common_items
         elif sort_by == "uncommon":
-            temp = self.bot.uncommon_items
+            temp = self.bot.market.uncommon_items
         elif sort_by == "rare":
-            temp = self.bot.rare_items
+            temp = self.bot.market.rare_items
         elif sort_by == "epic":
-            temp = self.bot.epic_items
+            temp = self.bot.market.epic_items
         elif sort_by == "legendary":
-            temp = self.bot.legendary_items
+            temp = self.bot.market.legendary_items
         elif sort_by == "blackmarket":
-            temp = self.bot.blackmarket_items
+            temp = self.bot.market.blackmarket_items
         elif sort_by == "dev":
-            temp = self.bot.dev_items
+            temp = self.bot.market.dev_items
         elif sort_by == "crates":
-            temp = self.bot.crates
+            temp = self.bot.market.crates
 
         if og == "itemlist":
             item_desc = (
                 lambda items, i: [
-                    f"{items[i]['emoji']} - **{self.to_name(i)}** **|** {self.cash(items[i]['price'])} {self.get_arrow(i)} {'`In Shop`' if i in self.bot.shop else ''}"
+                    f"{items[i]['emoji']} - **{self.to_name(i)}** **|** {self.cash(items[i]['price'])} {self.get_arrow(i)} {'`In Shop`' if i in self.bot.market.shop else ''}"
                 ]
                 if items[i]["type"] != "crate" or sort_by == "crates"
                 else []
@@ -555,7 +570,7 @@ class Items(commands.Cog):
         elif og == "inventory":
             item_desc = (
                 lambda items, i: [
-                    f"{items[i]['emoji']} - **{self.to_name(i)}** `x{inv[i]}` **|** {self.cash(self.bot.all_items[i]['price']*int(inv[i]))} {self.get_arrow(i)}{self.get_percent(i)}"
+                    f"{items[i]['emoji']} - **{self.to_name(i)}** `x{inv[i]}` **|** {self.cash(self.bot.market.all_items[i]['price']*int(inv[i]))} {self.get_arrow(i)}{self.get_percent(i)}"
                 ]
                 if i in inv
                 else []
@@ -564,10 +579,6 @@ class Items(commands.Cog):
             item_desc = lambda items, i: [
                 f"{items[i]['emoji']} - **{self.to_name(i)}** **|** {self.cash(items[i]['price'])} {self.get_arrow(i)}{self.get_percent(i)}\n    **↳** `{self.to_id(i)}` ***{items[i]['rarity']}***\n"
             ]
-        # elif og == "shop":
-        #     item_desc = lambda items, i: [
-        #         f"{items[i]['emoji']} - **{self.to_name(i)}** **|** {self.cash(items[i]['price'])} {self.get_arrow(i)}"
-        #     ]
 
         pages = []
         for i in temp:

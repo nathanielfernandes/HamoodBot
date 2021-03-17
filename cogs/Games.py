@@ -36,11 +36,7 @@ class Games(commands.Cog):
             ":thumbsup:",
             ":poop:",
         ]
-        self.info = json.load(
-            open(
-                f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/data/sokoban.json"
-            )
-        )
+        self.info = json.load(open(f"{self.bot.filepath}/data/sokoban.json"))
         self.chessEmojis = {"none": "none"}
 
         self.triviaEmojis = {

@@ -14,29 +14,6 @@ class Events(commands.Cog):
     #     channel = member.guild.system_channel
     #     if channel is not None:
     #         await channel.send(f"Welcome {member.mention}!")
-    def pretty_time_delta(self, seconds):
-        s = seconds
-        seconds = round(seconds)
-        days, seconds = divmod(seconds, 86400)
-        hours, seconds = divmod(seconds, 3600)
-        minutes, seconds = divmod(seconds, 60)
-        if days > 0:
-            p = "%d days, %d hours, %d minutes, %d seconds" % (
-                days,
-                hours,
-                minutes,
-                seconds,
-            )
-        elif hours > 0:
-            p = "%d hours, %d minutes, %d seconds" % (hours, minutes, seconds)
-        elif minutes > 0:
-            p = "%d minutes, %d seconds" % (minutes, seconds)
-        else:
-            p = "%d seconds" % (seconds,)
-
-        if s < 0:
-            p = "-" + p
-        return p
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
@@ -100,16 +77,14 @@ class Events(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             embed = discord.Embed(
                 title=f"`{ctx.command.name}` is on cooldown for",
-                description=f"```{self.pretty_time_delta(error.retry_after)}```",
+                description=f"```{self.bot.pretty_time_delta(error.retry_after)}```",
                 colour=discord.Color.red(),
                 timestamp=ctx.message.created_at,
             )
             embed.set_footer(text=f"{ctx.author}", icon_url=ctx.author.avatar_url)
 
             await ctx.send(embed=embed)
-            # await ctx.send(
-            #     f"`{ctx.command.name} is on cooldown for {str(error.retry_after)[:4]} seconds!`"
-            # )
+
             timeout = True
         elif isinstance(error, commands.CommandNotFound):
             return

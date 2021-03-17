@@ -12,10 +12,12 @@ except KeyError:
     MONGOURI = os.environ.get("MONGOURI")
 
 
+MONGO = motor.motor_asyncio.AsyncIOMotorClient(str(MONGOURI))
+
+
 class Documents:
     def __init__(self, collection_name, document_name):
-        self.mongo = motor.motor_asyncio.AsyncIOMotorClient(str(MONGOURI))
-        self.collection = self.mongo[collection_name]
+        self.collection = MONGO[collection_name]
         self.db = self.collection[document_name]
 
     # -- Pointer Methods --
@@ -558,114 +560,13 @@ class Members(Documents):
             if change > 86400:
                 return True, "Ready Now", member["streak"]
             else:
-                return False, self.pretty_time_delta(86400 - change), member["streak"]
+                return False, 86400 - change, member["streak"]
         else:
             return True, "Ready Now", 0
-
-    # async def is_vote_ready(self, member_id):
-    #     member = await self.get(member_id)
-    #     if member is not None:
-    #         if member.get("vote") is not None:
-    #             change = (datetime.datetime.now() - member["vote"]).total_seconds()
-
-    #             if change > 43200:
-    #                 return True, "Ready Now"
-    #             else:
-    #                 return False, self.pretty_time_delta(43200 - change)
-
-    #     return True, "Ready Now"
 
     async def reset_daily(self, member_id):
         await self.db.update_one(
             {"_id": member_id}, {"$set": {"daily": datetime.datetime.now()}}
         )
         await self.db.update_one({"_id": member_id}, {"$inc": {"streak": 1}})
-
-    def pretty_time_delta(self, seconds):
-        s = seconds
-        seconds = round(seconds)
-        days, seconds = divmod(seconds, 86400)
-        hours, seconds = divmod(seconds, 3600)
-        minutes, seconds = divmod(seconds, 60)
-        if days > 0:
-            p = "%d days, %d hours, %d minutes, %d seconds" % (
-                days,
-                hours,
-                minutes,
-                seconds,
-            )
-        elif hours > 0:
-            p = "%d hours, %d minutes, %d seconds" % (hours, minutes, seconds)
-        elif minutes > 0:
-            p = "%d minutes, %d seconds" % (minutes, seconds)
-        else:
-            p = "%d seconds" % (seconds,)
-
-        if s < 0:
-            p = "-" + p
-        return p
-
-
-# import asyncio
-
-
-# async def bruh():
-#     test = Members()
-#     # await test.add_member(12345)
-#     await test.reset_daily(12345)
-# print(await test.is_daily_ready(12345))
-
-
-# member = await test.get(12345)
-
-# = (datetime.datetime.now() - member["daily"]).total_seconds()
-# print(change)
-#   print(change.total_seconds())
-
-# print(test.pretty_time_delta(change))
-
-
-# print()
-
-
-# loop = asyncio.get_event_loop()
-# loop.run_until_complete(bruh())
-
-
-# print(await test.member_has_space(12345, "2222", 7))
-
-
-# await test.add_inventory(12345)
-
-# await test.add_member(12345, "2222")
-
-# await test.add_item_to_member(12345, "2222", "soup", 2)
-
-
-#  await test.decr_item_amount(12345, "2222", "soup", 10)
-# print(await test.get_member_items(12345, "2222"))
-
-
-# "money": {"wallet": 0, "bank": 0}}
-
-# async def get_member_money(self, guild_id, member_id):
-#     """
-#     Returns the money object a member has
-#     """
-#     server = await self.find_by_id(guild_id)
-
-#     if server is not None:
-#         try:
-#             items = server[str(member_id)]["money"]
-#         except KeyError:
-#             return
-
-#         return items
-
-
-# async def get_money(self, guild_id, member_id):
-#     """
-#     Points to self.get_member_money
-#     """
-#     return await self.get_member_money(guild_id, member_id)
 
