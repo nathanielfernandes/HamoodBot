@@ -58,7 +58,7 @@ class Jobs(commands.Cog):
         await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
 
         payout = await self.bot.currency.get_currency(ctx.guild.id, ctx.author.id)
-        payout = round(payout["bank_max"] * random.uniform(0.005, 0.02))
+        payout = round(payout["bank_max"] * random.uniform(0.005, 0.015))
 
         game = _Trivia().get_questions(category="any", difficulty="easy", amount=1)[0]
 

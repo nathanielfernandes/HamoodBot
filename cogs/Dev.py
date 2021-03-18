@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import asyncio
 
 
 class Dev(commands.Cog):
@@ -78,6 +79,12 @@ class Dev(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
+    async def gameslog(self, ctx):
+        log = "\n".join([f"{self.bot.games_log[k]} | {k}" for k in self.bot.games_log])
+        await ctx.send(f"```{len(self.bot.games_log)} Games:\n{log}```")
+
+    @commands.command()
+    @commands.is_owner()
     async def get_item(self, ctx, item_id, amount=1):
         """``get_item [item_id] [amount]`` get any item"""
         amount = int(amount)
@@ -110,14 +117,69 @@ class Dev(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def timeout(self, ctx, member: discord.Member = None):
+    async def silence(self, ctx, member: discord.Member = None, hours=None):
         if member is not None:
             if member.id in self.bot.timeout_list:
                 self.bot.timeout_list.remove(member.id)
                 await ctx.send(f"**{member}** has been taken out of time out.")
             else:
                 self.bot.timeout_list.append(member.id)
-                await ctx.send(f"**{member}** has been put in time out.")
+                if hours is None:
+                    await ctx.send(
+                        f"**{member}** has been put in time out. `Indefinitely`"
+                    )
+                else:
+                    time = 3600 * hours
+                    await ctx.send(
+                        f"**{member}** has been put in time out for {self.bot.pretty_time_delta(time)}"
+                    )
+                    await asyncio.sleep(time)
+                    self.bot.timeout_list.remove(member.id)
+
+    @commands.command()
+    @commands.is_owner()
+    async def inspect(self, ctx, member: discord.Member = None):
+        content = await ctx.send(
+            f"`Gathering information on {ctx.author}...` <a:load:822030219924733992>"
+        )
+        await asyncio.sleep(3)
+
+        member = ctx.author if not member else member
+
+        msg = f"```ini\n[username]: {member}"
+        msg += f"\n[id]: {member.id}"
+        msg += f"\n[created at]: {member.created_at}"
+        msg += f"\n[is bot?]: {member.bot}"
+        msg += f"\n[in timeout?]: {member.id in self.bot.timeout_list}\n"
+
+        servers, bal = await self.bot.currency.find_all_of_member(member.id)
+        total = await self.bot.inventories.find_all_of_member(member.id)
+        won, lost = await self.bot.leaderboards.find_all_of_member(member.id)
+        servers = [self.bot.get_guild(int(g)) for g in servers]
+        servers = "\n - ".join(
+            [f"{g.name} ({g.member_count} users)" for g in servers if g is not None]
+        )
+        msg += f"\n[known servers]:\n - {servers}\n"
+        try:
+            ready, time, streak = await self.bot.members.is_daily_ready(member.id)
+            msg += f"\n[daily]:\n - ready?: {ready}\n - timeleft: {time:0.0f}s\n - streak: {streak}\n"
+        except:
+            pass
+
+        msg += f"\n[total balance (across {bal['total']} servers)]:\n - wallet: ⌬ {bal['wallet']:,}\n - bank: ⌬ {bal['bank']:,}\n"
+        msg += f"\n[total items (across {bal['total']} servers)]:\n - {total:,}\n"
+        msg += f"\n[total leaderboard (across {bal['total']} servers)]:\n - won: {won:,}\n - lost: {lost:,}\n"
+        msg += "```"
+
+        embed = discord.Embed(
+            title=f"User Details (Hamood) - {member.display_name}",
+            colour=member.color,
+            timestamp=ctx.message.created_at,
+            description=msg,
+        )
+
+        embed.set_thumbnail(url=member.avatar_url)
+        await content.edit(embed=embed, content=None)
 
     @commands.command()
     @commands.is_owner()

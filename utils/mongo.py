@@ -2,6 +2,7 @@ import os
 import datetime
 import pymongo
 import motor.motor_asyncio
+import pprint
 
 try:
     MONGOURI = os.environ["MONGOURI"]
@@ -224,6 +225,16 @@ class Leaderboards(Documents):
 
             return stats
 
+    async def find_all_of_member(self, member_id):
+        cursor = self.db.find({str(member_id): {"$exists": True}})
+        won = 0
+        lost = 0
+        for document in await cursor.to_list(length=100):
+            won += document[str(member_id)]["total"]["won"]
+            lost += document[str(member_id)]["total"]["won"]
+
+        return won, lost
+
 
 class Inventories(Documents):
     def __init__(self):
@@ -395,6 +406,15 @@ class Inventories(Documents):
 
             return items
 
+    async def find_all_of_member(self, member_id):
+        cursor = self.db.find({str(member_id): {"$exists": True}})
+        total = 0
+
+        for document in await cursor.to_list(length=100):
+            total += document[str(member_id)]["item_space"]["total"]
+
+        return total
+
 
 class Currency(Documents):
     def __init__(self):
@@ -529,6 +549,18 @@ class Currency(Documents):
                 return
 
             return item
+
+    async def find_all_of_member(self, member_id):
+        cursor = self.db.find({str(member_id): {"$exists": True}})
+        servers = []
+        bal = {"wallet": 0, "bank": 0, "total": 0}
+
+        for document in await cursor.to_list(length=100):
+            servers.append(document["_id"])
+            bal["wallet"] += document[str(member_id)]["wallet"]
+            bal["bank"] += document[str(member_id)]["bank"]
+            bal["total"] += 1
+        return servers, bal
 
 
 class Members(Documents):

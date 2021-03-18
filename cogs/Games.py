@@ -21,7 +21,7 @@ class Games(commands.Cog):
         self.bot = bot
         self.games = {}
         self.keys = {}
-        self.games_log = {}
+        self.bot.games_log = {}
         self.game_names = ["total", "filler", "connect4", "chess", "trivia"]
 
         self.leaderboard_emojis = [
@@ -204,7 +204,10 @@ class Games(commands.Cog):
     #     )
 
     async def overtime(self, gameID, extras="No Winner"):
-        self.games_log[f"ID:{gameID}"] = f"{gameID[: gameID.index('#')]}"
+        if len(self.bot.games_log) >= 20:
+            self.bot.games_log.popitem()
+        self.bot.games_log[f"ID:{gameID}"] = f"{gameID[: gameID.index('#')]}"
+
         await asyncio.sleep(120)
         await self.delete_game(gameID, extras)
 

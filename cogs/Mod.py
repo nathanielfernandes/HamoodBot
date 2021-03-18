@@ -2,7 +2,7 @@ import os
 import re
 import discord
 from discord.ext import commands
-
+import asyncio
 
 # from modules.database import *
 import modules.checks as checks
@@ -226,6 +226,23 @@ class Mod(commands.Cog):
             await ctx.send(
                 f"{ctx.author.mention} has setup the `pin-board-📌`. Add messages to it by reacting to it with 📌."
             )
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 60, commands.BucketType.user)
+    async def timeout(self, ctx, hours):
+        """``timeout [hours]`` Set a break for yourself from hamood. Max=24. This action cannot be reversed and is applied to every server you are in!"""
+        hours = float(hours)
+        if hours > 24:
+            hours = 24
+        time = 3600 * hours
+        self.bot.timeout_list.append(ctx.author.id)
+        await ctx.send(
+            f"{ctx.author.mention} is taking a break for `{self.bot.pretty_time_delta(time)}`"
+        )
+        await asyncio.sleep(time)
+        self.bot.timeout_list.remove(ctx.author.id)
+        await ctx.send(f"{ctx.author.mention} your break is done!")
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
