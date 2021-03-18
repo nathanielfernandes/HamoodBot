@@ -139,12 +139,11 @@ class Dev(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def inspect(self, ctx, member: discord.Member = None):
+        member = ctx.author if not member else member
         content = await ctx.send(
-            f"`Gathering information on {ctx.author}...` <a:load:822030219924733992>"
+            f"`Gathering information on {member}...` <a:load:822030219924733992>"
         )
         await asyncio.sleep(3)
-
-        member = ctx.author if not member else member
 
         msg = f"```ini\n[username]: {member}"
         msg += f"\n[id]: {member.id}"
