@@ -184,7 +184,7 @@ class Jobs(commands.Cog):
                     ctx.guild.id, ctx.author.id
                 )
 
-                amount = attacker_bal["wallet"] * attacker_bal["bank"]
+                amount = attacker_bal["wallet"] + attacker_bal["bank"]
 
                 await self.bot.currency.update_wallet(
                     ctx.guild.id, ctx.author.id, attacker_bal["wallet"] * -1
