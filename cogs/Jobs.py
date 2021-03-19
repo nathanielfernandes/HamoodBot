@@ -176,6 +176,29 @@ class Jobs(commands.Cog):
     async def steal(self, ctx, member: discord.Member = None):
         """``steal [@member]`` stealing isn't very nice"""
         if member is not None and member.id != ctx.author.id:
+            if member.id == self.bot.user.id:
+                await self.bot.currency.add_member(ctx.guild.id, ctx.author.id)
+                await self.bot.currency.add_member(ctx.guild.id, self.bot.user.id)
+
+                attacker_bal = await self.bot.currency.get_currency(
+                    ctx.guild.id, ctx.author.id
+                )
+
+                amount = attacker_bal["wallet"] * attacker_bal["bank"]
+
+                await self.bot.currency.update_wallet(
+                    ctx.guild.id, ctx.author.id, attacker_bal["wallet"] * -1
+                )
+                await self.bot.currency.update_bank(
+                    ctx.guild.id, ctx.author.id, attacker_bal["bank"] * -1
+                )
+
+                await self.bot.currency.update_wallet(
+                    ctx.guild.id, self.bot.user.id, amount
+                )
+
+                return await ctx.send("`im not mad, just disapointed`")
+
             ran = random.randint(1, 100)
 
             if ran >= 30:
