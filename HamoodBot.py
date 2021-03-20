@@ -142,11 +142,6 @@ if __name__ == "__main__":
                 await message.channel.send(f"Use `{p}help` instead!")
 
             await bot.process_commands(message)
-        else:
-            if message.author.id != bot.user.id:
-                await message.channel.send(
-                    f"`Hamood is still starting up. Please wait.`"
-                )
 
     @bot.event
     async def on_raw_reaction_add(payload):
