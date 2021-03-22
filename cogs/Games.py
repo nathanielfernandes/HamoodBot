@@ -662,7 +662,7 @@ class Games(commands.Cog):
     @commands.cooldown(4, 10, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def move(self, ctx, *, content: commands.clean_content = None):
-        """``chess [coordinate of peice] [coordinate to move peice to]`` can only be used if you are in a chess match!. """
+        """``move [coordinate of peice] [coordinate to move peice to]`` can only be used if you are in a chess match!. """
         if str(ctx.guild.id) + str(ctx.author.id) not in self.keys:
             await ctx.send("You are not currently in a game!")
             return
@@ -787,7 +787,7 @@ class Games(commands.Cog):
                     msg = "It's a draw!"
                 else:
                     colour = self.connectColors[c]
-                    msg = f"{currentGame.sprites[c+10]} {winner} won the game!"
+                    msg = f"{currentGame.sprites[c+11]} {winner} won the game!"
 
                     if winner.id == currentGame.playerOne.id:
                         loser = currentGame.playerTwo
