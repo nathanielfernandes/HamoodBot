@@ -84,13 +84,13 @@ class Games(commands.Cog):
         ]
 
         self.connectEmojis = {
-            "1️⃣": 1,
-            "2️⃣": 2,
-            "3️⃣": 3,
-            "4️⃣": 4,
-            "5️⃣": 5,
-            "6️⃣": 6,
-            "7️⃣": 7,
+            "<:one:823355865481871390>": 1,
+            "<:two:823355865380945951>": 2,
+            "<:three:823355865376751638>": 3,
+            "<:four:823355865348177930>": 4,
+            "<:five:823355865138331649>": 5,
+            "<:six:823355865247383594>": 6,
+            "<:seven:823355865431801856>": 7,
         }
 
         self.connectColors = [
@@ -787,7 +787,7 @@ class Games(commands.Cog):
                     msg = "It's a draw!"
                 else:
                     colour = self.connectColors[c]
-                    msg = f"{currentGame.sprites[c]} {winner} won the game!"
+                    msg = f"{currentGame.sprites[c+10]} {winner} won the game!"
 
                     if winner.id == currentGame.playerOne.id:
                         loser = currentGame.playerTwo
@@ -801,7 +801,7 @@ class Games(commands.Cog):
             await self.close_game(gameID)
         else:
 
-            msg = f"{currentGame.sprites[2] if currentGame.turn == 1 else currentGame.sprites[3]} {currentGame.current_player}'s Turn"
+            msg = f"{currentGame.sprites[13] if currentGame.turn == 1 else currentGame.sprites[14]} {currentGame.current_player}'s Turn"
 
             if currentGame.timer is not None:
                 currentGame.timer.cancel()
@@ -822,7 +822,7 @@ class Games(commands.Cog):
         )
 
         embed.add_field(
-            name=f"{currentGame.sprites[2]}{currentGame.playerOne}     {currentGame.sprites[3]}{currentGame.playerTwo}",
+            name=f"{currentGame.sprites[13]}{currentGame.playerOne}     {currentGame.sprites[14]}{currentGame.playerTwo}",
             value="auto delete in 2 mins",
         )
 

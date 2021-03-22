@@ -6,10 +6,23 @@ class Connect_Four:
         self.run_level = True
         # self.sprites = ["  ", "# ", "o ", "x "]
         self.sprites = [
-            ":black_large_square:",
-            ":blue_square:",
-            ":red_circle:",
-            ":yellow_circle:",
+            "<:empty:823351307279663145>",
+            "<:border:823347606074687539>",
+            "<:redinside:823347539813335071>",
+            "<:yellowinside:823347539724992522>",
+            # "<:redcircle:823347539460882453>",
+            # "<:yellowcircle:823347539495092226>",
+            "<:leftside:823351703402578001>",
+            "<:rightside:823351703842979880>",
+            "<:one:823355865481871390>",
+            "<:two:823355865380945951>",
+            "<:three:823355865376751638>",
+            "<:four:823355865348177930>",
+            "<:five:823355865138331649>",
+            "<:six:823355865247383594>",
+            "<:seven:823355865431801856>",
+            "<:redcircle:823347539460882453>",
+            "<:yellowcircle:823347539495092226>",
         ]
         self.playerOne = playerOne
         self.playerTwo = playerTwo
@@ -26,22 +39,28 @@ class Connect_Four:
 
     def fill_board(self):
         self.grid = [0 for i in range(self.size[0] * self.size[1])]
-
+        n = -1
         # sets outer walls
         for y in range(self.size[1]):
             for i in range(self.size[0]):
                 if y == self.size[1] - 1:
-                    self.grid[i + (self.size[0] * y)] = 1
-                else:
-                    self.grid[(self.size[0] * y)] = 1
-                    self.grid[(self.size[0] * y) + self.size[0] - 1] = 1
+                    if n == -1:
+                        self.grid[i + (self.size[0] * y)] = 4
+                    elif n == 7:
+                        self.grid[i + (self.size[0] * y)] = 5
+                    else:
+                        self.grid[i + (self.size[0] * y)] = 6 + n
+                    n += 1
+                # else:
+                self.grid[(self.size[0] * y)] = 4
+                self.grid[(self.size[0] * y) + self.size[0] - 1] = 5
 
     def update_player(self):
         def place_peice(self, peice):
             for i in range(0, len(self.grid), self.size[0]):
                 if (
                     self.grid[i + self.choice] == 0
-                    and str(self.grid[i + self.choice + self.size[0]]) in "123"
+                    and self.grid[i + self.choice + self.size[0]] > 0
                 ):
                     self.grid[self.choice + i] = peice
                     self.turn *= -1
@@ -141,7 +160,8 @@ class Connect_Four:
 
 
 # game = Connect_Four([7, 6], "player 1", "player 2", "123")
-
+# game.draw_board()
+# print(game.game_grid)
 # while game.run_level:
 #     game.draw_board()
 
