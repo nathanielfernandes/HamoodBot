@@ -230,12 +230,14 @@ class About(commands.Cog):
                         or query.lower() in command.aliases
                     ):
                         if len(command.aliases) > 0:
-                            a = ", ".join(["`" + i + "`" for i in command.aliases])
+                            a = "\n\nAliases: " + ", ".join(
+                                ["`" + i + "`" for i in command.aliases]
+                            )
                         else:
                             a = ""
                         halp = discord.Embed(
                             title=f"`{command.name.capitalize()}` Command Help",
-                            description=f"**{p}**{command.help}\n\nAliases: {a}",
+                            description=f"**{p}**{command.help}{a}",
                             color=discord.Color.blue(),
                         )
             else:

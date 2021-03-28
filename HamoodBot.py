@@ -17,6 +17,7 @@ from modules.image_functions import randomFile
 from utils.mongo import *
 from utils.market import Market
 from utils.helpers import pretty_time_delta
+from utils.s3 import S3
 
 if __name__ == "__main__":
     tic = time.perf_counter()
@@ -59,11 +60,13 @@ if __name__ == "__main__":
     bot.filepath = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
     bot.market = Market(bot)
     bot.pretty_time_delta = pretty_time_delta
+    bot.games = {}
 
     @bot.event
     async def on_ready():
         global connected
         bot.aioSession = aiohttp.ClientSession()
+        bot.S3temp = S3("hamoodbucket")
 
         bot.prefixdb = Prefixes()
         bot.leaderboards = Leaderboards()

@@ -6,6 +6,7 @@ from discord.ext import commands
 from math import sqrt
 from modules.image_functions import Modify, Modify_Gif
 import modules.checks as checks
+from datetime import datetime
 
 
 class Images(commands.Cog):
@@ -28,18 +29,37 @@ class Images(commands.Cog):
             )
 
             message2 = await ctx.message.channel.history(limit=depth).find(
+                lambda m: len(m.embeds) >= 1
+                and m.embeds[0].to_dict().get("image") is not None
+            )
+
+            message3 = await ctx.message.channel.history(limit=depth).find(
                 lambda m: any(url in str(m.content) for url in types)
             )
 
-            if message1 is None:
-                url = message2.content
-            elif message2 is None:
-                url = message1.attachments[0].url
-            else:
-                if message1.created_at >= message2.created_at:
-                    url = message1.attachments[0].url
+            s = "20120213"
+            l = [
+                message1.created_at
+                if message1 is not None
+                else datetime.strptime(s, "%Y%m%d"),
+                message2.created_at
+                if message2 is not None
+                else datetime.strptime(s, "%Y%m%d"),
+                message3.created_at
+                if message3 is not None
+                else datetime.strptime(s, "%Y%m%d"),
+            ]
+            i = l.index(max(l))
+            msg = [message1, message2, message3][i]
+            if msg is not None:
+                if i == 0:
+                    url = msg.attachments[0].url
+                elif i == 1:
+                    url = msg.embeds[0].to_dict().get("image")["url"]
                 else:
-                    url = message2.content
+                    url = msg.content
+            else:
+                url = None
         else:
             url = str(member.avatar_url).replace(".webp", ".png")
 
@@ -54,7 +74,15 @@ class Images(commands.Cog):
 
     async def send_image(self, ctx, image, msg):
         try:
-            await ctx.send(file=discord.File(image))
+            link = await self.bot.S3temp.upload(image)
+            embed = discord.Embed(
+                color=ctx.author.color, timestamp=ctx.message.created_at
+            )
+            embed.set_footer(
+                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url,
+            )
+            embed.set_image(url=link)
+            await ctx.send(embed=embed)
         except Exception:
             await ctx.send(f"`Could not {msg} image`")
 
