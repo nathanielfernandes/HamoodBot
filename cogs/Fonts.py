@@ -56,7 +56,7 @@ class Fonts(commands.Cog):
         textImg = makeText(text, font, font_size, colour, name)
 
         if send:
-            await ctx.send(file=discord.File(textImg))
+            await self.bot.S3.discordUpload(ctx, textImg)
             await ctx.message.delete()
             os.remove(textImg)
         else:

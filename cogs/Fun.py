@@ -95,10 +95,17 @@ class Fun(commands.Cog):
         img = await fonts.text_prep(
             ctx, (random_word), "random", 500, "random", 100, False
         )
-        await ctx.send(
-            file=discord.File(img),
-            content=f"{member.mention} your vibe checked out to be:",
+
+        await self.bot.S3.discordUpload(
+            ctx,
+            img,
+            requested=False,
+            description=f"{member.mention} your vibe checked out to be:",
         )
+        # await ctx.send(
+        #     file=discord.File(img),
+        #     content=f"{member.mention} your vibe checked out to be:",
+        # )
         os.remove(img)
 
     @commands.command(aliases=["roast me", "roastme"])

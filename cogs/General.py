@@ -167,7 +167,12 @@ class General(commands.Cog):
                     rgba[i] = 255
 
         img = makeColorImg(rgba, f"{self.bot.filepath}/temp",)
-        await ctx.send(file=discord.File(img))
+        await self.bot.S3.discordUpload(
+            ctx,
+            img,
+            description="rgba: " + ", ".join([str(i) for i in rgba]),
+            color=rgba,
+        )
         os.remove(img)
 
     @commands.command(aliases=["hi", "hey", "yo"])

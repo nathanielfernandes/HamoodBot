@@ -53,14 +53,8 @@ class Memes(commands.Cog):
             )
 
         meme = getattr(meme, f"save_{ext}")(location=self.save_location)
-        link = await self.bot.S3temp.upload(meme)
-        embed = discord.Embed(color=ctx.author.color, timestamp=ctx.message.created_at)
-        embed.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url,
-        )
-        embed.set_image(url=link)
+        await self.bot.S3.discordUpload(ctx, meme)
 
-        await ctx.send(embed=embed)
         os.remove(meme)
 
     @commands.command()

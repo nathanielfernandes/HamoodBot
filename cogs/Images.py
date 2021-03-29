@@ -74,15 +74,7 @@ class Images(commands.Cog):
 
     async def send_image(self, ctx, image, msg):
         try:
-            link = await self.bot.S3temp.upload(image)
-            embed = discord.Embed(
-                color=ctx.author.color, timestamp=ctx.message.created_at
-            )
-            embed.set_footer(
-                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url,
-            )
-            embed.set_image(url=link)
-            await ctx.send(embed=embed)
+            await self.bot.S3.discordUpload(ctx, image)
         except Exception:
             await ctx.send(f"`Could not {msg} image`")
 
@@ -102,7 +94,7 @@ class Images(commands.Cog):
         getattr(image, f"enhance_{ext}")(contrast=10000, color=10000, sharpness=5)
 
         image = getattr(image, f"save_{ext}")(
-            location=self.save_location, compression_level=10
+            location=self.save_location, compression_level=30
         )
 
         await self.send_image(ctx, image, "deepfry")
