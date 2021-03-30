@@ -87,7 +87,7 @@ class Modify:
         image=None,
         file_name=None,
         location=None,
-        file_format="jpg",
+        file_format="png",
         size=None,
         compression_level=None,
         optimize=True,
@@ -110,8 +110,8 @@ class Modify:
             )
         else:
             image.save(img_byte_arr, format="png")
-
-        return img_byte_arr.getvalue(), "png"
+        img_byte_arr.seek(0),
+        return img_byte_arr, "png"
 
     def save_image(
         self,
@@ -369,7 +369,8 @@ class Modify_Gif(Modify):
             loop=False,
             duration=self.duration,  # self.og_gif.info["duration"],
         )
-        return gif_byte_arr.getvalue(), "gif"
+        gif_byte_arr.seek(0)
+        return gif_byte_arr, "gif"
 
     def save_gif(
         self,
@@ -533,15 +534,15 @@ def makeText(content, font, font_size, colour, final):
         align="left",
     )
 
-    # img.save(final)
-    return img
+    img.save(final)
+    return final
 
 
-def makeColorImg(rgba, size=(100, 100)):
+def makeColorImg(rgba, path, size=(100, 100)):
     img = Image.new("RGBA", size, color=tuple(rgba))
-    # img_name = path + "".join(random.choice("123456789") for i in range(12)) + ".png"
-    # img.save(img_name)
-    return img
+    img_name = path + "".join(random.choice("123456789") for i in range(12)) + ".png"
+    img.save(img_name)
+    return img_name
 
 
 def randomFile(folder):

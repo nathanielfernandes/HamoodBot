@@ -167,21 +167,30 @@ class General(commands.Cog):
                 elif rgba[i] > 255:
                     rgba[i] = 255
 
-        bio = BytesIO()
-        img = makeColorImg(rgba)
-        img.save(bio, format="png")
-        bio = bio.getvalue()
+        img = makeColorImg(rgba, path=f"{self.bot.filepath}/temp", size=(150, 150))
 
-        embed = self.bot.quick_embed(
-            member=ctx.author,
-            rainbow=True,
-            requested=True,
-            desc="rgba: " + ", ".join([str(i) for i in rgba]),
-            color=rgba,
+        await self.bot.quick_embed(
+            ctx=ctx,
+            footer={"text": "rgba: " + ", ".join([str(i) for i in rgba])},
+            reply=True,
+            image=img,
+            color=discord.Color.from_rgb(rgba[0], rgba[1], rgba[2]),
         )
-        self.bot.S3.schedule_upload_bytes(
-            file_bytes=bio, ext="png", channel_id=ctx.channel.id, embed=embed,
-        )
+        # bio = BytesIO()
+        # img = makeColorImg(rgba)
+        # img.save(bio, format="png")
+        # bio = bio.getvalue()
+
+        # embed = self.bot.quick_embed(
+        #     member=ctx.author,
+        #     rainbow=True,
+        #     requested=True,
+        #     desc="rgba: " + ", ".join([str(i) for i in rgba]),
+        #     color=rgba,
+        # )
+        # self.bot.S3.schedule_upload_bytes(
+        #     file_bytes=bio, ext="png", channel_id=ctx.channel.id, embed=embed,
+        # )
 
     @commands.command(aliases=["hi", "hey", "yo"])
     @checks.isAllowedCommand()

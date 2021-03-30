@@ -96,21 +96,27 @@ class Fun(commands.Cog):
         img, color = await fonts.text_prep(
             ctx, (random_word), "random", 500, "random", 100, False
         )
-
-        bio = BytesIO()
-        img.save(bio, format="png")
-        bio = bio.getvalue()
-
-        embed = self.bot.quick_embed(
-            member=ctx.author,
-            rainbow=True,
-            requested=True,
-            desc=f"{member.mention} your vibe checked out to be:",
-            color=color,
+        await self.bot.quick_embed(
+            ctx=ctx,
+            description=f"{member.mention} your vibe checked out to be",
+            reply=True,
+            image=img,
+            color=discord.Color.from_rgb(color[0], color[1], color[2]),
         )
-        self.bot.S3.schedule_upload_bytes(
-            file_bytes=bio, ext="png", channel_id=ctx.channel.id, embed=embed,
-        )
+        # bio = BytesIO()
+        # img.save(bio, format="png")
+        # bio = bio.getvalue()
+
+        # embed = self.bot.quick_embed(
+        #     member=ctx.author,
+        #     rainbow=True,
+        #     requested=False,
+        #     desc=f"{member.mention} your vibe checked out to be:",
+        #     color=color,
+        # )
+        # self.bot.S3.schedule_upload_bytes(
+        #     file_bytes=bio, ext="png", channel_id=ctx.channel.id, embed=embed,
+        # )
 
         # await ctx.send(
         #     file=discord.File(img),

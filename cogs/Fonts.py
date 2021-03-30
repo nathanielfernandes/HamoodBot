@@ -21,7 +21,6 @@ class Fonts(commands.Cog):
         self.fonts = f"{self.bot.filepath}/fonts"
 
     async def text_prep(self, ctx, text, font, font_size, colour, wrap=100, send=True):
-
         if text == ():
             return
 
@@ -57,18 +56,19 @@ class Fonts(commands.Cog):
         textImg = makeText(text, font, font_size, colour, name)
 
         if send:
-            bio = BytesIO()
-            textImg.save(bio, format="png")
-            bio = bio.getvalue()
-
             await ctx.message.delete()
-
-            embed = self.bot.quick_embed(
-                member=ctx.author, rainbow=True, requested=True, color=colour
+            await self.bot.quick_embed(
+                ctx=ctx,
+                image=textImg,
+                footer={"text": f"Requested by {ctx.author}"},
+                color=discord.Color.from_rgb(colour[0], colour[1], colour[2]),
             )
-            self.bot.S3.schedule_upload_bytes(
-                file_bytes=bio, ext="png", channel_id=ctx.channel.id, embed=embed,
-            )
+            # embed = self.bot.quick_embed(
+            #     member=ctx.author, rainbow=True, requested=True, color=colour
+            # )
+            # self.bot.S3.schedule_upload_bytes(
+            #     file_bytes=bio, ext="png", channel_id=ctx.channel.id, embed=embed,
+            # )
         else:
             return textImg, colour
 

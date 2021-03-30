@@ -10,6 +10,7 @@ from datetime import datetime
 import urllib
 from urllib import request as ulreq
 from PIL import ImageFile
+from time import perf_counter
 
 
 class Images(commands.Cog):
@@ -32,7 +33,9 @@ class Images(commands.Cog):
                 file.close()
                 return size <= 3145728
         except Exception:
-            return False
+            return True
+
+        return False
 
     async def find_image(self, ctx, member, depth):
         check = True
@@ -67,25 +70,31 @@ class Images(commands.Cog):
             i = l.index(max(l))
             msg = [message1, message2, message3][i]
             if msg is not None:
-                if i == 0 and msg.attachments[0].size <= 3145728:
-                    url = msg.attachments[0].url
-                    check = False
+                if i == 0:
+                    if msg.attachments[0].size <= 3145728:
+                        url = msg.attachments[0].url
+                        check = False
+                    else:
+                        await ctx.reply("`Image too large`")
+                        return None, None
                 elif i == 1:
+                    print("bruh")
                     url = msg.embeds[0].to_dict().get("image")["url"]
                 else:
-                    url = msg.content
+                    url = msg.content if msg.content.strip() != "" else None
             else:
                 url = None
         else:
             url = str(member.avatar_url).replace(".webp", ".png")
+            check = False
 
         if url is None:
-            await ctx.send("`No recent images found!`")
+            await ctx.reply("`No recent images found!`")
             return None, None
 
         if check:
             if not self.is_size_safe(url):
-                await ctx.send("`Image too large`")
+                await ctx.reply("`Image too large`")
                 return None, None
 
         if ".gif" in url:
@@ -93,15 +102,25 @@ class Images(commands.Cog):
 
         return Modify(image_url=url), "image"
 
-    async def send_image(self, ctx, image, msg, ext):
+    async def send_image(self, ctx, image, msg, tic):
         try:
+            toc = perf_counter()
+            await self.bot.quick_embed(
+                ctx=ctx,
+                reply=True,
+                image=image,
+                footer={
+                    "text": f"{ctx.command.name.title()} | Took {toc-tic:0.1f}s | Requested by {ctx.author}"
+                },
+            )
+
             # await self.bot.S3.discordUpload(ctx, image)
-            embed = self.bot.quick_embed(
-                member=ctx.author, rainbow=True, requested=True
-            )
-            self.bot.S3.schedule_upload_bytes(
-                file_bytes=image, ext=ext, channel_id=ctx.channel.id, embed=embed,
-            )
+            # embed = self.bot.quick_embed(
+            #     member=ctx.author, rainbow=True, requested=True
+            # )
+            # self.bot.S3.schedule_upload_bytes(
+            #     file_bytes=image, ext=ext, channel_id=ctx.channel.id, embed=embed,
+            # )
         except Exception:
             await ctx.send(f"`Could not {msg} image`")
 
@@ -113,18 +132,17 @@ class Images(commands.Cog):
     @commands.has_permissions(attach_files=True)
     async def deepfry(self, ctx, member: discord.Member = None):
         """``deepfry [@someone or send image]`` deepfries any image, tasty!"""
-
+        tic = perf_counter()
         image, ext = await self.find_image(ctx, member, 40)
         if image is None:
             return
 
         getattr(image, f"enhance_{ext}")(contrast=10000, color=10000, sharpness=5)
 
-        image, ext = getattr(image, f"get_{ext}_bytes")(
+        image = getattr(image, f"save_{ext}")(
             location=self.save_location, compression_level=30
         )
-
-        await self.send_image(ctx, image, "deepfry", ext)
+        await self.send_image(ctx, image, "deepfry", tic)
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -132,7 +150,7 @@ class Images(commands.Cog):
     @commands.has_permissions(attach_files=True)
     async def pixelate(self, ctx, amount=None):
         """``pixelate [image]`` pixelates any image"""
-
+        tic = perf_counter()
         image, ext = await self.find_image(ctx, None, 40)
         if image is None:
             return
@@ -153,11 +171,11 @@ class Images(commands.Cog):
             constant_resolution=True,
         )
 
-        image, ext = getattr(image, f"get_{ext}_bytes")(
+        image = getattr(image, f"save_{ext}")(
             location=self.save_location, compression_level=50
         )
 
-        await self.send_image(ctx, image, "pixelate", ext)
+        await self.send_image(ctx, image, "pixelate", tic)
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -165,6 +183,7 @@ class Images(commands.Cog):
     @commands.has_permissions(attach_files=True)
     async def disgusting(self, ctx, member: discord.Member = None):
         """``disgusting [@someone or send image]`` thats disgusting!"""
+        tic = perf_counter()
         main_image, ext = await self.find_image(ctx, member, 40)
         if main_image is None:
             return
@@ -179,9 +198,9 @@ class Images(commands.Cog):
         )
         base_image.image_add_image(top_image=top_image.image)
 
-        base_image, ext = base_image.get_image_bytes()
+        base_image = base_image.save_image()
 
-        await self.send_image(ctx, base_image, "use", ext)
+        await self.send_image(ctx, base_image, "use", tic)
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -189,6 +208,7 @@ class Images(commands.Cog):
     @commands.has_permissions(attach_files=True)
     async def youtube(self, ctx, *, title: commands.clean_content = None):
         """``youtube [video title]`` watch your images in youtube."""
+        tic = perf_counter()
         words = self.bot.get_cog("Fun").words
 
         top_image, ext = await self.find_image(ctx, None, 40)
@@ -231,9 +251,9 @@ class Images(commands.Cog):
             coordinates=(710, 630),
             font_color=(140, 140, 140),
         )
-        base_image, ext = base_image.get_image_bytes()
+        base_image = base_image.save_image()
 
-        await self.send_image(ctx, base_image, "youtubify", ext)
+        await self.send_image(ctx, base_image, "youtubify", tic)
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -241,6 +261,7 @@ class Images(commands.Cog):
     @commands.has_permissions(attach_files=True)
     async def snipe(self, ctx, member: discord.Member = None):
         """``snipe [@someone or send image]`` snipe someone or something"""
+        tic = perf_counter()
         image, ext = await self.find_image(ctx, member, 40)
         if image is None:
             return
@@ -250,11 +271,11 @@ class Images(commands.Cog):
         top_image.resize_image(size=(256, 256))
         getattr(image, f"{ext}_add_image")(top_image=top_image.image)
 
-        image, ext = getattr(image, f"get_{ext}_bytes")(
+        image = getattr(image, f"save_{ext}")(
             location=self.save_location, compression_level=100
         )
 
-        await self.send_image(ctx, image, "snipe", ext)
+        await self.send_image(ctx, image, "snipe", tic)
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -262,6 +283,7 @@ class Images(commands.Cog):
     @commands.has_permissions(attach_files=True)
     async def pride(self, ctx, member: discord.Member = None):
         """``pride [@someone or send image]`` support someone or somethings pride"""
+        tic = perf_counter()
         image, ext = await self.find_image(ctx, member, 40)
         if image is None:
             return
@@ -271,11 +293,11 @@ class Images(commands.Cog):
         top_image.resize_image(size=image.image.size)
         getattr(image, f"{ext}_add_image")(top_image=top_image.image)
 
-        image, ext = getattr(image, f"get_{ext}_bytes")(
+        image = getattr(image, f"save_{ext}")(
             location=self.save_location, compression_level=100
         )
 
-        await self.send_image(ctx, image, "pride", ext)
+        await self.send_image(ctx, image, "pride", tic)
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -283,13 +305,14 @@ class Images(commands.Cog):
     @commands.has_permissions(attach_files=True)
     async def grayscale(self, ctx, member: discord.Member = None):
         """``grayscale [@someone or send image]`` the opposite of the pride command tbh"""
+        tic = perf_counter()
         image, ext = await self.find_image(ctx, member, 40)
         if image is None:
             return
 
         image.image_grayscale()
-        image, ext = image.get_image_bytes(compression_level=100)
-        await self.send_image(ctx, image, "grayscale", ext)
+        image = image.save_image(compression_level=100)
+        await self.send_image(ctx, image, "grayscale", tic)
 
     @commands.command()
     @checks.isAllowedCommand()

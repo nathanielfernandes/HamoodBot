@@ -17,7 +17,8 @@ from modules.image_functions import randomFile
 from utils.mongo import *
 from utils.market import Market
 from utils.helpers import pretty_time_delta, quick_embed
-from utils.s3 import S3
+
+# from utils.s3 import S3
 
 if __name__ == "__main__":
     tic = time.perf_counter()
@@ -67,7 +68,7 @@ if __name__ == "__main__":
     async def on_ready():
         global connected
         bot.aioSession = aiohttp.ClientSession()
-        bot.S3 = S3("hamoodtempbucket", TOKEN)
+        # bot.S3 = S3("hamoodtempbucket", TOKEN)
 
         bot.prefixdb = Prefixes()
         bot.leaderboards = Leaderboards()

@@ -52,14 +52,19 @@ class Memes(commands.Cog):
                 text=text[i], coordinates=coords[i], stroke_width=4, font_color=color
             )
 
-        # meme = getattr(meme, f"save_{ext}")(location=self.save_location)
-
-        meme, ext = getattr(meme, f"get_{ext}_bytes")()
-
-        embed = self.bot.quick_embed(member=ctx.author, rainbow=True, requested=True)
-        self.bot.S3.schedule_upload_bytes(
-            file_bytes=meme, ext=ext, channel_id=ctx.channel.id, embed=embed,
+        meme = getattr(meme, f"save_{ext}")(location=self.save_location)
+        await self.bot.quick_embed(
+            ctx=ctx,
+            reply=True,
+            image=meme,
+            footer={"text": f"Requested by {ctx.author}"},
         )
+        # meme, ext = getattr(meme, f"get_{ext}_bytes")()
+
+        # embed = self.bot.quick_embed(member=ctx.author, rainbow=True, requested=True)
+        # self.bot.S3.schedule_upload_bytes(
+        #     file_bytes=meme, ext=ext, channel_id=ctx.channel.id, embed=embed,
+        # )
         # await self.bot.S3.discordUpload(ctx, meme)
 
         # os.remove(meme)
