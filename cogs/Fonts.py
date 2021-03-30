@@ -3,6 +3,7 @@ import discord
 import textwrap
 import random
 import json
+from io import BytesIO
 from discord.ext import commands
 
 from modules.image_functions import makeText
@@ -56,11 +57,20 @@ class Fonts(commands.Cog):
         textImg = makeText(text, font, font_size, colour, name)
 
         if send:
-            await self.bot.S3.discordUpload(ctx, textImg)
+            bio = BytesIO()
+            textImg.save(bio, format="png")
+            bio = bio.getvalue()
+
             await ctx.message.delete()
-            os.remove(textImg)
+
+            embed = self.bot.quick_embed(
+                member=ctx.author, rainbow=True, requested=True, color=colour
+            )
+            self.bot.S3.schedule_upload_bytes(
+                file_bytes=bio, ext="png", channel_id=ctx.channel.id, embed=embed,
+            )
         else:
-            return textImg
+            return textImg, colour
 
     @commands.command()
     @checks.isAllowedCommand()
