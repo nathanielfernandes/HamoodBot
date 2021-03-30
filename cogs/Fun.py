@@ -4,6 +4,7 @@ import urllib.request
 import json
 import discord
 from discord.ext import commands
+from io import BytesIO
 
 # from modules.zodiac_functions import getZodiac, getCompatibility
 import modules.checks as checks
@@ -92,21 +93,31 @@ class Fun(commands.Cog):
         member = ctx.author if not member else member
         fonts = self.bot.get_cog("Fonts")
         random_word = random.choice(self.words)
-        img = await fonts.text_prep(
+        img, color = await fonts.text_prep(
             ctx, (random_word), "random", 500, "random", 100, False
         )
 
-        await self.bot.S3.discordUpload(
-            ctx,
-            img,
-            requested=False,
-            description=f"{member.mention} your vibe checked out to be:",
+        bio = BytesIO()
+        img.save(bio, format="png")
+        bio = bio.getvalue()
+
+        embed = self.bot.quick_embed(
+            member=ctx.author,
+            rainbow=True,
+            requested=True,
+            desc=f"{member.mention} your vibe checked out to be:",
+            color=color,
         )
+        self.bot.S3.schedule_upload_bytes(
+            file_bytes=bio, ext="png", channel_id=ctx.channel.id, embed=embed,
+        )
+
         # await ctx.send(
         #     file=discord.File(img),
         #     content=f"{member.mention} your vibe checked out to be:",
         # )
-        os.remove(img)
+
+    # os.remove(img)
 
     @commands.command(aliases=["roast me", "roastme"])
     @checks.isAllowedCommand()

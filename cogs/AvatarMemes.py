@@ -15,21 +15,31 @@ class Avatarmemes(commands.Cog):
         self.save_location = f"{self.bot.filepath}/temp"
 
     async def meme_prep(
-        self, ctx, meme_image, members, positions, size, delete_og=False
+        self,
+        ctx,
+        meme_image,
+        members,
+        positions,
+        size,
+        delete_og=False,
+        bytes_image=None,
     ):
         async with ctx.typing():
             members = list(members)
             if len(members) == 0:
                 members.append(ctx.author)
 
-            ext = meme_image[-3:]
-            meme_save = f"{self.memes}/{meme_image}"
+            if bytes_image is None:
+                ext = meme_image[-3:]
+                meme_save = f"{self.memes}/{meme_image}"
 
-            if ext == "gif":
-                meme = Modify_Gif(gif_location=meme_save)
+                if ext == "gif":
+                    meme = Modify_Gif(gif_location=meme_save)
+                else:
+                    meme = Modify(image_location=meme_save)
+                    ext = "image"
             else:
-                meme = Modify(image_location=meme_save)
-                ext = "image"
+                meme = Modify(image=meme_image)
 
             for i in range(len(members)):
                 avatar = Modify(
@@ -43,11 +53,18 @@ class Avatarmemes(commands.Cog):
                     top_image_rotation=positions[i][1],
                 )
 
-            meme = getattr(meme, f"save_{ext}")(location=self.save_location)
+            # meme = getattr(meme, f"save_{ext}")(location=self.save_location)
+            meme, ext = getattr(meme, f"get_{ext}_bytes")()
 
-            await self.bot.S3.discordUpload(ctx, meme)
+            embed = self.bot.quick_embed(
+                member=ctx.author, rainbow=True, requested=True
+            )
+            self.bot.S3.schedule_upload_bytes(
+                file_bytes=meme, ext=ext, channel_id=ctx.channel.id, embed=embed,
+            )
+            # await self.bot.S3.discordUpload(ctx, meme)
 
-        os.remove(meme)
+        # os.remove(meme)
         if delete_og:
             os.remove(meme_save)
 
@@ -146,7 +163,7 @@ class Avatarmemes(commands.Cog):
         plate = makeColorImg(
             rgba=(255, 255, 255, 255), path=self.memes + "/", size=(x, y)
         )
-        plate = plate.strip(self.memes + "/")
+        # plate = plate.strip(self.memes + "/")
 
         coords = []
         j = 0
@@ -159,7 +176,13 @@ class Avatarmemes(commands.Cog):
             coords.append([(((i - k) * scale), j * scale), 0])
 
         await self.meme_prep(
-            ctx, plate, avamember, coords, (scale, scale), delete_og=True
+            ctx,
+            plate,
+            avamember,
+            coords,
+            (scale, scale),
+            delete_og=True,
+            bytes_image=plate,
         )
 
     @commands.command()

@@ -82,6 +82,37 @@ class Modify:
 
         return self.font
 
+    def get_image_bytes(
+        self,
+        image=None,
+        file_name=None,
+        location=None,
+        file_format="jpg",
+        size=None,
+        compression_level=None,
+        optimize=True,
+    ):
+        if image is None:
+            image = self.image
+            image = image.convert("RGB")
+
+        if size is not None:
+            image.resize(size)
+
+        img_byte_arr = BytesIO()
+
+        if compression_level is not None:
+            image.save(
+                img_byte_arr,
+                format="JPEG",
+                optimize=optimize,
+                quality=compression_level,
+            )
+        else:
+            image.save(img_byte_arr, format="png")
+
+        return img_byte_arr.getvalue(), "png"
+
     def save_image(
         self,
         image=None,
@@ -317,6 +348,29 @@ class Modify_Gif(Modify):
     def __len__(self):
         return len(self.gif)
 
+    def get_gif_bytes(
+        self,
+        gif=None,
+        file_name=None,
+        location=None,
+        optimize=False,
+        compression_level=None,
+    ):
+        if gif is None:
+            gif = self.gif
+
+        gif_byte_arr = BytesIO()
+        self.gif[0].save(
+            gif_byte_arr,
+            format="GIF",
+            save_all=True,
+            optimize=optimize,
+            append_images=self.gif[1:],
+            loop=False,
+            duration=self.duration,  # self.og_gif.info["duration"],
+        )
+        return gif_byte_arr.getvalue(), "gif"
+
     def save_gif(
         self,
         gif=None,
@@ -479,15 +533,15 @@ def makeText(content, font, font_size, colour, final):
         align="left",
     )
 
-    img.save(final)
-    return final
+    # img.save(final)
+    return img
 
 
-def makeColorImg(rgba, path, size=(100, 100)):
+def makeColorImg(rgba, size=(100, 100)):
     img = Image.new("RGBA", size, color=tuple(rgba))
-    img_name = path + "".join(random.choice("123456789") for i in range(12)) + ".png"
-    img.save(img_name)
-    return img_name
+    # img_name = path + "".join(random.choice("123456789") for i in range(12)) + ".png"
+    # img.save(img_name)
+    return img
 
 
 def randomFile(folder):
