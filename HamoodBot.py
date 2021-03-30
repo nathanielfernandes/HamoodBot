@@ -67,7 +67,7 @@ if __name__ == "__main__":
     async def on_ready():
         global connected
         bot.aioSession = aiohttp.ClientSession()
-        bot.S3 = S3("hamoodbucket", TOKEN)
+        bot.S3 = S3("hamoodtempbucket", TOKEN)
 
         bot.prefixdb = Prefixes()
         bot.leaderboards = Leaderboards()
