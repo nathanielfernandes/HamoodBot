@@ -16,7 +16,7 @@ from discord.ext import commands, tasks
 from modules.image_functions import randomFile
 from utils.mongo import *
 from utils.market import Market
-from utils.helpers import pretty_time_delta, quick_embed
+from utils.helpers import pretty_time_delta
 from utils.s3 import S3
 
 if __name__ == "__main__":
@@ -61,13 +61,12 @@ if __name__ == "__main__":
     bot.market = Market(bot)
     bot.pretty_time_delta = pretty_time_delta
     bot.games = {}
-    bot.quick_embed = quick_embed
 
     @bot.event
     async def on_ready():
         global connected
         bot.aioSession = aiohttp.ClientSession()
-        bot.S3 = S3("hamoodtempbucket", TOKEN)
+        bot.S3 = S3("hamoodbucket")
 
         bot.prefixdb = Prefixes()
         bot.leaderboards = Leaderboards()

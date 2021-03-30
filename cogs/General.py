@@ -5,7 +5,6 @@ import discord
 import asyncio
 from discord.ext import commands
 import aiohttp
-from io import BytesIO
 
 # import requests
 from modules.image_functions import randomFile, makeColorImg
@@ -167,21 +166,14 @@ class General(commands.Cog):
                 elif rgba[i] > 255:
                     rgba[i] = 255
 
-        bio = BytesIO()
-        img = makeColorImg(rgba)
-        img.save(bio, format="png")
-        bio = bio.getvalue()
-
-        embed = self.bot.quick_embed(
-            member=ctx.author,
-            rainbow=True,
-            requested=True,
-            desc="rgba: " + ", ".join([str(i) for i in rgba]),
+        img = makeColorImg(rgba, f"{self.bot.filepath}/temp",)
+        await self.bot.S3.discordUpload(
+            ctx,
+            img,
+            description="rgba: " + ", ".join([str(i) for i in rgba]),
             color=rgba,
         )
-        self.bot.S3.schedule_upload_bytes(
-            file_bytes=bio, ext="png", channel_id=ctx.channel.id, embed=embed,
-        )
+        os.remove(img)
 
     @commands.command(aliases=["hi", "hey", "yo"])
     @checks.isAllowedCommand()

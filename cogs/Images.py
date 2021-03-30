@@ -72,19 +72,13 @@ class Images(commands.Cog):
 
         return Modify(image_url=url), "image"
 
-    async def send_image(self, ctx, image, msg, ext):
+    async def send_image(self, ctx, image, msg):
         try:
-            # await self.bot.S3.discordUpload(ctx, image)
-            embed = self.bot.quick_embed(
-                member=ctx.author, rainbow=True, requested=True
-            )
-            self.bot.S3.schedule_upload_bytes(
-                file_bytes=image, ext=ext, channel_id=ctx.channel.id, embed=embed,
-            )
+            await self.bot.S3.discordUpload(ctx, image)
         except Exception:
             await ctx.send(f"`Could not {msg} image`")
 
-        # os.remove(image)
+        os.remove(image)
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -99,11 +93,11 @@ class Images(commands.Cog):
 
         getattr(image, f"enhance_{ext}")(contrast=10000, color=10000, sharpness=5)
 
-        image, ext = getattr(image, f"get_{ext}_bytes")(
+        image = getattr(image, f"save_{ext}")(
             location=self.save_location, compression_level=30
         )
 
-        await self.send_image(ctx, image, "deepfry", ext)
+        await self.send_image(ctx, image, "deepfry")
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -132,11 +126,11 @@ class Images(commands.Cog):
             constant_resolution=True,
         )
 
-        image, ext = getattr(image, f"get_{ext}_bytes")(
+        image = getattr(image, f"save_{ext}")(
             location=self.save_location, compression_level=50
         )
 
-        await self.send_image(ctx, image, "pixelate", ext)
+        await self.send_image(ctx, image, "pixelate")
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -158,9 +152,9 @@ class Images(commands.Cog):
         )
         base_image.image_add_image(top_image=top_image.image)
 
-        base_image, ext = base_image.get_image_bytes()
+        base_image = base_image.save_image(location=self.save_location,)
 
-        await self.send_image(ctx, base_image, "use", ext)
+        await self.send_image(ctx, base_image, "use")
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -210,9 +204,9 @@ class Images(commands.Cog):
             coordinates=(710, 630),
             font_color=(140, 140, 140),
         )
-        base_image, ext = base_image.get_image_bytes()
+        base_image = base_image.save_image(location=self.save_location,)
 
-        await self.send_image(ctx, base_image, "youtubify", ext)
+        await self.send_image(ctx, base_image, "youtubify")
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -229,11 +223,11 @@ class Images(commands.Cog):
         top_image.resize_image(size=(256, 256))
         getattr(image, f"{ext}_add_image")(top_image=top_image.image)
 
-        image, ext = getattr(image, f"get_{ext}_bytes")(
+        image = getattr(image, f"save_{ext}")(
             location=self.save_location, compression_level=100
         )
 
-        await self.send_image(ctx, image, "snipe", ext)
+        await self.send_image(ctx, image, "snipe")
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -250,11 +244,11 @@ class Images(commands.Cog):
         top_image.resize_image(size=image.image.size)
         getattr(image, f"{ext}_add_image")(top_image=top_image.image)
 
-        image, ext = getattr(image, f"get_{ext}_bytes")(
+        image = getattr(image, f"save_{ext}")(
             location=self.save_location, compression_level=100
         )
 
-        await self.send_image(ctx, image, "pride", ext)
+        await self.send_image(ctx, image, "pride")
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -267,8 +261,8 @@ class Images(commands.Cog):
             return
 
         image.image_grayscale()
-        image, ext = image.get_image_bytes(compression_level=100)
-        await self.send_image(ctx, image, "grayscale", ext)
+        image = image.save_image(location=self.save_location, compression_level=100)
+        await self.send_image(ctx, image, "grayscale")
 
     @commands.command()
     @checks.isAllowedCommand()
@@ -311,7 +305,7 @@ class Images(commands.Cog):
         with open(save, "w") as f:
             f.write(text)
 
-        await ctx.send(file=discord.File(save))
+        await self.send_image(ctx, save, "asciify")
 
     # @commands.command()
     # @checks.isAllowedCommand()

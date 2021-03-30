@@ -1,134 +1,75 @@
-import os, random, requests, json
-import boto3
-from boto3 import Session
-from botocore.exceptions import ClientError
-from threading import Thread
+import os
+import asyncio
+import aiobotocore
+import discord
+import random
 
 
-def create_presigned_post(
-    bucket_name, object_name, fields=None, conditions=None, expiration=3600
-):
-    """Generate a presigned URL S3 POST request to upload a file
+try:
+    AWS_ACCESS_KEY_ID = os.environ.get("AWSACCESSKEYID")
+    AWS_SECRET_ACCESS_KEY = os.environ.get("AWSSECRETKEY")
 
-    :param bucket_name: string
-    :param object_name: string
-    :param fields: Dictionary of prefilled form fields
-    :param conditions: List of conditions to include in the policy
-    :param expiration: Time in seconds for the presigned URL to remain valid
-    :return: Dictionary with the following keys:
-        url: URL to post to
-        fields: Dictionary of form fields and values to submit with the POST
-    :return: None if error.
-    """
-    # Generate a presigned S3 POST URL
-    s3_client = boto3.client("s3")
-    try:
-        response = s3_client.generate_presigned_post(
-            bucket_name,
-            object_name,
-            Fields=fields,
-            Conditions=conditions,
-            ExpiresIn=expiration,
-        )
-    except ClientError as e:
-        return None
-    return response
+except KeyError:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+    AWS_ACCESS_KEY_ID = os.environ.get("AWSACCESSKEYID")
+    AWS_SECRET_ACCESS_KEY = os.environ.get("AWSSECRETKEY")
 
 
 class S3:
-    def __init__(self, bucket_name, bot_token):
+    def __init__(self, bucket_name):
         self.bucket_name = bucket_name
-        self.headers = {
-            "Authorization": f"Bot {bot_token}",
-            "User-Agent": "Hamood",
-            "Content-Type": "application/json",
-        }
+        self.session = aiobotocore.get_session()
 
-    def gen_key(self, ext="png"):
-        return "".join(random.choice("123456789") for i in range(12)) + "." + ext
-
-    def get_key(self, filepath: str):
-        return os.path.basename(filepath)
-
-    def upload_bytes_to_S3(self, file_bytes, key):
-        # file_bytes.seek(0)
-        files = {"file": (key, file_bytes)}
-        response = create_presigned_post(self.bucket_name, key)
-        r = requests.post(response["url"], data=response["fields"], files=files)
-
-        return "https://hamoodtempbucket.s3.amazonaws.com/" + key
-
-    def upload_to_S3(self, filepath, key, delete_file):
-        response = create_presigned_post(self.bucket_name, key)
-        with open(filepath, "rb") as f:
-            files = {"file": (key, f)}
-            r = requests.post(response["url"], data=response["fields"], files=files)
-
-        if delete_file:
-            os.remove(filepath)
-
-        return "https://hamoodtempbucket.s3.amazonaws.com/" + key
-
-    def upload_to_discord_bytes(
-        self, file_bytes, ext, channel_id: int, content: str = "", embed: dict = None
-    ):
-        key = self.gen_key(ext)
-        img_url = self.upload_bytes_to_S3(file_bytes, key)
-        embed["image"]["url"] = img_url
-
-        msg = json.dumps({"content": content, "embed": embed})
-
-        r = requests.post(
-            f"https://discordapp.com/api/channels/{channel_id}/messages",
-            headers=self.headers,
-            data=msg,
-        )
-
-    def upload_to_discord(
+    async def discordUpload(
         self,
-        filepath: str,
-        channel_id: int,
-        content: str = "",
-        embed: dict = None,
-        delete_file=True,
+        ctx,
+        filename: str,
+        description=None,
+        title=None,
+        requested=True,
+        rainbow=True,
+        color=None,
     ):
-        key = self.get_key(filepath)
-        img_url = self.upload_to_S3(filepath, key, delete_file)
+        link = await self.upload(filename)
+        r = lambda: random.randint(0, 255)
 
-        embed["image"]["url"] = img_url
+        if color is None:
+            color = (
+                ctx.author.color
+                if not rainbow
+                else discord.Color.from_rgb(r(), r(), r())
+            )
+        else:
+            color = discord.Color.from_rgb(color[0], color[1], color[2])
 
-        msg = json.dumps({"content": content, "embed": embed})
+        embed = discord.Embed(title=title, description=description, color=color,)
+        embed.set_image(url=link)
+        if requested:
+            embed.set_footer(text=f"Requested by {ctx.author}")
+        await ctx.send(embed=embed)
 
-        r = requests.post(
-            f"https://discordapp.com/api/channels/{channel_id}/messages",
-            headers=self.headers,
-            data=msg,
-        )
+    async def upload(self, filename: str):
+        key = os.path.basename(filename)
 
-    def schedule_upload(
-        self,
-        filepath: str,
-        channel_id: int,
-        content: str = "",
-        embed: dict = None,
-        delete_file=True,
-    ):
-        p = Thread(
-            target=self.upload_to_discord,
-            args=(filepath, channel_id, content, embed, delete_file),
-        )
-        p.start()
+        async with self.session.create_client(
+            "s3",
+            region_name="us-east-2",
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+        ) as client:
+            await client.put_object(
+                Bucket=self.bucket_name, Key=key, Body=open(filename, "rb")
+            )
+        return "https://hamoodbucket.s3.us-east-2.amazonaws.com/" + key
 
-    def schedule_upload_bytes(
-        self,
-        file_bytes: str,
-        ext: str,
-        channel_id: int,
-        content: str = "",
-        embed: dict = None,
-    ):
-        p = Thread(
-            target=self.upload_to_discord_bytes,
-            args=(file_bytes, ext, channel_id, content, embed),
-        )
-        p.start()
+    async def delete(self, filename: str):
+        key = filename
+        async with self.session.create_client(
+            "s3",
+            region_name="us-east-2",
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+        ) as client:
+            await client.delete_object(Bucket=self.bucket_name, Key=key)
