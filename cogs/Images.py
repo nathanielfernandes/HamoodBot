@@ -7,6 +7,9 @@ from math import sqrt
 from modules.image_functions import Modify, Modify_Gif
 import modules.checks as checks
 from datetime import datetime
+import urllib
+from urllib import request as ulreq
+from PIL import ImageFile
 
 
 class Images(commands.Cog):
@@ -20,7 +23,19 @@ class Images(commands.Cog):
 
     # self.test123 = Modify(image_location=f"{self.memes}/furniture.png")
 
+    def is_size_safe(self, url):
+        try:
+            file = ulreq.urlopen(url)
+            size = file.headers.get("content-length")
+            if size:
+                size = int(size)
+                file.close()
+                return size <= 3145728
+        except Exception:
+            return False
+
     async def find_image(self, ctx, member, depth):
+        check = True
         if member is None:
             types = [".jpg", ".jpeg", ".png", ".gif", ".JPG", ".JPEG", ".PNG", ".GIF"]
 
@@ -52,8 +67,9 @@ class Images(commands.Cog):
             i = l.index(max(l))
             msg = [message1, message2, message3][i]
             if msg is not None:
-                if i == 0:
+                if i == 0 and msg.attachments[0].size <= 3145728:
                     url = msg.attachments[0].url
+                    check = False
                 elif i == 1:
                     url = msg.embeds[0].to_dict().get("image")["url"]
                 else:
@@ -66,6 +82,11 @@ class Images(commands.Cog):
         if url is None:
             await ctx.send("`No recent images found!`")
             return None, None
+
+        if check:
+            if not self.is_size_safe(url):
+                await ctx.send("`Image too large`")
+                return None, None
 
         if ".gif" in url:
             return Modify_Gif(gif_url=url), "gif"

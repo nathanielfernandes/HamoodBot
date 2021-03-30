@@ -127,9 +127,9 @@ class S3:
         content: str = "",
         embed: dict = None,
     ):
-        self.upload_to_discord_bytes(file_bytes, ext, channel_id, content, embed)
-        # p = Thread(
-        #     target=self.upload_to_discord_bytes,
-        #     args=(file_bytes, ext, channel_id, content, embed),
-        # )
-        # p.start()
+        # self.upload_to_discord_bytes(file_bytes, ext, channel_id, content, embed)
+        p = Thread(
+            target=self.upload_to_discord_bytes,
+            args=(file_bytes, ext, channel_id, content, embed),
+        )
+        p.start()
