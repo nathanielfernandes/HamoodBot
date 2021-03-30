@@ -15,4 +15,4 @@ motor
 psutil
 dblpy
 gTTS
-aiobotocore
+boto3
