@@ -78,7 +78,6 @@ class Images(commands.Cog):
                         await ctx.reply("`Image too large`")
                         return None, None
                 elif i == 1:
-                    print("bruh")
                     url = msg.embeds[0].to_dict().get("image")["url"]
                 else:
                     url = msg.content if msg.content.strip() != "" else None
