@@ -1,3 +1,4 @@
+import os
 import discord
 from discord.ext import commands
 import asyncio
@@ -11,6 +12,30 @@ class Dev(commands.Cog):
 
     def to_id(self, name):
         return name.replace(" ", "_").lower()
+
+    @commands.command()
+    async def test1(self, ctx):
+        embed = discord.Embed(
+            title="test", description="[`♠k`](https://top.gg/bot/699510311018823680)",
+        )
+
+        await ctx.send(embed=embed)
+
+    #     meme = f"{self.bot.filepath}/memePics/video0.mov"
+
+    #     name = os.path.basename(meme)
+    #     embed = discord.Embed()
+
+    #     embed.set_image(url=f"attachment://{name}")
+
+    #     await ctx.send(file=discord.File(meme), embed=embed)
+    # embed = self.bot.quick_embed(member=ctx.author, rainbow=True, requested=True)
+    # self.bot.S3.schedule_upload(
+    #     f"{self.bot.filepath}/memePics/10mbtest.jpg",
+    #     ctx.channel.id,
+    #     embed=embed,
+    #     delete_file=False,
+    # )
 
     @commands.command()
     @commands.is_owner()
@@ -80,8 +105,9 @@ class Dev(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def gameslog(self, ctx):
-        log = "\n".join([f"{self.bot.games_log[k]} | {k}" for k in self.bot.games_log])
-        await ctx.send(f"```{len(self.bot.games_log)} Games:\n{log}```")
+        await ctx.send("```" + str(self.bot.games) + "```")
+        # log = "\n".join([f"{self.bot.games_log[k]} | {k}" for k in self.bot.games_log])
+        # await ctx.send(f"```{len(self.bot.games_log)} Games:\n{log}```")
 
     @commands.command()
     @commands.is_owner()

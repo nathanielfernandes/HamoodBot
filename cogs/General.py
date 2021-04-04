@@ -403,12 +403,18 @@ class General(commands.Cog):
             "x-rapidapi-host": URBANDICTHOST,
         }
 
-        async with self.bot.aioSession.get(
-            "https://mashape-community-urban-dictionary.p.rapidapi.com/define",
+        j = await self.bot.ahttp.get(
+            url="https://mashape-community-urban-dictionary.p.rapidapi.com/define",
             headers=headers,
             params=query,
-        ) as r:
-            j = await r.json()
+            return_type="json",
+        )
+        # async with self.bot.aioSession.get(
+        #     "https://mashape-community-urban-dictionary.p.rapidapi.com/define",
+        #     headers=headers,
+        #     params=query,
+        # ) as r:
+        #     j = await r.json()
 
         # r = requests.request(
         #     "GET",
@@ -416,8 +422,7 @@ class General(commands.Cog):
         #     headers=headers,
         #     params=query,
         # )
-
-        if r.status == 200:
+        if len(j) >= 1:
             try:
                 definitions = j["list"]
                 d = definitions[random.randint(0, len(definitions) - 1)]

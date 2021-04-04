@@ -42,6 +42,8 @@ class Money(commands.Cog):
     async def checkbalance(self, ctx, member: discord.Member):
         """``checkbalance [@member]`` Lets you check a members bank balance"""
         bal = await self.bot.currency.get_currency(ctx.guild.id, member.id)
+        if bal is None:
+            bal = {"bank": 0, "bank_max": 500}
         embed = discord.Embed(
             title=f"{member}'s Bank Balance",
             description=f"**Bank:** {self.cash(bal['bank'])} / ⌬ {bal['bank_max']:,}",
@@ -78,11 +80,9 @@ class Money(commands.Cog):
                         timestamp=ctx.message.created_at,
                     )
                     return await ctx.send(embed=embed)
-
             await ctx.send(
                 "`Insufficient Funds!` bank upgrades can only be bought using your bank balance."
             )
-
         else:
             p = self.bot.find_prefix(ctx.guild.id)
             items_v = await self.get_items_value(ctx)
@@ -199,7 +199,7 @@ class Money(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 900, commands.BucketType.user)
     async def transfer(self, ctx, recipient: discord.Member = None, amount=1):
-        """``transfer [@member] [amount]`` Transfer funds to another member. There is a 35% tax on transfering."""
+        """``transfer [@member] [amount]`` Transfer funds to another member. There is a 10% tax on transfering."""
         if recipient is not None and recipient.id != ctx.author.id:
             amount = abs(int(amount))
             sender = ctx.author
@@ -208,7 +208,7 @@ class Money(commands.Cog):
             if sender_bal is not None and sender_bal["bank"] >= amount:
                 await self.bot.currency.add_member(ctx.guild.id, recipient.id)
 
-                tax = 0.75
+                tax = 0.9
                 taxed = round(amount * tax)
                 await self.bot.currency.update_wallet(ctx.guild.id, recipient.id, taxed)
                 await self.bot.currency.update_bank(

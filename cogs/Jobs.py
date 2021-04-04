@@ -5,7 +5,7 @@ import asyncio
 from discord.ext import commands
 
 import modules.checks as checks
-from modules.games.trivia_functions import _Trivia
+from games.trivia_functions import _Trivia
 
 
 class Jobs(commands.Cog):

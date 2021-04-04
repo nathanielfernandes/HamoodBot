@@ -1,13 +1,11 @@
-import os
+import os, random, urllib
 from copy import copy
-import random
 import discord
 from discord.ext import commands
 from math import sqrt
 from modules.image_functions import Modify, Modify_Gif
 import modules.checks as checks
 from datetime import datetime
-import urllib
 from urllib import request as ulreq
 from PIL import ImageFile
 from time import perf_counter
@@ -355,6 +353,8 @@ class Images(commands.Cog):
             f.write(text)
 
         await ctx.send(file=discord.File(save))
+
+        os.remove(save)
 
     # @commands.command()
     # @checks.isAllowedCommand()

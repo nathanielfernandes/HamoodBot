@@ -2,7 +2,6 @@ import os
 import datetime
 import pymongo
 import motor.motor_asyncio
-import pprint
 
 try:
     MONGOURI = os.environ["MONGOURI"]

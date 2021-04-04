@@ -4,19 +4,15 @@
 """HamoodBot is a multipurpose discord bot that has a variety of different functions"""
 
 # dependancies
-import time
-import os
-import json
-import datetime
-import random
-import aiohttp
-import discord
-import asyncio
+import time, os, json, datetime, random
+import discord, asyncio
 from discord.ext import commands, tasks
-from modules.image_functions import randomFile
+
+# from modules.image_functions import randomFile
 from utils.mongo import *
 from utils.market import Market
 from utils.helpers import pretty_time_delta, quick_embed
+from utils.http import HTTP
 
 # from utils.s3 import S3
 
@@ -63,12 +59,14 @@ if __name__ == "__main__":
     bot.pretty_time_delta = pretty_time_delta
     bot.games = {}
     bot.quick_embed = quick_embed
+    bot.ahttp = HTTP()
+
+    # bot.aioSession = aiohttp.ClientSession()
+    # bot.S3 = S3("hamoodtempbucket", TOKEN)
 
     @bot.event
     async def on_ready():
         global connected
-        bot.aioSession = aiohttp.ClientSession()
-        # bot.S3 = S3("hamoodtempbucket", TOKEN)
 
         bot.prefixdb = Prefixes()
         bot.leaderboards = Leaderboards()

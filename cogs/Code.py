@@ -19,10 +19,16 @@ class Code(commands.Cog):
     async def run_code(self, ctx, language, code):
         data = {"language": language, "source": code}
 
-        async with self.bot.aioSession.post(
-            "https://emkc.org/api/v1/piston/execute", data=data
-        ) as response:
-            r = await response.json()
+        r = await self.bot.ahttp.post(
+            url="https://emkc.org/api/v1/piston/execute",
+            data=data,
+            return_type="json",
+            timeout=10,
+        )
+        # async with self.bot.aioSession.post(
+        #     "https://emkc.org/api/v1/piston/execute", data=data
+        # ) as response:
+        #     r = await response.json()
         # r = requests.post("https://emkc.org/api/v1/piston/execute", data=data).json()
 
         if "message" not in r:

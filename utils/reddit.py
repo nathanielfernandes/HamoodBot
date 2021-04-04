@@ -1,6 +1,7 @@
 import random
 import asyncpraw
 import os
+import re
 import pathlib
 
 try:
@@ -24,6 +25,13 @@ class Redditing:
         )
         self.all_posts_cache = {}
         self.image_posts_cache = {}
+
+    # async def get_post_from_url(self, url):
+    #     post_id = re.findall(
+    #         r"reddit\.com\/(?:r|u|user)\/\S{2,}\/comments\/([0-9a-z]+)", link
+    #     )
+    #     post = await self.red.submission(id=post_id)
+    #     print(post.title)
 
     def to_dict(self, post):
         return {

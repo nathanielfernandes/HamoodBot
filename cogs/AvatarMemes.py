@@ -58,7 +58,6 @@ class Avatarmemes(commands.Cog):
                 image=meme,
                 footer={"text": f"Requested by {ctx.author}"},
             )
-
             # # meme, ext = getattr(meme, f"get_{ext}_bytes")()
             # name = os.path.basename(meme)  # f"{ctx.command.name}.png"
             # embed = discord.Embed(color=ctx.author.color)
