@@ -39,7 +39,7 @@ class Games(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
-    async def connect4t(self, ctx, member: discord.Member = None, wager=0):
+    async def connect4(self, ctx, member: discord.Member = None, wager=0):
         """``connect [@opponent] [wager:optional]`` starts a new connect 4 game"""
         wager = int(wager)
         game = ConnectFour(playerTwo=member, ctx=ctx, bot=self.bot, wager=wager)
@@ -49,7 +49,7 @@ class Games(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
-    async def fillert(self, ctx, member: discord.Member = None, wager=0):
+    async def filler(self, ctx, member: discord.Member = None, wager=0):
         """``filler [@opponent] [wager:optional]`` starts a new filler game"""
         wager = int(wager)
         game = Filler(playerTwo=member, ctx=ctx, bot=self.bot, wager=wager)
@@ -59,10 +59,10 @@ class Games(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
-    async def triviat(
+    async def trivia(
         self, ctx, member: discord.Member = None, category="any", wager=0,
     ):
-        """``trivia [@opponent] [category] [difficulty]`` play a game of trivia with someone!\n \n**Categories include:** `any`, `general`, `books`, `film`, `music`, `musicals`, `theatres`, `tv`, `video games`, `board games`, `nature`, `computers`, `mathematics`, `mythology`, `sports`, `geography`, `history`, `politics`, `art`, `celebrities`, `animals`, `vehicles`, `comics`, `gadgets`, `anime`, `manga`, `cartoon`, `animation`"""
+        """``trivia [@opponent] [category] [wager:optional]`` play a game of trivia with someone!\n \n**Categories include:** `any`, `general`, `books`, `film`, `music`, `musicals`, `theatres`, `tv`, `video games`, `board games`, `nature`, `computers`, `mathematics`, `mythology`, `sports`, `geography`, `history`, `politics`, `art`, `celebrities`, `animals`, `vehicles`, `comics`, `gadgets`, `anime`, `manga`, `cartoon`, `animation`"""
         wager = int(wager)
         game = Trivia(
             playerTwo=member, ctx=ctx, bot=self.bot, category=category, wager=wager,
@@ -73,8 +73,8 @@ class Games(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
-    async def chesst(self, ctx, member: discord.Member = None, wager=0):
-        """``chess [@opponent]`` starts a new chess game. Use .move to play `BETA`"""
+    async def chess(self, ctx, member: discord.Member = None, wager=0):
+        """``chess [@opponent] [wager:optional]`` starts a new chess game. Use .move to play `BETA`"""
         wager = int(wager)
         game = Chess(playerTwo=member, ctx=ctx, bot=self.bot, wager=wager)
         await game.setup_game()
