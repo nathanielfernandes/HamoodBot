@@ -190,7 +190,7 @@ class Filler(DefaultGame):
                             not in self.players[self.playerOne.id]["l"]
                             + self.players[self.playerTwo.id]["l"]
                         )
-                        and not end
+                        or end
                         else self.animated_emojis[self.grid[y][x]]
                         for x in range(len(self.grid[y]))
                     ]

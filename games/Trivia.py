@@ -89,7 +89,11 @@ class Trivia(DefaultGame):
                 else:
                     tie = True
                 await self.end_game(winner=winner, loser=loser, tie=tie)
-            await self.update_message(embed=self.create_embed(winner=winner, tie=tie))
+
+            if self.message is not None:
+                await self.update_message(
+                    embed=self.create_embed(winner=winner, tie=tie)
+                )
             self.pause = False
 
     def correction_embed(self, correct: bool, member):

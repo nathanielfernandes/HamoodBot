@@ -131,7 +131,9 @@ class Games(commands.Cog):
         elif game == "all":
             game = "total"
         else:
-            return await ctx.send("`Game Name` (`all`, `filler`, `chess`, `connect`)")
+            return await ctx.send(
+                "`Game Name` (`all`, `filler`, `chess`, `connect4`, `trivia`)"
+            )
 
         if game not in leaderboard[str(member.id)]:
             return await ctx.send("`The member has no stats for that game`")
