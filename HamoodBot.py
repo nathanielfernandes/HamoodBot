@@ -55,11 +55,18 @@ if __name__ == "__main__":
     connected = False
     bot.timeout_list = []
     bot.filepath = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
-    bot.market = Market(bot)
+
     bot.pretty_time_delta = pretty_time_delta
     bot.games = {}
     bot.quick_embed = quick_embed
+
+    bot.market = Market(bot)
     bot.ahttp = HTTP()
+    bot.prefixdb = Prefixes()
+    bot.leaderboards = Leaderboards()
+    bot.inventories = Inventories()
+    bot.currency = Currency()
+    bot.members = Members()
 
     # bot.aioSession = aiohttp.ClientSession()
     # bot.S3 = S3("hamoodtempbucket", TOKEN)
@@ -67,12 +74,6 @@ if __name__ == "__main__":
     @bot.event
     async def on_ready():
         global connected
-
-        bot.prefixdb = Prefixes()
-        bot.leaderboards = Leaderboards()
-        bot.inventories = Inventories()
-        bot.currency = Currency()
-        bot.members = Members()
 
         toc = time.perf_counter()
 

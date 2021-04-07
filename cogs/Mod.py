@@ -197,9 +197,9 @@ class Mod(commands.Cog):
     async def on_voice_state_update(self, member, before, after):
         if before.channel != after.channel:
             if before.channel is not None:
-                print(
-                    str(before.channel.name)[str(before.channel.name).find("🔹") + 2 :]
-                )
+                # print(
+                #     str(before.channel.name)[str(before.channel.name).find("🔹") + 2 :]
+                # )
                 if str(before.channel.name)[
                     str(before.channel.name).find("🔹") + 2 :
                 ] == str(member.id):
