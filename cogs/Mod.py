@@ -197,7 +197,12 @@ class Mod(commands.Cog):
     async def on_voice_state_update(self, member, before, after):
         if before.channel != after.channel:
             if before.channel is not None:
-                if str(before.channel.name) == f"{member.name}'s channel":
+                print(
+                    str(before.channel.name)[str(before.channel.name).find("🔹") + 2 :]
+                )
+                if str(before.channel.name)[
+                    str(before.channel.name).find("🔹") + 2 :
+                ] == str(member.id):
                     try:
                         await before.channel.delete()
                     except discord.errors.NotFound:
@@ -205,7 +210,9 @@ class Mod(commands.Cog):
 
             if after.channel is not None:
                 if "\u2795" in str(after.channel.name):
-                    channel = await after.channel.clone(name=f"{member.name}'s channel")
+                    channel = await after.channel.clone(
+                        name=f"{member.name}'s channel 🔹 {member.id}"
+                    )
                     await member.move_to(channel, reason=None)
 
     @commands.command()
@@ -395,10 +402,11 @@ class Mod(commands.Cog):
                 "token": DISCORDSUBHUB,
             }
 
-            async with self.bot.aioSession.post(
-                "https://discordsubhub.herokuapp.com/subscribe", headers=headers,
-            ) as response:
-                content = await response.text()
+            content = await self.bot.ahttp.post(
+                url="https://discordsubhub.herokuapp.com/subscribe",
+                headers=headers,
+                return_type="text",
+            )
 
             await ctx.send(f"**{content}**")
         else:
@@ -435,10 +443,15 @@ class Mod(commands.Cog):
                 "token": DISCORDSUBHUB,
             }
 
-            async with self.bot.aioSession.post(
-                "https://discordsubhub.herokuapp.com/subscribe", headers=headers,
-            ) as response:
-                content = await response.text()
+            content = await self.bot.ahttp.post(
+                url="https://discordsubhub.herokuapp.com/subscribe",
+                headers=headers,
+                return_type="text",
+            )
+            # async with self.bot.aioSession.post(
+            #     "https://discordsubhub.herokuapp.com/subscribe", headers=headers,
+            # ) as response:
+            #     content = await response.text()
 
             await ctx.send(f"**{content}**")
         else:

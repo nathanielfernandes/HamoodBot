@@ -13,13 +13,14 @@ class Dev(commands.Cog):
     def to_id(self, name):
         return name.replace(" ", "_").lower()
 
-    @commands.command()
-    async def test1(self, ctx):
-        embed = discord.Embed(
-            title="test", description="[`♠k`](https://top.gg/bot/699510311018823680)",
-        )
+    # @commands.command()
+    # async def test1(self, ctx):
+    #     embed = discord.Embed(
+    #         title="<:cac:828227363611082752>",
+    #         description="<:cac:828227363611082752>\n[`♠k`](https://top.gg/bot/699510311018823680)",
+    #     )
 
-        await ctx.send(embed=embed)
+    #     await ctx.send(embed=embed)
 
     #     meme = f"{self.bot.filepath}/memePics/video0.mov"
 
@@ -42,7 +43,7 @@ class Dev(commands.Cog):
     async def logout(self, ctx):
         """``logout`` logs hamood out"""
         await ctx.send("**goodbye**")
-        await self.bot.aioSession.close()
+        await self.bot.ahttp.close()
         await self.bot.logout()
 
     @commands.command()
