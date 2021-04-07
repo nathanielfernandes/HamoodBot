@@ -46,10 +46,11 @@ class HTTP:
         try:
             async with self.session.get(url) as resp:
                 data = await resp.read()
-                b = BytesIO(data)
-                b.seek(0)
+                b = data  # BytesIO(data)
+                # b.seek(0)
                 return b
-        except:
+        except Exception as e:
+            raise e
             return
 
     async def get_json(self, url: str):

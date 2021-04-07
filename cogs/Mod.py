@@ -66,8 +66,8 @@ async def mute(ctx, user, reason):
                 await channel.set_permissions(
                     muted,
                     send_messages=False,
-                    read_message_history=True,
-                    read_messages=True,
+                    # read_message_history=True,
+                    # read_messages=True,
                 )
         except discord.Forbidden:
             return await ctx.send(
@@ -150,6 +150,33 @@ class Mod(commands.Cog):
         await self.bot.prefixdb.change_prefix(str(ctx.guild.id), content)
 
         await ctx.send(f"**Changed Server Prefix To:** `{content}`")
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.has_permissions(manage_emojis=True)
+    @commands.cooldown(5, 20, commands.BucketType.guild)
+    async def emojisteal(self, ctx, emoji: discord.PartialEmoji):
+        """``emojisteal [emoji]`` steals the sent emoji and adds it to the current server"""
+        emoji_bytes = await self.bot.ahttp.bytes_download(url=str(emoji.url))
+        if emoji_bytes is None:
+            return await ctx.send("`could not steal emoji`")
+
+        try:
+            added_emoji = await ctx.guild.create_custom_emoji(
+                name=emoji.name, image=emoji_bytes
+            )
+
+            embed = discord.Embed(
+                title=f"{added_emoji} Emoji has been added to the server",
+                description=f"```\nname: {added_emoji.name}\ntag: {added_emoji}```",
+                color=ctx.author.color,
+            )
+            embed.set_thumbnail(url=str(emoji.url))
+            embed.set_footer(text=f"Requested by {ctx.author}")
+
+            await ctx.send(embed=embed)
+        except:
+            await ctx.send("`Could not add emoji to server. Emoji cap may be reached.`")
 
     # @commands.command()
     # @commands.has_permissions(manage_roles=True)
