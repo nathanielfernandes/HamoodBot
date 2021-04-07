@@ -15,6 +15,94 @@ except KeyError:
     load_dotenv()
     DISCORDSUBHUB = os.environ.get("DISCORDSUBHUB")
 
+# This prevents staff members from being punished
+class Offender(commands.Converter):
+    async def convert(self, ctx, argument):
+        argument = await commands.MemberConverter().convert(
+            ctx, argument
+        )  # gets a member object
+        permission = (
+            argument.guild_permissions.manage_messages
+        )  # can change into any permission
+        if not permission:  # checks if user has the permission
+            return argument  # returns user object
+        else:
+            raise commands.BadArgument(
+                "You cannot punish other staff members"
+            )  # tells user that target is a staff member
+
+
+# Checks if you have a muted role
+class Redeemed(commands.Converter):
+    async def convert(self, ctx, argument):
+        argument = await commands.MemberConverter().convert(
+            ctx, argument
+        )  # gets member object
+        muted = discord.utils.get(ctx.guild.roles, name="Muted")  # gets role object
+        if muted in argument.roles:  # checks if user has muted role
+            return argument  # returns member object if there is muted role
+        else:
+            raise commands.BadArgument("The user was not muted.")  # self-explainatory
+
+
+# Checks if there is a muted role on the server and creates one if there isn't
+async def mute(ctx, user, reason):
+    role = discord.utils.get(
+        ctx.guild.roles, name="Muted"
+    )  # retrieves muted role returns none if there isn't
+    # hell = discord.utils.get(
+    #     ctx.guild.text_channels, name="timeout"
+    # )  # retrieves channel named hell returns none if there isn't
+    if not role:  # checks if there is muted role
+        try:  # creates muted role
+            muted = await ctx.guild.create_role(
+                name="Muted", reason="To use for muting"
+            )
+            for (
+                channel
+            ) in (
+                ctx.guild.channels
+            ):  # removes permission to view and send in the channels
+                await channel.set_permissions(
+                    muted,
+                    send_messages=False,
+                    read_message_history=True,
+                    read_messages=True,
+                )
+        except discord.Forbidden:
+            return await ctx.send(
+                "`I don't have the permissions to make a muted role`"
+            )  # self-explainatory
+        await user.add_roles(muted)  # adds newly created muted role
+        # await ctx.send(f"{user.mention} has been sent to timeout for {reason}")
+    else:
+        await user.add_roles(role)  # adds already existing muted role
+    # await ctx.send(f"{user.mention} has been sent to timout for {reason}")
+
+    # if not hell:  # checks if there is a channel named hell
+    #     overwrites = {
+    #         ctx.guild.default_role: discord.PermissionOverwrite(
+    #             read_message_history=False
+    #         ),
+    #         ctx.guild.me: discord.PermissionOverwrite(send_messages=True),
+    #         muted
+    #         if not role
+    #         else role: discord.PermissionOverwrite(read_message_history=True),
+    #     }  # permissions for the channel
+    #     try:  # creates the channel and sends a message
+    #         channel = await ctx.guild.create_text_channel(
+    #             name="timeout",
+    #             overwrites=overwrites,
+    #             topic="Welcome to #timeout.. You will spend your time here until you get unmuted. Enjoy the silence.",
+    #         )
+    #         # await channel.send(
+    #         #     "Welcome to the Timeout Corner.. You will spend your time here until you get unmuted. Enjoy the silence."
+    #         # )
+    #     except discord.Forbidden:
+    #         return await ctx.send(
+    #             "`I don't have the permissions to make #timeout channel`"
+    #         )
+
 
 class Mod(commands.Cog):
     """Server Moderation"""
@@ -73,6 +161,85 @@ class Mod(commands.Cog):
     # @checks.isAllowedCommand()
     # @commands.has_permissions(manage_guild=True)
     # async def subscribe(self, ctx, *, url: commands.clean_content=None):
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.has_permissions(kick_members=True)
+    async def mute(self, ctx, user: Offender, reason=None):
+        """``mute [user] [reason]`` mutes a user"""
+        await mute(ctx, user, reason or "No Reason")
+        await ctx.send(f"{user.mention} has been muted for {reason or 'No Reason'}")
+
+    @commands.command()
+    @commands.has_permissions(kick_members=True)
+    async def unmute(self, ctx, user: Redeemed):
+        """``unmute [user]`` unmutes a user"""
+        await user.remove_roles(
+            discord.utils.get(ctx.guild.roles, name="Muted")
+        )  # removes muted role
+        await ctx.send(f"{user.mention} has been unmuted")
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.has_permissions(kick_members=True)
+    async def tempmute(self, ctx, user: Offender, time, reason=None):
+        """``tempmute [user] [minutes, max=6hours] [reason]"""
+
+        mins = float(time)
+        if mins > 360:
+            mins = 360
+        time = 60 * mins
+
+        await mute(ctx, user, reason or "No Reason")
+        await ctx.send(
+            f"{user.mention} has been muted for `{self.bot.pretty_time_delta(time)}` | Reason: {reason or 'None'}"
+        )
+        await asyncio.sleep(time)
+        await user.remove_roles(discord.utils.get(ctx.guild.roles, name="Muted"))
+        await ctx.send(f"{user.mention} your are no longer muted")
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    async def selfmute(self, ctx, time, reason=None):
+        """``selfmute [minutes]`` mute yourself"""
+        user = ctx.author
+        mins = float(time)
+        if mins > 360:
+            mins = 360
+        time = 60 * mins
+
+        await mute(ctx, user, reason or "No Reason")
+        await ctx.send(
+            f"{ctx.author.mention} has muted themselves for `{self.bot.pretty_time_delta(time)}`"
+        )
+        await asyncio.sleep(time)
+        await user.remove_roles(discord.utils.get(ctx.guild.roles, name="Muted"))
+        await ctx.send(f"{ctx.author.mention} your are no longer muted")
+
+    @commands.command()
+    @commands.has_permissions(kick_members=True)
+    async def block(self, ctx, user: Offender = None):
+        """``block [user]`` prevents a user from sending messages in the current channel"""
+
+        if not user:  # checks if there is user
+            return await ctx.send("You must specify a user")
+
+        await ctx.channel.set_permissions(
+            user, send_messages=False
+        )  # sets permissions for current channel
+
+        await ctx.send(f"{user.mention} has been blocked from speaking in this channel")
+
+    @commands.command()
+    @commands.has_permissions(kick_members=True)
+    async def unblock(self, ctx, user: Offender = None):
+        """``unblock [user]`` unblocks a user from sending messages in the current channel"""
+
+        if not user:  # checks if there is user
+            return await ctx.send("You must specify a user")
+
+        await ctx.channel.set_permissions(user, send_messages=True)
+        await ctx.send(f"{user.mention} has been unblocked from this channel")
 
     @commands.command()
     @checks.isAllowedCommand()
