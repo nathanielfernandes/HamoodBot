@@ -141,6 +141,30 @@ class Images(commands.Cog):
         )
         await self.send_image(ctx, image, "deepfry", tic)
 
+    @commands.command(aliases=["shirt"])
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 15, commands.BucketType.channel)
+    @commands.has_permissions(attach_files=True)
+    async def tshirt(self, ctx, member: discord.Member = None):
+        """``tshirt [@someone or send image]`` adds any image to a white t-shirt"""
+        tic = perf_counter()
+        image, ext = await self.find_image(ctx, member, 40)
+        if image is None:
+            return
+
+        base_image = Modify(image_location=f"{self.memes}/tshirtImage.png")
+        base_image.image_add_image(
+            top_image=image.image, coordinates=(217, 175), top_image_size=(358, 252)
+        )
+
+        base_image = base_image.save_image(
+            image=base_image.image,
+            file_format="png",
+            # size=(800, 784),  # , compression_level=20
+        )
+
+        await self.send_image(ctx, base_image, "t-shirt", tic)
+
     @commands.command()
     @checks.isAllowedCommand()
     @commands.cooldown(2, 15, commands.BucketType.channel)
