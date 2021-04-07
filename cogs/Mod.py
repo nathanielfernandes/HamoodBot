@@ -179,7 +179,11 @@ class Mod(commands.Cog):
             await ctx.send("`Could not add emoji to server. Emoji cap may be reached.`")
 
     @commands.command()
+    @checks.isAllowedCommand()
+    @commands.has_permissions(manage_emojis=True)
+    @commands.cooldown(5, 20, commands.BucketType.guild)
     async def addemoji(self, ctx, url: str = None):
+        """``addemoji [url or image]`` adds the emoji to the server"""
         if url is None:
             if len(ctx.message.attachments) > 0:
                 url = ctx.message.attachments[0].url
