@@ -178,6 +178,36 @@ class Mod(commands.Cog):
         except:
             await ctx.send("`Could not add emoji to server. Emoji cap may be reached.`")
 
+    @commands.command()
+    async def addemoji(self, ctx, url: str = None):
+        if url is None:
+            if len(ctx.message.attachments) > 0:
+                url = ctx.message.attachments[0].url
+
+        emoji_bytes = await self.bot.ahttp.bytes_download(url=str(url))
+        if emoji_bytes is None:
+            return await ctx.send("`could not steal emoji`")
+
+        try:
+            added_emoji = await ctx.guild.create_custom_emoji(
+                name="changeme", image=emoji_bytes
+            )
+
+            embed = discord.Embed(
+                title=f"{added_emoji} Emoji has been added to the server",
+                description=f"```\nname: {added_emoji.name}\ntag: {added_emoji}```",
+                color=ctx.author.color,
+            )
+            embed.set_thumbnail(url=str(url))
+            embed.set_footer(text=f"Requested by {ctx.author}")
+
+            await ctx.send(embed=embed)
+        except Exception as e:
+            raise e
+            await ctx.send(
+                "`Could not add emoji to server. Emoji cap may be reached or file size/type is not supported.`"
+            )
+
     # @commands.command()
     # @commands.has_permissions(manage_roles=True)
     # async def rainbowroles(self, ctx):
