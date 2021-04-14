@@ -41,7 +41,8 @@ if __name__ == "__main__":
     intents = discord.Intents().default()
     intents.members = True
 
-    bot = commands.AutoShardedBot(
+    # AutoShardedBot
+    bot = commands.Bot(
         command_prefix=get_prefix,
         case_insensitive=True,
         intents=intents,
@@ -87,7 +88,7 @@ if __name__ == "__main__":
         await bot.change_presence(
             activity=discord.Activity(
                 type=discord.ActivityType.listening,
-                name=".help",  # f"{sum([len(g.members) for g in bot.guilds])} Users",
+                name=f"{sum([len(g.members) for g in bot.guilds])} Users and {len(bot.guilds)} Servers",
             )
         )
         # connected = True
