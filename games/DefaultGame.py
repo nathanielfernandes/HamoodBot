@@ -55,6 +55,8 @@ class DefaultGame:
 
         self.timer = asyncio.create_task(self.game_timer())
 
+        self.gameover = False
+
     async def load_game(self):
         """Called automatically once a player accepts and invite or a solo game is started.\n
            Adds all the reactions required for the game and deducts the wager from the joined
@@ -90,9 +92,11 @@ class DefaultGame:
                     )
             await self.message.clear_reactions()
             await self.message.edit(embed=embed)
-        await self.add_reactions()
-        self.game_started = True
-        await self.game_start()
+
+        finished = await self.add_reactions()
+        if finished:
+            self.game_started = True
+            await self.game_start()
 
     async def create_invite(self):
         """Called automatically if the game is not a solo game.\n
@@ -105,7 +109,7 @@ class DefaultGame:
             color=self.playerOne.color,
         )
         embed.set_thumbnail(url=self.thumbnail)
-        embed.set_footer(text="Games are deleted after 2 minutes of inactivity.")
+        embed.set_footer(text="Games are deleted after 5 minutes of inactivity.")
         self.message = await self.ctx.send(embed=embed)
         await self.message.add_reaction(self.join_emoji)
         await self.message.add_reaction(self.leave_emoji)
@@ -219,8 +223,10 @@ class DefaultGame:
 
         try:
             await self.message.clear_reactions()
-        except discord.errors.NotFound:
+        except Exception:
             pass
+
+        self.gameover = True
 
     async def end_game(self, winner=None, loser=None, tie=False):
         """Ends the game without removing the existing messsage.\n
@@ -246,7 +252,7 @@ class DefaultGame:
                     else:
                         winner = None
                         loser = None
-                        custom_msg = f"No Winner"
+                        custom_msg = f"Game Timed Out"
                 else:
                     temp = [self.playerOne, self.playerTwo]
                     temp.remove(member)
@@ -265,7 +271,7 @@ class DefaultGame:
 
         else:
             if self.game_started:
-                await self.update_leaderboards(loser=self.playerOne.id)
+                await self.update_leaderboards(loser=self.playerOne)
                 custom_msg = f"{self.playerOne} forfeited!"
             else:
                 if self.wager > 0:
@@ -288,20 +294,25 @@ class DefaultGame:
         except discord.errors.NotFound:
             pass
 
+        self.message = None
+
         await self.kill_timer()
 
     async def kill_timer(self):
         try:
-            await self.timer.cancel()
+            self.timer.cancel()
         except Exception:
             pass
 
     async def reset_timer(self):
-        """Resets the 2 minute game timer.\n
+        """Resets the 5 minute game timer.\n
            Called automatically, but can be called if necessary.
         """
-        self.timer.cancel()
-        self.timer = asyncio.create_task(self.game_timer())
+        try:
+            self.timer.cancel()
+            self.timer = asyncio.create_task(self.game_timer())
+        except Exception:
+            pass
 
     async def game_timer(self):
         """Automatic game deletetion timer.
@@ -346,11 +357,13 @@ class DefaultGame:
             for emoji in self.reactions:
                 await self.message.add_reaction(emoji)
         await self.message.add_reaction(self.leave_emoji)
+        return True
 
     async def update_message(self, embed=None, content=None):
         """Resets the game timer and edits the game message with the embed and content specified.
         """
-        await self.reset_timer()
+        if not self.gameover:
+            await self.reset_timer()
         await self.message.edit(embed=embed, content=content)
 
     def swap_turns(self):

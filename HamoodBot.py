@@ -52,7 +52,7 @@ if __name__ == "__main__":
     bot.islive = live
     bot.prefixes_list = {}
     bot.find_prefix = lambda guild_id: bot.prefixes_list.get(guild_id, ".")
-    connected = False
+    # connected = False
     bot.timeout_list = []
     bot.filepath = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
     @bot.event
     async def on_ready():
-        global connected
+        # global connected
 
         toc = time.perf_counter()
 
@@ -87,10 +87,10 @@ if __name__ == "__main__":
         await bot.change_presence(
             activity=discord.Activity(
                 type=discord.ActivityType.listening,
-                name=f"{sum([len(g.members) for g in bot.guilds])} Users",
+                name=".help",  # f"{sum([len(g.members) for g in bot.guilds])} Users",
             )
         )
-        connected = True
+        # connected = True
 
         try:
             await bot.market.update_items.start()
@@ -113,7 +113,7 @@ if __name__ == "__main__":
 
     @bot.event
     async def on_message(message):
-        if message.guild is not None and connected:
+        if message.guild is not None:  # and connected:
             # checks again to make sure the bot does not reply to itself
             if (message.author.id == bot.user.id) or (
                 message.author.id in bot.timeout_list
