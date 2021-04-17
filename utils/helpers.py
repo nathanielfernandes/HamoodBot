@@ -29,11 +29,10 @@ def pretty_time_delta(seconds):
 
 
 async def quick_embed(ctx, reply=False, delete_image=True, **kwargs):
-    r = lambda: random.randint(0, 255)
-    title = kwargs.get("title")
-    description = kwargs.get("description")
+    title = kwargs.get("title", "")
+    description = kwargs.get("description", "")
     timestamp = kwargs.get("timestamp")
-    color = kwargs.get("color", discord.Color.from_rgb(r(), r(), r()))
+    color = kwargs.get("color", discord.Color.random())
     image = kwargs.get("image")
     thumbnail = kwargs.get("thumbnail")
     author = kwargs.get("author")

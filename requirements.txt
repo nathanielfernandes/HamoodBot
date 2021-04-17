@@ -1,6 +1,6 @@
 asyncpraw
 asyncio
-discord==1.6.0
+discord
 google_images_search
 pillow
 bs4
