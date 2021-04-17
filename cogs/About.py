@@ -64,8 +64,7 @@ class About(commands.Cog):
         )
 
         embed.add_field(
-            name="Website",
-            value="[**Click Here**](https://nathanielfernandes.github.io/HamoodBot/)",
+            name="Website", value="[**Click Here**](https://hamood.app/)",
         )
 
         embed.add_field(
@@ -185,7 +184,7 @@ class About(commands.Cog):
         if query is None:
             halp = discord.Embed(
                 title="Command Categories",
-                description=f"Use `{p}help [category]` to find out more about them!\nYou can also just click [**here**](https://nathanielfernandes.github.io/HamoodBot/#commands) for info on all the commands. [Support Server](https://discord.gg/7dEuxNq3)",
+                description=f"Use `{p}help [category]` to find out more about them!\nYou can also just click [**here**](https://hamood.app/#commands) for info on all the commands. [Support Server](https://discord.gg/7dEuxNq3)",
                 color=discord.Color.blue(),
             )
             cogs_desc = ""

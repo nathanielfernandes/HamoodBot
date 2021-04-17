@@ -28,7 +28,7 @@ class Fun(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def tag(self, ctx, member: discord.Member):
-        """tags a user"""
+        """``tag [@user]`` tags a user"""
         user = ctx.message.author
         server = ctx.guild
 

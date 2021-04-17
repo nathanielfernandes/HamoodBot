@@ -154,7 +154,7 @@ class Reddit(commands.Cog):
     @commands.cooldown(5, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pizzatime(self, ctx):
-        """its pizza time!"""
+        """``pizzatime`` its pizza time"""
         await self.redditPrep(ctx, "raimimemes")
 
     @commands.command(aliases=["dogs", "doggy", "doge"])

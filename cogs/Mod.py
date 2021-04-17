@@ -18,18 +18,12 @@ except KeyError:
 # This prevents staff members from being punished
 class Offender(commands.Converter):
     async def convert(self, ctx, argument):
-        argument = await commands.MemberConverter().convert(
-            ctx, argument
-        )  # gets a member object
-        permission = (
-            argument.guild_permissions.manage_messages
-        )  # can change into any permission
-        if not permission:  # checks if user has the permission
-            return argument  # returns user object
+        argument = await commands.MemberConverter().convert(ctx, argument)
+        permission = argument.guild_permissions.manage_messages
+        if not permission:
+            return argument
         else:
-            raise commands.BadArgument(
-                "You cannot punish other staff members"
-            )  # tells user that target is a staff member
+            raise commands.BadArgument("Cannot affect members higher than mod.")
 
 
 # Checks if you have a muted role
@@ -155,20 +149,24 @@ class Mod(commands.Cog):
     @checks.isAllowedCommand()
     @commands.has_permissions(manage_emojis=True)
     @commands.cooldown(5, 20, commands.BucketType.guild)
-    async def emojisteal(self, ctx, emoji: discord.PartialEmoji):
-        """``emojisteal [emoji]`` steals the sent emoji and adds it to the current server"""
+    async def emojisteal(
+        self, ctx, emoji: discord.PartialEmoji, *, name: commands.clean_content = None
+    ):
+        """``emojisteal [emoji] [name(optional)]`` steals the sent emoji and adds it to the current server"""
         emoji_bytes = await self.bot.ahttp.bytes_download(url=str(emoji.url))
         if emoji_bytes is None:
             return await ctx.send("`could not steal emoji`")
 
         try:
+            name = name if name else emoji.name
+
             added_emoji = await ctx.guild.create_custom_emoji(
-                name=emoji.name, image=emoji_bytes
+                name=name, image=emoji_bytes
             )
 
             embed = discord.Embed(
                 title=f"{added_emoji} Emoji has been added to the server",
-                description=f"```\nname: {added_emoji.name}\ntag: {added_emoji}```",
+                description=f"```\nname: {name}\ntag: {added_emoji}```",
                 color=ctx.author.color,
             )
             embed.set_thumbnail(url=str(emoji.url))
@@ -206,8 +204,7 @@ class Mod(commands.Cog):
             embed.set_footer(text=f"Requested by {ctx.author}")
 
             await ctx.send(embed=embed)
-        except Exception as e:
-            raise e
+        except:
             await ctx.send(
                 "`Could not add emoji to server. Emoji cap may be reached or file size/type is not supported.`"
             )
@@ -244,7 +241,7 @@ class Mod(commands.Cog):
     @checks.isAllowedCommand()
     @commands.has_permissions(kick_members=True)
     async def tempmute(self, ctx, user: Offender, time, reason=None):
-        """``tempmute [user] [minutes, max=6hours] [reason]"""
+        """``tempmute [user] [minutes, max=6hours] [reason]`` temporarily mute a user"""
 
         mins = float(time)
         if mins > 360:

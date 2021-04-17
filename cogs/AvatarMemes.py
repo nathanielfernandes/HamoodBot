@@ -192,7 +192,7 @@ class Avatarmemes(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(attach_files=True)
     async def coffin(self, ctx, *avamember: discord.Member):
-        """`coffin [text1], [text2]`"""
+        """``coffin [text1], [text2]`` Put someone in a coffin"""
         await self.meme_prep(
             ctx, "coffinImage.jpg", avamember, [[(240, 160), -7]], (100, 100)
         )
