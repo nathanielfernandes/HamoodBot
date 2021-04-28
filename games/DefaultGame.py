@@ -150,15 +150,16 @@ class DefaultGame:
                 )
                 return False
 
-            playerTwoBal = await self.bot.currency.get_currency(
-                self.guild_id, self.playerTwo.id
-            )
-
-            if playerTwoBal is None or playerTwoBal["bank"] < self.wager:
-                await self.ctx.send(
-                    f"`{self.playerTwo}` does not have the bank balance to bet `⌬ {self.wager:,}`"
+            if not solo:
+                playerTwoBal = await self.bot.currency.get_currency(
+                    self.guild_id, self.playerTwo.id
                 )
-                return False
+
+                if playerTwoBal is None or playerTwoBal["bank"] < self.wager:
+                    await self.ctx.send(
+                        f"`{self.playerTwo}` does not have the bank balance to bet `⌬ {self.wager:,}`"
+                    )
+                    return False
 
             await self.bot.currency.update_bank(
                 self.guild_id, self.playerOne.id, -1 * self.wager

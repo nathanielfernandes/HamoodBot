@@ -2,6 +2,7 @@ import os
 import random
 import discord
 from discord.ext import commands
+import asyncio
 
 # from modules.reddit_functions import findPost, cachePosts, do_cache
 import modules.checks as checks
@@ -37,42 +38,205 @@ class Reddit(commands.Cog):
         ]
         self.red = Redditing()
 
-    async def redditPrep(self, ctx, subRedd, image=True):
-        embed = discord.Embed(colour=16729344)
+        self.buttons = {
+            "\u23EA": 0,
+            "\u25C0": -1,
+            "\u25B6": 1,
+            "\u23E9": 200,
+            "🚪": 0,
+        }
 
-        post = await self.red.get_post(subRedd, image)
+        self.open_feeds = []
+
+    async def to_embed(self, ctx, post, subRedd, extra=""):
+        embed = discord.Embed(colour=16729344)
 
         if post is None:
             embed.title = f"Could not find a recent post from **r/{subRedd}!**"
         else:
             if post["nsfw"] and not ctx.channel.is_nsfw():
-                return await ctx.send(
-                    "<:nsfw:809897270245326928> `Cannot send NSFW posts in a non NSFW channel!`"
+                embed.title = "<:nsfw:809897270245326928> `Cannot send NSFW posts in a non NSFW channel!`"
+            else:
+                embed.title = post["title"]
+                embed.url = post["url"]
+                embed.description = (
+                    f"{post['text'][:1980]}{'...' if len(post['text']) >= 1980 else ''}"
                 )
-            embed.title = post["title"]
-            embed.url = post["url"]
-            embed.description = (
-                f"{post['text'][:1980]}{'...' if len(post['text']) >= 1980 else ''}"
-            )
-            if self.red.url_contains_image(post["url"]):
-                embed.set_image(url=post["url"])
+                if self.red.url_contains_image(post["url"]):
+                    embed.set_image(url=post["url"])
 
-            embed.set_footer(
-                text=f"⬆{post['upvotes']} | {post['ratio']:0.0%} upvoted",
-                # icon_url=post["author_icon"],
-            )
-
-            if post["nsfw"]:
-                embed.set_thumbnail(
-                    url="https://cdn.discordapp.com/attachments/741384050387714162/809895718403047514/253-2530675_badge-badge-badge-badge-sign.png"
+                embed.set_footer(
+                    text=f"⬆{post['upvotes']} | {post['ratio']:0.0%} upvoted\t {extra}",
+                    # icon_url=post["author_icon"],
                 )
+
+                if post["nsfw"]:
+                    embed.set_thumbnail(
+                        url="https://cdn.discordapp.com/attachments/741384050387714162/809895718403047514/253-2530675_badge-badge-badge-badge-sign.png"
+                    )
 
         embed.set_author(
             name=f"Reddit | r/{subRedd}",
             icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756609606922535057/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png",
         )
 
+        return embed
+
+    async def redditPrep(self, ctx, subRedd, image=True):
+        post = await self.red.get_post(subRedd, image)
+        embed = await self.to_embed(ctx, post, subRedd)
         await ctx.send(embed=embed)
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 60, commands.BucketType.channel)
+    @commands.has_permissions(embed_links=True)
+    async def imagefeed(self, ctx, redditSub=None):
+        if ctx.author.id in self.open_feeds:
+            return await ctx.send("`You can only have one open feed at a time`")
+
+        if redditSub == None:
+            redditSub = random.choice(self.common)
+
+        post_index = 0
+        feed_ids = await self.red.get_feed(redditSub, True)
+
+        if feed_ids is None:
+            return await ctx.send(
+                embed=discord.Embed(
+                    colour=16729344,
+                    title=f"Could not find a recent post from **r/{redditSub}!**",
+                )
+            )
+
+        self.open_feeds.append(ctx.author.id)
+
+        post = self.red.image_posts_cache[redditSub].get(feed_ids[post_index])
+        embed = await self.to_embed(
+            ctx, post, redditSub, extra=f"post 1/{len(feed_ids)}"
+        )
+
+        msg = await ctx.send(embed=embed)
+
+        for button in self.buttons:
+            await msg.add_reaction(button)
+
+        while True:
+            try:
+                reaction, user = await self.bot.wait_for(
+                    "reaction_add",
+                    check=lambda reaction, user: user == ctx.author
+                    and reaction.emoji in self.buttons,
+                    timeout=120.0,
+                )
+            except asyncio.TimeoutError:
+                self.open_feeds.remove(ctx.author.id)
+                return await msg.clear_reactions()
+            else:
+                if str(reaction.emoji) == "🚪":
+                    self.open_feeds.remove(ctx.author.id)
+                    return await msg.clear_reactions()
+
+                prevpost = int(post_index)
+
+                if str(reaction.emoji) == "\u23EA":
+                    post_index = 0
+                elif str(reaction.emoji) == "\u23E9":
+                    post_index = len(feed_ids) - 1
+                else:
+                    post_index += self.buttons[str(reaction.emoji)]
+                await msg.remove_reaction(str(reaction.emoji), ctx.author)
+
+                if 0 <= post_index < len(feed_ids):
+                    if prevpost != post_index:
+                        post = self.red.image_posts_cache[redditSub].get(
+                            feed_ids[post_index]
+                        )
+                        embed = await self.to_embed(
+                            ctx,
+                            post,
+                            redditSub,
+                            extra=f"post {post_index+1}/{len(feed_ids)}",
+                        )
+                        await asyncio.sleep(1)
+                        await msg.edit(embed=embed)
+                else:
+                    post_index = int(prevpost)
+
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 60, commands.BucketType.channel)
+    @commands.has_permissions(embed_links=True)
+    async def feed(self, ctx, redditSub=None):
+        if ctx.author.id in self.open_feeds:
+            return await ctx.send("`You can only have one open feed at a time`")
+
+        if redditSub == None:
+            redditSub = random.choice(self.common)
+
+        post_index = 0
+        feed_ids = await self.red.get_feed(redditSub, False)
+
+        if feed_ids is None:
+            return await ctx.send(
+                embed=discord.Embed(
+                    colour=16729344,
+                    title=f"Could not find a recent post from **r/{redditSub}!**",
+                )
+            )
+
+        self.open_feeds.append(ctx.author.id)
+
+        post = self.red.all_posts_cache[redditSub].get(feed_ids[post_index])
+        embed = await self.to_embed(
+            ctx, post, redditSub, extra=f"post 1/{len(feed_ids)}"
+        )
+
+        msg = await ctx.send(embed=embed)
+
+        for button in self.buttons:
+            await msg.add_reaction(button)
+
+        while True:
+            try:
+                reaction, user = await self.bot.wait_for(
+                    "reaction_add",
+                    check=lambda reaction, user: user == ctx.author
+                    and reaction.emoji in self.buttons,
+                    timeout=120.0,
+                )
+            except asyncio.TimeoutError:
+                self.open_feeds.remove(ctx.author.id)
+                return await msg.clear_reactions()
+            else:
+                if str(reaction.emoji) == "🚪":
+                    self.open_feeds.remove(ctx.author.id)
+                    return await msg.clear_reactions()
+
+                prevpost = int(post_index)
+
+                if str(reaction.emoji) == "\u23EA":
+                    post_index = 0
+                elif str(reaction.emoji) == "\u23E9":
+                    post_index = len(feed_ids) - 1
+                else:
+                    post_index += self.buttons[str(reaction.emoji)]
+                await msg.remove_reaction(str(reaction.emoji), ctx.author)
+
+                if 0 <= post_index < len(feed_ids):
+                    if prevpost != post_index:
+                        post = self.red.all_posts_cache[redditSub].get(
+                            feed_ids[post_index]
+                        )
+                        embed = await self.to_embed(
+                            ctx,
+                            post,
+                            redditSub,
+                            extra=f"post {post_index+1}/{len(feed_ids)}",
+                        )
+                        await msg.edit(embed=embed)
+                else:
+                    post_index = int(prevpost)
 
     @commands.command(aliases=["red", "r", "reddit"])
     @checks.isAllowedCommand()

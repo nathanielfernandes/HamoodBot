@@ -40,7 +40,7 @@ class Games(commands.Cog):
     @commands.cooldown(4, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def connect4(self, ctx, member: discord.Member = None, wager=0):
-        """``connect [@opponent] [wager:optional]`` starts a new connect 4 game"""
+        """``connect4 [@opponent] [wager:optional]`` starts a new connect 4 game"""
         wager = int(wager)
         game = ConnectFour(playerTwo=member, ctx=ctx, bot=self.bot, wager=wager)
         await game.setup_game()

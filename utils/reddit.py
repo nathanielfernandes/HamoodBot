@@ -89,6 +89,26 @@ class Redditing:
         except Exception:
             return False
 
+    async def get_feed(self, sub, image_only=False):
+        if image_only:
+            posts = self.image_posts_cache
+        else:
+            posts = self.all_posts_cache
+
+        if sub in posts:
+            feed_ids = list(posts[sub].keys())
+        else:
+            cached = await self.cache_posts(sub, image_only)
+            if cached:
+                print(f"Cached {len(posts[sub])} posts from r/{sub}")
+                feed_ids = list(posts[sub].keys())
+                if len(posts[sub]) <= 0:
+                    posts.pop(sub)
+            else:
+                feed_ids = None
+
+        return feed_ids
+
     async def get_post(self, sub, image_only=False):
         if image_only:
             posts = self.image_posts_cache
