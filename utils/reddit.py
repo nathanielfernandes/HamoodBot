@@ -96,12 +96,12 @@ class Redditing:
             posts = self.all_posts_cache
 
         if sub in posts:
-            feed_ids = list(posts[sub].keys())
+            feed = list(posts[sub].values())
         else:
             cached = await self.cache_posts(sub, image_only)
             if cached:
                 print(f"Cached {len(posts[sub])} posts from r/{sub}")
-                feed_ids = list(posts[sub].keys())
+                feed_ids = list(posts[sub].values())
                 if len(posts[sub]) <= 0:
                     posts.pop(sub)
             else:

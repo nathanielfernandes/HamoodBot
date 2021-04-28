@@ -99,9 +99,9 @@ class Reddit(commands.Cog):
             redditSub = random.choice(self.common)
 
         post_index = 0
-        feed_ids = await self.red.get_feed(redditSub, True)
+        feed = await self.red.get_feed(redditSub, True)
 
-        if feed_ids is None:
+        if feed is None:
             return await ctx.send(
                 embed=discord.Embed(
                     colour=16729344,
@@ -111,10 +111,8 @@ class Reddit(commands.Cog):
 
         self.open_feeds.append(ctx.author.id)
 
-        post = self.red.image_posts_cache[redditSub].get(feed_ids[post_index])
-        embed = await self.to_embed(
-            ctx, post, redditSub, extra=f"post 1/{len(feed_ids)}"
-        )
+        post = feed[post_index]
+        embed = await self.to_embed(ctx, post, redditSub, extra=f"post 1/{len(feed)}")
 
         msg = await ctx.send(embed=embed)
 
@@ -142,21 +140,20 @@ class Reddit(commands.Cog):
                 if str(reaction.emoji) == "\u23EA":
                     post_index = 0
                 elif str(reaction.emoji) == "\u23E9":
-                    post_index = len(feed_ids) - 1
+                    post_index = len(feed) - 1
                 else:
                     post_index += self.buttons[str(reaction.emoji)]
                 await msg.remove_reaction(str(reaction.emoji), ctx.author)
 
-                if 0 <= post_index < len(feed_ids):
+                if 0 <= post_index < len(feed):
                     if prevpost != post_index:
-                        post = self.red.image_posts_cache[redditSub].get(
-                            feed_ids[post_index]
-                        )
+                        post = feed[post_index]
+
                         embed = await self.to_embed(
                             ctx,
                             post,
                             redditSub,
-                            extra=f"post {post_index+1}/{len(feed_ids)}",
+                            extra=f"bound to: {ctx.author}\t post {post_index+1}/{len(feed)}",
                         )
                         await asyncio.sleep(1)
                         await msg.edit(embed=embed)
@@ -175,9 +172,9 @@ class Reddit(commands.Cog):
             redditSub = random.choice(self.common)
 
         post_index = 0
-        feed_ids = await self.red.get_feed(redditSub, False)
+        feed = await self.red.get_feed(redditSub, False)
 
-        if feed_ids is None:
+        if feed is None:
             return await ctx.send(
                 embed=discord.Embed(
                     colour=16729344,
@@ -187,10 +184,8 @@ class Reddit(commands.Cog):
 
         self.open_feeds.append(ctx.author.id)
 
-        post = self.red.all_posts_cache[redditSub].get(feed_ids[post_index])
-        embed = await self.to_embed(
-            ctx, post, redditSub, extra=f"post 1/{len(feed_ids)}"
-        )
+        post = feed[post_index]
+        embed = await self.to_embed(ctx, post, redditSub, extra=f"post 1/{len(feed)}")
 
         msg = await ctx.send(embed=embed)
 
@@ -218,22 +213,22 @@ class Reddit(commands.Cog):
                 if str(reaction.emoji) == "\u23EA":
                     post_index = 0
                 elif str(reaction.emoji) == "\u23E9":
-                    post_index = len(feed_ids) - 1
+                    post_index = len(feed) - 1
                 else:
                     post_index += self.buttons[str(reaction.emoji)]
                 await msg.remove_reaction(str(reaction.emoji), ctx.author)
 
-                if 0 <= post_index < len(feed_ids):
+                if 0 <= post_index < len(feed):
                     if prevpost != post_index:
-                        post = self.red.all_posts_cache[redditSub].get(
-                            feed_ids[post_index]
-                        )
+                        post = feed[post_index]
+
                         embed = await self.to_embed(
                             ctx,
                             post,
                             redditSub,
-                            extra=f"post {post_index+1}/{len(feed_ids)}",
+                            extra=f"bound to: {ctx.author}\t post {post_index+1}/{len(feed)}",
                         )
+                        await asyncio.sleep(1)
                         await msg.edit(embed=embed)
                 else:
                     post_index = int(prevpost)
