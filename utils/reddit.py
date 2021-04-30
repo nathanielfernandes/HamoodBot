@@ -105,9 +105,9 @@ class Redditing:
                 if len(posts[sub]) <= 0:
                     posts.pop(sub)
             else:
-                feed_ids = None
+                feed = None
 
-        return feed_ids
+        return feed
 
     async def get_post(self, sub, image_only=False):
         if image_only:

@@ -92,6 +92,7 @@ class Reddit(commands.Cog):
     @commands.cooldown(2, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def imagefeed(self, ctx, redditSub=None):
+        """``imagefeed [subreddit]`` gets the top 100 posts from a subreddit in an iterable message keeps only images"""
         if ctx.author.id in self.open_feeds:
             return await ctx.send("`You can only have one open feed at a time`")
 
@@ -165,6 +166,7 @@ class Reddit(commands.Cog):
     @commands.cooldown(2, 60, commands.BucketType.channel)
     @commands.has_permissions(embed_links=True)
     async def feed(self, ctx, redditSub=None):
+        """``feed [subreddit]`` gets the top 100 posts from a subreddit in an iterable message"""
         if ctx.author.id in self.open_feeds:
             return await ctx.send("`You can only have one open feed at a time`")
 
