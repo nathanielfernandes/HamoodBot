@@ -284,20 +284,20 @@ class Code(commands.Cog):
         content = content.replace("```php", "").replace("```", "")
         await self.run_code(ctx, "php", content)
 
-    @commands.command(aliases=["py2"])
-    @checks.isAllowedCommand()
-    async def python2(self, ctx, *, content: commands.clean_content):
-        """``python2 [code]`` executes your Python2 code"""
-        content = (
-            content.replace("```python2", "").replace("```py", "").replace("```", "")
-        )
-        await self.run_code(ctx, "python2", content)
+    # @commands.command(aliases=["py2"])
+    # @checks.isAllowedCommand()
+    # async def python2(self, ctx, *, content: commands.clean_content):
+    #     """``python2 [code]`` executes your Python2 code"""
+    #     content = (
+    #         content.replace("```python2", "").replace("```py", "").replace("```", "")
+    #     )
+    #     await self.run_code(ctx, "python2", content)
 
-    @commands.command(aliases=["py", "py3"])
+    @commands.command(aliases=["py"])
     @checks.isAllowedCommand()
     @commands.cooldown(3, 15, commands.BucketType.channel)
-    async def python3(self, ctx, *, content: commands.clean_content):
-        """``python3 [code]`` executes your python3 code"""
+    async def python(self, ctx, *, content: commands.clean_content):
+        """``python [code]`` executes your python3 code"""
         content = (
             content.replace("```python", "").replace("```py", "").replace("```", "")
         )

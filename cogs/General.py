@@ -370,6 +370,46 @@ class General(commands.Cog):
 
         os.remove(save)
 
+    @commands.command()
+    @checks.isAllowedCommand()
+    @commands.cooldown(2, 5, commands.BucketType.user)
+    async def uploads(self, ctx, channel: str):
+        """``uploads [youtube channe]`` get the last 10 videos uploaded from a channel"""
+        if channel.startswith("https://www.youtube.com/"):
+            if channel.startswith(
+                "https://www.youtube.com/user/"
+            ) or channel.startswith("https://www.youtube.com/c/"):
+                soup = await self.bot.ahttp.get(url=channel, return_type="text")
+                channel_id = find_id(soup)
+                if channel_id is None:
+                    return await ctx.send(f"`Could not find videos from '{channel}'`")
+            else:
+                channel_id = channel.replace("https://www.youtube.com/channel/", "")
+
+            info = await self.bot.ahttp.get(
+                url=f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}",
+                return_type="text",
+            )
+            videos, name, img = sift_stuff(info)
+
+            desc = "\n".join(
+                [
+                    f"[**{key}**]({value[0]})\nviews: **{int(value[1]):,}**\n"
+                    for key, value in videos.items()
+                ]
+            )
+            embed = discord.Embed(
+                title=f"{name}'s Latest Uploads",
+                #  url=channel,
+                color=discord.Color.red(),
+                description=desc,
+                timestamp=ctx.message.created_at,
+            )
+            embed.set_thumbnail(url=img)
+            return await ctx.send(embed=embed)
+
+        return await ctx.send(f"`Could not find videos from '{channel}'`")
+
     @commands.command(aliases=["soggs"])
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -447,6 +487,45 @@ class General(commands.Cog):
                 await ctx.send(embed=embed)
             except Exception:
                 await ctx.send(f"`no results found for '{content}'`")
+
+
+def sift_stuff(soup: str):
+    name = search(soup, "<name>", "<")
+    img = search(soup, '<media:thumbnail url="', '"')
+    soup = soup.split("\n")
+    video_titles = []
+    video_links = []
+    views = []
+
+    entry = False
+    for line in soup:
+        if "<yt:videoId>" in line:
+            video_links.append(
+                f"https://www.youtube.com/watch?v={search(line, '<yt:videoId>', '<')}"
+            )
+        elif "<media:title>" in line:
+            video_titles.append(search(line, "<media:title>", "<"))
+        elif '<media:statistics views="' in line:
+            views.append(search(line, '<media:statistics views="', '"'))
+
+    return dict(zip(video_titles, zip(video_links, views))), name, img
+
+
+def search(soup: str, look: str, stopper='"'):
+    try:
+        start = soup.index(look) + len(look)
+        end = soup.index(stopper, start)
+        return soup[start:end]
+    except ValueError:
+        return None
+
+
+def find_id(soup: str):
+    """Tries to find a youtube channel id"""
+    result = search(soup, 'externalId":"')
+    if result is None:
+        result = search(soup, 'data-channel-external-id="')
+    return result
 
 
 class Poll:

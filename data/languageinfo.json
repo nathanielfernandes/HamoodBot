@@ -115,12 +115,8 @@
         "name": "PHP",
         "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335078430965790/new-php-logo.png"
     },
-    "python2": {
-        "name": "Python2",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335225038929920/1200px-Python-logo-notext.png"
-    },
-    "python3": {
-        "name": "Python3",
+    "python": {
+        "name": "Python",
         "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335225038929920/1200px-Python-logo-notext.png"
     },
     "ruby": {
