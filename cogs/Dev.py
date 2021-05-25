@@ -2,6 +2,7 @@ import os
 import discord
 from discord.ext import commands
 import asyncio
+import re
 
 
 class Dev(commands.Cog):
@@ -12,6 +13,48 @@ class Dev(commands.Cog):
 
     def to_id(self, name):
         return name.replace(" ", "_").lower()
+
+    # @commands.command()
+    # async def html(self, ctx):
+    #     icons = {
+    #         "Games": "fas fa-gamepad",
+    #         "Items": "fas fa-box-open",
+    #         "Money": "fas fa-wallet",
+    #         "Jobs": "fas fa-briefcase",
+    #         "Memes": "fas fa-grin-squint",
+    #         "Avatarmemes": "fas fa-laugh-beam",
+    #         "Reddit": "fab fa-reddit",
+    #         "Pokemon": "fab fa-product-hunt",
+    #         "Images": "fas fa-images",
+    #         "Math": "fas fa-square-root-alt",
+    #         "Chemistry": "fas fa-atom",
+    #         "Mod": "fas fa-gavel",
+    #         "Chance": "fas fa-dice",
+    #         "Fonts": "fas fa-font",
+    #         "Fun": "fas fa-laugh-wink",
+    #         "General": "fas fa-align-left",
+    #         "User": "fas fa-user",
+    #         "About": "fas fa-info",
+    #     }
+
+    #     f = open("commands.html", "w")
+    #     s = lambda s: re.findall("``([^``]*)``", s)
+
+    #     html = ""
+    #     for cog in icons:
+    #         html += '<div class="command-section">\n'
+    #         if cog.title() in icons:
+    #             html += f'<h1><i class="{icons[cog.title()]}"></i> {cog.title()}</h1>\n'
+    #             for c in self.bot.get_cog(cog).get_commands():
+    #                 if c.help != None:
+    #                     html += f"<li><b>{s(str(c.help))[0]}</b> {c.help[c.help.find('``', 3)+2:][1:]}</li>\n"
+
+    #             html += "</div>\n\n"
+
+    #     f.write(html)
+    #     f.close()
+    #     # print(html)
+    #     await ctx.send(file=discord.File("commands.html"))
 
     # @commands.command()
     # async def test1(self, ctx):
@@ -214,6 +257,12 @@ class Dev(commands.Cog):
             [str(self.bot.get_user(id_)) for id_ in self.bot.timeout_list]
         )
         await ctx.send(f"```{corner}```")
+
+    @commands.command()
+    async def imposter(self, ctx):
+        await ctx.send(
+            "**jali-clarke** is *sussy*\nhttps://github.com/nathanielfernandes/HamoodBot/pull/42"
+        )
 
 
 def setup(bot):
