@@ -551,20 +551,227 @@ def randomFile(folder):
     return card
 
 
-# direct = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}"
-# fonts = f"{direct}/fonts"
-# memes = f"{direct}/memePics"
+def sussify(image: Image, scale: int = 20):
+    gif = False
 
-# size = 34
+    default = image
 
-# one = "Nathaniel"
-# two = "Fool"
+    size = default.image.size
+
+    sx, sy, = scale * round(size[0] / scale), scale * round(size[1] / scale)
+
+    amogus = Modify_Gif(gif_location="modules/frames/amogusnbg.gif")
+    amogus.resize_gif(size=(scale, scale))
+    amogus_frames = []
+
+    for frame in amogus.gif:
+        frame = frame.convert("RGBA")
+        amogus_frames.append(frame)
+
+    amogus1 = [
+        Modify(image_location=f"modules/frames/f{i}.png").resize_image(
+            size=(scale, scale)
+        )
+        for i in range(6)
+    ]
+    amogus_frames1 = [frame.convert("RGBA") for frame in amogus1]
+
+    if gif:
+        default.resize_gif(size=(round(sx / scale), round(sy / scale)))
+    else:
+        default.image = default.image.convert("RGBA")
+        default.resize_image(size=(round(sx / scale), round(sy / scale)))
+        default.duration = 80
+        default.gif = [default.image.copy() for _ in range(6)]
+
+    color_pixels = [list(frame.getdata()) for frame in default.gif]
+
+    fc = 0
+    size = default.image.size
+
+    def incr_fc(fc):
+        fc += 1
+        if fc >= len(amogus_frames):
+            fc = 0
+
+    def get_frame(fc):
+        frame = (amogus_frames[fc], amogus_frames1[fc])
+        incr_fc(fc)
+        return frame
+
+    final_frames = []
+
+    start = 0
+    blank = Image.new("RGBA", (sx, sy), (0, 0, 0, 255))
+    for pixel_frame in color_pixels:
+        if start < 6:
+            fc = start
+        else:
+            start = 0
+        curr_frame = blank.copy()
+
+        x, y = 0, 0
+        for color in pixel_frame:
+            amg, amg1 = get_frame(fc)
+
+            color_pixel = Image.new("RGBA", (scale, scale), color,)
+            color_pixel.paste(amg1, (0, 0), amg1)
+            curr_frame.paste(color_pixel, (x, y), amg)
+            x += scale
+
+            if x == sx:
+                incr_fc(fc)
+                x = 0
+                y += scale
+                skip = True
+        start += 1
+        final_frames.append(curr_frame)
+
+    savename = f'temp/{"".join(random.choice("123456789") for i in range(12))}.gif'
+    final_frames[0].save(
+        savename,
+        format="GIF",
+        save_all=True,
+        optimize=False,
+        append_images=final_frames[1:],
+        loop=False,
+        duration=default.duration,
+    )
+
+    return savename
 
 
-# card = Modify(image_location=f"{memes}/sharpieCard.jpg")
-# card.set_font(font_location=f"{fonts}/arialbold.ttf", font_size=size)
-# card.image_add_text(text=one, coordinates=(386, 245), font_color=(255, 255, 255))
-# card.image_add_text(text=two, coordinates=(434, 310), font_color=(255, 255, 255))
+# from progress.bar import Bar
 
-# card.image.show()
+# # typ = input("img/gif: ")
 
+
+# link = input("Link: ")
+
+# gif = ".gif" in link
+
+# print("--GRABBING IMAGE--")
+
+# if gif:
+#     default = Modify_Gif(gif_url=link)
+# else:
+#     default = Modify(image_url=link)
+
+# size = default.image.size
+# print("--IMAGE READY--\n")
+# print(f"Resolution: {size[0]}x{size[1]}\n")
+
+
+# while True:
+#     scale = int(input("Enter Susxle Size (px): "))
+#     sx, sy, = scale * round(size[0] / scale), scale * round(size[1] / scale)
+
+#     print(f"Final Resolution: {sx}x{sy}\n")
+
+#     con = input("Continue? (y/n): ")
+
+#     if con == "y":
+#         break
+
+#     print("")
+
+
+# amogus = Modify_Gif(gif_location="/Users/nathaniel/Desktop/amogusnbg.gif")
+# amogus.resize_gif(size=(scale, scale))
+# amogus_frames = []
+
+
+# for frame in amogus.gif:
+#     frame = frame.convert("RGBA")
+#     amogus_frames.append(frame)
+
+
+# amogus1 = [
+#     Modify(
+#         image_location=f"/Users/nathaniel/Desktop/HamoodBot/modules/frames/f{i}.png"
+#     ).resize_image(size=(scale, scale))
+#     for i in range(6)
+# ]
+# amogus_frames1 = [frame.convert("RGBA") for frame in amogus1]
+
+
+# if gif:
+#     default.resize_gif(size=(round(sx / scale), round(sy / scale)))
+# else:
+#     default.image = default.image.convert("RGBA")
+#     default.resize_image(size=(round(sx / scale), round(sy / scale)))
+#     default.duration = 80
+#     default.gif = [default.image.copy() for _ in range(6)]
+
+
+# print("--STARTING--\n")
+
+# color_pixels = [list(frame.getdata()) for frame in default.gif]
+
+# bar = Bar(
+#     "Sussifying",
+#     max=len(color_pixels) * len(color_pixels[0]),
+#     suffix="%(percent).1f%% \t Susxle: %(index)d/%(max)d",
+#     fill="#",
+# )
+
+# fc = 0
+# size = default.image.size
+
+
+# def incr_fc():
+#     global fc
+#     fc += 1
+#     if fc >= len(amogus_frames):
+#         fc = 0
+
+
+# def get_frame():
+#     frame = (amogus_frames[fc], amogus_frames1[fc])
+#     incr_fc()
+#     return frame
+
+
+# final_frames = []
+
+# start = 0
+# blank = Image.new("RGBA", (sx, sy), (0, 0, 0, 255))
+# for pixel_frame in color_pixels:
+#     if start < 6:
+#         fc = start
+#     else:
+#         start = 0
+#     curr_frame = blank.copy()
+
+#     x, y = 0, 0
+#     for color in pixel_frame:
+#         amg, amg1 = get_frame()
+
+#         color_pixel = Image.new("RGBA", (scale, scale), color,)
+#         color_pixel.paste(amg1, (0, 0), amg1)
+#         curr_frame.paste(color_pixel, (x, y), amg)
+#         x += scale
+#         bar.next()
+#         if x == sx:
+#             incr_fc()
+#             x = 0
+#             y += scale
+#             skip = True
+#     start += 1
+#     final_frames.append(curr_frame)
+
+# bar.finish()
+# print()
+# print("--SAVING--")
+
+# final_frames[0].save(
+#     "test.gif",
+#     format="GIF",
+#     save_all=True,
+#     optimize=False,
+#     append_images=final_frames[1:],
+#     loop=False,
+#     duration=default.duration,
+# )
+
+# print("--DONE--")

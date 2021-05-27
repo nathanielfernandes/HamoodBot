@@ -3,7 +3,7 @@ from copy import copy
 import discord
 from discord.ext import commands
 from math import sqrt
-from modules.image_functions import Modify, Modify_Gif
+from modules.image_functions import Modify, Modify_Gif, sussify
 import modules.checks as checks
 from datetime import datetime
 from urllib import request as ulreq
@@ -141,7 +141,7 @@ class Images(commands.Cog):
         )
         await self.send_image(ctx, image, "deepfry", tic)
 
-    @commands.command(aliases=["shirt"])
+    @commands.command(aliases=["shirt", "tradam"])
     @checks.isAllowedCommand()
     @commands.cooldown(2, 15, commands.BucketType.channel)
     @commands.has_permissions(attach_files=True)
@@ -375,6 +375,24 @@ class Images(commands.Cog):
         save = f"{self.save_location}/{name}"
         with open(save, "w") as f:
             f.write(text)
+
+        await ctx.send(file=discord.File(save))
+
+        os.remove(save)
+
+    # @checks.isAllowedCommand()
+    # @commands.cooldown(2, 15, commands.BucketType.channel)
+    # @commands.has_permissions(attach_files=True)
+    @commands.command()
+    @commands.is_owner()
+    async def sussify(self, ctx, scale: int = 20, member: discord.Member = None):
+        """``sussify [@someone or send image]`` sus"""
+
+        image, ext = await self.find_image(ctx, member, 40)
+        if image is None:
+            return
+
+        save = sussify(image, scale)
 
         await ctx.send(file=discord.File(save))
 
