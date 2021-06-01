@@ -386,17 +386,16 @@ class Images(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def sussify(self, ctx, scale: int = 20, member: discord.Member = None):
-        """``sussify [@someone or send image]`` sus"""
+        """``sussify [scale] [@someone or send image]`` sus"""
 
+        tic = perf_counter()
         image, ext = await self.find_image(ctx, member, 40)
         if image is None:
             return
 
-        save = sussify(image, scale)
+        save = sussify(image, scale, ext)
 
-        await ctx.send(file=discord.File(save))
-
-        os.remove(save)
+        await self.send_image(ctx, save, "sussify", tic)
 
     # @commands.command()
     # @checks.isAllowedCommand()

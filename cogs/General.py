@@ -167,7 +167,9 @@ class General(commands.Cog):
                 elif rgba[i] > 255:
                     rgba[i] = 255
 
-        img = makeColorImg(rgba, path=f"{self.bot.filepath}/temp", size=(150, 150))
+        img = makeColorImg(
+            rgba, path=f"{self.bot.filepath}/temp", size=(150, 150), sus=(a == 69)
+        )
 
         await self.bot.quick_embed(
             ctx=ctx,

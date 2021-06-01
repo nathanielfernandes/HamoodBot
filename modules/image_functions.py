@@ -538,10 +538,15 @@ def makeText(content, font, font_size, colour, final):
     return final
 
 
-def makeColorImg(rgba, path, size=(100, 100)):
+def makeColorImg(rgba, path, size=(100, 100), sus=False):
     img = Image.new("RGBA", size, color=tuple(rgba))
-    img_name = path + "".join(random.choice("123456789") for i in range(12)) + ".png"
-    img.save(img_name)
+    if not sus:
+        img_name = (
+            path + "".join(random.choice("123456789") for i in range(12)) + ".png"
+        )
+        img.save(img_name)
+    else:
+        img_name = sussify(image=Modify(image=img), scale=150)
     return img_name
 
 
@@ -551,8 +556,8 @@ def randomFile(folder):
     return card
 
 
-def sussify(image: Image, scale: int = 20):
-    gif = False
+def sussify(image: Image, scale: int = 20, ext: str = "image"):
+    gif = ext == "gif"
 
     default = image
 
@@ -602,7 +607,7 @@ def sussify(image: Image, scale: int = 20):
     final_frames = []
 
     start = 0
-    blank = Image.new("RGBA", (sx, sy), (0, 0, 0, 255))
+    blank = Image.new("RGBA", (sx, sy), (0, 0, 0, 0))
     for pixel_frame in color_pixels:
         if start < 6:
             fc = start

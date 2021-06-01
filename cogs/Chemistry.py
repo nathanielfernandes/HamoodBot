@@ -118,7 +118,7 @@ class Chemistry(commands.Cog):
                 name="**Standard State**", value=f"```\n{table[11]}```",
             )
             embed.add_field(
-                name="**Meliting Point**", value=f"```\n{table[12]} K```",
+                name="**Melting Point**", value=f"```\n{table[12]} K```",
             )
             embed.add_field(
                 name="**Boiling Point**", value=f"```\n{table[13]} K```",

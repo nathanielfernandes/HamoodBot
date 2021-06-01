@@ -450,7 +450,7 @@ class Currency(Documents):
         Updates the wallet amount of a member_id
         """
         await self.db.update_one(
-            {"_id": guild_id}, {"$inc": {f"{member_id}.wallet": amount}}
+            {"_id": guild_id}, {"$inc": {f"{member_id}.wallet": int(amount)}}
         )
 
     async def update_all_wallets(self, member_id, amount):
@@ -459,7 +459,7 @@ class Currency(Documents):
         """
         await self.db.update_many(
             {str(member_id): {"$exists": True}},
-            {"$inc": {f"{member_id}.wallet": amount}},
+            {"$inc": {f"{member_id}.wallet": int(amount)}},
         )
 
     async def update_bank(self, guild_id, member_id, amount):
@@ -467,7 +467,7 @@ class Currency(Documents):
         Updates the bank amount of a member_id
         """
         await self.db.update_one(
-            {"_id": guild_id}, {"$inc": {f"{member_id}.bank": amount}}
+            {"_id": guild_id}, {"$inc": {f"{member_id}.bank": int(amount)}}
         )
 
     async def update_bank_max(self, guild_id, member_id, amount):
@@ -475,7 +475,7 @@ class Currency(Documents):
         Updates the bank_max amount of a member_id
         """
         await self.db.update_one(
-            {"_id": guild_id}, {"$inc": {f"{member_id}.bank_max": amount}}
+            {"_id": guild_id}, {"$inc": {f"{member_id}.bank_max": int(amount)}}
         )
 
     async def wallet_to_bank(self, guild_id, member_id, amount=1):
@@ -497,12 +497,14 @@ class Currency(Documents):
                     if bank_max - bank != 0:
                         if bank_max - bank >= amount:
                             await self.update_bank(guild_id, member_id, amount)
-                            await self.update_wallet(guild_id, member_id, -1 * amount)
+                            await self.update_wallet(
+                                guild_id, member_id, int(-1 * amount)
+                            )
                             return amount
                         else:
                             await self.update_bank(guild_id, member_id, bank_max - bank)
                             await self.update_wallet(
-                                guild_id, member_id, -1 * (bank_max - bank)
+                                guild_id, member_id, int(-1 * (bank_max - bank))
                             )
                             return bank_max - bank
                     return "max"
@@ -527,7 +529,7 @@ class Currency(Documents):
                     amount = bank
 
                 if bank >= amount:
-                    await self.update_bank(guild_id, member_id, -1 * amount)
+                    await self.update_bank(guild_id, int(member_id, -1 * amount))
                     await self.update_wallet(guild_id, member_id, amount)
                     return amount
             else:
