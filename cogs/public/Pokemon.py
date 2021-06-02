@@ -4,9 +4,6 @@ import random
 import discord
 from discord.ext import commands
 
-from modules.pokemon_get import get_pokemon_info
-import modules.checks as checks
-
 
 class Pokemon(commands.Cog):
     """Pokemon Stats"""
@@ -16,14 +13,52 @@ class Pokemon(commands.Cog):
         self.Hamood = bot.Hamood
         self.data = json.load(open(f"{self.Hamood.filepath}/data/pokemon.json"))
 
+    async def get_pokemon_info(self, name_id) -> dict:
+        pokejson = await self.Hamood.ahttp.get_json(
+            url=f"https://pokeapi.co/api/v2/pokemon/{name_id}"
+        )
+
+        if pokejson == {}:
+            return
+        specjson = await self.Hamood.ahttp.get_json(
+            url=f"https://pokeapi.co/api/v2/pokemon-species/{name_id}"
+        )
+
+        lore = [
+            text["flavor_text"]
+            for text in specjson["flavor_text_entries"]
+            if text["language"]["name"] == "en"
+        ]
+
+        return {
+            "name": specjson["name"].title(),
+            "id": specjson["id"],
+            "color": specjson["color"]["name"],
+            "height": f"{pokejson['height']/10} m",
+            "weight": f"{pokejson['weight']/10} kg",
+            "image": f"https://img.pokemondb.net/artwork/{specjson['name']}.jpg",
+            "types": [typ["type"]["name"] for typ in pokejson["types"]],
+            "abilities": [
+                (a["ability"]["name"]).capitalize() for a in pokejson["abilities"]
+            ],
+            "stats": {
+                (pokejson["stats"][i]["stat"]["name"]).upper(): pokejson["stats"][i][
+                    "base_stat"
+                ]
+                for i in range(len(pokejson["stats"]))
+            },
+            "lore": lore[random.randint(0, len(lore) - 1)]
+            .replace("\x0c", " ")
+            .replace("\n", " "),
+        }
+
     @commands.command()
-    @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pokedex(self, ctx, name: commands.clean_content):
         """``pokedex [name or id]`` gets a pokemons info"""
 
-        pokemon = get_pokemon_info(name)
+        pokemon = await self.get_pokemon_info(name)
         if pokemon:
             embed = discord.Embed(
                 title=f"{pokemon['name']} {' '.join([str(self.bot.get_emoji(self.data['shorttypes'][typ])) for typ in pokemon['types']])}",
@@ -41,7 +76,6 @@ class Pokemon(commands.Cog):
                 text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
             )
 
-            # embed.add_field(name="Lore:", value=pokemon["lore"])
             embed.add_field(
                 name="Base Stats:",
                 value="\n".join(
@@ -70,14 +104,13 @@ class Pokemon(commands.Cog):
             await ctx.send(f"Could not find the pokemon '{name}'.")
 
     @commands.command()
-    @checks.isAllowedCommand()
     @commands.cooldown(4, 10, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pokevibe(self, ctx, member: discord.Member = None):
         """``pokevibe [@user]`` finds the pokemon your vibing with"""
         member = ctx.author if not member else member
 
-        pokemon = get_pokemon_info(random.randint(1, 893))
+        pokemon = await self.get_pokemon_info(random.randint(1, 893))
         if pokemon:
             embed = discord.Embed(
                 title=f"{member} is vibing with **{pokemon['name']}** {' '.join([str(self.bot.get_emoji(self.data['shorttypes'][typ])) for typ in pokemon['types']])}",
@@ -96,12 +129,11 @@ class Pokemon(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command()
-    @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pokepic(self, ctx, name: commands.clean_content):
         """``pokepic [pokemon]`` gets a pic of the pokemon"""
-        pokemon = get_pokemon_info(name)
+        pokemon = await self.get_pokemon_info(name)
         if pokemon:
             embed = discord.Embed(
                 title=f"**{pokemon['name']}** {' '.join([str(self.bot.get_emoji(self.data['shorttypes'][typ])) for typ in pokemon['types']])}",
@@ -120,14 +152,6 @@ class Pokemon(commands.Cog):
             await ctx.send(embed=embed)
         else:
             await ctx.send(f"Could not find the pokemon '{name}'.")
-
-    # @commands.command()
-    # async def poketype(self, ctx):
-    #     """``poketype`` find your pokemon types"""
-
-    #     await ctx.send(
-    #         f"{self.bot.get_emoji(random.choice(list(self.data['types'].values())))}{self.bot.get_emoji(random.choice(list(self.data['types'].values())))}"
-    #     )
 
 
 def setup(bot):
