@@ -23,9 +23,10 @@ class DefaultGame:
 
         self.ctx = ctx
         self.bot = bot
-        self.games = self.bot.games
+        self.Hamood = bot.Hamood
+        self.games = self.Hamood.active_games
 
-        self.prefix = self.bot.find_prefix(ctx.guild.id)
+        self.prefix = self.Hamood.find_prefix(ctx.guild.id)
         self.guild_id = ctx.guild.id
         self.playerOne = ctx.author
 
@@ -77,11 +78,11 @@ class DefaultGame:
             self.message = await self.ctx.send(embed=embed)
         else:
             if self.wager > 0:
-                playerTwoBal = await self.bot.currency.get_currency(
+                playerTwoBal = await self.Hamood.Currency.get_currency(
                     self.guild_id, self.playerTwo.id
                 )
                 if playerTwoBal["bank"] >= self.wager:
-                    await self.bot.currency.update_bank(
+                    await self.Hamood.Currency.update_bank(
                         self.guild_id, self.playerTwo.id, -1 * self.wager
                     )
                 else:
@@ -140,7 +141,7 @@ class DefaultGame:
                 return False
 
         if self.wager > 0:
-            playerOneBal = await self.bot.currency.get_currency(
+            playerOneBal = await self.Hamood.Currency.get_currency(
                 self.guild_id, self.playerOne.id
             )
 
@@ -151,7 +152,7 @@ class DefaultGame:
                 return False
 
             if not solo:
-                playerTwoBal = await self.bot.currency.get_currency(
+                playerTwoBal = await self.Hamood.Currency.get_currency(
                     self.guild_id, self.playerTwo.id
                 )
 
@@ -161,7 +162,7 @@ class DefaultGame:
                     )
                     return False
 
-            await self.bot.currency.update_bank(
+            await self.Hamood.Currency.update_bank(
                 self.guild_id, self.playerOne.id, -1 * self.wager
             )
 
@@ -180,34 +181,34 @@ class DefaultGame:
         """
         if tie:
             if self.wager > 0:
-                await self.bot.currency.update_wallet(
+                await self.Hamood.Currency.update_wallet(
                     self.guild_id, self.playerOne.id, self.wager
                 )
                 if not self.solo:
-                    await self.bot.currency.update_wallet(
+                    await self.Hamood.Currency.update_wallet(
                         self.guild_id, self.playerTwo.id, self.wager
                     )
         else:
-            await self.bot.leaderboards.add_leaderboard(self.guild_id)
+            await self.Hamood.Leaderboards.add_leaderboard(self.guild_id)
             if winner:
                 if self.wager > 0:
-                    await self.bot.currency.update_wallet(
+                    await self.Hamood.Currency.update_wallet(
                         self.guild_id, winner.id, self.wager * 2
                     )
 
-                await self.bot.leaderboards.add_member(self.guild_id, winner.id)
-                await self.bot.leaderboards.add_game(
+                await self.Hamood.Leaderboards.add_member(self.guild_id, winner.id)
+                await self.Hamood.Leaderboards.add_game(
                     self.guild_id, winner.id, self.game_name
                 )
-                await self.bot.leaderboards.incr_game_won(
+                await self.Hamood.Leaderboards.incr_game_won(
                     self.guild_id, winner.id, self.game_name
                 )
             if loser:
-                await self.bot.leaderboards.add_member(self.guild_id, loser.id)
-                await self.bot.leaderboards.add_game(
+                await self.Hamood.Leaderboards.add_member(self.guild_id, loser.id)
+                await self.Hamood.Leaderboards.add_game(
                     self.guild_id, loser.id, self.game_name
                 )
-                await self.bot.leaderboards.incr_game_lost(
+                await self.Hamood.Leaderboards.incr_game_lost(
                     self.guild_id, loser.id, self.game_name
                 )
 
@@ -237,7 +238,7 @@ class DefaultGame:
         await self.update_leaderboards(winner, loser, tie)
         await self.kill_timer()
 
-    async def delete_game(self, member=None, custom_msg=None):
+    async def delete_game(self, member=None, custom_msg=""):
         """Called automatically when a user decides to leave a game.\n
            Should only be used when there has been a player forfiet.\n
            Use self.end_game() if the game just needs to be ended.
@@ -265,7 +266,7 @@ class DefaultGame:
 
             else:
                 if self.wager > 0:
-                    await self.bot.currency.update_wallet(
+                    await self.Hamood.Currency.update_wallet(
                         self.guild_id, self.playerOne.id, self.wager
                     )
                 custom_msg = "No Winner"
@@ -276,7 +277,7 @@ class DefaultGame:
                 custom_msg = f"{self.playerOne} forfeited!"
             else:
                 if self.wager > 0:
-                    await self.bot.currency.update_wallet(
+                    await self.Hamood.Currency.update_wallet(
                         self.guild_id, self.playerOne.id, self.wager
                     )
                 custom_msg = f"Game Cancelled"

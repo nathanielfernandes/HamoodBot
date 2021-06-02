@@ -1,25 +1,11 @@
 import random
 import asyncpraw
-import os
-import re
-import pathlib
 
-try:
-    CLIENTID = os.environ["CLIENTID"]
-    CLIENTSECRET = os.environ["CLIENTSECRET"]
-    USERAGENT = os.environ["USERAGENT"]
-    do_cache = True
-except KeyError:
-    from dotenv import load_dotenv
-
-    load_dotenv()
-    CLIENTID = os.environ.get("REDDITID")
-    CLIENTSECRET = os.environ.get("REDDITSECRET")
-    USERAGENT = os.environ.get("USERAGENT")
+# import re
 
 
-class Redditing:
-    def __init__(self):
+class Reddit:
+    def __init__(self, CLIENTID, CLIENTSECRET, USERAGENT):
         self.red = asyncpraw.Reddit(
             client_id=CLIENTID, client_secret=CLIENTSECRET, user_agent=USERAGENT
         )

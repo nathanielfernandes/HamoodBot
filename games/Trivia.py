@@ -164,7 +164,7 @@ class Trivia(DefaultGame):
         }
 
     async def get_questions(self, category=None, difficulty=None, amount=10):
-        jr = await self.bot.ahttp.get(
+        jr = await self.Hamood.ahttp.get(
             url=f"https://opentdb.com/api.php?amount={amount}{'&category='+ self.category[0] if self.category[0] != 'any' else ''}{'&difficulty='+self.difficulty if self.difficulty != 'any' else ''}&type=multiple",
             return_type="json",
         )

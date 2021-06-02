@@ -9,12 +9,13 @@ from datetime import datetime
 class Market:
     def __init__(self, bot):
         self.bot = bot
-        self.every_item = json.load(open(f"{self.bot.filepath}/data/items.json"))
+        self.Hamood = bot.Hamood
+        self.every_item = json.load(open(f"{self.Hamood.filepath}/data/items.json"))
 
         self.variation = (
             lambda: random.uniform(0.1, 1)
             if random.randint(1, 10) < 7
-            else random.uniform(1, 2)
+            else random.uniform(1, 1.3)
         )
 
         self.all_items = {}
