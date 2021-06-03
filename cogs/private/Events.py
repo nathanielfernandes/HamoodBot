@@ -65,67 +65,6 @@ class Events(commands.Cog):
                 await channel.send(embed=embed)
             break
 
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        p = self.Hamood.find_prefix(ctx.guild.id)
-        timeout = False
-        if isinstance(error, commands.CommandOnCooldown):
-            embed = discord.Embed(
-                title=f"`{ctx.command.name}` is on cooldown for",
-                description=f"```{self.Hamood.pretty_time_delta(error.retry_after)}```",
-                colour=discord.Color.red(),
-                timestamp=ctx.message.created_at,
-            )
-            embed.set_footer(text=f"{ctx.author}", icon_url=ctx.author.avatar_url)
-
-            await ctx.send(embed=embed)
-
-            timeout = True
-        elif isinstance(error, commands.CommandNotFound):
-            return
-
-        elif isinstance(error, commands.CheckFailure):
-            await ctx.send("`You don't have the permission to do that`")
-
-        elif isinstance(error, commands.BadArgument):
-            if ctx.command.qualified_name == "tag list":
-                await ctx.send("`I could not find that member`")
-
-        elif isinstance(error, commands.CommandError):
-            try:
-                s = ctx.command.help
-                start = s.find("``") + 2
-                end = s.find("``", start)
-
-                embed = discord.Embed(
-                    title="Command Failed",
-                    description=f"**{ctx.command.name}** is used like this: ```ini\n{p}{s[start:end]}```",
-                    colour=discord.Color.red(),
-                    timestamp=ctx.message.created_at,
-                )
-                # embed.set_author(
-                #     name="Error!",
-                #     icon_url="https://cdn.discordapp.com/attachments/749779629643923548/773072024922095636/images.png",
-                # )
-                embed.set_footer(text=f"{ctx.author}", icon_url=ctx.author.avatar_url)
-                embed.set_thumbnail(
-                    url="https://cdn.discordapp.com/attachments/749779300181606411/799902760837316628/tumblr_01a3fd42036dbeac4d74baff3a2497ff_ecd049b3_500.gif"
-                )
-                # await ctx.send(
-                #     f"{ctx.author.mention}, **{ctx.command.name}** is used like this:\n`.{s[start:end]}`"
-                # )
-                await ctx.send(embed=embed)
-            except Exception:
-                print("error")
-
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send("`I don't have the permission to do that`")
-        else:
-            await ctx.send("`Error`")
-
-        if not timeout:
-            ctx.command.reset_cooldown(ctx)
-
 
 def setup(bot):
     bot.add_cog(Events(bot))

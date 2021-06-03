@@ -144,7 +144,7 @@ class Hamood:
             pass
 
     async def on_message(self, message):
-        if message.author.bot:
+        if message.author.bot and message.guild is not None:
             return
 
         p = self.find_prefix(message.guild.id)
@@ -155,35 +155,4 @@ class Hamood:
             await message.channel.send(f"Use `{p}help` instead!")
 
         await self.bot.process_commands(message)
-        # if message.guild is not None:
-        #     if (message.author.id == self.bot.user.id) or (
-        #         message.author.id in self.timeout_list
-        #     ):
-        #         return
-        #     try:
-        #         nsfw = message.channel.is_nsfw()
-        #     except Exception:
-        #         nsfw = False
 
-        #     p = self.find_prefix(message.guild.id)
-
-        #     if self.profCheck((message.content).lower()):
-        #         if (
-        #             "hamood" in (message.content).lower()
-        #             or f"<@!{hamood.bot.user.id}>" in (message.content).lower()
-        #         ):
-        #             await message.channel.send(
-        #                 f"{message.author.mention} **No U!** <a:no_u:790709588168540170>"
-        #             )
-
-        #         if not nsfw:
-        #             if (message.content).startswith(p):
-        #                 await message.add_reaction("<:profane:804446468014473246>")
-        #             return
-        #     elif message.content.replace(" ", "") == f"<@!{self.bot.user.id}>":
-        #         await message.channel.send(f"**The Server Prefix is `{p}`**")
-        #         return
-        #     elif message.content.startswith(".help") and p != ".":
-        #         await message.channel.send(f"Use `{p}help` instead!")
-
-        #     await self.bot.process_commands(message)
