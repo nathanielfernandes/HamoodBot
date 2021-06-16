@@ -1,12 +1,8 @@
-import os
 import random
-import json
 import discord
 from discord.ext import commands
-from io import BytesIO
 
-# from modules.zodiac_functions import getZodiac, getCompatibility
-import modules.checks as checks
+from utils.Premium import PremiumCooldown
 
 
 class Fun(commands.Cog):
@@ -16,196 +12,150 @@ class Fun(commands.Cog):
         self.bot = bot
         self.Hamood = bot.Hamood
 
-        self.roasts = open(
-            f"{self.Hamood.filepath}/data/roasts.txt", "r", encoding="utf-8",
-        ).readlines()
+        self.possible_responses = [
+            "hell naw",
+            "i highley doubt it",
+            "how am i supposed to know",
+            "i guess its possible",
+            "fo sho",
+            "maybe",
+            "stop asking",
+            "yeah",
+            "nah",
+            "i dont care",
+            "ofcourse",
+            "not really",
+        ]
 
     @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def tag(self, ctx, member: discord.Member):
-        """``tag [@user]`` tags a user"""
-        user = ctx.message.author
-        server = ctx.guild
-
-        # adds the 'it' role if it doesnt exist
-        if "it!" not in [(str(role)) for role in server.roles]:
-            await server.create_role(name="it!", hoist=True) and await ctx.send(
-                "The role 'it!' was created"
-            )
-            if "it!" not in [(str(role)) for role in user.roles]:
-                await user.add_roles(discord.utils.get(user.guild.roles, name="it!"))
-
-        if "it!" in [(str(role)) for role in user.roles]:
-            if str(member) == "Hamood#3840":
-                await ctx.send(f"{ctx.author.mention}, im on time out")
-            elif str(member) == str(user):
-                await ctx.send(f"{ctx.author.mention}, you can't tag yourself")
-            else:
-                await user.remove_roles(discord.utils.get(user.guild.roles, name="it!"))
-                await member.add_roles(
-                    discord.utils.get(member.guild.roles, name="it!")
-                )
-                await ctx.send((f"{member.mention} is now it!").format(ctx))
-        else:
-            await ctx.send(f"{ctx.author.mention}, you arn't it!")
-
-    @commands.command()
-    @checks.isAllowedCommand()
     async def pp(self, ctx, member: discord.Member = None):
-        """``pp`` returns your pp size"""
+        """[@mention]|||check your own or someones pp size."""
         member = ctx.author if not member else member
-        size = "8"
-        length = ""
-        for i in range(random.randint(0, 50)):
-            length += "="
-        size = size + length + "D"
-        await ctx.send(f"{member.mention} :eggplant: size is **{size}**")
+        pepe = f"8{'='*(random.randint(0, 50))}D"
+
+        await self.Hamood.quick_embed(
+            ctx,
+            author={"name": f"{member.name}'s pp size", "icon_url": member.avatar_url},
+            description=f"**{pepe}**",
+            footer={"text": f"{len(pepe)-2} inches"},
+            color=discord.Color.purple(),
+        )
 
     @commands.command()
-    @checks.isAllowedCommand()
     async def sortinghat(self, ctx):
-        """``sortinghat`` sorts you to one of the Hogwarts houses"""
+        """|||Sorts you to one of the Hogwarts houses"""
         houses = ["Gryffindor", "Hufflepuff", "Slytherin", "Ravenclaw"]
         house = random.choice(houses)
-        await ctx.send(f"{ctx.author.mention}, you belong to the **{house}** house!")
+        await self.Hamood.quick_embed(
+            ctx,
+            description=f"{ctx.author.mention}, you belong to the **{house}** house!",
+        )
 
     @commands.command()
-    @checks.isAllowedCommand()
     async def vibecheck(self, ctx, member: discord.Member = None):
-        """``vibecheck`` vibechecks you"""
+        """|||Vibechecks you."""
         member = ctx.author if not member else member
         random_word = random.choice(self.Hamood.RANDOMWORDS)
-        await ctx.send(
-            f"{member.mention} your vibe checked out to be **{random_word}**"
+        await self.Hamood.quick_embed(
+            ctx,
+            description=f"{member.mention} your vibe checked out to be **{random_word}**",
         )
-        await ctx.message.add_reaction("✔️")
 
     @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(4, 10, commands.BucketType.user)
+    @commands.check(PremiumCooldown(prem=(5, 10, "user"), reg=(3, 10, "user")))
     async def vibe(self, ctx, member: discord.Member = None):
-        """``vibe`` vibechecks you but better"""
+        """|||Vibechecks you but better."""
         member = ctx.author if not member else member
         fonts = self.bot.get_cog("Fonts")
-        random_word = random.choice(self.Hamood.RANDOMWORDS)
-        img, color = await fonts.text_prep(
-            ctx, (random_word), "random", 500, "random", 100, False
+        url, color = await fonts.gen_text(
+            ctx, random.choice(self.Hamood.RANDOMWORDS), ("random", "random"), False
         )
         await self.Hamood.quick_embed(
             ctx=ctx,
             description=f"{member.mention} your vibe checked out to be",
-            reply=True,
-            image=img,
-            color=discord.Color.from_rgb(color[0], color[1], color[2]),
+            image_url=url,
+            color=discord.Color.from_rgb(*color),
         )
-        # bio = BytesIO()
-        # img.save(bio, format="png")
-        # bio = bio.getvalue()
-
-        # embed = self.Hamood.quick_embed(
-        #     member=ctx.author,
-        #     rainbow=True,
-        #     requested=False,
-        #     desc=f"{member.mention} your vibe checked out to be:",
-        #     color=color,
-        # )
-        # self.bot.S3.schedule_upload_bytes(
-        #     file_bytes=bio, ext="png", channel_id=ctx.channel.id, embed=embed,
-        # )
-
-        # await ctx.send(
-        #     file=discord.File(img),
-        #     content=f"{member.mention} your vibe checked out to be:",
-        # )
-
-    # os.remove(img)
-
-    @commands.command(aliases=["roast me", "roastme"])
-    @checks.isAllowedCommand()
-    async def roast(self, ctx, member: discord.Member = None):
-        """``roast [person]`` roasts/insults you"""
-        member = ctx.author if not member else member
-        await ctx.send(f"{member.mention} {random.choice(self.roasts)}")
-
-    @commands.command(aliases=["pop", "bubble"])
-    @checks.isAllowedCommand()
-    async def bubblewrap(self, ctx, w=3, h=3, inside="pop"):
-        """``bubblewrap [height] [width]`` makes bubblewrap"""
-        if w > 12:
-            w = 12
-        if h > 12:
-            h = 12
-        wrap = ""
-        w = f"||{inside}||" * int(w)
-        for i in range(h):
-            wrap += w + "\n"
-
-        embed = discord.Embed(
-            tile=f"Bubble Wrap:", description=wrap, color=ctx.author.color
-        )
-
-        await ctx.send(embed=embed)
-
-    @commands.command(aliases=["statuscode"])
-    @checks.isAllowedCommand()
-    async def statuscat(self, ctx, *, code: commands.clean_content):
-        """``statuscat [status code]`` status cats > status codes"""
-        embed = discord.Embed(
-            color=discord.Color.from_rgb(
-                random.randint(0, 255), random.randint(0, 255), random.randint(0, 255),
-            )
-        )
-        embed.set_image(url=f"https://http.cat/{code[:3]}")
-        embed.set_footer(text=f"status-code: {code[:3]}")
-        await ctx.send(embed=embed)
-
-    @commands.command(aliases=["placecat"])
-    @checks.isAllowedCommand()
-    async def placekitten(self, ctx, x=None, y=None):
-        """``placekitten [width] [height]`` Get a random kitten image of any size"""
-        if x is None:
-            x = str(random.randint(1, 1000))
-        if y is None:
-            y = str(random.randint(1, 1000))
-
-        if x.isdigit() and y.isdigit():
-            embed = discord.Embed(
-                color=discord.Color.from_rgb(
-                    random.randint(0, 255),
-                    random.randint(0, 255),
-                    random.randint(0, 255),
-                )
-            )
-            embed.set_image(url=f"http://placekitten.com/{x}/{y}")
-            embed.set_footer(text=f"random kitten | {x}px by {y}px")
-            return await ctx.send(embed=embed)
-
-        await ctx.send("`invalid dimensions`")
-
-    # @commands.command(aliases=["sign"])
-    # @checks.isAllowedCommand()
-    # async def zodiac(self, ctx, month1: str, day1: int, month2: str, day2: int):
-    #     """``zodiac [mmm] [dd] [mmm] [dd]`` lets you test your zodiac's compatibilty with another"""
-    #     sign1 = getZodiac(month1, day1)
-    #     sign2 = getZodiac(month2, day2)
-
-    #     compatibility = getCompatibility(sign1, sign2)
-
-    #     await ctx.send(
-    #         f"person 1 is a **{sign1}**, person 2 is a **{sign2}**, and they are about **{compatibility}** compatible"
-    #     )
 
     @commands.command()
-    @checks.isAllowedCommand()
+    @commands.bot_has_permissions(embed_links=True)
+    async def bubblewrap(self, ctx):
+        """|||The closest thing to bubble wrap in discord."""
+        wrap = "\n".join("||💥||" * 9 for _ in range(9))
+
+        await self.Hamood.quick_embed(
+            ctx, description=wrap, footer={"text": "pop away!"}, reply=False
+        )
+
+    @commands.command()
     async def match(self, ctx, *, content: commands.clean_content):
-        """``match [person1], [person2]`` randomly gives a match percentage between two people"""
+        """[person1], [person2]|||Returns a match percentage between two people <3"""
         match = str(random.randint(0, 100))
+
+        content = content.replace(", ", ",").replace(" ,", ",")
+        if "," not in content:
+            raise commands.UserInputError()
+
         content = content.split(", ")
         left, right = content
-        await ctx.send(f"**{left}** and **{right}** are **{match}%** compatible")
+
+        await self.Hamood.quick_embed(
+            ctx, description=f"**{left}** and **{right}** are **{match}%** compatible."
+        )
+
+    @commands.command(name="8ball")
+    async def eightball(self, ctx):
+        """|||Hamood shakes his magic 8ball."""
+        await self.Hamood.quick_embed(
+            ctx,
+            author={
+                "icon_url": "https://cdn.discordapp.com/attachments/790722696219983902/854424446893948948/game-magic-8-ball-no-text.png",
+                "name": random.choice(self.possible_responses),
+            },
+        )
+
+    @commands.command(aliases=["coin"])
+    async def flip(self, ctx):
+        """|||Flip a coin."""
+        options = (
+            (
+                "heads",
+                "https://upload.wikimedia.org/wikipedia/en/e/e0/Canadian_Dollar_-_obverse.png",
+            ),
+            (
+                "tails",
+                "https://upload.wikimedia.org/wikipedia/en/e/ef/Canadian_Dollar_-_reverse.png",
+            ),
+        )
+
+        choice = random.choice(options)
+        await self.Hamood.quick_embed(
+            ctx, author={"name": choice[0]}, thumbnail=choice[1]
+        )
+
+    @commands.command(aliases=["dice"])
+    async def roll(self, ctx, dice: str = "1d6"):
+        """<NdN>|||Rolls a dice in NdN format."""
+        rolls, limit = map(int, dice.split("d"))
+        result = ", ".join(
+            f"{random.randint(1, min(limit, 1000))}" for r in range(min(rolls, 10))
+        )
+        await self.Hamood.quick_embed(
+            ctx,
+            author={
+                "name": result,
+                "icon_url": "https://cdn.discordapp.com/emojis/791541710995980308.gif",
+            },
+        )
+
+    @commands.command()
+    async def choose(self, ctx, *, content: commands.clean_content):
+        """<choice1>, <choice2>, [choice3], ...|||Choose between multiple choices."""
+        await self.Hamood.quick_embed(
+            ctx,
+            title=random.choice(content.split(",")).strip(),
+        )
 
 
 def setup(bot):
     bot.add_cog(Fun(bot))
-

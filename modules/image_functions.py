@@ -217,11 +217,11 @@ class Modify:
         top_image_rotation=None,
     ):
         """
-            base_image: PIL image\n
-            top_image: PIL image\n
-            coordinates: (x, y) position to place image\n
-            top_image_size: (x, y) size of image to place\n
-            top_image_rotation: int, degrees of rotation
+        base_image: PIL image\n
+        top_image: PIL image\n
+        coordinates: (x, y) position to place image\n
+        top_image_size: (x, y) size of image to place\n
+        top_image_rotation: int, degrees of rotation
         """
         if base_image is None:
             base_image = self.image
@@ -248,11 +248,11 @@ class Modify:
         self, image=None, sharpness=1.0, contrast=1.0, color=1.0, brightness=1.0
     ):
         """
-            image: PIL Image\n
-            sharpness: int, 1 being default\n
-            contrast: int, 1 being default\n
-            color: int, 1 being default\n
-            brightness: int, 1 being default
+        image: PIL Image\n
+        sharpness: int, 1 being default\n
+        contrast: int, 1 being default\n
+        color: int, 1 being default\n
+        brightness: int, 1 being default
         """
         if image is None:
             image = self.image
@@ -535,7 +535,11 @@ def makeText(content, font, font_size, colour, final):
     )
 
     img.save(final)
-    return final
+
+
+def makeColor(rgba, fp, size=(100, 100)):
+    img = Image.new("RGBA", size, color=tuple(rgba))
+    img.save(fp)
 
 
 def makeColorImg(rgba, path, size=(100, 100), sus=False):
@@ -563,7 +567,9 @@ def sussify(image: Image, scale: int = 20, ext: str = "image"):
 
     size = default.image.size
 
-    sx, sy, = scale * round(size[0] / scale), scale * round(size[1] / scale)
+    sx, sy, = scale * round(
+        size[0] / scale
+    ), scale * round(size[1] / scale)
 
     amogus = Modify_Gif(gif_location="modules/frames/amogusnbg.gif")
     amogus.resize_gif(size=(scale, scale))
@@ -619,7 +625,11 @@ def sussify(image: Image, scale: int = 20, ext: str = "image"):
         for color in pixel_frame:
             amg, amg1 = get_frame(fc)
 
-            color_pixel = Image.new("RGBA", (scale, scale), color,)
+            color_pixel = Image.new(
+                "RGBA",
+                (scale, scale),
+                color,
+            )
             color_pixel.paste(amg1, (0, 0), amg1)
             curr_frame.paste(color_pixel, (x, y), amg)
             x += scale

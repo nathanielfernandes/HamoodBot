@@ -4,8 +4,7 @@ import discord
 from discord.ext import commands
 import asyncio
 
-# from modules.reddit_functions import findPost, cachePosts, do_cache
-import modules.checks as checks
+from utils.Premium import PremiumCooldown
 
 
 class Reddit(commands.Cog):
@@ -14,366 +13,317 @@ class Reddit(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.Hamood = bot.Hamood
-        self.common = [
-            "memes",
-            "dankmemes",
-            "cats",
-            "cursedimages",
-            "blursedimages",
-            "Blessed_Images",
-            "raimimemes",
-            "dog",
-            "minecraft",
-        ]
-        self.names = [
-            "meme",
-            "dank",
-            "cats",
-            "cursed",
-            "blursed",
-            "blessed",
-            "pizzatime",
-            "dog",
-            "minecraft",
-        ]
-        self.red = self.Hamood.Reddit
-
-        self.buttons = {
-            "\u23EA": 0,
-            "\u25C0": -1,
-            "\u25B6": 1,
-            "\u23E9": 200,
-            "🚪": 0,
+        self.RedditCommands = {
+            "meme": ("memes", True, ["memes"]),
+            "dankmemes": ("dankmemes", True, ["dank", "dankmeme"]),
+            "cats": ("cats", True, ["cat", "kitten", "kitty"]),
+            "dog": ("dog", True, ["dogs", "doggy", "puppy"]),
+            "blessedimages": ("Blessed_Images", True, ["bless", "blessed"]),
+            "blursedimages": ("blursedimages", True, ["blursed"]),
+            "cursedimages": ("cursedimages", True, ["cursed"]),
+            "raimimemes": ("raimimemes", True, ["pizzatime"]),
+            "minecraft": ("minecraft", True, []),
+            "greentext": ("greentext", True, ["greentxt"]),
+            "foodporn": ("FoodPorn", True, ["fp", "foodp"]),
+            "amitheasshole": ("amitheasshole", False, ["aita", "amitheah"]),
+            "programmerhumour": ("ProgrammerHumour", True, ["pgh", "programmer"]),
+            "pcmasterrace": ("pcmasterrace", True, ["pcmr"]),
+            "bertstrips": ("bertstrips", True, []),
+            "im14andthisisdeep": ("im14andthisisdeep", True, ["im14deep"]),
+            "eyebleach": ("eyebleach", True, []),
+            "art": ("Art", True, []),
+            "wallpapers": ("wallpapers", True, []),
+            "skamtebord": ("skamtebord", True, []),
+            "wallstreetbets": ("wallstreetbets", False, ["wsb"]),
+            "baystreetbets": ("Baystreetbets", False, ["bsb"]),
+            "sadcringe": ("sadcringe", True, []),
+            "crappydesign": ("CrappyDesign", True, []),
+            "thebindingofisaac": ("thebindingofisaac", True, ["isaac"]),
+            "blackpeopletwitter": ("BlackPeopleTwitter", True, ["bpt"]),
+            "showerthoughts": ("Showerthoughts", False, []),
+            "battlestations": ("battlestations", True, []),
+            "funny": ("funny", True, []),
+            "gaming": ("gaming", True, []),
+            "aww": ("aww", True, []),
+            "pics": ("pics", True, []),
+            "egg": ("egg", True, []),
+            "bikinibottomtwitter": ("BikiniBottomTwitter", True, ["bbt"]),
+            "mildlyinteresting": ("midlyinteresting", True, []),
         }
+        self.allSubs = [value[0] for value in self.RedditCommands.values()]
+        self.calm_down = []
+        self.calm_cd = commands.CooldownMapping.from_cooldown(
+            3, 5, commands.BucketType.user
+        )
 
-        self.open_feeds = []
+    def addredditcommands(self):
+        for name in self.RedditCommands:
+            info = self.RedditCommands[name]
 
-    async def to_embed(self, ctx, post, subRedd, extra=""):
-        embed = discord.Embed(colour=16729344)
+            @commands.command(
+                name=name, help=f"|||Get posts from r/{info[0]}", aliases=info[2]
+            )
+            @commands.check(PremiumCooldown(prem=(3, 5, "user"), reg=(3, 5, "channel")))
+            @commands.bot_has_permissions(embed_links=True)
+            async def cmd(self, ctx):
+                await self.quicksend(
+                    ctx,
+                    self.RedditCommands[ctx.command.name][0],
+                    image=self.RedditCommands[ctx.command.name][1],
+                )
 
-        if post is None:
-            embed.title = f"Could not find a recent post from **r/{subRedd}!**"
-        else:
-            if post["nsfw"] and not ctx.channel.is_nsfw():
-                embed.title = "<:nsfw:809897270245326928> `Cannot send NSFW posts in a non NSFW channel!`"
+            cmd.cog = self
+            self.__cog_commands__ = self.__cog_commands__ + (cmd,)
+            self.bot.add_command(cmd)
+
+    def makeembed(self, post, subreddit=None, allowNSFW=False):
+        embed = discord.Embed(color=discord.Color.from_rgb(*self.Hamood.pastel_color()))
+        if post:
+            if post["nsfw"] and not allowNSFW:
+                embed.title = "`NSFW` posts cannot be sent in a non `NSFW` channel"
             else:
-                embed.title = post["title"]
-                embed.url = post["url"]
                 embed.description = (
                     f"{post['text'][:1980]}{'...' if len(post['text']) >= 1980 else ''}"
                 )
-                if self.red.url_contains_image(post["url"]):
-                    embed.set_image(url=post["url"])
-
-                embed.set_footer(
-                    text=f"⬆{post['upvotes']} | {post['ratio']:0.0%} upvoted\t {extra}",
-                    # icon_url=post["author_icon"],
+                embed.set_author(
+                    name=post["title"],
+                    url=post["permalink"],
                 )
 
-                if post["nsfw"]:
-                    embed.set_thumbnail(
-                        url="https://cdn.discordapp.com/attachments/741384050387714162/809895718403047514/253-2530675_badge-badge-badge-badge-sign.png"
-                    )
+                if post["hasimage"]:
+                    embed.set_image(url=post["url"])
+                elif post["thumbnail"]:
+                    embed.set_image(url=post["thumbnail"])
 
-        embed.set_author(
-            name=f"Reddit | r/{subRedd}",
-            icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756609606922535057/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png",
-        )
+            embed.set_footer(
+                text=f"r/{post['subreddit']} {'NSFW ' if post['nsfw'] else ''}• ⇧{post['upvotes']:,} upvotes",
+                icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756609606922535057/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png",
+            )
+        else:
+            if subreddit is not None:
+                embed.title = f"Could not find any posts from `r/{subreddit}`"
+            else:
+                embed.title = "Could not find that post."
 
         return embed
 
-    async def redditPrep(self, ctx, subRedd, image=True):
-        post = await self.red.get_post(subRedd, image)
-        embed = await self.to_embed(ctx, post, subRedd)
-        await ctx.send(embed=embed)
+    async def quicksend(self, ctx, sub, image=True):
+        post = await self.Hamood.Reddit.get_random_post(sub, image)
+        embed = self.makeembed(post, sub, ctx.channel.is_nsfw())
+        await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(2, 60, commands.BucketType.channel)
-    @commands.has_permissions(embed_links=True)
-    async def imagefeed(self, ctx, redditSub=None):
-        """``imagefeed [subreddit]`` gets the top 100 posts from a subreddit in an iterable message keeps only images"""
-        if ctx.author.id in self.open_feeds:
-            return await ctx.send("`You can only have one open feed at a time`")
+    def clean_sub(self, sub: str):
+        return (sub or random.choice(self.allSubs)).replace("+", "")
 
-        if redditSub == None:
-            redditSub = random.choice(self.common)
-
-        post_index = 0
-        feed = await self.red.get_feed(redditSub, True)
-
-        if feed is None:
-            return await ctx.send(
-                embed=discord.Embed(
-                    colour=16729344,
-                    title=f"Could not find a recent post from **r/{redditSub}!**",
-                )
-            )
-
-        self.open_feeds.append(ctx.author.id)
-
-        post = feed[post_index]
-        embed = await self.to_embed(ctx, post, redditSub, extra=f"post 1/{len(feed)}")
-
-        msg = await ctx.send(embed=embed)
-
-        for button in self.buttons:
-            await msg.add_reaction(button)
-
-        while True:
-            try:
-                reaction, user = await self.bot.wait_for(
-                    "reaction_add",
-                    check=lambda reaction, user: user == ctx.author
-                    and reaction.emoji in self.buttons,
-                    timeout=120.0,
-                )
-            except asyncio.TimeoutError:
-                self.open_feeds.remove(ctx.author.id)
-                return await msg.clear_reactions()
-            else:
-                if str(reaction.emoji) == "🚪":
-                    self.open_feeds.remove(ctx.author.id)
-                    return await msg.clear_reactions()
-
-                prevpost = int(post_index)
-
-                if str(reaction.emoji) == "\u23EA":
-                    post_index = 0
-                elif str(reaction.emoji) == "\u23E9":
-                    post_index = len(feed) - 1
-                else:
-                    post_index += self.buttons[str(reaction.emoji)]
-                await msg.remove_reaction(str(reaction.emoji), ctx.author)
-
-                if 0 <= post_index < len(feed):
-                    if prevpost != post_index:
-                        post = feed[post_index]
-
-                        embed = await self.to_embed(
-                            ctx,
-                            post,
-                            redditSub,
-                            extra=f"bound to: {ctx.author}\t post {post_index+1}/{len(feed)}",
-                        )
-                        await asyncio.sleep(1)
-                        await msg.edit(embed=embed)
-                else:
-                    post_index = int(prevpost)
-
-    @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(2, 60, commands.BucketType.channel)
-    @commands.has_permissions(embed_links=True)
-    async def feed(self, ctx, redditSub=None):
-        """``feed [subreddit]`` gets the top 100 posts from a subreddit in an iterable message"""
-        if ctx.author.id in self.open_feeds:
-            return await ctx.send("`You can only have one open feed at a time`")
-
-        if redditSub == None:
-            redditSub = random.choice(self.common)
-
-        post_index = 0
-        feed = await self.red.get_feed(redditSub, False)
-
-        if feed is None:
-            return await ctx.send(
-                embed=discord.Embed(
-                    colour=16729344,
-                    title=f"Could not find a recent post from **r/{redditSub}!**",
-                )
-            )
-
-        self.open_feeds.append(ctx.author.id)
-
-        post = feed[post_index]
-        embed = await self.to_embed(ctx, post, redditSub, extra=f"post 1/{len(feed)}")
-
-        msg = await ctx.send(embed=embed)
-
-        for button in self.buttons:
-            await msg.add_reaction(button)
-
-        while True:
-            try:
-                reaction, user = await self.bot.wait_for(
-                    "reaction_add",
-                    check=lambda reaction, user: user == ctx.author
-                    and reaction.emoji in self.buttons,
-                    timeout=120.0,
-                )
-            except asyncio.TimeoutError:
-                self.open_feeds.remove(ctx.author.id)
-                return await msg.clear_reactions()
-            else:
-                if str(reaction.emoji) == "🚪":
-                    self.open_feeds.remove(ctx.author.id)
-                    return await msg.clear_reactions()
-
-                prevpost = int(post_index)
-
-                if str(reaction.emoji) == "\u23EA":
-                    post_index = 0
-                elif str(reaction.emoji) == "\u23E9":
-                    post_index = len(feed) - 1
-                else:
-                    post_index += self.buttons[str(reaction.emoji)]
-                await msg.remove_reaction(str(reaction.emoji), ctx.author)
-
-                if 0 <= post_index < len(feed):
-                    if prevpost != post_index:
-                        post = feed[post_index]
-
-                        embed = await self.to_embed(
-                            ctx,
-                            post,
-                            redditSub,
-                            extra=f"bound to: {ctx.author}\t post {post_index+1}/{len(feed)}",
-                        )
-                        await asyncio.sleep(1)
-                        await msg.edit(embed=embed)
-                else:
-                    post_index = int(prevpost)
-
-    @commands.command(aliases=["red", "r", "reddit"])
-    @checks.isAllowedCommand()
-    @commands.cooldown(3, 5, commands.BucketType.channel)
-    @commands.has_permissions(embed_links=True)
-    async def redit(self, ctx, redditSub=None):
-        """``redit [subreddit]`` finds a post from your specified subreddit"""
-        if redditSub == None:
-            redditSub = random.choice(self.common)
-        await self.redditPrep(ctx, redditSub, False)
+    @commands.command(aliases=["r", "reddit"])
+    @commands.check(PremiumCooldown(prem=(3, 5, "user"), reg=(3, 5, "channel")))
+    @commands.bot_has_permissions(embed_links=True)
+    async def subreddit(self, ctx, sub=None):
+        """<subreddit>|||Get a post from a SubReddit."""
+        await self.quicksend(ctx, self.clean_sub(sub), False)
 
     @commands.command(aliases=["redpic", "rp"])
-    @checks.isAllowedCommand()
-    @commands.cooldown(3, 5, commands.BucketType.channel)
-    @commands.has_permissions(embed_links=True)
-    async def redditpic(self, ctx, redditSub=None):
-        """``redditpic [subreddit]`` finds a picture post from your specified subreddit"""
-        if redditSub == None:
-            redditSub = random.choice(self.common)
-        await self.redditPrep(ctx, redditSub, True)
+    @commands.check(PremiumCooldown(prem=(3, 5, "user"), reg=(3, 5, "channel")))
+    @commands.bot_has_permissions(embed_links=True)
+    async def redditpic(self, ctx, sub=None):
+        """<subreddit>|||Get a post from a SubReddit (only posts with images)."""
+        await self.quicksend(ctx, self.clean_sub(sub), True)
 
     @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(5, 5, commands.BucketType.user)
-    @commands.has_permissions(embed_links=True)
-    async def meme(self, ctx):
-        """``meme`` quickly sends a meme from r/meme"""
-        await self.redditPrep(ctx, "memes")
-
-    # @commands.command()
-    # @commands.cooldown(5, 5, commands.BucketType.user)
-    # @commands.has_permissions(embed_links=True)
-    # async def dark(self, ctx):
-    #     """``dark`` quickly sends a meme from r/DarkMemesAndHumor"""
-    #     await self.redditPrep(ctx, "DarkMemesAndHumor")
+    @commands.max_concurrency(5, per=commands.BucketType.guild)
+    @commands.check(PremiumCooldown(prem=(2, 30, "user"), reg=(2, 30, "channel")))
+    @commands.bot_has_permissions(embed_links=True, manage_messages=True)
+    async def imagefeed(self, ctx, sub=None):
+        feed = RedditFeed(ctx, self.bot)
+        await feed(self.clean_sub(sub))
 
     @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(5, 5, commands.BucketType.user)
-    @commands.has_permissions()
-    async def dank(self, ctx):
-        """``dank`` quickly sends a meme from r/dankmemes"""
-        await self.redditPrep(ctx, "dankmemes")
+    @commands.max_concurrency(5, per=commands.BucketType.guild)
+    @commands.check(PremiumCooldown(prem=(2, 30, "user"), reg=(2, 30, "channel")))
+    @commands.bot_has_permissions(embed_links=True, manage_messages=True)
+    async def feed(self, ctx, sub=None):
+        feed = RedditFeed(ctx, self.bot)
+        await feed(self.clean_sub(sub))
 
-    @commands.command(aliases=["cats", "noura"])
-    @checks.isAllowedCommand()
-    @commands.cooldown(5, 5, commands.BucketType.user)
-    @commands.has_permissions(embed_links=True)
-    async def cat(self, ctx):
-        """``cat`` quickly sends a cat from r/cats"""
-        await self.redditPrep(ctx, "cats")
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if (
+            self.Hamood.ignore_check(message)
+            and message.author.id not in self.calm_down
+        ):
+            return
 
-    @commands.command(aliases=["curse"])
-    @checks.isAllowedCommand()
-    @commands.cooldown(5, 5, commands.BucketType.user)
-    @commands.has_permissions(embed_links=True)
-    async def cursed(self, ctx):
-        """``cursed`` quickly sends a post from r/cursedimages"""
-        await self.redditPrep(ctx, "cursedimages")
-
-    @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(5, 5, commands.BucketType.user)
-    @commands.has_permissions(embed_links=True)
-    async def blursed(self, ctx):
-        """``blursed`` quickly sends a post from r/blursedimages"""
-        await self.redditPrep(ctx, "blursedimages")
-
-    @commands.command(aliases=["bless"])
-    @checks.isAllowedCommand()
-    @commands.cooldown(5, 5, commands.BucketType.user)
-    @commands.has_permissions(embed_links=True)
-    async def blessed(self, ctx):
-        """``blessed`` quickly sends a post from r/Blessed_Images"""
-        await self.redditPrep(ctx, "Blessed_Images")
-
-    @commands.command(aliases=["pizza", "time", "pizza time", "ayan"])
-    @checks.isAllowedCommand()
-    @commands.cooldown(5, 5, commands.BucketType.user)
-    @commands.has_permissions(embed_links=True)
-    async def pizzatime(self, ctx):
-        """``pizzatime`` its pizza time"""
-        await self.redditPrep(ctx, "raimimemes")
-
-    @commands.command(aliases=["dogs", "doggy", "doge"])
-    @checks.isAllowedCommand()
-    @commands.cooldown(5, 5, commands.BucketType.user)
-    @commands.has_permissions(embed_links=True)
-    async def dog(self, ctx):
-        """``dog`` quickly sends a dog from r/dogs"""
-        await self.redditPrep(ctx, "dog")
-
-    @commands.command(aliases=["charity", "mine"])
-    @checks.isAllowedCommand()
-    @commands.cooldown(5, 5, commands.BucketType.user)
-    @commands.has_permissions(embed_links=True)
-    async def minecraft(self, ctx):
-        """``minecraft`` quickly sends a dog from r/Minecraft"""
-        await self.redditPrep(ctx, "minecraft")
-
-    @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(1, 5, commands.BucketType.channel)
-    @commands.has_permissions(embed_links=True)
-    async def spam(self, ctx, redditSub="random", amount="3"):
-        """``spam [subreddit] [amount]`` sends a number of posts from a specified subreddit (max=10)"""
-        amount = int(amount)
-        if amount > 5:
-            amount = 5
-
-        if redditSub in self.names:
-            redditSub = self.common[self.names.index(redditSub)]
-
-        for i in range(amount):
-            if redditSub == "random":
-                r = random.choice(self.common)
+        grabbed = self.Hamood.re_RedditUrl.search(message.content)
+        if grabbed:
+            bucket = self.calm_cd.get_bucket(message)
+            retry_after = bucket.update_rate_limit()
+            if retry_after:
+                self.calm_down.append(message.author.id)
+                await asyncio.sleep(5)
+                self.calm_down.remove(message.author.id)
             else:
-                r = redditSub
-            await self.redditPrep(ctx, r, False)
+                post_id = grabbed.group(1)
+                post = await self.Hamood.Reddit.fetch_post(post_id=post_id)
+                await message.reply(
+                    embed=self.makeembed(post, allowNSFW=message.channel.is_nsfw()),
+                    mention_author=False,
+                )
 
-    # @commands.command()
-    # async def rvdl(self, ctx):
-    #     """``rvdl``"""
-    #     embed = discord.Embed(title=f"Post from r/[subreddit]:", colour=16729344)
-    #     embed.set_author(
-    #         name="Reddit",
-    #         icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756609606922535057/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png",
-    #     )
-    #     embed.set_footer(
-    #         text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
-    #     )
-    #     embed.set_image(
-    #         url="https://cdn.discordapp.com/avatars/485138947115057162/a_a04f5ec2c6d48c9fa298d12c63f62231.gif?size=1024"
-    #     )
-    #     embed.set_thumbnail(
-    #         url="https://cdn.discordapp.com/attachments/749779300181606411/802050446381940786/test3.png"
-    #     )
 
-    #     await ctx.send(embed=embed)
+class RedditFeed:
+    def __init__(self, ctx, bot):
+        self.ctx = ctx
+        self.bot = bot
+
+        self.Hamood = bot.Hamood
+        self.author = ctx.author
+
+        self.buttons = {
+            "\u23EA": self.start_page,
+            "\u25C0": self.previous_page,
+            "<a:dice:854422487436623873>": self.random_page,
+            "\u25B6": self.next_page,
+            "\u23E9": self.end_page,
+            "🚪": self.close_page,
+        }
+        self.page = 0
+        self.prev_page = -1
+        self.allowNSFW = ctx.channel.is_nsfw()
+
+        self.dead = False
+
+    def reaction_check(self, reaction, user):
+        return (user == self.author) and (str(reaction.emoji) in self.buttons)
+
+    def makeembed(self, post):
+        embed = discord.Embed(color=discord.Color.from_rgb(*self.Hamood.pastel_color()))
+        if post:
+            if post["nsfw"] and not self.allowNSFW:
+                embed.title = "`NSFW` posts cannot be sent in a non `NSFW` channel"
+            else:
+                embed.description = (
+                    f"{post['text'][:1980]}{'...' if len(post['text']) >= 1980 else ''}"
+                )
+                embed.set_author(
+                    name=post["title"],
+                    url=post["permalink"],
+                )
+                if post["hasimage"]:
+                    embed.set_image(url=post["url"])
+                elif post["thumbnail"]:
+                    embed.set_image(url=post["thumbnail"])
+
+            embed.set_footer(
+                text=f"r/{post['subreddit']}{' NSFW ' if post['nsfw'] else ' '}• ⇧{post['upvotes']:,} upvotes • post: {self.page+1}/{self.feed_length}",
+                icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756609606922535057/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png",
+            )
+        else:
+            if subreddit is not None:
+                embed.title = f"Could not find any posts from `r/{self.subreddit}`"
+            else:
+                embed.title = "Could not find that post."
+
+        return embed
+
+    async def __call__(self, subreddit, image_only=False):
+        if self.author.id in self.Hamood.active_feeds:
+            return await self.Hamood.quick_embed(
+                self.ctx,
+                title="You aldready have a feed open!",
+                description=f"[**jump!**]({self.Hamood.active_feeds[self.author.id]})",
+            )
+
+        self.msg = await self.Hamood.quick_embed(
+            self.ctx,
+            title=f"Loading Feed from `r/{subreddit}` <a:load:822030219924733992>",
+        )
+
+        self.feed = await self.Hamood.Reddit.fetch_feed(subreddit)
+        self.subreddit = subreddit
+
+        if not self.feed:
+            return await self.msg.edit(
+                embed=self.makeembed(post=None),
+                mention_author=False,
+            )
+
+        self.feed_ids = [
+            post_id
+            for post_id in self.feed.keys()
+            if (self.feed[post_id]["hasimage"] if image_only else True)
+        ]
+        self.feed_length = len(self.feed_ids)
+
+        if self.feed_length <= 1:
+            return await self.msg.edit(
+                embed=self.makeembed(post=None),
+                mention_author=False,
+            )
+
+        self.Hamood.active_feeds[self.author.id] = self.msg.jump_url
+
+        for button in self.buttons:
+            await self.msg.add_reaction(button)
+
+        await self.startloop()
+
+    async def startloop(self):
+        await self.update_msg()
+        while True:
+            try:
+                reaction, user = await self.bot.wait_for(
+                    "reaction_add", check=self.reaction_check, timeout=120.0
+                )
+            except asyncio.TimeoutError:
+                await self.close_page()
+                break
+            else:
+                await self.buttons[str(reaction.emoji)]()
+                if self.dead:
+                    break
+                await asyncio.sleep(1.3)
+                await self.update_msg()
+                await self.msg.remove_reaction(str(reaction.emoji), self.author)
+
+    async def update_msg(self):
+        if not self.dead and self.page != self.prev_page:
+            self.prev_page = int(self.page)
+            await self.msg.edit(
+                embed=self.makeembed(post=self.feed[self.feed_ids[self.page]]),
+                subreddit=self.subreddit,
+                allowNSFW=self.allowNSFW,
+            )
+
+    async def close_page(self):
+        self.dead = True
+        try:
+            del self.Hamood.active_feeds[self.author.id]
+        except:
+            pass
+        try:
+            await self.msg.clear_reactions()
+        except:
+            pass
+
+    async def start_page(self):
+        self.page = 0
+
+    async def next_page(self):
+        self.page = min(self.page + 1, self.feed_length - 1)
+
+    async def random_page(self):
+        self.page = random.choice(
+            [i for i in range(self.feed_length) if i != self.prev_page]
+        )
+
+    async def previous_page(self):
+        self.page = max(self.page - 1, 0)
+
+    async def end_page(self):
+        self.page = self.feed_length - 1
 
 
 def setup(bot):
-    bot.add_cog(Reddit(bot))
+    cog = Reddit(bot)
+    bot.add_cog(cog)
+    cog.addredditcommands()

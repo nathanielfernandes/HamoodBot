@@ -1,15 +1,12 @@
-import os
+import os, re
 import datetime
 import random
 import discord
 import asyncio
 from discord.ext import commands
-import aiohttp
-from io import BytesIO
 
-# import requests
-from modules.image_functions import randomFile, makeColorImg
-import modules.checks as checks
+from utils.Premium import PremiumCooldown
+from modules.image_functions import randomFile, makeColor
 
 from gtts import gTTS
 
@@ -20,74 +17,61 @@ class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.Hamood = bot.Hamood
-        self.last_member = None
-        self.possible_responses = ["hello", "hi", "hey", "what's up"]
-        self.replies = [
-            "what do you want {0.author.mention}?",
-            "what {0.author.mention}?",
-            "huh?",
-            "yeah {0.author.mention}?",
-            "what's up",
-        ]
-        self.bad_replies = ["go away", "stop calling me"]
+        self.bracketed = re.compile(r"(\[.+?\])")
+
+        self.re_entries = re.compile(r"<entry>([\s\S]*?)</entry>")
+        self.re_info = re.compile(
+            r"<title>([\s\S]*?)</title>|<link rel=\"alternate\" href=\"(.+)/>|<media:statistics views=\"(\d+)\"/>"
+        )
+
+        self.possiblecodes = (
+            [100, 101, 102]
+            + list(range(200, 109))
+            + [226]
+            + list(range(300, 309))
+            + list(range(400, 419))
+            + list(range(421, 427))
+            + [428, 429, 431, 444, 451, 499]
+            + list(range(500, 512))
+            + [599]
+        )
 
     @commands.command(aliases=["colour"])
-    @checks.isAllowedCommand()
-    async def color(self, ctx, r=None, g=None, b=None, a=255):
-        """``color [r] [g] [b] [a]`` sends the color with the specified rbga values"""
+    @commands.bot_has_permissions(embed_links=True, attach_files=True)
+    async def color(
+        self, ctx, r: int = None, g: int = None, b: int = None, a: int = 255
+    ):
+        """[r] [g] [b] [a]|||Sends the color with the specified rbga values."""
         rgba = [r, g, b, a]
         for i in range(len(rgba)):
             if rgba[i] is None:
                 rgba[i] = random.randint(0, 255)
             else:
-                rgba[i] = int(rgba[i])
-                if rgba[i] < 0:
-                    rgba[i] = 0
-                elif rgba[i] > 255:
-                    rgba[i] = 255
+                rgba[i] = abs(rgba[i])
+                rgba[i] = min(rgba[i], 255)
 
-        img = makeColorImg(
-            rgba, path=f"{self.Hamood.filepath}/temp", size=(150, 150), sus=(a == 69),
-        )
+        name = self.Hamood.save_name()
+        makeColor(rgba=rgba, fp=f"{self.Hamood.filepath}/temp/{name}", size=(150, 150))
 
         await self.Hamood.quick_embed(
             ctx=ctx,
             footer={"text": "rgba: " + ", ".join([str(i) for i in rgba])},
             reply=True,
-            image=img,
-            color=discord.Color.from_rgb(rgba[0], rgba[1], rgba[2]),
+            image_url=f"{self.Hamood.URL}/{name}",
+            color=discord.Color.from_rgb(*rgba[:-1]),
         )
 
-    @commands.command(aliases=["hi", "hey", "yo"])
-    @checks.isAllowedCommand()
-    async def hello(self, ctx):
-        """``greet`` greets the user"""
-        await ctx.send(f"{random.choice(self.possible_responses)} {ctx.author.mention}")
-
     @commands.command()
-    @checks.isAllowedCommand()
-    async def hamood(self, ctx):
-        """``hamood`` calls hamood"""
-        member = ctx.author
-        if self.last_member is None or self.last_member.id != member.id:
-            await ctx.send(random.choice(self.replies).format(ctx))
-        else:
-            await ctx.send(random.choice(self.bad_replies).format(ctx))
-        self.last_member = member
-
-    @commands.command()
-    @checks.isAllowedCommand()
     async def clap(self, ctx, *content: str):
-        """``clap [msg]`` adds clap emojis to your sentence"""
+        """<text>|||Adds clap emojis to your sentence."""
         msg = ""
         for word in content:
             msg += "**" + word + "**" + ":clap:"
-        await ctx.send(msg)
+        await ctx.send(msg[:1900])
 
     @commands.command()
-    @checks.isAllowedCommand()
     async def lengthen(self, ctx, *content: str):
-        """``lengthen [sentence]`` makes words long"""
+        """<text>|||For when u need to fill up that essay."""
 
         def lengthen(word):
             halves = (word[: len(word) // 2], word[len(word) // 2 :][::-1])
@@ -100,62 +84,17 @@ class General(commands.Cog):
 
             return final[0] + final[1][::-1]
 
-        await ctx.send(" ".join([lengthen(word) for word in content]))
+        await ctx.send(" ".join([lengthen(word) for word in content])[:2000])
 
     @commands.command()
-    @checks.isAllowedCommand()
-    async def clown(self, ctx, *, content: commands.clean_content = None):
-        """``clown [msg]`` clown someones text"""
-        if content is None:
-            content = await ctx.message.channel.history(limit=5).find(
-                lambda m: ".clown" not in m.content.lower()
-            )
-            content = content.content
-
-        content = content.lower()
-        for i in range(len(content)):
-            if bool(random.getrandbits(1)):
-                content = content[:i] + content[i].upper() + content[i + 1 :]
-        await ctx.message.delete()
-        await ctx.send(content)
-
-    @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(1, 30, commands.BucketType.channel)
-    async def repeat(self, ctx, times: int, *, content: commands.clean_content):
-        """``repeat [number of messages] [msg]`` repeats your message multiple times"""
-        msg = ""
-        for i in range(times):
-            msg += content + "\n"
-        await ctx.send(msg)
-
-    @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(3, 10, commands.BucketType.user)
-    async def echo(self, ctx, *, content: commands.clean_content):
-        """``echo [msg]`` echos your message a random amount of times"""
-        for i in range(random.randint(1, 5)):
-            await ctx.send(content)
-
-    @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(2, 5, commands.BucketType.user)
-    async def no(self, ctx, content: str = None):
-        """``no u`` sends an uno reverse card"""
-        if content == "u" or content == "you":
-            # await ctx.channel.purge(limit=1)
-            uno = randomFile(folder=f"{self.Hamood.filepath}/memePics/unoCards")
-            await ctx.send(file=discord.File(uno))
-
-    @commands.command(aliases=["movie time"])
     async def shrek(self, ctx):
-        """``shrek`` sends the entire shrek movie as a 90 min long gif"""
-        await ctx.send("https://imgur.com/gallery/IsWDJWa")
+        """|||The entire shrek movie as a 90 min long gif."""
+        await ctx.reply("https://imgur.com/gallery/IsWDJWa")
 
     @commands.command(aliases=["nut", "robert"])
-    @checks.isAllowedCommand()
+    @commands.bot_has_permissions(embed_links=True)
     async def nnn(self, ctx):
-        """``nnn`` dont nut"""
+        """|||No Nut November Countdown."""
         embed = discord.Embed(
             title=f"No Nut November Countdown",
             color=discord.Color.from_rgb(245, 245, 220),
@@ -166,27 +105,26 @@ class General(commands.Cog):
 
         today = datetime.datetime.now()
         if today.month != 11:
-            embed.description = "It is not November"
+            embed.description = "```It is not November!```"
         else:
             end = datetime.datetime(today.year, 12, 1)
 
             timeLeft = end - today
             embed.description = (
-                f"```{self.Hamood.pretty_time_delta(timeLeft.total_seconds())}```"
+                f"```{self.Hamood.pretty_dt(timeLeft.total_seconds())}```"
             )
 
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["xmas"])
-    @checks.isAllowedCommand()
+    @commands.bot_has_permissions(embed_links=True)
     async def christmas(self, ctx):
-        """``christmas`` Christmas countdown"""
+        """|||Christmas Countdown."""
         embed = discord.Embed(
-            title=f":christmas_tree: Christmas Countdown", color=discord.Color.green(),
+            title=f":christmas_tree: Christmas Countdown",
+            color=discord.Color.green(),
         )
-        embed.set_footer(
-            text=f"Santa is comming {ctx.author}.", icon_url=ctx.author.avatar_url
-        )
+        embed.set_footer(text=f"Santa is comming {ctx.author}.")
 
         embed.set_thumbnail(
             url="https://www.animatedimages.org/data/media/359/animated-santa-claus-image-0420.gif"
@@ -194,30 +132,22 @@ class General(commands.Cog):
 
         today = datetime.datetime.now()
         if today.month != 12:
-            embed.description = "It is not December"
+            embed.description = "```It is not December!```"
         else:
             end = datetime.datetime(today.year, 12, 25)
 
             timeLeft = end - today
             embed.description = (
-                f"```{self.Hamood.pretty_time_delta(timeLeft.total_seconds())}```"
+                f"```{self.Hamood.pretty_dt(timeLeft.total_seconds())}```"
             )
 
         await ctx.send(embed=embed)
 
-    @commands.command()
-    @checks.isAllowedCommand()
-    async def cliffhanger(self, ctx):
-        """``cliffhanger`` the day hamood died"""
-        await ctx.send(
-            "https://cdn.discordapp.com/attachments/767568685568753664/804052279195467796/unknown.png"
-        )
-
     @commands.command(aliases=["texttospeech", "say"])
-    @checks.isAllowedCommand()
-    @commands.cooldown(2, 15, commands.BucketType.user)
+    @commands.check(PremiumCooldown(prem=(2, 15, "user"), reg=(2, 15, "channel")))
+    @commands.bot_has_permissions(attach_files=True)
     async def tts(self, ctx, *, content: commands.clean_content):
-        """``tts [text]`` text to speech"""
+        """<text>|||Text to speech."""
         speech = gTTS(text=content[:600], lang="en", slow=False)
         save = (
             f"{self.Hamood.filepath}/temp/"
@@ -232,150 +162,143 @@ class General(commands.Cog):
 
         os.remove(save)
 
+    def parse_xml_entries(self, xml: str) -> [str, list]:
+        try:
+            entries = [
+                self.Hamood.named_flatten(
+                    self.re_info.findall(entry),
+                    ["title", "url", "views"],
+                    lambda e: e != "",
+                )
+                for entry in self.re_entries.findall(xml)
+            ]
+        except:
+            return []
+        else:
+            return entries
+
     @commands.command()
-    @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def uploads(self, ctx, channel: str):
-        """``uploads [youtube channe]`` get the last 10 videos uploaded from a channel"""
-        if channel.startswith("https://www.youtube.com/"):
-            if channel.startswith(
-                "https://www.youtube.com/user/"
-            ) or channel.startswith("https://www.youtube.com/c/"):
-                soup = await self.Hamood.ahttp.get(url=channel, return_type="text")
-                channel_id = find_id(soup)
-                if channel_id is None:
-                    return await ctx.send(f"`Could not find videos from '{channel}'`")
-            else:
-                channel_id = channel.replace("https://www.youtube.com/channel/", "")
+        """<youtube channel url>|||Gets the latest uploads from a channel."""
+        ellipsis = lambda s: s[:35].replace("]", "").replace("[", "").replace(
+            ")", ""
+        ).replace("(", "").replace("|", "") + ("..." if len(s) >= 34 else "")
 
-            info = await self.Hamood.ahttp.get(
-                url=f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}",
-                return_type="text",
-            )
-            videos, name, img = sift_stuff(info)
+        channelstuff = self.Hamood.re_validChannel.search(channel)
 
-            desc = "\n".join(
-                [
-                    f"[**{key}**]({value[0]})\nviews: **{int(value[1]):,}**\n"
-                    for key, value in videos.items()
-                ]
-            )
-            embed = discord.Embed(
-                title=f"{name}'s Latest Uploads",
-                #  url=channel,
-                color=discord.Color.red(),
-                description=desc,
-                timestamp=ctx.message.created_at,
-            )
-            embed.set_thumbnail(url=img)
-            return await ctx.send(embed=embed)
+        if channelstuff is None:
+            return await ctx.send(f"`{channel}` is not a valid youtube channel!")
 
-        return await ctx.send(f"`Could not find videos from '{channel}'`")
+        soup = await self.Hamood.ahttp.get_text(url=channel)
+        cID = self.Hamood.re_YoutubeID.search(soup)
+        cImage = self.Hamood.re_YoutubeImage.search(soup)
+        cName = self.Hamood.re_YoutubeName.search(soup)
+
+        if cID is not None:
+            cID = cID.group(1)
+        else:
+            return await ctx.send(f"Could not find `{channel}`")
+
+        cImage = "temp" if cImage is None else cImage.group(1)
+        cName = "NA" if cName is None else cName.group(1)
+
+        info = await self.Hamood.ahttp.get_text(
+            url=f"https://www.youtube.com/feeds/videos.xml?channel_id={cID}"
+        )
+
+        videos = self.parse_xml_entries(info)
+
+        if len(videos) == 0:
+            return await ctx.send(f"`Could not find latest uploads for '{channel}'`")
+
+        desc = "\n".join(
+            f"**{i+1}.** [**{ellipsis(videos[i]['title'])}**]({videos[i]['url']}) | `{int(videos[i]['views']):,}` views"
+            for i in range(len(videos))
+        )
+
+        embed = discord.Embed(
+            title=f"{cName}'s Latest Uploads",
+            #  url=channel,
+            color=discord.Color.from_rgb(255, 0, 0),
+            description=desc,
+            timestamp=ctx.message.created_at,
+        )
+        embed.set_thumbnail(url=cImage)
+
+        return await ctx.send(embed=embed)
 
     @commands.command(aliases=["soggs"])
-    @checks.isAllowedCommand()
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.check(PremiumCooldown(prem=(3, 5, "user"), reg=(1, 5, "user")))
+    @commands.bot_has_permissions(embed_links=True)
     async def define(self, ctx, *, content: commands.clean_content):
-        """``define [word or phrase]`` get the difinition of a word or phrase from urban dictionary"""
+        """<word or phrase>|||Get a difinition of a word or phrase from urban dictionary"""
 
         def fix_desc(desc):
-            d = desc
-            bracketedword = ""
-            start = False
-            for i in d:
-                if i == "[":
-                    start = True
-                elif i == "]":
-                    start = False
-                    bracketedword += i
-                    d = d.replace(
-                        bracketedword,
-                        f"{bracketedword}(https://www.urbandictionary.com/define.php?term={bracketedword[1:-1].replace(' ', '')})",
-                    )
-                    bracketedword = ""
-                if start:
-                    bracketedword += i
+            links = self.bracketed.findall(desc)
+            for link in links:
+                desc = desc.replace(
+                    link,
+                    f"{link}(https://www.urbandictionary.com/define.php?term={link.replace('[', '').replace(']', '').replace(' ', '%20')})",
+                )
+            return desc
 
-            return d
-
-        query = {"term": content}
-
-        headers = {
-            "x-rapidapi-key": self.Hamood.URBANDICTKEY,
-            "x-rapidapi-host": URBANDICTHOST,
-        }
-
-        j = await self.Hamood.ahttp.get(
+        definitions = await self.Hamood.ahttp.get(
             url="https://mashape-community-urban-dictionary.p.rapidapi.com/define",
-            headers=headers,
-            params=query,
+            headers={
+                "x-rapidapi-key": self.Hamood.URBANDICTKEY,
+                "x-rapidapi-host": self.Hamood.URBANDICTHOST,
+            },
+            params={"term": content},
             return_type="json",
         )
 
-        if len(j) >= 1:
+        definitions = definitions["list"]
+        if len(definitions) >= 1:
             try:
-                definitions = j["list"]
-                d = definitions[random.randint(0, len(definitions) - 1)]
-
-                embed = discord.Embed(
-                    title=d["word"].title(),
-                    description=f'**{fix_desc(d["definition"])}**',
+                d = random.choice(definitions)
+                await self.Hamood.quick_embed(
+                    ctx=ctx,
+                    title=f'***{d["word"]}***',
+                    description=f'**{fix_desc(d["definition"])}**'
+                    + f"\n\n**Example:**\n{fix_desc(d['example'])}",
                     url=d["permalink"],
-                    timestamp=ctx.message.created_at,
                     color=discord.Color.blue(),
+                    author={
+                        "name": "Urban Dictionary",
+                        "icon_url": "https://media.discordapp.net/attachments/741384050387714162/806013278396350464/297387706245_85899a44216ce1604c93_512.png",
+                    },
+                    footer={
+                        "text": f"👍 {d['thumbs_up']} | 👎 {d['thumbs_down']} • by {d['author']} • {d['written_on'].split('T')[0].replace('-', '/')}"
+                    },
+                    reply=True,
                 )
+                return
+            except:
+                pass
 
-                embed.add_field(name="Example", value=fix_desc(d["example"]))
+        await self.Hamood.quick_embed(
+            ctx=ctx,
+            title=f"No Results Found For `{content}`!",
+            color=discord.Color.blue(),
+            author={"name": "Urban Dictionary"},
+        )
 
-                embed.set_author(
-                    name="Urban Dictionary",
-                    icon_url="https://cdn.discordapp.com/attachments/741384050387714162/806013278396350464/297387706245_85899a44216ce1604c93_512.png",
-                )
-
-                embed.set_footer(text=f"👍 {d['thumbs_up']} | 👎 {d['thumbs_down']}")
-
-                await ctx.send(embed=embed)
-            except Exception:
-                await ctx.send(f"`no results found for '{content}'`")
-
-
-def sift_stuff(soup: str):
-    name = search(soup, "<name>", "<")
-    img = search(soup, '<media:thumbnail url="', '"')
-    soup = soup.split("\n")
-    video_titles = []
-    video_links = []
-    views = []
-
-    entry = False
-    for line in soup:
-        if "<yt:videoId>" in line:
-            video_links.append(
-                f"https://www.youtube.com/watch?v={search(line, '<yt:videoId>', '<')}"
+    @commands.command(aliases=["statuscode"])
+    async def statuscat(self, ctx, code: int = None):
+        """<status-code>|||Status cats > status codes"""
+        if code is None:
+            code = random.choice(self.possiblecodes)
+        if len(str(code)) == 3 and code in self.possiblecodes:
+            await self.Hamood.quick_embed(
+                ctx,
+                image_url=f"https://http.cat/{code}",
+                footer={"text": f"status-code: {code}"},
             )
-        elif "<media:title>" in line:
-            video_titles.append(search(line, "<media:title>", "<"))
-        elif '<media:statistics views="' in line:
-            views.append(search(line, '<media:statistics views="', '"'))
-
-    return dict(zip(video_titles, zip(video_links, views))), name, img
-
-
-def search(soup: str, look: str, stopper='"'):
-    try:
-        start = soup.index(look) + len(look)
-        end = soup.index(stopper, start)
-        return soup[start:end]
-    except ValueError:
-        return None
-
-
-def find_id(soup: str):
-    """Tries to find a youtube channel id"""
-    result = search(soup, 'externalId":"')
-    if result is None:
-        result = search(soup, 'data-channel-external-id="')
-    return result
+        else:
+            await self.Hamood.quick_embed(
+                ctx, description=f"`{code}` is not a valid status-code."
+            )
 
 
 class Poll:

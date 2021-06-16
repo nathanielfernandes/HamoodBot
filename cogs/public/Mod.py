@@ -142,12 +142,15 @@ class Mod(commands.Cog):
     @commands.command()
     @checks.isAllowedCommand()
     @commands.has_permissions(manage_emojis=True)
+    @commands.bot_has_permissions(manage_emojis=True)
     @commands.cooldown(5, 20, commands.BucketType.guild)
     async def emojisteal(
         self, ctx, emoji: discord.PartialEmoji, *, name: commands.clean_content = None
     ):
         """``emojisteal [emoji] [name(optional)]`` steals the sent emoji and adds it to the current server"""
-        emoji_bytes = await self.Hamood.ahttp.bytes_download(url=str(emoji.url))
+        emoji_bytes = await self.Hamood.ahttp.bytes_download(
+            url=str(emoji.url), no_io=True
+        )
         if emoji_bytes is None:
             return await ctx.send("`could not steal emoji`")
 
@@ -167,17 +170,19 @@ class Mod(commands.Cog):
             embed.set_footer(text=f"Requested by {ctx.author}")
 
             await ctx.send(embed=embed)
-        except:
+        except Exception as e:
+            raise e
             await ctx.send("`Could not add emoji to server. Emoji cap may be reached.`")
 
     @commands.command()
     @checks.isAllowedCommand()
     @commands.has_permissions(manage_emojis=True)
+    @commands.bot_has_permissions(manage_emojis=True)
     @commands.cooldown(5, 20, commands.BucketType.guild)
     async def addemoji(self, ctx, url: str = None, name: str = "changeme"):
         """``addemoji [url or image] [name]`` adds the emoji to the server"""
 
-        emoji_bytes = await self.Hamood.ahttp.bytes_download(url=str(url))
+        emoji_bytes = await self.Hamood.ahttp.bytes_download(url=str(url), no_io=True)
         if emoji_bytes is None:
             return await ctx.send("`could not steal emoji`")
 
@@ -241,7 +246,7 @@ class Mod(commands.Cog):
 
         await mute(ctx, user, reason or "No Reason")
         await ctx.send(
-            f"{user.mention} has been muted for `{self.Hamood.pretty_time_delta(time)}` | Reason: {reason or 'None'}"
+            f"{user.mention} has been muted for `{self.Hamood.pretty_dt(time)}` | Reason: {reason or 'None'}"
         )
         await asyncio.sleep(time)
         await user.remove_roles(discord.utils.get(ctx.guild.roles, name="Muted"))
@@ -259,7 +264,7 @@ class Mod(commands.Cog):
 
         await mute(ctx, user, reason or "No Reason")
         await ctx.send(
-            f"{ctx.author.mention} has muted themselves for `{self.Hamood.pretty_time_delta(time)}`"
+            f"{ctx.author.mention} has muted themselves for `{self.Hamood.pretty_dt(time)}`"
         )
         await asyncio.sleep(time)
         await user.remove_roles(discord.utils.get(ctx.guild.roles, name="Muted"))
@@ -292,6 +297,7 @@ class Mod(commands.Cog):
 
     @commands.command()
     @checks.isAllowedCommand()
+    @commands.bot_has_permissions(kick_members=True)
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason="No reason"):
         """``kick [@user]`` kicks a tagged member"""
@@ -461,7 +467,7 @@ class Mod(commands.Cog):
         time = 3600 * hours
         self.Hamood.timeout_list.append(ctx.author.id)
         await ctx.send(
-            f"{ctx.author.mention} is taking a break for `{self.Hamood.pretty_time_delta(time)}`"
+            f"{ctx.author.mention} is taking a break for `{self.Hamood.pretty_dt(time)}`"
         )
         await asyncio.sleep(time)
         self.Hamood.timeout_list.remove(ctx.author.id)
@@ -725,4 +731,3 @@ class Mod(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Mod(bot))
-

@@ -6,3 +6,6 @@ debug.log
 .VSCodeCounter
 junk
 .gitignore
+cogs/retired
+Editor.py
+pil_stacks/Assets

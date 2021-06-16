@@ -42,15 +42,15 @@ class HTTP:
         except:
             return
 
-    async def bytes_download(self, url: str):
+    async def bytes_download(self, url: str, no_io: bool = False):
         try:
             async with self.session.get(url) as resp:
                 data = await resp.read()
-                b = data  # BytesIO(data)
-                # b.seek(0)
-                return b
-        except Exception as e:
-            raise e
+                if no_io:
+                    return data
+
+                return BytesIO(data)
+        except:
             return
 
     async def get_json(self, url: str):
@@ -139,4 +139,3 @@ class HTTP:
 
     async def close(self):
         await self.session.close()
-

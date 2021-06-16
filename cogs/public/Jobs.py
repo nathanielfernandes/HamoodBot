@@ -285,14 +285,14 @@ class Jobs(commands.Cog):
 
             embed = discord.Embed(
                 title=f"Daily Reward Collected",
-                description=f"{ctx.author.mention}, a **Cheque** was added to all your inventories.\n \nUse `{p}daily` again in 24 hours.\n \nYou can vote for Hamood using `{p}vote` for cooler rewards!",
+                description=f"{ctx.author.mention}, a **Cheque** was added to all your inventories.\n \nUse `{p}daily` again in 24 hours.",
                 color=ctx.author.color,
                 timestamp=ctx.message.created_at,
             )
         else:
             embed = discord.Embed(
                 title=f"Daily Reward Unavailable",
-                description=f"{ctx.author.mention} your daily reward can be collected in ```{self.Hamood.pretty_time_delta(time)}```\nYou can vote for Hamood using `{p}vote` for cooler rewards!",
+                description=f"{ctx.author.mention} your daily reward can be collected in ```{self.Hamood.pretty_dt(time)}```",
                 color=ctx.author.color,
                 timestamp=ctx.message.created_at,
             )

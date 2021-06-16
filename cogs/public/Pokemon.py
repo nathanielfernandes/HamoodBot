@@ -56,7 +56,7 @@ class Pokemon(commands.Cog):
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pokedex(self, ctx, name: commands.clean_content):
-        """``pokedex [name or id]`` gets a pokemons info"""
+        """<name|id>|||Get info on a pokemon."""
 
         pokemon = await self.get_pokemon_info(name)
         if pokemon:
@@ -107,7 +107,7 @@ class Pokemon(commands.Cog):
     @commands.cooldown(4, 10, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pokevibe(self, ctx, member: discord.Member = None):
-        """``pokevibe [@user]`` finds the pokemon your vibing with"""
+        """[@mention]|||Find the pokemon your vibing with."""
         member = ctx.author if not member else member
 
         pokemon = await self.get_pokemon_info(random.randint(1, 893))
@@ -132,7 +132,7 @@ class Pokemon(commands.Cog):
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(embed_links=True)
     async def pokepic(self, ctx, name: commands.clean_content):
-        """``pokepic [pokemon]`` gets a pic of the pokemon"""
+        """<name|id>|||Gets a pic of a pokemon."""
         pokemon = await self.get_pokemon_info(name)
         if pokemon:
             embed = discord.Embed(

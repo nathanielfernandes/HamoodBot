@@ -120,7 +120,9 @@ class Items(commands.Cog):
                     )
 
                     await self.Hamood.Inventories.incr_item_max(
-                        ctx.guild.id, ctx.author.id, n - c,
+                        ctx.guild.id,
+                        ctx.author.id,
+                        n - c,
                     )
 
                     embed = discord.Embed(
@@ -527,7 +529,7 @@ class Items(commands.Cog):
             3600 - (datetime.now() - self.Hamood.market.last_refresh).total_seconds()
         )
         embed.set_footer(
-            text=f"Page ({page}/{n}). Prices refresh in {self.Hamood.pretty_time_delta(time_left)}"
+            text=f"Page ({page}/{n}). Prices refresh in {self.Hamood.pretty_dt(time_left)}"
         )
         await ctx.send(embed=embed)
 

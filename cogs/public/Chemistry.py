@@ -1,10 +1,6 @@
 import discord
 from discord.ext import commands
-
 from modules.chem_functions import *
-
-
-import modules.checks as checks
 
 
 class Chemistry(commands.Cog):
@@ -15,10 +11,9 @@ class Chemistry(commands.Cog):
         self.Hamood = bot.Hamood
 
     @commands.command()
-    @checks.isAllowedCommand()
     @commands.cooldown(5, 10, commands.BucketType.user)
     async def balanceeq(self, ctx, *, content: commands.clean_content):
-        """``balanceeq [equation] ex. FeCl3 + NH4OH -> Fe(OH)3 + NH4Cl`` balances chemical equations"""
+        """<chemical equation>|||Balances chemical equations `ex. FeCl3 + NH4OH -> Fe(OH)3 + NH4Cl`."""
         eq = balance_equation(content)
         if isinstance(eq, tuple):
             reac, prod = eq
@@ -32,11 +27,9 @@ class Chemistry(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    @checks.isAllowedCommand()
     @commands.cooldown(5, 10, commands.BucketType.user)
     async def stoich(self, ctx, *, content: commands.clean_content):
-        """``stoich [equation] ex. FeCl3 + NH4OH -> Fe(OH)3 + NH4Cl`` balances chemical equations and returns extra info"""
-
+        """<chemical equation>|||Balances chemical equations with extra info `ex. FeCl3 + NH4OH -> Fe(OH)3 + NH4Cl`."""
         eq = balance_equation(content)
         if isinstance(eq, tuple):
             reac, prod = eq
@@ -56,7 +49,6 @@ class Chemistry(commands.Cog):
                 for i in elements.keys()
             ]
         )
-
         embed = discord.Embed(
             title=f"Stoichiometry Info:",
             description=f"**{content}**",
@@ -66,19 +58,19 @@ class Chemistry(commands.Cog):
             name="**Balanced Equation:**", value=f"```ini\n{eq}```", inline=False
         )
         embed.add_field(
-            name="**Elements:**", value=f"```ini\n{elements}```",
+            name="**Elements:**",
+            value=f"```ini\n{elements}```",
         )
         embed.add_field(
-            name="**Molar Masses:**", value=f"```ini\n{masses}```",
+            name="**Molar Masses:**",
+            value=f"```ini\n{masses}```",
         )
-
         await ctx.send(embed=embed)
 
     @commands.command()
-    @checks.isAllowedCommand()
     @commands.cooldown(5, 10, commands.BucketType.user)
     async def molar(self, ctx, *, content: commands.clean_content):
-        """``molar [compound]`` returns the molar mass of the compound"""
+        """<chemical compound>|||Returns the molar mass of the compound."""
         elements = get_elements([content])
         if elements is not None:
             values = sum(elements.values())
@@ -95,10 +87,9 @@ class Chemistry(commands.Cog):
             await ctx.send("Invalid Input")
 
     @commands.command()
-    @checks.isAllowedCommand()
     @commands.cooldown(5, 10, commands.BucketType.user)
     async def table(self, ctx, element):
-        """``table [element symbol or number]`` returns a list of periodic information"""
+        """<element symbol|atomic number>|||Returns a list of periodic information on a given element."""
         table = get_element_period(element)
 
         if table is not None:
@@ -107,40 +98,52 @@ class Chemistry(commands.Cog):
                 color=discord.Color.purple(),
             )
             embed.add_field(
-                name="**Atomic Mass**", value=f"```\n{table[3]} u```",
+                name="**Atomic Mass**",
+                value=f"```\n{table[3]} u```",
             )
             embed.add_field(
-                name="**Density**", value=f"```\n{table[14]} g/cm^3```",
+                name="**Density**",
+                value=f"```\n{table[14]} g/cm^3```",
             )
             embed.add_field(
-                name="**Group**", value=f"```\n{table[15]}```",
+                name="**Group**",
+                value=f"```\n{table[15]}```",
             )
             embed.add_field(
-                name="**Standard State**", value=f"```\n{table[11]}```",
+                name="**Standard State**",
+                value=f"```\n{table[11]}```",
             )
             embed.add_field(
-                name="**Melting Point**", value=f"```\n{table[12]} K```",
+                name="**Melting Point**",
+                value=f"```\n{table[12]} K```",
             )
             embed.add_field(
-                name="**Boiling Point**", value=f"```\n{table[13]} K```",
+                name="**Boiling Point**",
+                value=f"```\n{table[13]} K```",
             )
             embed.add_field(
-                name="**Electronegativity**", value=f"```\n{table[6]}```",
+                name="**Electronegativity**",
+                value=f"```\n{table[6]}```",
             )
             embed.add_field(
-                name="**Ionization Energy**", value=f"```\n{table[8]} eV```",
+                name="**Ionization Energy**",
+                value=f"```\n{table[8]} eV```",
             )
             embed.add_field(
-                name="**Electron Configuration**", value=f"```\n{table[5]}```",
+                name="**Electron Configuration**",
+                value=f"```\n{table[5]}```",
             )
             embed.add_field(
-                name="**Oxidation States**", value=f"```\n{table[10]}```",
+                name="**Oxidation States**",
+                value=f"```\n{table[10]}```",
             )
             embed.add_field(
-                name="**Atomic Radius**", value=f"```\n{table[7]} ppm```",
+                name="**Atomic Radius**",
+                value=f"```\n{table[7]} ppm```",
             )
             embed.add_field(
-                name="**Year Discovered**", value=f"```\n{table[16]}```",
+                name="**Year Discovered**",
+                value=f"```\n{table[16]}```",
             )
 
             await ctx.send(embed=embed)
