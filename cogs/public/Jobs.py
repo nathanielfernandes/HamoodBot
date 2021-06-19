@@ -9,7 +9,7 @@ from games.trivia_functions import _Trivia
 
 
 class Jobs(commands.Cog):
-    """Make some money `NEW`"""
+    """Make some money :warning: `Rework In Progress`"""
 
     def __init__(self, bot):
         self.bot = bot

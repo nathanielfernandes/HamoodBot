@@ -12,7 +12,7 @@ from gtts import gTTS
 
 
 class General(commands.Cog):
-    """General Commands"""
+    """Commands that don't really have a category"""
 
     def __init__(self, bot):
         self.bot = bot
@@ -57,7 +57,7 @@ class General(commands.Cog):
             ctx=ctx,
             footer={"text": "rgba: " + ", ".join([str(i) for i in rgba])},
             reply=True,
-            image_url=f"{self.Hamood.URL}/{name}",
+            image_url=f"{self.Hamood.CDN_URL}/{name}",
             color=discord.Color.from_rgb(*rgba[:-1]),
         )
 
@@ -121,8 +121,7 @@ class General(commands.Cog):
     async def christmas(self, ctx):
         """|||Christmas Countdown."""
         embed = discord.Embed(
-            title=f":christmas_tree: Christmas Countdown",
-            color=discord.Color.green(),
+            title=f":christmas_tree: Christmas Countdown", color=discord.Color.green(),
         )
         embed.set_footer(text=f"Santa is comming {ctx.author}.")
 
@@ -299,40 +298,6 @@ class General(commands.Cog):
             await self.Hamood.quick_embed(
                 ctx, description=f"`{code}` is not a valid status-code."
             )
-
-
-class Poll:
-    def __init__(self, content, server, member):
-        self.content = content.upper()
-        self.results = {}
-
-        self.content = self.content.split(", ")
-
-        for item in self.content:
-            self.results[item] = 0
-
-        self.server = server
-        self.message = None
-        self.member = member
-        self.embed = None
-        self.timer = None
-        self.voted = {}
-
-    def update_poll(self):
-        self.total = 0
-        for poll in self.results:
-            self.total += self.results[poll]
-
-        self.total = 0.01 if self.total == 0 else self.total
-
-        self.tempResults = [
-            f"||{'I' * round((self.results[value] / self.total) * 100)}||"
-            for value in self.results
-        ]
-
-        for i in range(len(self.tempResults)):
-            if self.tempResults[i] == "||||":
-                self.tempResults[i] = " "
 
 
 def setup(bot):

@@ -6,7 +6,7 @@ import modules.checks as checks
 
 
 class Items(commands.Cog):
-    """Commands to manage your inventory `NEW`"""
+    """Commands to manage your inventory :warning: `Rework In Progress`"""
 
     def __init__(self, bot):
         self.bot = bot
@@ -120,9 +120,7 @@ class Items(commands.Cog):
                     )
 
                     await self.Hamood.Inventories.incr_item_max(
-                        ctx.guild.id,
-                        ctx.author.id,
-                        n - c,
+                        ctx.guild.id, ctx.author.id, n - c,
                     )
 
                     embed = discord.Embed(

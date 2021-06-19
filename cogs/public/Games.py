@@ -6,28 +6,22 @@ from games.Chess import Chess
 from games.Trivia import Trivia
 from games.Filler import Filler
 from games.ConnectFour import ConnectFour
-import modules.checks as checks
+from utils.Premium import PremiumCooldown
 
 
 class Games(commands.Cog):
-    """Play Games!"""  # all games auto delete if theres no input for 2 minutes
+    """Fun Games you can play with your friends"""
 
     def __init__(self, bot):
         self.bot = bot
         self.Hamood = bot.Hamood
-        self.game_names = ["total", "filler", "connect4", "chess", "trivia"]
-        self.leaderboard_emojis = [
+        self.game_names = ("total", "filler", "connect4", "chess", "trivia")
+        self.leaderboard_emojis = (
             ":first_place:",
             ":second_place:",
             ":third_place:",
-            ":clap:",
-            ":clap:",
-            ":clap:",
-            ":thumbsup:",
-            ":thumbsup:",
-            ":thumbsup:",
-            ":poop:",
-        ]
+            ":medal:",
+        )
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -37,55 +31,47 @@ class Games(commands.Cog):
                 await self.Hamood.active_games[_id].on_reaction(payload)
 
     @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(4, 60, commands.BucketType.channel)
-    @commands.has_permissions(embed_links=True)
-    async def connect4(self, ctx, member: discord.Member = None, wager=0):
-        """``connect4 [@opponent] [wager:optional]`` starts a new connect 4 game"""
+    @commands.bot_has_permissions(embed_links=True)
+    @commands.check(PremiumCooldown(prem=(2, 30, "user"), reg=(4, 60, "channel")))
+    async def connect4(self, ctx, member: discord.Member = None, wager: int = 0):
+        """<@opponent> [wager]|||Starts a game of connect4."""
         wager = int(wager)
-        game = ConnectFour(playerTwo=member, ctx=ctx, bot=self.bot, wager=wager)
+        game = ConnectFour(playerTwo=member, ctx=ctx, wager=wager)
         await game.setup_game()
 
     @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(4, 60, commands.BucketType.channel)
-    @commands.has_permissions(embed_links=True)
-    async def filler(self, ctx, member: discord.Member = None, wager=0):
-        """``filler [@opponent] [wager:optional]`` starts a new filler game"""
+    @commands.check(PremiumCooldown(prem=(2, 30, "user"), reg=(4, 60, "channel")))
+    @commands.bot_has_permissions(embed_links=True)
+    async def filler(self, ctx, member: discord.Member = None, wager: int = 0):
+        """<@opponent> [wager]|||Starts a game of filler."""
         wager = int(wager)
-        game = Filler(playerTwo=member, ctx=ctx, bot=self.bot, wager=wager)
+        game = Filler(playerTwo=member, ctx=ctx, wager=wager)
         await game.setup_game()
 
     @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(4, 60, commands.BucketType.channel)
-    @commands.has_permissions(embed_links=True)
+    @commands.check(PremiumCooldown(prem=(1, 30, "user"), reg=(2, 60, "channel")))
+    @commands.bot_has_permissions(embed_links=True)
     async def trivia(
-        self, ctx, member: discord.Member = None, category="any", wager=0,
+        self, ctx, member: discord.Member = None, category="any", wager: int = 0,
     ):
-        """``trivia [@opponent] [category] [wager:optional]`` play a game of trivia with someone!\n \n**Categories include:** `any`, `general`, `books`, `film`, `music`, `musicals`, `theatres`, `tv`, `video games`, `board games`, `nature`, `computers`, `mathematics`, `mythology`, `sports`, `geography`, `history`, `politics`, `art`, `celebrities`, `animals`, `vehicles`, `comics`, `gadgets`, `anime`, `manga`, `cartoon`, `animation`"""
-        wager = int(wager)
-        game = Trivia(
-            playerTwo=member, ctx=ctx, bot=self.bot, category=category, wager=wager,
-        )
+        """<@opponent> [category] [wager]|||Play a game of trivia with someone!\n \n**Categories include:** `any`, `general`, `books`, `film`, `music`, `musicals`, `theatres`, `tv`, `video games`, `board games`, `nature`, `computers`, `mathematics`, `mythology`, `sports`, `geography`, `history`, `politics`, `art`, `celebrities`, `animals`, `vehicles`, `comics`, `gadgets`, `anime`, `manga`, `cartoon`, `animation`"""
+        game = Trivia(playerTwo=member, ctx=ctx, category=category, wager=wager,)
         await game.setup_game()
 
     @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(4, 60, commands.BucketType.channel)
-    @commands.has_permissions(embed_links=True)
+    @commands.check(PremiumCooldown(prem=(2, 30, "user"), reg=(4, 60, "channel")))
+    @commands.bot_has_permissions(embed_links=True)
     async def chess(self, ctx, member: discord.Member = None, wager=0):
-        """``chess [@opponent] [wager:optional]`` starts a new chess game. Use .move to play `BETA`"""
+        """<@opponent> [wager]|||Starts a game of Chess. Use .move to play."""
         wager = int(wager)
-        game = Chess(playerTwo=member, ctx=ctx, bot=self.bot, wager=wager)
+        game = Chess(playerTwo=member, ctx=ctx, wager=wager)
         await game.setup_game()
 
     @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(4, 10, commands.BucketType.channel)
-    @commands.has_permissions(embed_links=True)
+    @commands.cooldown(4, 10, commands.BucketType.user)
+    @commands.bot_has_permissions(embed_links=True)
     async def move(self, ctx, *, content: commands.clean_content = None):
-        """``move [coords of peice] [coords to move peice to]`` can only be used if you are in a chess match!. """
+        """<coord> <coord>|||Used to move your chess peices, ex. 'e2 e4'. Can only be used if you are in a chess match!."""
         _id = str(ctx.guild.id) + str(ctx.author.id)
         if _id not in self.Hamood.active_games:
             return await ctx.send("`You are not currently in a game!`")
@@ -96,12 +82,10 @@ class Games(commands.Cog):
         if msg is not None:
             await ctx.send(f"`{msg}`")
 
-        await ctx.message.delete()
-
     @commands.command()
     @commands.cooldown(2, 10, commands.BucketType.user)
-    async def leave(self, ctx):
-        """``leave`` leaves any game you are currently in."""
+    async def leavegame(self, ctx):
+        """|||Leaves any game you are currently in."""
         _id = str(ctx.guild.id) + str(ctx.author.id)
         if _id not in self.Hamood.active_games:
             return await ctx.send("`You are not currently in a game!`")
@@ -109,166 +93,149 @@ class Games(commands.Cog):
         await self.Hamood.active_games[_id].delete_game(member=ctx.author)
         await ctx.send(f"{ctx.author.mention}, you have left your game!")
 
-    @commands.command()
-    @checks.isAllowedCommand()
-    @commands.cooldown(4, 10, commands.BucketType.guild)
-    async def stats(self, ctx, member: discord.Member = None, game="total"):
-        """``stats [@player] [stat]`` see a players game stats"""
-        member = ctx.author if member is None else member
-
+    async def grabLeaderboard(self, ctx):
         leaderboard = await self.Hamood.Leaderboards.get(ctx.guild.id)
         if leaderboard is None:
-            return await ctx.send("`No games have been played on this server`")
-
-        if str(member.id) not in leaderboard:
-            return await ctx.send(
-                "`The member has not played any games on this server`"
+            await self.Hamood.quick_embed(
+                ctx, title="No games have been played on this server :("
             )
-
-        if game in self.game_names:
-            game = game
-        elif game in ["connect", "connectfour"]:
-            game = "connect4"
-        elif game == "all":
-            game = "total"
+            return
         else:
-            return await ctx.send(
-                "`Game Name` (`all`, `filler`, `chess`, `connect4`, `trivia`)"
+            return leaderboard
+
+    async def grabMemberStat(self, ctx, member, game):
+        leaderboard = await self.grabLeaderboard(ctx)
+        if leaderboard:
+            if str(member.id) not in leaderboard:
+                await self.Hamood.quick_embed(
+                    ctx, title=f"{member} has not played any games on this server."
+                )
+                return
+            else:
+                if game not in leaderboard[str(member.id)]:
+                    await ctx.send(f"{member} has no stats for that game")
+                    return
+                else:
+                    return leaderboard[str(member.id)][game]
+
+        return
+
+    async def verify_game_name(self, ctx, game):
+        if game in self.game_names:
+            return True
+        else:
+            await self.Hamood.quick_embed(
+                ctx,
+                title="Invalid Game",
+                description="Try: "
+                + ", ".join(f"`{game}`" for game in self.game_names),
             )
+            return False
 
-        if game not in leaderboard[str(member.id)]:
-            return await ctx.send("`The member has no stats for that game`")
+    async def verify_stat_name(self, ctx, stat):
+        valid = ("won", "lost", "skill")
+        if stat in valid:
+            return True
+        else:
+            await self.Hamood.quick_embed(
+                ctx,
+                title="Invalid Stat",
+                description="Try: " + ", ".join(f"`{s}`" for s in valid),
+            )
+            return False
 
-        stat = leaderboard[str(member.id)][game]
-
-        embed = discord.Embed(
-            title=f"{member}'s {game.capitalize()} Stats",
-            description=f"**Wins:** {stat['won']}\n**Losses:** {stat['lost']}\n**SR:** {round((stat['won'] / (stat['lost'] if stat['lost'] != 0 else stat['lost'] + 1)) * (500 * (1-1/(stat['won']+(stat['lost'])))))}",
-            timestamp=ctx.message.created_at,
-            color=member.color,
+    def calc_sr(self, stats):
+        return round(
+            (
+                stats["won"]
+                / (stats["lost"] if stats["lost"] != 0 else stats["lost"] + 1)
+            )
+            * (500 * (1 - 1 / (stats["won"] + (stats["lost"]))))
         )
 
-        embed.set_thumbnail(url=member.avatar_url)
+    def get_stat(self, stats, stat):
+        if stat == "skill":
+            return self.calc_sr(stats)
 
-        await ctx.send(embed=embed)
+        return stats[stat]
+
+    @commands.command(aliases=["stat"])
+    @commands.bot_has_permissions(embed_links=True)
+    @commands.check(PremiumCooldown(prem=(4, 5, "user"), reg=(4, 10, "channel")))
+    async def stats(self, ctx, member: discord.Member = None, game="total"):
+        """[@member] [game]|||See your game stats!"""
+        member = ctx.author if member is None else member
+        game = game.lower()
+
+        gn = await self.verify_game_name(ctx, game)
+        if gn:
+            stat = await self.grabMemberStat(ctx, member, game)
+            await self.Hamood.quick_embed(
+                ctx,
+                author={"name": f"{member}'s {game.capitalize()} Stats"},
+                description=f"**Wins:** {stat['won']}\n**Losses:** {stat['lost']}\n**SR:** {self.calc_sr(stat)}",
+                timestamp=ctx.message.created_at,
+                thumbnail=member.avatar_url,
+            )
 
     @commands.command(aliases=["leaderboards"])
-    @checks.isAllowedCommand()
+    @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(3, 10, commands.BucketType.channel)
     async def leaderboard(self, ctx, game="total", stat="won"):
-        """``leaderboard [game] [stat]`` a leaderboard of the servers players"""
-        leaderboard = await self.Hamood.Leaderboards.get(ctx.guild.id)
+        """[game] [stat]|||View the server games leaderboard."""
+        game, stat = game.lower(), stat.lower()
 
-        if leaderboard is None:
-            return await ctx.send("`No games have been played on this server`")
+        gn = await self.verify_game_name(ctx, game)
+        if not gn:
+            return
 
-        game = game.lower()
-        stat = stat.lower()
+        sn = await self.verify_stat_name(ctx, stat)
+        if not sn:
+            return
 
-        if game in ["won", "wins", "win"]:
-            stat = "won"
-            game = "total"
-        elif game in ["lose", "lost"]:
-            game = "total"
-            stat = "lost"
-        elif game in ["skill", "rank"]:
-            game = "total"
-            stat = "skill"
-        else:
-            if game in self.game_names:
-                game = game
-            elif game in ["connect", "connectfour"]:
-                game = "connect4"
-            elif game == "all":
-                game = "total"
-            else:
-                return await ctx.send(
-                    "`Invalid Leaderboard Game Field` (`all`, `filler`, `chess`, `connect`, `trivia`)"
-                )
-            if stat in ["won", "wins", "win"]:
-                stat = "won"
-            elif stat in ["lose", "lost"]:
-                stat = "lost"
-            elif stat in ["skill", "rank"]:
-                stat = "skill"
-            else:
-                return await ctx.send(
-                    "`Invalid Leaderboard Stat Field` (`won`, `lost`, `skill`)"
-                )
+        leaderboard = await self.grabLeaderboard(ctx)
+        if not leaderboard:
+            return
 
-        server_leaderboard = []
-        if stat != "skill":
-            for member_id in leaderboard:
-                try:
-                    if member_id != "_id" and leaderboard[member_id][game][stat] != 0:
-                        server_leaderboard.append(
-                            [
-                                leaderboard[member_id][game][stat],
-                                str(self.bot.get_user(int(member_id))),
-                            ]
-                        )
-                except KeyError:
-                    pass
-        else:
-            for member_id in leaderboard:
-                try:
-                    if member_id != "_id" and leaderboard[member_id][game]["won"] != 0:
-                        server_leaderboard.append(
-                            [
-                                round(
-                                    (
-                                        leaderboard[member_id][game]["won"]
-                                        / (
-                                            leaderboard[member_id][game]["lost"]
-                                            if leaderboard[member_id][game]["lost"] != 0
-                                            else leaderboard[member_id][game]["lost"]
-                                            + 1
-                                        )
-                                    )
-                                    * (
-                                        500
-                                        * (
-                                            1
-                                            - 1
-                                            / (
-                                                leaderboard[member_id][game]["won"]
-                                                + leaderboard[member_id][game]["lost"]
-                                            )
-                                        )
-                                    )
-                                ),
-                                str(self.bot.get_user(int(member_id))),
-                            ]
-                        )
-                except KeyError:
-                    pass
+        del leaderboard["_id"]
 
-        players = len(server_leaderboard)
-        if players > 10:
-            players = 10
-        elif players == 0:
-            return await ctx.send("`not enough games have been played`")
+        server_leaderboard = {}
+        for m_id, stats in leaderboard.items():
+            try:
+                server_leaderboard[
+                    str(self.bot.get_user(int(m_id)).mention)
+                ] = self.get_stat(stats[game], stat)
+            except Exception as e:
+                print(e)
+                pass
 
-        server_leaderboard = sorted(server_leaderboard)
-        if stat == "lost":
-            server_leaderboard = server_leaderboard[:players]
-        else:
-            server_leaderboard = server_leaderboard[::-1][:players]
+        order = sorted(
+            server_leaderboard.keys(), key=lambda m_id: server_leaderboard[m_id]
+        )[:25]
 
-        for i in range(len(server_leaderboard)):
-            server_leaderboard[
-                i
-            ] = f"{self.leaderboard_emojis[i]} {server_leaderboard[i][0]}{' SR' if stat=='skill' else ''} - {server_leaderboard[i][1]}"
+        if len(order) == 0:
+            await self.Hamood.quick_embed(
+                ctx, title=f"Not enough games have been played :("
+            )
+            return
 
-        desc = "\n".join(server_leaderboard)
+        if stat != "lost":
+            order = order[::-1]
 
-        embed = discord.Embed(
-            title=f"Top {players} in this server ranked by {stat} - {game.capitalize()} Games",
-            description=f"{desc}",
-            color=discord.Color.gold(),
-            timestamp=ctx.message.created_at,
+        desc = "\n".join(
+            f"{self.leaderboard_emojis[min(i, 3)]} **{server_leaderboard[order[i]]}{' SR' if stat=='skill' else ''}** • {order[i]}"
+            for i in range(len(order))
         )
-        await ctx.send(embed=embed)
+
+        await self.Hamood.quick_embed(
+            ctx,
+            title=f"Top {len(order)} in {ctx.guild.name}",
+            url=f"{self.Hamood.URL}/games/{ctx.guild.id}?game={game}&sort={stat}",
+            description=desc,
+            footer={
+                "text": f"Ranking by: {stat.capitalize()}\nGame: {game.capitalize()}"
+            },
+        )
 
 
 def setup(bot):

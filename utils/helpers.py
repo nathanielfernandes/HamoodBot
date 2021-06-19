@@ -122,7 +122,11 @@ async def quick_embed(ctx, reply=True, delete_image=True, **kwargs):
 
     if fields:
         for f in fields:
-            embed.add_field(name=f.get("name", "-"), value=f.get("value", "-"))
+            embed.add_field(
+                name=f.get("name", "-"),
+                value=f.get("value", "-"),
+                inline=f.get("inline", True),
+            )
 
     if reply:
         msg = await ctx.reply(file=file, embed=embed, mention_author=False)
@@ -135,20 +139,45 @@ async def quick_embed(ctx, reply=True, delete_image=True, **kwargs):
     return msg
 
 
-# def quick_embed(
-#     member, title=None, desc=None, image=None, color=None, rainbow=True, requested=True,
-# ):
-#     embed = discord.Embed()
-#     r = lambda: random.randint(0, 255)
+class ReactionController:
+    __slots__ = ("mapping", "buttons")
 
-#     if color is None:
-#         color = member.color if not rainbow else discord.Color.from_rgb(r(), r(), r())
-#     else:
-#         color = discord.Color.from_rgb(color[0], color[1], color[2])
+    def __init__(self):
+        self.mapping = {}
+        self.buttons = []
+        methods = [
+            func
+            for func in dir(self)
+            if callable(getattr(self, func)) and not func.startswith("__")
+        ]
 
-#     embed = discord.Embed(title=title, description=desc, color=color,)
-#     embed.set_image(url=image)
-#     if requested:
-#         embed.set_footer(text=f"Requested by {member}")
+        buttonPositions = {}
+        for name in methods:
+            method = getattr(self, name)
+            if hasattr(method, "__emoji__") and hasattr(method, "__position__"):
+                self.mapping[method.__emoji__] = method
+                buttonPositions[method.__emoji__] = method.__position__
 
-#     return embed.to_dict()
+        self.buttons = [None] * len(buttonPositions)
+        for button, position in buttonPositions.items():
+            if position == -1:
+                self.buttons.append(button)
+            else:
+                self.buttons[position] = button
+
+        self.buttons = [i for i in self.buttons if i is not None]
+
+    def ismapped(self, emoji):
+        return emoji in self.mapping
+
+    async def reaction_event(self, emoji):
+        await self.mapping[emoji]()
+
+    @staticmethod
+    def button(emoji, position=-1):
+        def decorator(func):
+            func.__emoji__ = emoji
+            func.__position__ = position
+            return func
+
+        return decorator

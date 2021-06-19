@@ -5,7 +5,7 @@ import modules.checks as checks
 
 
 class Money(commands.Cog):
-    """Commands to manage your funds `NEW`"""
+    """Commands to manage your funds :warning: `Rework In Progress`"""
 
     def __init__(self, bot):
         self.bot = bot

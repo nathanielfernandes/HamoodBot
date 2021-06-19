@@ -5,9 +5,10 @@ from discord.ext import commands
 import asyncio
 
 from utils.Premium import PremiumCooldown
+from utils.helpers import ReactionController
 
 
-class Reddit(commands.Cog):
+class Subreddits(commands.Cog):
     """Get Reddit Posts"""
 
     def __init__(self, bot):
@@ -79,24 +80,19 @@ class Reddit(commands.Cog):
     def makeembed(self, post, subreddit=None, allowNSFW=False):
         embed = discord.Embed(color=discord.Color.from_rgb(*self.Hamood.pastel_color()))
         if post:
-            if post["nsfw"] and not allowNSFW:
+            if post.is_nsfw and not allowNSFW:
                 embed.title = "`NSFW` posts cannot be sent in a non `NSFW` channel"
             else:
-                embed.description = (
-                    f"{post['text'][:1980]}{'...' if len(post['text']) >= 1980 else ''}"
-                )
-                embed.set_author(
-                    name=post["title"],
-                    url=post["permalink"],
-                )
+                embed.description = post.description
+                embed.set_author(name=post.title, url=post.permalink)
 
-                if post["hasimage"]:
-                    embed.set_image(url=post["url"])
-                elif post["thumbnail"]:
-                    embed.set_image(url=post["thumbnail"])
+                if post.hasimage:
+                    embed.set_image(url=post.image_url)
+                elif post.thumbnail:
+                    embed.set_image(url=post.thumbnail)
 
             embed.set_footer(
-                text=f"r/{post['subreddit']} {'NSFW ' if post['nsfw'] else ''}• ⇧{post['upvotes']:,} upvotes",
+                text=f"r/{post.subreddit} {'⚠️ NSFW ' if post.is_nsfw else ''}• ⇧{post.upvotes:,} upvotes",
                 icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756609606922535057/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png",
             )
         else:
@@ -115,10 +111,10 @@ class Reddit(commands.Cog):
     def clean_sub(self, sub: str):
         return (sub or random.choice(self.allSubs)).replace("+", "")
 
-    @commands.command(aliases=["r", "reddit"])
+    @commands.command(aliases=["r"])
     @commands.check(PremiumCooldown(prem=(3, 5, "user"), reg=(3, 5, "channel")))
     @commands.bot_has_permissions(embed_links=True)
-    async def subreddit(self, ctx, sub=None):
+    async def reddit(self, ctx, sub=None):
         """<subreddit>|||Get a post from a SubReddit."""
         await self.quicksend(ctx, self.clean_sub(sub), False)
 
@@ -135,7 +131,7 @@ class Reddit(commands.Cog):
     @commands.bot_has_permissions(embed_links=True, manage_messages=True)
     async def imagefeed(self, ctx, sub=None):
         feed = RedditFeed(ctx, self.bot)
-        await feed(self.clean_sub(sub))
+        await feed(subreddit=self.clean_sub(sub), image_only=True)
 
     @commands.command()
     @commands.max_concurrency(5, per=commands.BucketType.guild)
@@ -143,7 +139,7 @@ class Reddit(commands.Cog):
     @commands.bot_has_permissions(embed_links=True, manage_messages=True)
     async def feed(self, ctx, sub=None):
         feed = RedditFeed(ctx, self.bot)
-        await feed(self.clean_sub(sub))
+        await feed(subreddit=self.clean_sub(sub))
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -170,22 +166,16 @@ class Reddit(commands.Cog):
                 )
 
 
-class RedditFeed:
+class RedditFeed(ReactionController):
     def __init__(self, ctx, bot):
+        super().__init__()
+
         self.ctx = ctx
         self.bot = bot
 
         self.Hamood = bot.Hamood
         self.author = ctx.author
 
-        self.buttons = {
-            "\u23EA": self.start_page,
-            "\u25C0": self.previous_page,
-            "<a:dice:854422487436623873>": self.random_page,
-            "\u25B6": self.next_page,
-            "\u23E9": self.end_page,
-            "🚪": self.close_page,
-        }
         self.page = 0
         self.prev_page = -1
         self.allowNSFW = ctx.channel.is_nsfw()
@@ -193,33 +183,55 @@ class RedditFeed:
         self.dead = False
 
     def reaction_check(self, reaction, user):
-        return (user == self.author) and (str(reaction.emoji) in self.buttons)
+        return (user == self.author) and self.ismapped(str(reaction.emoji))
 
-    def makeembed(self, post):
+    def makeembed(self, post, subreddit=None, allowNSFW=False):
         embed = discord.Embed(color=discord.Color.from_rgb(*self.Hamood.pastel_color()))
         if post:
-            if post["nsfw"] and not self.allowNSFW:
+            if post.is_nsfw and not allowNSFW:
                 embed.title = "`NSFW` posts cannot be sent in a non `NSFW` channel"
             else:
-                embed.description = (
-                    f"{post['text'][:1980]}{'...' if len(post['text']) >= 1980 else ''}"
-                )
-                embed.set_author(
-                    name=post["title"],
-                    url=post["permalink"],
-                )
-                if post["hasimage"]:
-                    embed.set_image(url=post["url"])
-                elif post["thumbnail"]:
-                    embed.set_image(url=post["thumbnail"])
+                embed.description = post.description
+                embed.set_author(name=post.title, url=post.permalink)
+
+                if post.hasimage:
+                    embed.set_image(url=post.image_url)
+                elif post.thumbnail:
+                    embed.set_image(url=post.thumbnail)
 
             embed.set_footer(
-                text=f"r/{post['subreddit']}{' NSFW ' if post['nsfw'] else ' '}• ⇧{post['upvotes']:,} upvotes • post: {self.page+1}/{self.feed_length}",
+                text=f"r/{post.subreddit} {'⚠️ NSFW ' if post.is_nsfw else ''}• ⇧{post.upvotes:,} upvotes",
                 icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756609606922535057/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png",
             )
         else:
             if subreddit is not None:
-                embed.title = f"Could not find any posts from `r/{self.subreddit}`"
+                embed.title = f"Could not find any posts from `r/{subreddit}`"
+            else:
+                embed.title = "Could not find that post."
+
+        return embed
+
+    def makeembed(self, post, notFound=False):
+        embed = discord.Embed(color=discord.Color.from_rgb(*self.Hamood.pastel_color()))
+        if post:
+            if post.is_nsfw and not self.allowNSFW:
+                embed.title = "`NSFW` posts cannot be sent in a non `NSFW` channel"
+            else:
+                embed.description = f"{post.description[:1980]}{'...' if len(post.description) >= 1980 else ''}"
+                embed.set_author(name=post.title, url=post.permalink)
+
+                if post.hasimage:
+                    embed.set_image(url=post.image_url)
+                elif post.thumbnail:
+                    embed.set_image(url=post.thumbnail)
+
+            embed.set_footer(
+                text=f"r/{post.subreddit} {'NSFW ' if post.is_nsfw else ''}• ⇧{post.upvotes:,} upvotes • post: {self.page+1}/{self.feed_length}",
+                icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756609606922535057/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png",
+            )
+        else:
+            if notFound:
+                embed.title = f"Not enough posts were found from `{self.subreddit}`"
             else:
                 embed.title = "Could not find that post."
 
@@ -243,21 +255,19 @@ class RedditFeed:
 
         if not self.feed:
             return await self.msg.edit(
-                embed=self.makeembed(post=None),
-                mention_author=False,
+                embed=self.makeembed(post=None), mention_author=False,
             )
 
         self.feed_ids = [
             post_id
             for post_id in self.feed.keys()
-            if (self.feed[post_id]["hasimage"] if image_only else True)
+            if (self.feed[post_id].hasimage if image_only else True)
         ]
         self.feed_length = len(self.feed_ids)
 
         if self.feed_length <= 1:
             return await self.msg.edit(
-                embed=self.makeembed(post=None),
-                mention_author=False,
+                embed=self.makeembed(post=None, notFound=True), mention_author=False,
             )
 
         self.Hamood.active_feeds[self.author.id] = self.msg.jump_url
@@ -278,12 +288,17 @@ class RedditFeed:
                 await self.close_page()
                 break
             else:
-                await self.buttons[str(reaction.emoji)]()
-                if self.dead:
+                try:
+                    await self.reaction_event(str(reaction.emoji))
+                    if self.dead:
+                        break
+                    await asyncio.sleep(1.3)
+                    await self.update_msg()
+                except:
+                    await self.close_page()
                     break
-                await asyncio.sleep(1.3)
-                await self.update_msg()
-                await self.msg.remove_reaction(str(reaction.emoji), self.author)
+                else:
+                    await self.msg.remove_reaction(str(reaction.emoji), self.author)
 
     async def update_msg(self):
         if not self.dead and self.page != self.prev_page:
@@ -294,6 +309,7 @@ class RedditFeed:
                 allowNSFW=self.allowNSFW,
             )
 
+    @ReactionController.button("🚪", 5)
     async def close_page(self):
         self.dead = True
         try:
@@ -305,25 +321,30 @@ class RedditFeed:
         except:
             pass
 
+    @ReactionController.button("\u23EA", 0)
     async def start_page(self):
         self.page = 0
 
+    @ReactionController.button("\u25B6", 3)
     async def next_page(self):
         self.page = min(self.page + 1, self.feed_length - 1)
 
+    @ReactionController.button("<a:dice:854422487436623873>", 2)
     async def random_page(self):
         self.page = random.choice(
             [i for i in range(self.feed_length) if i != self.prev_page]
         )
 
+    @ReactionController.button("\u25C0", 1)
     async def previous_page(self):
         self.page = max(self.page - 1, 0)
 
+    @ReactionController.button("\u23E9", 4)
     async def end_page(self):
         self.page = self.feed_length - 1
 
 
 def setup(bot):
-    cog = Reddit(bot)
+    cog = Subreddits(bot)
     bot.add_cog(cog)
     cog.addredditcommands()

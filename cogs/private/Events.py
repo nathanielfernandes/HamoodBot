@@ -11,18 +11,18 @@ class Events(commands.Cog):
         self.Hamood = bot.Hamood
         self.tic = time.perf_counter()
 
-    @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload):
-        if payload.user_id != self.bot.user.id:
-            if str(payload.emoji) == "<:profane:804446468014473246>":
-                if (
-                    payload.member.guild_permissions.manage_messages
-                    or payload.user_id in [485138947115057162, 616148871499874310,]
-                ):
-                    channel = await self.Hamood.bot.fetch_channel(payload.channel_id)
-                    msg = await channel.fetch_message(payload.message_id)
+    # @commands.Cog.listener()
+    # async def on_raw_reaction_add(self, payload):
+    #     if payload.user_id != self.bot.user.id:
+    #         if str(payload.emoji) == "<:profane:804446468014473246>":
+    #             if (
+    #                 payload.member.guild_permissions.manage_messages
+    #                 or payload.user_id in [485138947115057162, 616148871499874310,]
+    #             ):
+    #                 channel = await self.Hamood.bot.fetch_channel(payload.channel_id)
+    #                 msg = await channel.fetch_message(payload.message_id)
 
-                    await msg.delete()
+    #                 await msg.delete()
 
     # @commands.Cog.listener()
     # async def on_member_join(self, member):
@@ -55,7 +55,8 @@ class Events(commands.Cog):
                 )
 
                 embed.add_field(
-                    name="Website", value="[**click here**](https://hamood.app/)",
+                    name="Website",
+                    value="[**click here**](https://hamood.app/)",
                 )
                 embed.add_field(
                     name="For bugs, further help or suggestions",
@@ -68,4 +69,3 @@ class Events(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Events(bot))
-

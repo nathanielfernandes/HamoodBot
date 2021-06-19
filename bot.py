@@ -7,4 +7,3 @@ from Hamood import Hamood
 
 hamood = Hamood()
 hamood.run()
-

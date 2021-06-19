@@ -2,7 +2,7 @@ import os
 import discord
 from discord.ext import commands
 import asyncio
-import re
+import re, json
 
 
 class Dev(commands.Cog):
@@ -14,6 +14,12 @@ class Dev(commands.Cog):
 
     def to_id(self, name):
         return name.replace(" ", "_").lower()
+
+    @commands.command()
+    async def make_premium(self, ctx, _id: int):
+        self.Hamood.PremiumUsers.append(int(_id))
+
+        # self.Hamood.quick_embed(title=course_info["name"], description=course_info["description"], color)
 
     # @commands.command()
     # async def html(self, ctx):
@@ -81,6 +87,13 @@ class Dev(commands.Cog):
     #     embed=embed,
     #     delete_file=False,
     # )
+
+    @commands.command()
+    async def cliffhanger(self, ctx):
+        """``cliffhanger`` the day hamood died"""
+        await ctx.send(
+            "https://cdn.discordapp.com/attachments/767568685568753664/804052279195467796/unknown.png"
+        )
 
     @commands.command()
     @commands.is_owner()
@@ -204,7 +217,7 @@ class Dev(commands.Cog):
                 else:
                     time = 3600 * hours
                     await ctx.send(
-                        f"**{member}** has been put in time out for {self.Hamood.pretty_time_delta(time)}"
+                        f"**{member}** has been put in time out for {self.Hamood.pretty_dt(time)}"
                     )
                     await asyncio.sleep(time)
                     self.Hamood.timeout_list.remove(member.id)

@@ -1,143 +1,121 @@
-import random
-import json
+import random, json, datetime
 import discord
 from discord.ext import commands
 
 
-import modules.checks as checks
-
-
 class User(commands.Cog):
-    """Get a User's Information"""
+    """Get Users Information"""
 
     def __init__(self, bot):
         self.bot = bot
         self.Hamood = bot.Hamood
 
     @commands.command()
-    @checks.isAllowedCommand()
+    @commands.bot_has_permissions(embed_links=True)
     async def joined(self, ctx, member: discord.Member = None):
-        """``joined [@user]`` says when a member joined the server"""
+        """[@mention]|||Findout when a member joined the server."""
         member = ctx.author if not member else member
-        await ctx.send(f"{member.name} joined in {member.joined_at}")
-
-    @commands.command(aliases=["pfp"])
-    @checks.isAllowedCommand()
-    @commands.has_permissions(embed_links=True)
-    async def avatar(self, ctx, member: discord.Member = None):
-        """``avatar [@user]`` sends the profile picture of a tagged user"""
-        member = ctx.author if not member else member
-
-        embed = discord.Embed(colour=member.color, timestamp=ctx.message.created_at)
-        embed.set_author(name=f"Avatar - {member}")
-
-        embed.set_image(url=member.avatar_url)
-
-        embed.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
+        await self.Hamood.quick_embed(
+            ctx,
+            author={"name": str(member), "icon_url": member.avatar_url},
+            description=f'Joined **{ctx.guild.name}** on:```yaml\n{member.joined_at.strftime("%a, %d %B %Y, %I:%M %p UTC")}```\n**Total time here**:\n{self.Hamood.pretty_dt((datetime.datetime.now() - member.joined_at).total_seconds())}',
         )
-        await ctx.send(embed=embed)
+
+    @commands.command(aliases=["avatar"])
+    @commands.bot_has_permissions(embed_links=True)
+    async def pfp(self, ctx, member: discord.Member = None):
+        """[@mention]|||Get the profile picture of user."""
+        member = ctx.author if not member else member
+        await self.Hamood.quick_embed(
+            ctx,
+            author={"name": f"{member}'s avatar", "url": member.avatar_url},
+            image_url=member.avatar_url,
+        )
 
     @commands.command()
-    @checks.isAllowedCommand()
-    @commands.has_permissions(embed_links=True)
+    @commands.bot_has_permissions(embed_links=True)
     async def roles(self, ctx, member: discord.Member = None):
-        """``roles [@user]`` lists the roles of a tagged user"""
+        """[@mention]|||Lists the roles of a user."""
         member = ctx.author if not member else member
-        roles = [role for role in member.roles]
-
-        embed = discord.Embed(colour=member.color, timestamp=ctx.message.created_at)
-        embed.set_author(name=f"User Roles - {member}")
-        embed.set_thumbnail(url=member.avatar_url)
-        embed.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
+        roles = [role.mention for role in member.roles]
+        await self.Hamood.quick_embed(
+            ctx,
+            author={"name": f"{member}'s roles"},
+            thumbnail=member.avatar_url,
+            fields=[
+                {
+                    "name": "Top Role",
+                    "value": member.top_role.mention,
+                    "inline": "False",
+                },
+                {"name": f"All Roles ({len(roles)})", "value": " ".join(roles)},
+            ],
         )
-        embed.add_field(
-            name=f"Roles ({len(roles)})",
-            value=" ".join([role.mention for role in roles]),
+
+    @commands.command(aliases=["perms"])
+    @commands.bot_has_permissions(embed_links=True)
+    async def permissions(self, ctx, member: discord.Member = None):
+        """[@mention]|||Get a list of a users permissions in the server."""
+        member = ctx.author if not member else member
+        perms = "\n".join(
+            f"• {str(perm[0]).replace('_', ' ').capitalize()}"
+            for perm in member.guild_permissions
+            if perm[1]
         )
-        embed.add_field(name="Top role:", value=member.top_role.mention)
 
-        await ctx.send(embed=embed)
+        await self.Hamood.quick_embed(
+            ctx,
+            author={"name": f"{member}'s permissions", "icon_url": member.avatar_url},
+            description=perms,
+        )
 
-    @commands.command()
-    @checks.isAllowedCommand()
-    @commands.has_permissions(embed_links=True)
+    @commands.command(aliases=["ui"])
+    @commands.bot_has_permissions(embed_links=True)
     async def userinfo(self, ctx, member: discord.Member = None):
-        """``userinfo [@user]`` sends allot of info on a user"""
-
+        """[@mention]|||Findout allot of information on a user."""
         member = ctx.author if not member else member
-        roles = [role for role in member.roles]
+        roles = [role.mention for role in member.roles]
+        perms = [
+            f"`{str(perm[0]).replace('_', ' ').capitalize()}`"
+            for perm in member.guild_permissions
+            if perm[1]
+        ]
+        if "`Administrator`" in perms:
+            perms = ["`Adminstrator`"]
 
-        embed = discord.Embed(colour=member.color, timestamp=ctx.message.created_at)
-        embed.set_author(name=f"User Info - {member}")
-        embed.set_thumbnail(url=member.avatar_url)
-        embed.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
+        await self.Hamood.quick_embed(
+            ctx,
+            author={"name": f"User Info - {member}"},
+            description=f"**Nick Name:** {member.display_name}\n**ID:** {member.id}\n**Is Bot:** {member.bot}\n**Vibe:** {random.choice(self.Hamood.RANDOMWORDS)}\u200b",
+            thumbnail=member.avatar_url,
+            fields=[
+                {
+                    "name": "Top Role",
+                    "value": member.top_role.mention,
+                    "inline": False,
+                },
+                {
+                    "name": f"All Roles ({len(roles)})",
+                    "value": " ".join(roles),
+                    "inline": False,
+                },
+                {
+                    "name": "Joined Discord",
+                    "value": f'{member.created_at.strftime("%a, %d %B %Y, %I:%M %p UTC")}\n*{self.Hamood.pretty_dt((datetime.datetime.now() - member.created_at).total_seconds())} ago*',
+                    "inline": False,
+                },
+                {
+                    "name": "Joined Server",
+                    "value": f'{member.joined_at.strftime("%a, %d %B %Y, %I:%M %p UTC")}\n*{self.Hamood.pretty_dt((datetime.datetime.now() - member.joined_at).total_seconds())} ago*',
+                    "inline": False,
+                },
+                {
+                    "name": f"Permissions ({len(perms)})",
+                    "value": ", ".join(perms),
+                    "inline": False,
+                },
+            ],
         )
-
-        embed.add_field(name="ID:", value=member.id)
-        embed.add_field(name="Nick name:", value=member.display_name)
-
-        embed.add_field(
-            name="Created at:",
-            value=member.created_at.strftime("%a, %d %B %Y, %I:%M %p UTC"),
-        )
-        embed.add_field(
-            name="Joined at:",
-            value=member.joined_at.strftime("%a, %d %B %Y, %I:%M %p UTC"),
-        )
-
-        embed.add_field(
-            name=f"Roles ({len(roles)})",
-            value=" ".join([role.mention for role in roles]),
-        )
-        embed.add_field(name="Top role:", value=member.top_role.mention)
-
-        embed.add_field(name="Bot:", value=member.bot)
-        embed.add_field(name="Vibe:", value=random.choice(self.Hamood.RANDOMWORDS))
-
-        await ctx.send(embed=embed)
-
-    # @commands.command(aliases=["listen"])
-    # @checks.isAllowedCommand()
-    # @commands.has_permissions(embed_links=True)
-    # async def listening(self, ctx, member: discord.Member = None):
-    #     """``listening [@user]`` returns a users spotify listening activity"""
-    #     member = ctx.author if not member else member
-    #     done = False
-    #     for activity in member.activities:
-    #         if isinstance(activity, discord.Spotify):
-    #             done = True
-
-    #             if "(" in activity.title:
-    #                 title = activity.title.find("(")
-    #                 title = activity.title[:title]
-    #             else:
-    #                 title = activity.title
-
-    #             song = f"**[{activity.title}](https://open.spotify.com/search/{title.replace(' ', '_')})**"
-    #             artist = f"**Artists:** {', '.join(activity.artists)}"
-    #             album = f"**Album:** {activity.album}"
-
-    #             embed = discord.Embed(
-    #                 title=f"{member} is listening to:",
-    #                 description=f"{song}\n{artist}\n{album}",
-    #                 colour=discord.Color.green(),
-    #                 timestamp=ctx.message.created_at,
-    #             )
-
-    #             embed.set_thumbnail(url=activity.album_cover_url)
-    #             embed.set_author(
-    #                 name="Spotify",
-    #                 icon_url="https://cdn.discordapp.com/attachments/732309032240545883/756607817611346051/1200px-Spotify_logo_without_text.svg.jpg",
-    #             )
-    #             embed.set_footer(text=f"Requested by {ctx.author}")
-
-    #             await ctx.send(embed=embed)
-
-    #     if not done:
-    #         await ctx.send(f"{member.mention} is not listening to spotify!")
 
 
 def setup(bot):

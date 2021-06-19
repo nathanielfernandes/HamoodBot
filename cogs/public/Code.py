@@ -7,7 +7,7 @@ import json
 
 
 class Code(commands.Cog):
-    """Test your big brain code `NEW`"""
+    """Test your big brain code"""
 
     def __init__(self, bot):
         self.bot = bot

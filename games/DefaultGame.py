@@ -8,7 +8,6 @@ class DefaultGame:
         game_name: str,
         thumbnail: str,
         ctx,
-        bot,
         playerTwo=None,
         reactions: dict = {},
         solo: bool = False,
@@ -22,8 +21,8 @@ class DefaultGame:
         self.thumbnail = thumbnail
 
         self.ctx = ctx
-        self.bot = bot
-        self.Hamood = bot.Hamood
+        self.bot = ctx.bot
+        self.Hamood = self.bot.Hamood
         self.games = self.Hamood.active_games
 
         self.prefix = self.Hamood.find_prefix(ctx.guild.id)
@@ -60,9 +59,9 @@ class DefaultGame:
 
     async def load_game(self):
         """Called automatically once a player accepts and invite or a solo game is started.\n
-           Adds all the reactions required for the game and deducts the wager from the joined
-           player if the game is not solo.\n
-           Calls the self.game_start() method which needs to be implemented by the game.
+        Adds all the reactions required for the game and deducts the wager from the joined
+        player if the game is not solo.\n
+        Calls the self.game_start() method which needs to be implemented by the game.
         """
         half = str(self.playerOne)
         if not self.solo:
@@ -101,7 +100,7 @@ class DefaultGame:
 
     async def create_invite(self):
         """Called automatically if the game is not a solo game.\n
-           Creates an invite message for another player to accept.
+        Creates an invite message for another player to accept.
         """
         wager_msg = f"\n**Wager:** {self.cash(self.wager)}" if self.wager > 0 else ""
         embed = discord.Embed(
@@ -117,7 +116,7 @@ class DefaultGame:
 
     async def setup_game(self):
         """Sets up the game, checking for duplicate games and insufficient funds.\n
-           Creates an invite if the game is not solo, otherwise just loads the game.
+        Creates an invite if the game is not solo, otherwise just loads the game.
         """
 
         if self.game_id_1 in self.games:
@@ -177,7 +176,7 @@ class DefaultGame:
 
     async def update_leaderboards(self, winner=None, loser=None, tie=False):
         """Updates the leaderboard database given a tie, winner or a loser or both.\n
-           Handles the win/loss counter as well has wager winnings/losings.
+        Handles the win/loss counter as well has wager winnings/losings.
         """
         if tie:
             if self.wager > 0:
@@ -214,7 +213,7 @@ class DefaultGame:
 
     async def clear_game(self):
         """Removes a game from the existsing games dict, deleting player keys.\n
-           Clears all the reactions from a game too.
+        Clears all the reactions from a game too.
         """
         try:
             del self.games[self.game_id_1]
@@ -232,7 +231,7 @@ class DefaultGame:
 
     async def end_game(self, winner=None, loser=None, tie=False):
         """Ends the game without removing the existing messsage.\n
-           Should be used when a win, loss, or tie occurs.
+        Should be used when a win, loss, or tie occurs.
         """
         await self.clear_game()
         await self.update_leaderboards(winner, loser, tie)
@@ -240,8 +239,8 @@ class DefaultGame:
 
     async def delete_game(self, member=None, custom_msg=""):
         """Called automatically when a user decides to leave a game.\n
-           Should only be used when there has been a player forfiet.\n
-           Use self.end_game() if the game just needs to be ended.
+        Should only be used when there has been a player forfiet.\n
+        Use self.end_game() if the game just needs to be ended.
         """
         await self.clear_game()
         if not self.solo:
@@ -308,7 +307,7 @@ class DefaultGame:
 
     async def reset_timer(self):
         """Resets the 5 minute game timer.\n
-           Called automatically, but can be called if necessary.
+        Called automatically, but can be called if necessary.
         """
         try:
             self.timer.cancel()
@@ -318,15 +317,15 @@ class DefaultGame:
 
     async def game_timer(self):
         """Automatic game deletetion timer.
-           Called automatically and should not be used.
+        Called automatically and should not be used.
         """
         await asyncio.sleep(120)
         await self.delete_game()
 
     async def on_reaction(self, payload):
         """Called on every reaction event to the game.\n
-           Calls self.update_game with the 'move' the player moved.\n
-           Handles leaving games automatically.
+        Calls self.update_game with the 'move' the player moved.\n
+        Handles leaving games automatically.
         """
         if payload.message_id == self.message.id and (
             payload.member == self.playerOne
@@ -353,7 +352,7 @@ class DefaultGame:
 
     async def add_reactions(self):
         """Adds all the reactions in self.reactions to the game message.\n
-           Called automatically.
+        Called automatically.
         """
         if self.reactions is not None:
             for emoji in self.reactions:
@@ -362,16 +361,15 @@ class DefaultGame:
         return True
 
     async def update_message(self, embed=None, content=None):
-        """Resets the game timer and edits the game message with the embed and content specified.
-        """
+        """Resets the game timer and edits the game message with the embed and content specified."""
         if not self.gameover:
             await self.reset_timer()
         await self.message.edit(embed=embed, content=content)
 
     def swap_turns(self):
         """Swaps self.current_turn and self.off_turn.\n
-           Must be used if the game is turn based.\n
-           Should only be used when the game is not solo.
+        Must be used if the game is turn based.\n
+        Should only be used when the game is not solo.
         """
         self.current_turn = (
             self.playerOne if self.current_turn == self.playerTwo else self.playerTwo
@@ -383,15 +381,15 @@ class DefaultGame:
     # TODO
     async def update_game(self, member, move, emoji):
         """interface method\n
-           Called on a player reaction.\n
-           Needs to be implemented by the game.
+        Called on a player reaction.\n
+        Needs to be implemented by the game.
         """
         pass
 
     # TODO
     async def game_start(self):
         """interface method\n
-           Called on a player reaction.\n
-           Needs to be implemented by the game.
+        Called on a player reaction.\n
+        Needs to be implemented by the game.
         """
         pass

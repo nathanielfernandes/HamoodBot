@@ -24,9 +24,7 @@ class ErrorHandling(commands.Cog):
             description=msg,
             colour=discord.Color.red(),
         )
-        embed.set_author(
-            name="Command Failed",
-        )
+        embed.set_author(name="Command Failed",)
         embed.set_footer(
             text=f"{ctx.author} • supporters get reduced cooldowns ;)",
             icon_url=ctx.author.avatar_url,
@@ -75,6 +73,13 @@ class ErrorHandling(commands.Cog):
                 perms = "\n".join(
                     f"• {str(p).replace('_', ' ').title()}" for p in error.missing_perms
                 )
+                if "Embed Links" in perms:
+                    return await ctx.send(
+                        f"**I am missing the** `Embed Links` **permission!**"
+                    )
+                elif "Send Messages" in perms:
+                    return
+
                 await self.error_embed(
                     ctx,
                     "I don't have the permission to do that",
@@ -125,9 +130,7 @@ class ErrorHandling(commands.Cog):
         elif isinstance(error, commands.CommandInvokeError):
             if isinstance(error.__cause__, discord.Forbidden):
                 await self.error_embed(
-                    ctx,
-                    "I don't have the permission to do that",
-                    "",
+                    ctx, "I don't have the permission to do that", "",
                 )
 
             errorMsg = f"{self.Hamood.cstr('Uncaught Error:', ANSI.FAIL)}\nCommand: {ctx.command.name}\nError: {type(error).__name__}:\n\t{error}"

@@ -26,6 +26,7 @@ def load_constants(self):
     self.RANDOMWORDS = requests.get(
         "https://raw.githubusercontent.com/sindresorhus/mnemonic-words/master/words.json"
     ).json()
+    self.CDN_URL = "https://dev.hamood.app/"
     self.URL = "https://dev.hamood.app/"
 
 

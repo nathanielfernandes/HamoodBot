@@ -44,8 +44,7 @@ class Fonts(commands.Cog):
         for name in self.FontCommands:
 
             @commands.command(
-                name=name,
-                help=f"<text>|||See your message in a '{name}` font.",
+                name=name, help=f"<text>|||See your message in a '{name}` font.",
             )
             @commands.check(PremiumCooldown(prem=(1, 2.5, "user"), reg=(1, 5, "user")))
             async def cmd(self, ctx, *, content: commands.clean_content):
@@ -77,13 +76,11 @@ class Fonts(commands.Cog):
         await self.Hamood.run_async(
             makeText, *(text, font, 200, color, f"{self.save_location}/{name}")
         )
-        url = f"{self.Hamood.URL}/{name}"
+        url = f"{self.Hamood.CDN_URL}/{name}"
 
         if send:
             await self.Hamood.quick_embed(
-                ctx=ctx,
-                image_url=url,
-                color=discord.Color.from_rgb(*color),
+                ctx=ctx, image_url=url, color=discord.Color.from_rgb(*color),
             )
         else:
             return url, color

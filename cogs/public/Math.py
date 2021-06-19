@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 
 from modules.math_functions import *
-import modules.checks as checks
 
 
 class Math(commands.Cog):
@@ -14,7 +13,6 @@ class Math(commands.Cog):
         self.Hamood = bot.Hamood
 
     @commands.command()
-    @checks.isAllowedCommand()
     async def base(self, ctx, *, content: commands.clean_content):
         """``base [number)base], [next base]`` converts numbers between bases"""
         try:
@@ -34,7 +32,6 @@ class Math(commands.Cog):
     # await ctx.send(f"**Base {base1}:** `{number}`\n**Base {base2}:** `{answer}`\n")
 
     @commands.command(aliases=["calculate"])
-    @checks.isAllowedCommand()
     async def calc(self, ctx, *, content: commands.clean_content):
         """``calc [equation]`` calculates the answer to the given equation (assumes natural log unless specified [log(base, number)]"""
         content = "".join([x for x in content])
@@ -54,7 +51,6 @@ class Math(commands.Cog):
     #  await ctx.send(f"**Answer: **`{out}`")
 
     @commands.command(aliases=["aliases"])
-    @checks.isAllowedCommand()
     @commands.cooldown(4, 10, commands.BucketType.user)
     async def derivative(self, ctx, number, *, content: commands.clean_content):
         """``derivative [nth derivative] [equation]`` solves for the nth dervative of an equation"""
@@ -69,7 +65,6 @@ class Math(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    @checks.isAllowedCommand()
     @commands.cooldown(4, 10, commands.BucketType.user)
     async def solve(self, ctx, *, content: commands.clean_content):
         """``solve [equation]`` solves for variables in most math equations"""
@@ -83,7 +78,6 @@ class Math(commands.Cog):
     #     await ctx.send(f"`{solve_eq(content)}`")
 
     @commands.command()
-    @checks.isAllowedCommand()
     @commands.cooldown(2, 10, commands.BucketType.channel)
     async def graph(self, ctx, *, content: commands.clean_content):
         """``graph [equation], [next equation]`` graphs given equation"""
@@ -102,7 +96,6 @@ class Math(commands.Cog):
             await ctx.send("`Could not graph equation`")
 
     @commands.command(aliases=["ltx", "fool"])
-    @checks.isAllowedCommand()
     @commands.cooldown(2, 10, commands.BucketType.channel)
     async def latex(self, ctx, *, content: commands.clean_content):
         """``latex [latex formula]`` converts latex to regular text"""
@@ -121,4 +114,3 @@ class Math(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Math(bot))
-

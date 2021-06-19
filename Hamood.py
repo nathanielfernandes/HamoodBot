@@ -84,7 +84,7 @@ class Hamood:
         )
 
         self._cd = commands.CooldownMapping.from_cooldown(
-            3, 5, commands.BucketType.user
+            3, 3.5, commands.BucketType.user
         )
 
     def run(self):

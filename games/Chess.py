@@ -5,11 +5,13 @@ from games.DefaultGame import DefaultGame
 
 class Chess(DefaultGame):
     def __init__(
-        self, ctx, bot, playerTwo=None, wager: int = 0,
+        self,
+        ctx,
+        playerTwo=None,
+        wager: int = 0,
     ):
         super().__init__(
             ctx=ctx,
-            bot=bot,
             playerTwo=playerTwo,
             wager=wager,
             game_name="chess",
@@ -197,4 +199,3 @@ class Chess(DefaultGame):
         return (
             "\n".join(final) + "\n<:hamood:713523447141236867>" + "".join(self.legendY)
         )
-

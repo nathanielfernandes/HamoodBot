@@ -52,7 +52,7 @@ class StrMemberEmoji(commands.Converter):
 
 
 class MemeGen(commands.Cog):
-    """Generate your own memes!"""
+    """Generate your own memes! :tools: `Beta`"""
 
     def __init__(self, bot):
         self.bot = bot
@@ -115,7 +115,7 @@ class MemeGen(commands.Cog):
         await self.Hamood.quick_embed(
             ctx=ctx,
             reply=True,
-            image_url=f"{self.Hamood.URL}/{save_name}",
+            image_url=f"{self.Hamood.CDN_URL}/{save_name}",
             footer={
                 "text": f"{ctx.command.name.title()} | Took {toc-tic:0.2f}s | Requested by {ctx.author}"
             },

@@ -30,25 +30,22 @@ class About(commands.Cog):
             name="Server Presence",
             value=f"Hamood is current in **{len(self.bot.guilds)}** servers\n[Invite Him](https://bit.ly/2XD2YPN)",
         )
-        embed.add_field(
-            name="Source Code",
-            value="[Click Here](https://github.com/nathanielfernandes/HamoodBot)",
-        )
+        # embed.add_field(
+        #     name="Source Code",
+        #     value="[Click Here](https://github.com/nathanielfernandes/HamoodBot)",
+        # )
         embed.add_field(
             name="Command Listing",
             value="Type `.help` or \n[Click Here](https://nathanielfernandes.github.io/HamoodBot/#commands)",
         )
         embed.add_field(
-            name="Website",
-            value="[**Click Here**](https://hamood.app/)",
+            name="Website", value="[**Click Here**](https://hamood.app/)",
         )
         embed.add_field(
             name="For bugs, further help or suggestions",
             value="You can message me on discord\n`nathan#3724`",
         )
-        embed.set_thumbnail(
-            url=self.bot.user.avatar_url,
-        )
+        embed.set_thumbnail(url=self.bot.user.avatar_url,)
         embed.set_footer(
             text="created by Nathaniel Fernandes",
             icon_url="https://cdn.discordapp.com/attachments/699770186227646465/741388960227655790/k70up0p0ozz21.png",
@@ -56,6 +53,7 @@ class About(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def info(self, ctx):
         """|||Information on Hamood."""
         uptime = self.Hamood.pretty_dt(
@@ -63,15 +61,20 @@ class About(commands.Cog):
         )
         ram_used = f"{round(psutil.virtual_memory().used / (1024.0 ** 3), 2)}GB / {round(psutil.virtual_memory().total / (1024.0 ** 3), 2)}GB"
         total = sum(len(cache) for cache in self.Hamood.Reddit.SubredditCache.values())
+
         percent = total / 10000
         bar = f"{'█'*round(percent*20)}"
         bar += "░" * (20 - len(bar))
+        tic = time.perf_counter()
+        await self.Hamood.MONGO.admin.command("ping")
+        toc = time.perf_counter()
         embed = discord.Embed(
             description=f"```yaml\n{HAMOOD}```"
             + f"```yaml\n• Uptime: {uptime}\n• Commands Invoked Since Up: {self.Hamood.command_invocations:,}```"
             + f"```yaml\n• Servers: {len(self.bot.guilds):,}\n• Channels: {sum([len(g.channels) for g in self.bot.guilds]):,}\n• Users: {sum([len(g.members) for g in self.bot.guilds]):,}\n• Shards: {self.bot.shard_count}```"
-            + f"```yaml\n• Platform: {platform.system()}\n• Memory: {ram_used}\n• Latency: {round(self.bot.latency * 1000)}ms```"
+            + f"```yaml\n• Discord Latency: {round(self.bot.latency * 1000):,}ms\n• MongoDB Latency: {round((toc-tic)*1000):,}ms```"
             + f"```yaml\n• Cached Reddit Posts: {total}\n• Capacity: {bar} {percent*100:0.1f}%```"
+            + f"```yaml\n• Platform: {platform.system()}\n• Memory: {ram_used}```"
             + f"```yaml\n• Commands: {len(self.bot.commands)}\n• Created On: Tuesday, April 14th, 2020\n• Creator: nathan#3724\n• Library: discord.py v1.7.2```",
             color=discord.Color.teal(),
         )
@@ -106,12 +109,11 @@ class About(commands.Cog):
 
         embed = discord.Embed(color=discord.Color.blurple(), description="", title="")
         embed.set_author(
-            name="Hamood Help",
-            url="https://hamood.app/",
+            name="Hamood Help", url="https://hamood.app/",
         )
-        embed.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
-        )
+        # embed.set_footer(
+        #     text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
+        # )
 
         if query is None:
             embed.description += (
@@ -179,7 +181,7 @@ class About(commands.Cog):
             value="[`Command List`](https://hamood.app/commands) [`Website`](https://hamood.app/) [`Support Server`](https://discord.gg/MeAz4dpVzK)",
             inline=False,
         )
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
 
     # @commands.command()
     # @checks.isAllowedCommand()
