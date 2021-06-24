@@ -113,7 +113,7 @@ def add_regexes(self):
         r"reddit\.com\/(?:r|u|user)\/\S{2,}\/comments\/([0-9a-z]+)"
     )
     self.re_ValidImageUrl = re.compile(
-        r"https?:(?:(?!tenor|giphy|imgur)[/|.|\w|\s|-])*\.(?:jpg|gif|png)"
+        r"(https?:(?:(?!tenor|giphy|imgur)[/|.|\w|\s|-])*\.(?:jpg|gif|png))"
     )
 
     self.re_member = re.compile(r"(<@!?\d+>)")

@@ -118,26 +118,22 @@ class MemeGen(commands.Cog):
             or any(url in str(m.content) for url in self.imagetypes)
         )
 
+        url = ""
         if msg:
             check = True
             if len(msg.attachments) > 0:
                 if msg.attachments[0].size <= 4194304:
                     url = msg.attachments[0].url
                     check = False
-                else:
-                    return
-            elif len(msg.embeds) > 0:
+            if len(msg.embeds) > 0:
                 im = msg.embeds[0].to_dict().get("image")
-                if im is None:
-                    return
-                else:
+                if im is not None:
                     url = im["url"]
-            else:
-                urls = self.Hamood.re_ValidImageUrl.findall(m.content)
+
+            if url == "":
+                urls = self.Hamood.re_ValidImageUrl.findall(msg.content)
                 if urls:
                     url = urls[0]
-                else:
-                    return None
 
             if check:
                 if not url.startswith(self.Hamood.CDN_URL):
@@ -153,15 +149,21 @@ class MemeGen(commands.Cog):
                     return Image.open(imagebytes)
                 except:
                     await self.Hamood.quick_embed(
-                        ctx, title="Could not download image :("
+                        ctx,
+                        title="Could not download image :(",
+                        description=f"[jump1]({msg.jump_url})",
                     )
                     return
             else:
-                await self.Hamood.quick_embed(ctx, title="Image too large :(")
+                await self.Hamood.quick_embed(
+                    ctx,
+                    title="Image too large or Unsafe :(",
+                    description=f"[jump!]({msg.jump_url})",
+                )
                 return
-        else:
-            await self.Hamood.quick_embed(ctx, title="Could not find a recent image :(")
-            return
+
+        await self.Hamood.quick_embed(ctx, title="Could not find a recent image :(")
+        return
 
     async def gen_kwargs(self, content: str) -> dict:
         kwargs = {}
@@ -284,7 +286,7 @@ class MemeGen(commands.Cog):
 
         im = await self.search_for_image(ctx, 50)
         av = await self.fetch_av(ctx.author)
-        if av:
+        if im:
             img, dt = await self.Hamood.run_async_t(
                 self.YOUTUBE.generate,
                 video=im,

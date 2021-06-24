@@ -3,7 +3,7 @@ from io import BytesIO
 
 
 class HTTP:
-    def __init__(self, timeout=5):
+    def __init__(self, timeout=10):
         self.timeout = aiohttp.ClientTimeout(total=timeout)
         self.session = aiohttp.ClientSession(timeout=self.timeout)
         self.image_types = ["image/png", "image/pjpeg", "image/jpeg", "image/x-icon"]
@@ -21,7 +21,19 @@ class HTTP:
         except:
             return False
 
-    async def is_safe(self, url: str, max_bytes: int = 4194304):
+    async def is_media(self, url: str):
+        try:
+            async with self.session.head(url) as resp:
+                if resp.status == 200:
+                    mime = resp.headers.get("Content-type", "").lower()
+                    if any([mime == x for x in self.media_types]):
+                        return True
+                    else:
+                        return False
+        except:
+            return False
+
+    async def is_safe(self, url: str, max_bytes: int = 8388608):
         try:
             async with self.session.head(url) as resp:
                 if resp.status == 200:
@@ -60,7 +72,6 @@ class HTTP:
 
                 return BytesIO(data)
         except:
-            print("asdasd")
             return
 
     async def get_json(self, url: str):
