@@ -247,7 +247,7 @@ class RedditFeed(ReactionController):
 
         self.msg = await self.Hamood.quick_embed(
             self.ctx,
-            title=f"Loading Feed from `r/{subreddit}` <a:load:822030219924733992>",
+            title=f"Loading Feed from `r/{subreddit}` <a:loading:856302946274246697>",
         )
 
         self.feed = await self.Hamood.Reddit.fetch_feed(subreddit)
@@ -255,7 +255,8 @@ class RedditFeed(ReactionController):
 
         if not self.feed:
             return await self.msg.edit(
-                embed=self.makeembed(post=None), mention_author=False,
+                embed=self.makeembed(post=None),
+                mention_author=False,
             )
 
         self.feed_ids = [
@@ -267,7 +268,8 @@ class RedditFeed(ReactionController):
 
         if self.feed_length <= 1:
             return await self.msg.edit(
-                embed=self.makeembed(post=None, notFound=True), mention_author=False,
+                embed=self.makeembed(post=None, notFound=True),
+                mention_author=False,
             )
 
         self.Hamood.active_feeds[self.author.id] = self.msg.jump_url

@@ -20,20 +20,20 @@ class ErrorHandling(commands.Cog):
 
     async def error_embed(self, ctx, title, msg):
         embed = discord.Embed(
-            title=f"`{ctx.command.name.title()}` | {title}",
+            # title=f"`{ctx.command.name.title()}` | {title}",
             description=msg,
             colour=discord.Color.red(),
         )
-        embed.set_author(name="Command Failed",)
-        embed.set_footer(
-            text=f"{ctx.author} • supporters get reduced cooldowns ;)",
-            icon_url=ctx.author.avatar_url,
-        )
+        embed.set_author(name=f"{ctx.command.name.title()} | {title}")
+        # embed.set_footer(
+        #     text=f"{ctx.author}",
+        #     icon_url=ctx.author.avatar_url,
+        # )
         embed.set_thumbnail(
             url="https://cdn.discordapp.com/attachments/749779300181606411/799902760837316628/tumblr_01a3fd42036dbeac4d74baff3a2497ff_ecd049b3_500.gif"
         )
         try:
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed, mention_author=False)
         except Exception:
             print("Could not send error!")
 
@@ -45,6 +45,12 @@ class ErrorHandling(commands.Cog):
             return
 
         if isinstance(error, commands.CommandOnCooldown):
+            # await self.Hamood.quick_embed(
+            #     ctx,
+            #     author={"name": "Command on Cooldown"},
+            #     description=f"Please retry after: ```{self.Hamood.pretty_dt(error.retry_after)}```",
+            #     # footer={"text": f"{ctx.author}", "icon_url": ctx.author.avatar_url},
+            # )
             await self.error_embed(
                 ctx,
                 "Command on Cooldown",
@@ -74,8 +80,9 @@ class ErrorHandling(commands.Cog):
                     f"• {str(p).replace('_', ' ').title()}" for p in error.missing_perms
                 )
                 if "Embed Links" in perms:
-                    return await ctx.send(
-                        f"**I am missing the** `Embed Links` **permission!**"
+                    return await ctx.reply(
+                        f"**I am missing the** `Embed Links` **permission!**",
+                        mention_author=False,
                     )
                 elif "Send Messages" in perms:
                     return
@@ -128,29 +135,23 @@ class ErrorHandling(commands.Cog):
                 )
 
         elif isinstance(error, commands.CommandInvokeError):
+
             if isinstance(error.__cause__, discord.Forbidden):
                 await self.error_embed(
-                    ctx, "I don't have the permission to do that", "",
+                    ctx,
+                    "I don't have the permission to do that",
+                    "",
                 )
-
-            errorMsg = f"{self.Hamood.cstr('Uncaught Error:', ANSI.FAIL)}\nCommand: {ctx.command.name}\nError: {type(error).__name__}:\n\t{error}"
-            print(
-                f'{self.Hamood.cstr("-" * 40, ANSI.WARNING)}\n{errorMsg}\n{self.Hamood.cstr("-" * 40, ANSI.WARNING)}'
-            )
-            # error_channel = await self.bot.fetch_channel(741384050387714162)
-            # await error_channel.send(f"```py\n{errorMsg}```")
-
-        else:
-            await self.error_embed(
-                ctx,
-                "Whoops!",
-                f"Something went wrong with this command, try it again later.",
-            )
-            errorMsg = f"{self.Hamood.cstr('Uncaught Error:', ANSI.FAIL)}\nCommand: {ctx.command.name}\nError: {type(error).__name__}:\n\t{error}"
-            print(
-                f'{self.Hamood.cstr("-" * 40, ANSI.WARNING)}\n{errorMsg}\n{self.Hamood.cstr("-" * 40, ANSI.WARNING)}'
-            )
-            # error_channel = await self.bot.fetch_channel(741384050387714162)
+            else:
+                await self.error_embed(
+                    ctx,
+                    "Whoops!",
+                    f"Something went wrong with this command, try it again later.\n\nThe error has been reported:\n> `{error}`",
+                )
+                errorMsg = f"{self.Hamood.cstr('Uncaught Error:', ANSI.FAIL)}\nCommand: {ctx.command.name}\nError: {type(error).__name__}:\n\t{error}"
+                print(
+                    f'{self.Hamood.cstr("-" * 40, ANSI.WARNING)}\n{errorMsg}\n{self.Hamood.cstr("-" * 40, ANSI.WARNING)}'
+                )
             # await error_channel.send(f"```py\n{errorMsg}```")
 
 

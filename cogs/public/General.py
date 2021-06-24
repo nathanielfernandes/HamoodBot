@@ -37,7 +37,7 @@ class General(commands.Cog):
         )
 
     @commands.command(aliases=["colour"])
-    @commands.bot_has_permissions(embed_links=True, attach_files=True)
+    @commands.bot_has_permissions(embed_links=True)
     async def color(
         self, ctx, r: int = None, g: int = None, b: int = None, a: int = 255
     ):
@@ -50,14 +50,13 @@ class General(commands.Cog):
                 rgba[i] = abs(rgba[i])
                 rgba[i] = min(rgba[i], 255)
 
-        name = self.Hamood.save_name()
-        makeColor(rgba=rgba, fp=f"{self.Hamood.filepath}/temp/{name}", size=(150, 150))
+        img = makeColor(rgba=rgba, size=(150, 150))
 
         await self.Hamood.quick_embed(
             ctx=ctx,
             footer={"text": "rgba: " + ", ".join([str(i) for i in rgba])},
             reply=True,
-            image_url=f"{self.Hamood.CDN_URL}/{name}",
+            pil_image=img,
             color=discord.Color.from_rgb(*rgba[:-1]),
         )
 
@@ -121,7 +120,8 @@ class General(commands.Cog):
     async def christmas(self, ctx):
         """|||Christmas Countdown."""
         embed = discord.Embed(
-            title=f":christmas_tree: Christmas Countdown", color=discord.Color.green(),
+            title=f":christmas_tree: Christmas Countdown",
+            color=discord.Color.green(),
         )
         embed.set_footer(text=f"Santa is comming {ctx.author}.")
 
@@ -178,6 +178,7 @@ class General(commands.Cog):
 
     @commands.command()
     @commands.cooldown(2, 5, commands.BucketType.user)
+    @commands.bot_has_permissions(embed_links=True)
     async def uploads(self, ctx, channel: str):
         """<youtube channel url>|||Gets the latest uploads from a channel."""
         ellipsis = lambda s: s[:35].replace("]", "").replace("[", "").replace(
@@ -284,6 +285,7 @@ class General(commands.Cog):
         )
 
     @commands.command(aliases=["statuscode"])
+    @commands.bot_has_permissions(embed_links=True)
     async def statuscat(self, ctx, code: int = None):
         """<status-code>|||Status cats > status codes"""
         if code is None:

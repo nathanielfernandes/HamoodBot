@@ -3,6 +3,9 @@ from discord.ext import commands
 
 import modules.checks as checks
 
+## TODO
+# Rework this entire thing
+
 
 class Money(commands.Cog):
     """Commands to manage your funds :warning: `Rework In Progress`"""
@@ -71,7 +74,9 @@ class Money(commands.Cog):
                     )
 
                     await self.Hamood.Currency.update_bank_max(
-                        ctx.guild.id, ctx.author.id, c,
+                        ctx.guild.id,
+                        ctx.author.id,
+                        c,
                     )
 
                     embed = discord.Embed(
@@ -286,4 +291,3 @@ class Money(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Money(bot))
-

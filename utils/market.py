@@ -30,7 +30,7 @@ class Market:
 
         self.last_refresh = datetime.now()
 
-    @tasks.loop(seconds=3600)
+    @tasks.loop(hours=1, reconnect=True)
     async def update_items(self):
         self.all_items = {
             i: self.every_item[i]

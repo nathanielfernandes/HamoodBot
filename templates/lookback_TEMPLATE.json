@@ -1,0 +1,138 @@
+{
+    "LAYERS": {
+        "image3": {
+            "name": "image3",
+            "x": 511,
+            "y": 91,
+            "width": 134,
+            "height": 134,
+            "rotation": 4,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "image",
+            "constant": null
+        },
+        "text3": {
+            "name": "text3",
+            "x": 490,
+            "y": 247,
+            "width": 198,
+            "height": 90,
+            "rotation": 0,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "text",
+            "constant": null,
+            "fontname": "fonts/Whitney-Semibold.ttf",
+            "fontsize": 30,
+            "color": [
+                0,
+                0,
+                0
+            ],
+            "align": "center"
+        },
+        "image2": {
+            "name": "image2",
+            "x": 311,
+            "y": 30,
+            "width": 165,
+            "height": 161,
+            "rotation": -26,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "image",
+            "constant": null
+        },
+        "image1": {
+            "name": "image1",
+            "x": 125,
+            "y": 91,
+            "width": 166,
+            "height": 160,
+            "rotation": 0,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "image",
+            "constant": null
+        },
+        "text2": {
+            "name": "text2",
+            "x": 265,
+            "y": -13,
+            "width": 239,
+            "height": 122,
+            "rotation": 0,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "text",
+            "constant": null,
+            "fontname": "fonts/Whitney-Semibold.ttf",
+            "fontsize": 30,
+            "color": [
+                0,
+                0,
+                0
+            ],
+            "align": "center"
+        },
+        "text1": {
+            "name": "text1",
+            "x": 77,
+            "y": 256,
+            "width": 252,
+            "height": 182,
+            "rotation": 0,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "text",
+            "constant": null,
+            "fontname": "fonts/Whitney-Semibold.ttf",
+            "fontsize": 30,
+            "color": [
+                0,
+                0,
+                0
+            ],
+            "align": "center"
+        }
+    },
+    "POSTFILTERS": {
+        "sharpness": 1.0,
+        "contrast": 1.0,
+        "color": 1.0,
+        "brightness": 1.0
+    },
+    "LAYERORDER": [
+        "image3",
+        "text3",
+        "image2",
+        "image1",
+        "text2",
+        "text1"
+    ]
+}

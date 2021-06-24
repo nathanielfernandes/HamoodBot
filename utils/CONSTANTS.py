@@ -26,8 +26,71 @@ def load_constants(self):
     self.RANDOMWORDS = requests.get(
         "https://raw.githubusercontent.com/sindresorhus/mnemonic-words/master/words.json"
     ).json()
-    self.CDN_URL = "https://dev.hamood.app/"
-    self.URL = "https://dev.hamood.app/"
+    self.RANDOMEMOJIS = [
+        "😳",
+        "😭",
+        "🤗",
+        "😴",
+        "😪",
+        "🤡",
+        "💩",
+        "👽",
+        "😋",
+        "👍",
+        "👎",
+        "👏",
+        "👑",
+        "🦋",
+        "🐸",
+        "🐝",
+        "🐍",
+        "🐄",
+        "🦧",
+        "🐄",
+        "🐈",
+        "🍄",
+        "💐",
+        "🌈",
+        "✨",
+        "❄️",
+        "🍆",
+        "🍑",
+        "🍒",
+        "🥑",
+        "🌽",
+        "🥐",
+        "🧀",
+        "🥞",
+        "🌭",
+        "🍭",
+        "🍰",
+        "🍺",
+        "🧂",
+        "⚽",
+        "🚀",
+        "✈️",
+        "🗿",
+        "🌋",
+        "☎️",
+        "💎",
+        "🔪",
+        "🦠",
+        "💉",
+        "🛀",
+        "🎁",
+        "🎈",
+        "🧮",
+        "📝",
+        "❤️",
+        "🆘",
+        "❌",
+        "💯",
+        "🔞",
+        "🆒",
+        "🎶",
+    ]
+    self.CDN_URL = "https://dev.hamood.app"
+    self.URL = "https://dev.hamood.app"
 
 
 def add_regexes(self):
@@ -54,7 +117,7 @@ def add_regexes(self):
     )
 
     self.re_member = re.compile(r"(<@!?\d+>)")
-    self.re_emoji = re.compile(r"(<:\w+:?\d+>)")
+    self.re_emoji = re.compile(r"(<a?:\w+:?\d+>)")
     self.re_role = re.compile(r"(<@&\d+>)")
     self.re_channel = re.compile(r"(<#\d+>)")
 

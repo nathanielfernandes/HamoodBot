@@ -49,6 +49,9 @@ class Hamood:
         self.active_games = {}
         self.active_feeds = {}
         self.command_invocations = 0
+        self.cog_invokes = {}
+        self.total_gens = 0
+        self.total_gen_bytes = 0
 
         self.market = Market(self.bot)
         self.ahttp = HTTP()
@@ -68,7 +71,7 @@ class Hamood:
         self.PremiumGuilds = []
         print(ANSI.ENDC, end="")
         self.cprint(
-            f"----------------------------- {time.perf_counter()-self.tic:0.2f}s",
+            f"----------------------------- {self.deltaT():0.2f}s",
             ANSI.OKGREEN,
         )
 
@@ -84,13 +87,23 @@ class Hamood:
         )
 
         self._cd = commands.CooldownMapping.from_cooldown(
-            3, 3.5, commands.BucketType.user
+            3, 3, commands.BucketType.user
         )
+
+        self.start_tstamp = self.tstamp()
+
+        # debug
+        # self.bot.load_extension("jishaku")
 
     def run(self):
         self.load_cogs()
         self.STARTUP = datetime.datetime.now()
+        self.market.update_items.start()
+        # self.clear_temp.start()
         self.bot.run(self.TOKEN)
+
+    def deltaT(self):
+        return time.perf_counter() - self.tic
 
     def profCheck(self, content: str) -> bool:
         return any(
@@ -103,6 +116,8 @@ class Hamood:
         if cog.endswith(".py"):
             try:
                 name = cog.replace(".py", "")
+                if scope == "public":
+                    self.cog_invokes[name] = 0
                 cog = f"cogs.{scope}.{name}"
                 self.bot.load_extension(cog)
                 loaded = self.bot.get_cog(name)
@@ -116,14 +131,15 @@ class Hamood:
         self.cprint("-----------------------------", ANSI.OKGREEN)
         for cog in os.listdir("./cogs/public"):
             self.load_cog(cog, "public")
+
         self.cprint(
-            f"----------------------------- {time.perf_counter()-self.tic:0.2f}s",
+            f"----------------------------- {self.deltaT():0.2f}s",
             ANSI.OKGREEN,
         )
         for cog in os.listdir("./cogs/private"):
             self.load_cog(cog, "private")
         self.cprint(
-            f"----------------------------- {time.perf_counter()-self.tic:0.2f}s",
+            f"----------------------------- {self.deltaT():0.2f}s",
             ANSI.OKGREEN,
         )
 
@@ -141,14 +157,9 @@ class Hamood:
         self.cprint(HAMOOD, ANSI.OKBLUE)
         self.cprint(f"Logged in as {self.bot.user}", ANSI.BLUE)
         self.cprint(
-            f"----------------------------- {time.perf_counter()-self.tic:0.2f}s",
+            f"----------------------------- {self.deltaT():0.2f}s",
             ANSI.OKGREEN,
         )
-
-        try:
-            await self.market.update_items.start()
-        except RuntimeError:
-            pass
 
     def ignore_check(self, message):
         return (
@@ -173,11 +184,26 @@ class Hamood:
         func = partial(blocking_func, *args, **kwargs)
         return await self.bot.loop.run_in_executor(None, func)
 
+    async def run_async_t(self, blocking_func, *args, **kwargs):
+        tic = time.perf_counter()
+        out = await self.run_async(blocking_func, *args, **kwargs)
+        toc = time.perf_counter()
+        return out, f"took {toc-tic:0.2f}s"
+
     def save_name(self, ext: str = "png") -> str:
-        return f'{"".join([str(randint(0, 9)) for _ in range(18)])}.{ext}'
+        return f"{self.tstamp()}.{ext}"
+
+    def tstamp(self) -> str:
+        return f"{datetime.datetime.now().timestamp():0.3f}".replace(".", "")
+
+    def cdnsave(self, ext: str = "png") -> [str, str]:
+        name = self.save_name(ext)
+        return f"{self.filepath}/temp/{name}", f"{self.CDN_URL}/{name}"
 
     async def spam_prev(self, ctx):
         self.command_invocations += 1
+        if ctx.cog.public:
+            self.cog_invokes[ctx.cog.qualified_name] += 1
         return await self.spam_check(ctx.message)
 
     async def spam_check(self, message, alert=True):
@@ -203,3 +229,24 @@ class Hamood:
 
     async def user_is_premium(self, user_id: int):
         return user_id in self.PremiumUsers
+
+    # @tasks.loop(hours=1, reconnect=True)
+    # async def clear_temp(self):
+    #     files = os.listdir(f"{self.filepath}/temp")
+    #     s, e = 0, 0
+    #     for f in files:
+    #         clean = f.split(".")[0]
+    #         if clean.isdigit():
+    #             if int(clean) < int(self.start_tstamp):
+    #                 try:
+    #                     os.remove(f"{self.filepath}/temp/{f}")
+    #                 except:
+    #                     e += 1
+    #                 else:
+    #                     s += 1
+
+    #     self.start_tstamp = self.tstamp()
+    #     print(
+    #         f"{ANSI.WARNING}Cleared Temp:{ANSI.ENDC} \t {ANSI.OKGREEN}{s} files deleted{ANSI.ENDC}"
+    #         + (f"\t {ANSI.FAIL}{e} files failed{ANSI.ENDC}" if e > 0 else "")
+    #     )

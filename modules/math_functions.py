@@ -1,4 +1,5 @@
-import sys
+#
+import sys, re
 import requests
 import json
 import io
@@ -15,15 +16,15 @@ from contextlib import contextmanager
 
 import pylab
 
-from urllib.parse import quote
+from utils.helpers import to_async
 
 
-chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-symbl = "abcdefghijklmnopqrstuvwxyz"
-colors = ["b", "g", "r", "c", "m"]
-folder = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/temp"
+def flatten(l, condition=lambda e: True, switch=lambda e: e) -> list:
+    return [switch(e) for t in l for e in t if condition(e)]
 
-restricted = [
+
+COLORS = ("b", "g", "r", "c", "m")
+RESTRICTED = (
     "exit",
     "__",
     "_",
@@ -46,10 +47,13 @@ restricted = [
     "raise",
     "SystemExit",
     "quit",
-]
+)
 
 
-# This function was implemented from https://stackoverflow.com/questions/366682/how-to-limit-execution-time-of-a-function-call-in-python
+folder = f"{os.path.split(os.getcwd())[0]}/{os.path.split(os.getcwd())[1]}/temp"
+
+
+# Implemented from https://stackoverflow.com/questions/366682/how-to-limit-execution-time-of-a-function-call-in-python
 @contextmanager
 def time_limit(seconds):
     def signal_handler(signum, frame):
@@ -63,146 +67,150 @@ def time_limit(seconds):
         signal.alarm(0)
 
 
-async def format_eq(eq):
+EQF = re.compile(
+    r"(?:(\)\()|(\)[a-zA-Z])[^a-z]|[^a-z]([a-zA-Z]\()|(\d\()|(\)\d)|(\)[a-z])|(\d[a-zA-Z])|[^a-z]([a-zA-Z]\d+))"
+)
+
+
+def format_eq(eq):
     eq = (
-        eq.lower()
+        eq.replace(" ", "")
+        .replace("\n", "")
+        .replace("[", "(")
+        .replace("]", ")")
         .replace("^", "**")
         .replace("mod", "%")
-        .replace("sin", "[sin]")
-        .replace("sqrt", "[sqrt]")
-        .replace("cos", "[cos]")
-        .replace("tan", "[tan]")
-        .replace("log", "[log]")
-        .replace("ln", "[ln]")
-    ) + len(eq) * " "
-
-    for i in range(len(eq) - 1):
-        if eq[i].isdigit() and (eq[i + 1] in symbl or eq[i + 1] == "("):
-            eq = eq[: i + 1] + "*" + eq[i + 1 :]
-        # for i in range(len(eq) - 1):
-        elif eq[i + 1].isdigit() and (eq[i] in symbl or eq[i] == ")"):
-            eq = eq[: i + 1] + "*" + eq[i + 1 :]
-        # for i in range(len(eq) - 1):
-        elif eq[i] in symbl and eq[i + 1] == "(":
-            eq = eq[: i + 1] + "*" + eq[i + 1 :]
-        # for i in range(len(eq) - 1):
-        elif eq[i + 1] in symbl and eq[i] == ")":
-            eq = eq[: i + 1] + "*" + eq[i + 1 :]
-        # for i in range(len(eq) - 1):
-        elif eq[i] == ")" and eq[i + 1] == "(":
-            eq = eq[: i + 1] + "*" + eq[i + 1 :]
-        # for i in range(len(eq) - 1):
-        elif (
-            eq[i] in symbl and eq[i + 1] == "[" or eq[i].isdigit() and eq[i + 1] == "["
-        ):
-            eq = eq[: i + 1] + "*" + eq[i + 1 :]
-
-    eq = (
-        eq.lower()
-        .replace("[sin]", "sin")
-        .replace("[sqrt]", "sqrt")
-        .replace("[cos]", "cos")
-        .replace("[tan]", "tan")
-        .replace("[log]", "log")
-        .replace("[ln]", "log")
-        .replace(" ", "")
     )
+    for res in RESTRICTED:
+        eq = eq.replace(res, "")
+
+    stuff = EQF.findall(eq)
+    to_replace = flatten(stuff, lambda e: e != "")
+
+    for rep in to_replace:
+        eq = eq.replace(rep, f"{rep[0]}*{rep[-1]}")
 
     return eq
 
 
-async def graph_eq(equations, title):
+def graph_eq(equations):
     plt.clf()
     equations = equations[:5]
-    roots = []
-    ran = random.randint(5, 50)
 
     try:
-        for equation in equations:
-            if len(equation) > 1:
-                ran = int(equation[1]) if 1 < int(equation[1]) < 101 else ran
+        with time_limit(2):
+            for equation in equations:
+                eq = equation
+                equation = format_eq(equation)
 
-            eq = equation
-            equation = await format_eq(equation[0])
+                x = np.array(np.arange(-100, 100, 0.1))
 
-            x = np.array(np.arange(-1 * ran, ran, ran / 100))
-            with time_limit(1):
-                y = eval(str(parse_expr(equation)))
+                y = eval(
+                    str(parse_expr(equation)),
+                    {
+                        "sqrt": sqrt,
+                        "sin": sin,
+                        "cos": cos,
+                        "tan": tan,
+                        "log": log,
+                        "x": x,
+                    },
+                )
 
-            plt.title(title)
+                # plt.title(title)
 
-            roots.append(await solve_eq(equation))
+                plt.grid(alpha=0.5, linestyle="solid")
+                plt.axhline(y=0, color="k", linewidth=0.5)
+                plt.axvline(x=0, color="k", linewidth=0.5)
 
-            plt.grid(alpha=0.5, linestyle="solid")
-            plt.axhline(y=0, color="k", linewidth=0.5)
-            plt.axvline(x=0, color="k", linewidth=0.5)
+                plt.plot(
+                    x,
+                    y,
+                    label=f"y = {equation.replace('**', '^')}",
+                    color=COLORS[equations.index(eq)],
+                )
+                plt.legend()
+        buffer = io.BytesIO()
+        plt.savefig(buffer, bbox_inches="tight")
+        plt.clf()
+        buffer.seek(0)
+        return buffer
+    except Exception as e:
+        if isinstance(e, TimeoutError):
+            return "Timed Out! Calculation exceeded 1 second!"
+        return "Invalid Input"
 
-            plt.plot(x, y, label=f"y = {equation}", color=colors[equations.index(eq)])
-            plt.legend()
 
-            loc = f"{folder}/{equation}.jpg"
-
-        plt.xlabel(f"Roots: {roots}")
-        plt.savefig(loc, bbox_inches="tight")
-
-    except Exception:
-        return False, None
-
-    plt.clf()
-    return True, loc
-
-
-async def calc_eq(equation):
-    equation = await format_eq(equation)
+def calc_eq(equation):
+    equation = format_eq(equation)
     try:
         with time_limit(1):
-            solved = eval(str(parse_expr(equation)))
-    except Exception:
+            solved = eval(
+                str(parse_expr(equation)),
+                {"sqrt": sqrt, "sin": sin, "cos": cos, "tan": tan, "log": log},
+            )
+    except Exception as e:
+        if isinstance(e, TimeoutError):
+            return "Timed Out! Calculation exceeded 1 second!"
         return "Invalid Input"
 
     return solved
 
 
-async def solve_eq(equation):
-    equation = await format_eq(equation)
+def solve_eq(equation):
+    equation = format_eq(equation)
     solved = []
 
     try:
-        sol = solve(Eq(parse_expr(equation), 0), dict=True)
-        for solution in sol:
-            for k in solution.keys():
-                if "I" not in str(solution[k]):
-                    solution[k] = round(eval(str(solution[k])), 3)
-                    solved.append(f"{k} = {solution[k]}")
-    except Exception:
+        with time_limit(1):
+            sol = solve(Eq(parse_expr(equation), 0), dict=True)
+            for solution in sol:
+                for k in solution.keys():
+                    if "I" not in str(solution[k]):
+                        solution[k] = round(
+                            eval(
+                                str(solution[k]),
+                                {
+                                    "sqrt": sqrt,
+                                    "sin": sin,
+                                    "cos": cos,
+                                    "tan": tan,
+                                    "log": log,
+                                },
+                            ),
+                            3,
+                        )
+                        solved.append(f"{k} = {solution[k]}")
+    except Exception as e:
+        if isinstance(e, TimeoutError):
+            return "Timed Out! Calculation exceeded 1 second!"
         return "Invalid Input"
 
-    if not solved:
-        return "Could not Solve"
-    else:
-        return solved
+    return solved
 
 
-async def base_conversion(number, base1, base2):
+def base_conversion(number, base1, base2):
     try:
         return np.base_repr(int(number, base=base1), base2)
     except ValueError:
         return "Invalid Input"
 
 
-async def get_derivative(equation, d):
-    equation = await format_eq(equation)
+def get_derivative(equation, d):
+    equation = format_eq(equation)
     try:
         with time_limit(1):
             for i in range(d):
                 equation = diff(equation)
         return str(equation)
-    except Exception:
+    except Exception as e:
+        if isinstance(e, TimeoutError):
+            return "Timed Out! Calculation exceeded 1 second!"
         return "Invalid Input"
 
 
 # implemented from https://stackoverflow.com/questions/14110709/creating-images-of-mathematical-expressions-from-tex-using-matplotlib
-async def latex_to_text(formula):
+def latex_to_text(formula):
     formula = formula.replace("`", "")
 
     if formula[0] != "$":
@@ -210,18 +218,15 @@ async def latex_to_text(formula):
     if formula[-1] != "$":
         formula += "$"
 
-    save = (
-        folder + "/" + "".join([str(random.randint(0, 9)) for i in range(9)]) + ".png"
-    )
-
     try:
+        buffer = io.BytesIO()
         formula = r"{}".format(formula)
         fig = pylab.figure()
         text = fig.text(0, 0, formula)
 
         # Saving the figure will render the text.
-        dpi = 300
-        fig.savefig(save, dpi=dpi)
+        dpi = 200
+        fig.savefig(buffer, dpi=dpi)
 
         # Now we can work with text's bounding box.
         bbox = text.get_window_extent()
@@ -233,12 +238,14 @@ async def latex_to_text(formula):
         dy = (bbox.ymin / float(dpi)) / height
         text.set_position((0, -dy))
 
+        buffer = io.BytesIO()
         # Save the adjusted text.
-        fig.savefig(save, dpi=dpi)
+        fig.savefig(buffer, dpi=dpi)
+
+        buffer.seek(0)
+        plt.clf()
+        plt.close()
+        return buffer
 
     except Exception as e:
-        return save, e
-
-    plt.clf()
-    plt.close()
-    return save, None
+        return e

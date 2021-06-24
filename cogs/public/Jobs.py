@@ -7,6 +7,8 @@ from discord.ext import commands
 import modules.checks as checks
 from games.trivia_functions import _Trivia
 
+## TODO
+# Rework this entire thing
 
 class Jobs(commands.Cog):
     """Make some money :warning: `Rework In Progress`"""

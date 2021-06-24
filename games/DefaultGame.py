@@ -69,7 +69,7 @@ class DefaultGame:
 
         embed = discord.Embed(
             title=f"{self.game_name.title()} | {half}",
-            description="Loading... <a:load:822030219924733992>",
+            description="Loading... <a:loading:856302946274246697>",
             color=discord.Color.blue(),
         )
         embed.set_thumbnail(url=self.thumbnail)

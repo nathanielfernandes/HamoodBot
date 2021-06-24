@@ -26,6 +26,7 @@ class Code(commands.Cog):
             )
             @commands.cooldown(1, 5, commands.BucketType.channel)
             @commands.max_concurrency(1, commands.BucketType.default, wait=True)
+            @commands.bot_has_permissions(embed_links=True)
             async def cmd(
                 self, ctx, *, code: commands.clean_content(remove_markdown=True)
             ):
@@ -71,6 +72,56 @@ class Code(commands.Cog):
             await ctx.reply(embed=embed, mention_author=False)
         else:
             return await ctx.send("`Sorry, I couldn't run code at that moment`")
+
+    @commands.command()
+    @commands.bot_has_permissions(embed_links=True, attach_files=True)
+    @commands.cooldown(1, 8, commands.BucketType.channel)
+    async def carbon(self, ctx, *, code: commands.clean_content()):
+        color = self.Hamood.pastel_color()
+        data = json.dumps(
+            {
+                "code": code,
+                "backgroundColor": f"rgba({color[0]}, {color[1]}, {color[2]}, 200)",
+                "exportSize": "2x",
+                "fontFamily": "JetBrains Mono",
+                "language": "auto",
+            }
+        )
+        headers = {"Content-Type": "application/json"}
+        msg = await self.Hamood.quick_embed(
+            ctx,
+            title="Converting Code... <a:loading:856302946274246697>",
+            author={
+                "name": "Powered by Carbon",
+                "url": "https://carbon.now.sh/",
+                "icon_url": "https://cdn.discordapp.com/attachments/839576568518672467/857009084489269309/sjzD5vK9_400x400.png",
+            },
+            color=discord.Color.from_rgb(*color),
+        )
+        res = await self.Hamood.ahttp.post(
+            url="https://carbonara.vercel.app/api/cook",
+            headers=headers,
+            data=data,
+            return_type="bytes",
+        )
+        await msg.delete()
+
+        if res:
+            await self.Hamood.quick_embed(
+                ctx,
+                bimage=res,
+                author={
+                    "name": "Powered by Carbon",
+                    "url": "https://carbon.now.sh/",
+                    "icon_url": "https://cdn.discordapp.com/attachments/839576568518672467/857009084489269309/sjzD5vK9_400x400.png",
+                },
+                color=discord.Color.from_rgb(*color),
+            )
+        else:
+            await self.Hamood.quick_embed(
+                ctx,
+                title="Could not convert Code.",
+            )
 
 
 def setup(bot):

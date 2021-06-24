@@ -21,6 +21,15 @@ class HTTP:
         except:
             return False
 
+    async def is_safe(self, url: str, max_bytes: int = 4194304):
+        try:
+            async with self.session.head(url) as resp:
+                if resp.status == 200:
+                    tBytes = int(resp.headers.get("content-length", str(max_bytes + 1)))
+                    return tBytes <= max_bytes
+        except:
+            return False
+
     async def is_gif(self, url: str):
         try:
             async with self.session.head(url) as resp:
@@ -51,6 +60,7 @@ class HTTP:
 
                 return BytesIO(data)
         except:
+            print("asdasd")
             return
 
     async def get_json(self, url: str):
@@ -101,6 +111,12 @@ class HTTP:
                         return load
                     except:
                         return {}
+                elif return_type == "bytes":
+                    try:
+                        load = await res.read()
+                        return BytesIO(load)
+                    except:
+                        return None
                 else:
                     return resp
         except:
@@ -132,6 +148,12 @@ class HTTP:
                         return load
                     except:
                         return {}
+                elif return_type == "bytes":
+                    try:
+                        load = await resp.read()
+                        return BytesIO(load)
+                    except:
+                        return None
                 else:
                     return resp
         except:

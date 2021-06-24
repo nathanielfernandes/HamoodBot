@@ -1,8 +1,7 @@
-import os, re, pprint
-
-import discord
-import random
-
+import os, re, pprint, sys
+import discord, functools
+import random, asyncio
+from io import BytesIO
 
 import requests
 
@@ -79,18 +78,34 @@ def pretty_dt(s: float) -> str:
             ex.append(u)
 
 
-async def quick_embed(ctx, reply=True, delete_image=True, **kwargs):
+def random_name(ext: str = "png") -> str:
+    return "".join(str(random.randint(0, 9)) for _ in range(18)) + "." + ext
+
+
+def pil_to_bytes(img, ext: str = "png"):
+    buffer = BytesIO()
+    img.save(buffer, ext)
+    buffer.seek(0)
+    img.close()
+    return buffer
+
+
+async def quick_embed(ctx, reply=True, delete_image=True, send=True, **kwargs):
     title = kwargs.get("title", "")
     description = kwargs.get("description", "")
     timestamp = kwargs.get("timestamp")
     color = kwargs.get("color", discord.Color.from_rgb(*pastel_color()))
-    image = kwargs.get("image")
     thumbnail = kwargs.get("thumbnail")
     author = kwargs.get("author")
-    footer = kwargs.get("footer")
+    footer = kwargs.get("footer", {})
     fields = kwargs.get("fields")
+    image = kwargs.get("image")
+    bimage = kwargs.get("bimage")
     image_url = kwargs.get("image_url", "")
+    pil_img = kwargs.get("pil_image")
+    pil_ext = kwargs.get("pil_ext", "png")
     url = kwargs.get("url", "")
+    stats = kwargs.get("stats")
 
     embed = discord.Embed(title=title, description=description, color=color, url=url)
     if timestamp:
@@ -98,7 +113,17 @@ async def quick_embed(ctx, reply=True, delete_image=True, **kwargs):
 
     file = None
     if not image_url:
-        if image:
+        if pil_img:
+            bimage = await ctx.bot.Hamood.run_async(
+                pil_to_bytes, img=pil_img, ext=pil_ext
+            )
+            name = random_name(pil_ext)
+            embed.set_image(url=f"attachment://{name}")
+            file = discord.File(fp=bimage, filename=name)
+        elif bimage:
+            embed.set_image(url=f"attachment://bytesimage.jpg")
+            file = discord.File(fp=bimage, filename="bytesimage.jpg")
+        elif image:
             filename = os.path.basename(image)
             embed.set_image(url=f"attachment://{filename}")
             file = discord.File(fp=image, filename=filename)
@@ -115,9 +140,13 @@ async def quick_embed(ctx, reply=True, delete_image=True, **kwargs):
             icon_url=author.get("icon_url", ""),
         )
 
-    if footer:
+    if footer or stats:
+        text = footer.get("text", "")
+        if text and stats:
+            text += " • "
         embed.set_footer(
-            text=footer.get("text", ""), icon_url=footer.get("icon_url", "")
+            text=text + (f"{ctx.prefix}{ctx.command.name} • {stats}" if stats else ""),
+            icon_url=footer.get("icon_url", ""),
         )
 
     if fields:
@@ -128,15 +157,30 @@ async def quick_embed(ctx, reply=True, delete_image=True, **kwargs):
                 inline=f.get("inline", True),
             )
 
-    if reply:
-        msg = await ctx.reply(file=file, embed=embed, mention_author=False)
-    else:
-        msg = await ctx.send(file=file, embed=embed)
+    if send:
+        if reply:
+            msg = await ctx.reply(file=file, embed=embed, mention_author=False)
+        else:
+            msg = await ctx.send(file=file, embed=embed)
+
+    if pil_img or bimage:
+        try:
+            ctx.bot.Hamood.total_gens += 1
+            ctx.bot.Hamood.total_gen_bytes += sys.getsizeof(bimage)
+        except:
+            pass
+        bimage.close()
+
+    if bimage:
+        bimage.close()
 
     if delete_image and image:
         os.remove(image)
 
-    return msg
+    if send:
+        return msg
+    else:
+        return embed
 
 
 class ReactionController:
@@ -181,3 +225,13 @@ class ReactionController:
             return func
 
         return decorator
+
+
+def to_async(syncfunc):
+    @functools.wraps(syncfunc)
+    async def sync_wrapper(*args, **kwargs):
+        loop = asyncio.get_event_loop()
+        func = functools.partial(syncfunc, *args, **kwargs)
+        return await loop.run_in_executor(None, func)
+
+    return sync_wrapper

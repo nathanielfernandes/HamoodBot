@@ -1,12 +1,14 @@
-import os
+import os, re
 import pathlib
 import random
 import io
 from copy import copy
-from PIL import Image, ImageDraw, ImageFont, ImageSequence, ImageEnhance
+from PIL import Image, ImageDraw, ImageFont, ImageSequence, ImageEnhance, ImageOps
 
 import requests
 from io import BytesIO
+
+from pilmoji import Pilmoji
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -510,6 +512,32 @@ class Modify_Gif(Modify):
         return self.gif
 
 
+EMOJI = re.compile(r"(<a?:\w+:?\d+>)")
+
+
+def betterText(text, font, color):
+    with Image.new("RGBA", (0, 0), (0, 0, 0, 0)) as placeholder:
+        pdraw = ImageDraw.Draw(placeholder)
+        all_es = EMOJI.findall(text)
+        nt = str(text)
+        for e in all_es:
+            nt = nt.replace(e, "O")
+        w, h = pdraw.textsize(nt, font)
+        with Image.new("RGBA", (w + 40, h + 30), (0, 0, 0, 0)) as img:
+            with Pilmoji(img) as pilmoji:
+                pilmoji.text(
+                    xy=(10, 10),
+                    text=text,
+                    fill=color,
+                    font=font,
+                    anchor=None,
+                    spacing=0,
+                    align="left",
+                    emoji_size_factor=0.8,
+                )
+    return img
+
+
 # needs work
 def makeText(content, font, font_size, colour, final):
     """turns text from text into an image of the text"""
@@ -537,9 +565,8 @@ def makeText(content, font, font_size, colour, final):
     img.save(final)
 
 
-def makeColor(rgba, fp, size=(100, 100)):
-    img = Image.new("RGBA", size, color=tuple(rgba))
-    img.save(fp)
+def makeColor(rgba, size=(100, 100)):
+    return Image.new("RGBA", size, color=tuple(rgba))
 
 
 def makeColorImg(rgba, path, size=(100, 100), sus=False):

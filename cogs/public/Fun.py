@@ -104,19 +104,19 @@ class Fun(commands.Cog):
         )
 
     @commands.command()
-    @commands.bot_has_permissions(embed_links=True)
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
     @commands.check(PremiumCooldown(prem=(5, 10, "user"), reg=(3, 10, "user")))
     async def vibe(self, ctx, member: discord.Member = None):
         """|||Vibechecks you but better."""
         member = ctx.author if not member else member
         fonts = self.bot.get_cog("Fonts")
-        url, color = await fonts.gen_text(
-            ctx, random.choice(self.Hamood.RANDOMWORDS), ("random", "random"), False
+        img, color = await fonts.gen_text(
+            ctx, random.choice(self.Hamood.RANDOMWORDS), ("random", "random", ""), False
         )
         await self.Hamood.quick_embed(
             ctx=ctx,
             description=f"{member.mention} your vibe checked out to be",
-            image_url=url,
+            pil_image=img,
             color=discord.Color.from_rgb(*color),
         )
 
@@ -301,7 +301,8 @@ class Fun(commands.Cog):
     async def choose(self, ctx, *, content: commands.clean_content):
         """<choice1>, <choice2>, [choice3], ...|||Choose between multiple choices."""
         await self.Hamood.quick_embed(
-            ctx, title=random.choice(content.split(",")).strip(),
+            ctx,
+            title=random.choice(content.split(",")).strip(),
         )
 
 

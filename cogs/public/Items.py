@@ -4,6 +4,8 @@ from discord.ext import commands
 from datetime import datetime
 import modules.checks as checks
 
+## TODO
+# Rework this entire thing
 
 class Items(commands.Cog):
     """Commands to manage your inventory :warning: `Rework In Progress`"""

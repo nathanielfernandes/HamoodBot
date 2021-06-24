@@ -1,0 +1,121 @@
+{
+    "LAYERS": {
+        "video": {
+            "name": "video",
+            "x": 24,
+            "y": 57,
+            "width": 856,
+            "height": 481,
+            "rotation": 0,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "image",
+            "constant": null
+        },
+        "title": {
+            "name": "title",
+            "x": 40,
+            "y": 504,
+            "width": 843,
+            "height": 89,
+            "rotation": 0,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "text",
+            "constant": null,
+            "fontname": "fonts/Whitney-Semibold.ttf",
+            "fontsize": 40,
+            "color": [
+                0,
+                0,
+                0
+            ],
+            "align": "left"
+        },
+        "pfp": {
+            "name": "pfp",
+            "x": 37,
+            "y": 597,
+            "width": 57,
+            "height": 54,
+            "rotation": 0,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "image",
+            "constant": null
+        },
+        "views": {
+            "name": "views",
+            "x": 631,
+            "y": 606,
+            "width": 234,
+            "height": 46,
+            "rotation": 0,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "text",
+            "constant": null,
+            "fontname": "fonts/Whitney-Semibold.ttf",
+            "fontsize": 20,
+            "color": [
+                168,
+                168,
+                168
+            ],
+            "align": "right"
+        },
+        "username": {
+            "name": "username",
+            "x": 100,
+            "y": 584,
+            "width": 181,
+            "height": 34,
+            "rotation": 0,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "text",
+            "constant": null,
+            "fontname": "fonts/Whitney-Semibold.ttf",
+            "fontsize": 15,
+            "color": [
+                148,
+                148,
+                148
+            ],
+            "align": "left"
+        }
+    },
+    "POSTFILTERS": {
+        "sharpness": 1.0,
+        "contrast": 1.0,
+        "color": 1.0,
+        "brightness": 1.0
+    },
+    "LAYERORDER": [
+        "video",
+        "title",
+        "pfp",
+        "views",
+        "username"
+    ]
+}
