@@ -86,7 +86,7 @@ class User(commands.Cog):
         await self.Hamood.quick_embed(
             ctx,
             author={"name": f"User Info - {member}"},
-            description=f"**Nick Name:** {member.display_name}\n**ID:** {member.id}\n**Is Bot:** {member.bot}\n**Vibe:** {random.choice(self.Hamood.RANDOMWORDS)}\u200b",
+            description=f"**Nick Name:** {member.display_name}\n**ID:** {member.id}\n**Is Bot:** {member.bot}\n**Vibe:** {random.choice(self.Hamood.RANDOMWORDS)} {random.choice(self.Hamood.RANDOMEMOJIS)}\u200b",
             thumbnail=member.avatar_url,
             fields=[
                 {

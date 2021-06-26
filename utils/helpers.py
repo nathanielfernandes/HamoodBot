@@ -135,7 +135,7 @@ async def quick_embed(ctx, reply=True, delete_image=True, send=True, **kwargs):
 
     if author:
         embed.set_author(
-            name=author.get("name", ""),
+            name=author.get("name", "\u200b"),
             url=author.get("url", ""),
             icon_url=author.get("icon_url", ""),
         )
@@ -152,8 +152,8 @@ async def quick_embed(ctx, reply=True, delete_image=True, send=True, **kwargs):
     if fields:
         for f in fields:
             embed.add_field(
-                name=f.get("name", "-"),
-                value=f.get("value", "-"),
+                name=f.get("name", "\u200b"),
+                value=f.get("value", "\u200b"),
                 inline=f.get("inline", True),
             )
 
@@ -169,9 +169,6 @@ async def quick_embed(ctx, reply=True, delete_image=True, send=True, **kwargs):
             ctx.bot.Hamood.total_gen_bytes += sys.getsizeof(bimage)
         except:
             pass
-        bimage.close()
-
-    if bimage:
         bimage.close()
 
     if delete_image and image:

@@ -12,56 +12,64 @@ class Dev(commands.Cog):
         self.bot = bot
         self.Hamood = bot.Hamood
 
+    #  self.courses = json.load(open("junk/aggrCourses.json"))
+    @commands.is_owner()
     def to_id(self, name):
         return name.replace(" ", "_").lower()
 
     @commands.command()
+    @commands.is_owner()
     async def make_premium(self, ctx, _id: int):
+        """s|||s"""
         self.Hamood.PremiumUsers.append(int(_id))
 
+    @commands.command()
+    @commands.is_owner()
+    async def premiums(self, ctx):
+        """s|||s"""
+        await ctx.send(":" + "\n".join(str(i) for i in self.Hamood.PremiumUsers))
         # self.Hamood.quick_embed(title=course_info["name"], description=course_info["description"], color)
 
-    # @commands.command()
-    # async def html(self, ctx):
-    #     icons = {
-    #         "Games": "fas fa-gamepad",
-    #         "Items": "fas fa-box-open",
-    #         "Money": "fas fa-wallet",
-    #         "Jobs": "fas fa-briefcase",
-    #         "Memes": "fas fa-grin-squint",
-    #         "Avatarmemes": "fas fa-laugh-beam",
-    #         "Reddit": "fab fa-reddit",
-    #         "Pokemon": "fab fa-product-hunt",
-    #         "Images": "fas fa-images",
-    #         "Math": "fas fa-square-root-alt",
-    #         "Chemistry": "fas fa-atom",
-    #         "Mod": "fas fa-gavel",
-    #         "Chance": "fas fa-dice",
-    #         "Fonts": "fas fa-font",
-    #         "Fun": "fas fa-laugh-wink",
-    #         "General": "fas fa-align-left",
-    #         "User": "fas fa-user",
-    #         "About": "fas fa-info",
-    #     }
+    @commands.command()
+    @commands.is_owner()
+    async def html(self, ctx):
+        icons = {
+            "Games": "fas fa-gamepad",
+            "Subreddits": "fab fa-reddit",
+            "MemeGen": "fas fa-images",
+            "Math": "fas fa-square-root-alt",
+            "Chemistry": "fas fa-atom",
+            "Items": "fas fa-box-open",
+            "Money": "fas fa-wallet",
+            "Jobs": "fas fa-briefcase",
+            "Mod": "fas fa-gavel",
+            "Utility": "fas fa-cogs",
+            "Code": "fas fa-code",
+            "Fonts": "fas fa-font",
+            "Fun": "fas fa-laugh-wink",
+            "General": "fas fa-align-left",
+            "User": "fas fa-user",
+            "About": "fas fa-info",
+        }
 
-    #     f = open("commands.html", "w")
-    #     s = lambda s: re.findall("``([^``]*)``", s)
+        f = open("commands.html", "w")
+        s = lambda s: re.findall("``([^``]*)``", s)
 
-    #     html = ""
-    #     for cog in icons:
-    #         html += '<div class="command-section">\n'
-    #         if cog.title() in icons:
-    #             html += f'<h1><i class="{icons[cog.title()]}"></i> {cog.title()}</h1>\n'
-    #             for c in self.bot.get_cog(cog).get_commands():
-    #                 if c.help != None:
-    #                     html += f"<li><b>{s(str(c.help))[0]}</b> {c.help[c.help.find('``', 3)+2:][1:]}</li>\n"
+        html = ""
+        for cog in icons:
+            html += '<div class="command-section">\n'
+            html += f'<h1><i class="{icons[cog]}"></i> {cog}</h1>\n'
+            for c in self.bot.get_cog(cog).get_commands():
+                if c.help != None:
+                    h = c.help.split("|||")
+                    html += f"<li><b>{c.name} {h[0].replace('<', '&lt;').replace('>', '&gt;')}</b> {h[1]}</li>\n"
 
-    #             html += "</div>\n\n"
+            html += "</div>\n\n"
 
-    #     f.write(html)
-    #     f.close()
-    #     # print(html)
-    #     await ctx.send(file=discord.File("commands.html"))
+        f.write(html)
+        f.close()
+        # print(html)
+        await ctx.send(file=discord.File("commands.html"))
 
     # @commands.command()
     # async def test1(self, ctx):
@@ -133,6 +141,8 @@ class Dev(commands.Cog):
         try:
             self.bot.unload_extension(f"cogs.{cog}")
             self.bot.load_extension(f"cogs.{cog}")
+            loaded = self.bot.get_cog(cog.split(".")[1])
+            loaded.public = "public" in cog
             await ctx.send(f"`{cog} got reloaded`")
         except Exception as e:
             await ctx.send(f"`{cog} cannot be loaded`")
@@ -155,6 +165,8 @@ class Dev(commands.Cog):
         """``load [cog name]`` loads the requested cog"""
         try:
             self.bot.load_extension(f"cogs.{cog}")
+            loaded = self.bot.get_cog(cog.split(".")[1])
+            loaded.public = "public" in cog
             await ctx.send(f"`{cog} got loaded`")
         except Exception as e:
             await ctx.send(f"`{cog} cannot be loaded:`")
@@ -227,7 +239,7 @@ class Dev(commands.Cog):
     async def inspect(self, ctx, member: discord.Member = None):
         member = ctx.author if not member else member
         content = await ctx.send(
-            f"`Gathering information on {member}...` <a:load:822030219924733992>"
+            f"`Gathering information on {member}...` <a:loading:856302946274246697>"
         )
         await asyncio.sleep(3)
 
@@ -279,6 +291,38 @@ class Dev(commands.Cog):
         await ctx.send(
             "**jali-clarke** is *sussy*\nhttps://github.com/nathanielfernandes/HamoodBot/pull/42"
         )
+
+    # @commands.command()
+    # async def mac(self, ctx, *, course: commands.clean_content):
+    #     course = course.upper()
+
+    #     course_info = self.courses.get(course)
+    #     if course_info:
+    #         name = course_info["name"].split(" - ")
+    #         desc = f"{course_info['description']}\n"
+    #         embed = discord.Embed(
+    #             title=f"`{name[0]}` | {course_info['units']}",
+    #             description=f"**{name[1]}**\n" + course_info["description"] + "\n",
+    #             color=discord.Color.from_rgb(148, 0, 73),
+    #             timestamp=ctx.message.created_at,
+    #         )
+    #         embed.set_author(name="McMaster Course Information",)
+    #         embed.add_field(
+    #             name="Extra Information",
+    #             value=course_info["other"]
+    #             .replace("Prerequisite(s):", "**Prerequisite(s):**")
+    #             .replace("Antirequisite(s):", "**Antirequisite(s):**")
+    #             .replace("Cross-list(s):", "**Cross-list(s):**"),
+    #         )
+
+    #         embed.set_thumbnail(
+    #             url="https://www.mcmasterforum.org/images/default-source/default-album/op_visual-media_web-photo_logo_mcmaster_400x400_maroon.png?sfvrsn=7a0255d5_0"
+    #         )
+
+    #         embed.set_footer(text=f"Requested by {ctx.author}")
+    #         await ctx.reply(embed=embed)
+    #     else:
+    #         await ctx.reply(f"Could not find information on the course `{course}`")
 
 
 def setup(bot):

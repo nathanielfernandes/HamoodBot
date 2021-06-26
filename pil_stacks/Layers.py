@@ -141,7 +141,7 @@ class Layer:
         image = image.resize((w, h), Image.ANTIALIAS)
 
         if self.rotation != 0:
-            image = image.rotate(self.rotation * -1, expand=1)
+            image = image.rotate(self.rotation * -1, expand=1, resample=Image.BILINEAR)
             if self.type != "text":
                 image = image.resize((w, h), Image.ANTIALIAS)
 
@@ -154,7 +154,9 @@ class Layer:
         if isinstance(content, str):
             if self.type == "text":
                 content = self.create_text(content, scale_factor)
-                content = content.rotate(self.rotation * -1, expand=1)
+                content = content.rotate(
+                    self.rotation * -1, expand=1, resample=Image.BILINEAR
+                )
             else:
                 content = Layer.open_image(content)
                 content = self.__apply_filters__(content)
@@ -272,7 +274,7 @@ class Text(Layer):
             self.fontsize,
             self.color,
             self.align,
-            True,
+            False,
         )
         ret = wt.ret_img()
         return ret.resize((self.width, self.height), Image.ANTIALIAS)

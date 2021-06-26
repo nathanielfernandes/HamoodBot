@@ -18,17 +18,19 @@ class ErrorHandling(commands.Cog):
             commands.BucketType.default: "`globaly`",
         }
 
-    async def error_embed(self, ctx, title, msg):
+    async def error_embed(self, ctx, title, msg, c=False):
         embed = discord.Embed(
-            # title=f"`{ctx.command.name.title()}` | {title}",
+            title=f"`{ctx.command.name.title()}` | {title}",
             description=msg,
             colour=discord.Color.red(),
         )
-        embed.set_author(name=f"{ctx.command.name.title()} | {title}")
+        # embed.set_author(name=f"{ctx.command.name.title()} | {title}")
         # embed.set_footer(
         #     text=f"{ctx.author}",
         #     icon_url=ctx.author.avatar_url,
         # )
+        if c:
+            embed.set_footer(text="supporters get reduced cooldowns ;)")
         embed.set_thumbnail(
             url="https://cdn.discordapp.com/attachments/749779300181606411/799902760837316628/tumblr_01a3fd42036dbeac4d74baff3a2497ff_ecd049b3_500.gif"
         )
@@ -55,6 +57,7 @@ class ErrorHandling(commands.Cog):
                 ctx,
                 "Command on Cooldown",
                 f"Limit: `{error.cooldown.rate} times` every `{self.Hamood.pretty_dt(error.cooldown.per)}` {self.bTypes[error.cooldown.type]}\nPlease retry after: ```{self.Hamood.pretty_dt(error.retry_after)}```",
+                True,
             )
 
         elif isinstance(error, commands.MaxConcurrencyReached):
@@ -79,13 +82,13 @@ class ErrorHandling(commands.Cog):
                 perms = "\n".join(
                     f"• {str(p).replace('_', ' ').title()}" for p in error.missing_perms
                 )
-                if "Embed Links" in perms:
+                if "Send Messages" in perms:
+                    return
+                elif "Embed Links" in perms:
                     return await ctx.reply(
                         f"**I am missing the** `Embed Links` **permission!**",
                         mention_author=False,
                     )
-                elif "Send Messages" in perms:
-                    return
 
                 await self.error_embed(
                     ctx,
@@ -126,7 +129,7 @@ class ErrorHandling(commands.Cog):
                 )
 
             else:
-                p = self.Hamood.find_prefix(ctx.guild.id)
+                p = ctx.prefix
 
                 await self.error_embed(
                     ctx,

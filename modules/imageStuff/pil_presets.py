@@ -2,11 +2,104 @@ from PIL import Image, ImageDraw, ImageFont, ImageSequence, ImageEnhance, ImageO
 from io import BytesIO
 from datetime import datetime
 from pilmoji import Pilmoji
+import re, math
 
 from modules.imageStuff.writetext import WriteText
 
-
 WHITE = (256, 256, 256)
+
+EMOJI = re.compile(r"(<a?:\w+:?\d+>)")
+
+
+def standardize(image: Image, _max=1000, _min=500):
+    w, h = image.size
+    m = max(w, h)
+    mm = min(w, h)
+    if m > _max:
+        s = _max / m
+    elif mm < _min:
+        s = _min / mm
+    else:
+        s = 1
+
+    return image.resize((round(w * s), round(h * s)), Image.ANTIALIAS)
+
+
+def standardmeme(image, toptext, bottomtext):
+    image = image.convert("RGBA")
+    image = standardize(image)
+
+    w, h = image.size
+    mw, mh = w - 10, round(h / 6)
+
+    wt = WriteText(image)
+    try:
+        wt.write_text(
+            "center",
+            0,
+            toptext[:40],
+            "fonts/impact.ttf",
+            "fill",
+            mw,
+            mh,
+            (255, 255, 255),
+        )
+        fs = wt.get_font_size(bottomtext[:40], "fonts/impact.ttf", mw, mh)
+        y2 = wt.get_text_size("fonts/impact.ttf", fs, bottomtext[:40])
+        wt.write_text(
+            "center",
+            h - y2[1] - 10,
+            bottomtext[:40],
+            "fonts/impact.ttf",
+            "fill",
+            mw,
+            mh,
+            (255, 255, 255),
+        )
+    except Exception as e:
+        raise e
+        ret = None
+    else:
+        ret = wt.ret_img()
+
+    return ret
+
+
+def rainbowfy(image):
+    try:
+        image = image.convert("RGBA")
+        image = standardize(image)
+        w, h = image.size
+        r = Image.open("memePics/lgbtImage.png")
+        r = r.resize((w, h))
+        image.paste(r, (0, 0), mask=r)
+        image.paste(r, (0, 0), mask=r)
+    finally:
+        r.close()
+    return image
+
+
+def betterText(text, font, color):
+    with Image.new("RGBA", (0, 0), (0, 0, 0, 0)) as placeholder:
+        pdraw = ImageDraw.Draw(placeholder)
+        all_es = EMOJI.findall(text)
+        nt = str(text)
+        for e in all_es:
+            nt = nt.replace(e, "O")
+        w, h = pdraw.textsize(nt, font)
+        with Image.new("RGBA", (w + 40, h + 30), (0, 0, 0, 0)) as img:
+            with Pilmoji(img) as pilmoji:
+                pilmoji.text(
+                    xy=(10, 10),
+                    text=text,
+                    fill=color,
+                    font=font,
+                    anchor=None,
+                    spacing=0,
+                    align="left",
+                    emoji_size_factor=0.8,
+                )
+    return img
 
 
 def discord_quote(image: Image, username: str, ucolor: str, text: str):
@@ -95,3 +188,37 @@ def whatwhat(img, top_text: str, bottom_text: str):
         im.close()
 
     return ret
+
+
+ASCII_CHARS = ["@", "#", "S", "%", "?", "*", "+", ";", ":", ",", ".", " "][::-1]
+
+
+def regulate_size(image, scale=100):
+    w, h = image.size
+    r = h / w
+    height_f = int(scale * r)
+    return image.resize((int(scale * 1.75), height_f))
+
+
+def image_grayscale(image):
+    return image.convert("L")
+
+
+def image_to_ascii(image=None, scale=None):
+    image = regulate_size(image)
+    x, y = image.size
+    if x * y > 1990:
+        s = math.sqrt(1990 / (x * y))
+        image = image.resize((int(x * s), int(y * s)))
+
+    image = image_grayscale(image)
+
+    if scale is None:
+        scale = image.size[0]
+
+    pixels = image.getdata()
+
+    ascii_pixels = "".join([ASCII_CHARS[p // 25] for p in pixels])
+    return "\n".join(
+        ascii_pixels[i : (i + scale)] for i in range(0, len(ascii_pixels), scale)
+    )

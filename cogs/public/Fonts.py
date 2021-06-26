@@ -4,7 +4,7 @@ import random
 import json
 from discord.ext import commands
 from PIL import ImageFont
-from modules.image_functions import makeText, betterText
+from modules.imageStuff.pil_presets import betterText
 from utils.Premium import PremiumCooldown
 
 
@@ -42,7 +42,12 @@ class Fonts(commands.Cog):
         self.allFonts = [
             value[0]
             for value in list(self.FontCommands.values())
-            if value[0] not in ("minecraft-enchantment.ttf", "unown.ttf")
+            if value[0]
+            not in (
+                "minecraft-enchantment.ttf",
+                "unown.ttf",
+                "AVENGEANCE_HEROIC_AVENGER_BD.ttf",
+            )
         ]
         self.allColors = list(self.colorDict.values())
 
@@ -56,7 +61,9 @@ class Fonts(commands.Cog):
             )
             @commands.check(PremiumCooldown(prem=(1, 2.5, "user"), reg=(1, 5, "user")))
             @commands.bot_has_permissions(attach_files=True, embed_links=True)
-            async def cmd(self, ctx, *, content: commands.clean_content):
+            async def cmd(
+                self, ctx, *, content: commands.clean_content(fix_channel_mentions=True)
+            ):
                 await self.gen_text(ctx, content, self.FontCommands[ctx.command.name])
 
             cmd.cog = self
@@ -110,14 +117,23 @@ class Fonts(commands.Cog):
     @commands.command()
     @commands.bot_has_permissions(attach_files=True, embed_links=True)
     @commands.check(PremiumCooldown(prem=(2, 2.5, "user"), reg=(2, 5, "user")))
-    async def randomtext(self, ctx, *, content: commands.clean_content):
+    async def randomtext(
+        self, ctx, *, content: commands.clean_content(fix_channel_mentions=True)
+    ):
         """<randomtext>|||See your message in a random font."""
         await self.gen_text(ctx, content, ("random", "random", ""))
 
     @commands.command()
     @commands.bot_has_permissions(attach_files=True, embed_links=True)
     @commands.check(PremiumCooldown(prem=(2, 2.5, "user"), reg=(2, 5, "user")))
-    async def font(self, ctx, font, colour, *, content: commands.clean_content):
+    async def font(
+        self,
+        ctx,
+        font,
+        colour,
+        *,
+        content: commands.clean_content(fix_channel_mentions=True),
+    ):
         """<font> <color> <text>|||See your message with any font or color."""
         await self.gen_text(ctx, content, (font, colour, ""))
 

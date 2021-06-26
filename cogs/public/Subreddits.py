@@ -15,14 +15,14 @@ class Subreddits(commands.Cog):
         self.bot = bot
         self.Hamood = bot.Hamood
         self.RedditCommands = {
-            "meme": ("memes", True, ["memes"]),
+            "memes": ("memes", True, []),
             "dankmemes": ("dankmemes", True, ["dank", "dankmeme"]),
-            "cats": ("cats", True, ["cat", "kitten", "kitty"]),
+            "cats": ("cats", True, ["cat", "kitten", "kitty", "noura"]),
             "dog": ("dog", True, ["dogs", "doggy", "puppy"]),
             "blessedimages": ("Blessed_Images", True, ["bless", "blessed"]),
             "blursedimages": ("blursedimages", True, ["blursed"]),
             "cursedimages": ("cursedimages", True, ["cursed"]),
-            "raimimemes": ("raimimemes", True, ["pizzatime"]),
+            "raimimemes": ("raimimemes", True, ["pizzatime", "ayan"]),
             "minecraft": ("minecraft", True, []),
             "greentext": ("greentext", True, ["greentxt"]),
             "foodporn": ("FoodPorn", True, ["fp", "foodp"]),
@@ -130,6 +130,7 @@ class Subreddits(commands.Cog):
     @commands.check(PremiumCooldown(prem=(2, 30, "user"), reg=(2, 30, "channel")))
     @commands.bot_has_permissions(embed_links=True, manage_messages=True)
     async def imagefeed(self, ctx, sub=None):
+        """<subreddit>|||Opens a scrollable reddit feed. Filters only images."""
         feed = RedditFeed(ctx, self.bot)
         await feed(subreddit=self.clean_sub(sub), image_only=True)
 
@@ -138,6 +139,7 @@ class Subreddits(commands.Cog):
     @commands.check(PremiumCooldown(prem=(2, 30, "user"), reg=(2, 30, "channel")))
     @commands.bot_has_permissions(embed_links=True, manage_messages=True)
     async def feed(self, ctx, sub=None):
+        """<subreddit>|||Opens a scrollable reddit feed."""
         feed = RedditFeed(ctx, self.bot)
         await feed(subreddit=self.clean_sub(sub))
 

@@ -5,13 +5,18 @@ from PIL import Image
 from pil_stacks import Stack
 from time import perf_counter
 from io import BytesIO
+from typing import Union
 
 from utils.Premium import PremiumCooldown
 from modules.imageStuff.pil_presets import *
 
 
 class StrMemberEmoji(commands.Converter):
-    def __init__(self, n=2, require=False):
+    def __init__(
+        self,
+        n=2,
+        require=False,
+    ):
         self.n = n
         self.require = require
         self.re_member = re.compile(r"(<@!?\d+>)")
@@ -40,7 +45,7 @@ class StrMemberEmoji(commands.Converter):
             for pack in converters:
                 search, converter, i = pack
                 found = search(arg)
-                if found and ((arg.strip() == found[0]) or i == 0):
+                if found and (arg.strip() == found[0]):
                     obj = await converter.convert(ctx=ctx, argument=found[0])
                     if obj:
                         parsed.append(obj)
@@ -48,7 +53,11 @@ class StrMemberEmoji(commands.Converter):
                         break
 
             if not added:
-                parsed.append(arg)
+                parsed.append(
+                    await commands.clean_content(
+                        use_nicknames=True, fix_channel_mentions=True
+                    ).convert(ctx, arg)
+                )
 
         return parsed[: self.n]
 
@@ -109,6 +118,77 @@ class MemeGen(commands.Cog):
             base="memePics/youtubeImage.png",
             template="templates/youtube_TEMPLATE.json",
         )
+        self.COFFIN = Stack(
+            name="coffin",
+            base="memePics/coffinImage.jpg",
+            template="templates/coffin_TEMPLATE.json",
+        )
+        self.NEAT = Stack(
+            name="neat",
+            base="memePics/neatImage.jpg",
+            template="templates/neat_TEMPLATE.json",
+        )
+        self.GRAB = Stack(
+            name="grab",
+            base="memePics/grabImage.jpg",
+            template="templates/grab_TEMPLATE.json",
+        )
+        self.PRESENT = Stack(
+            name="present",
+            base="memePics/presentImage.jpg",
+            template="templates/present_TEMPLATE.json",
+        )
+        self.WORTHLESS = Stack(
+            name="worthless",
+            base="memePics/worthlessImage.jpg",
+            template="templates/worthless_TEMPLATE.json",
+        )
+
+        self.CHOICES = Stack(
+            name="choices",
+            base="memePics/choiceImage.png",
+            template="templates/choices_TEMPLATE.json",
+        )
+        self.DISGUSTING = Stack(
+            name="disgusting",
+            base="memePics/disgustingImage.png",
+            template="templates/disgusting_TEMPLATE.json",
+        )
+        self.SWERVE = Stack(
+            name="swerve",
+            base="memePics/swerveImage.jpg",
+            template="templates/zoom_TEMPLATE.json",
+        )
+        self.SNIPE = Stack(
+            name="snipe",
+            base="memePics/scopeImage.png",
+            template="templates/snipe_TEMPLATE.json",
+        )
+        self.STONKS = Stack(
+            name="stonks",
+            base="memePics/stonksImage.jpg",
+            template="templates/stonks_TEMPLATE.json",
+        )
+        self.UNO = Stack(
+            name="uno",
+            base="memePics/unoImage.png",
+            template="templates/uno_TEMPLATE.json",
+        )
+        self.STEPPED = Stack(
+            name="stepped",
+            base="memePics/steppedImage.png",
+            template="templates/stepped_TEMPLATE.json",
+        )
+        self.NOTE = Stack(
+            name="note",
+            base="memePics/quizImage.jpg",
+            template="templates/note_TEMPLATE.json",
+        )
+        self.TSHIRT = Stack(
+            name="tshirt",
+            base="memePics/tshirtImage.png",
+            template="templates/tshirt_TEMPLATE.json",
+        )
 
     async def search_for_image(self, ctx, depth):
         msg = await ctx.message.channel.history(limit=depth).find(
@@ -122,7 +202,7 @@ class MemeGen(commands.Cog):
         if msg:
             check = True
             if len(msg.attachments) > 0:
-                if msg.attachments[0].size <= 4194304:
+                if msg.attachments[0].size <= 8388608:
                     url = msg.attachments[0].url
                     check = False
             if len(msg.embeds) > 0:
@@ -166,6 +246,7 @@ class MemeGen(commands.Cog):
         return
 
     async def gen_kwargs(self, content: str) -> dict:
+        cache = {}
         kwargs = {}
         for i, arg in enumerate(content):
             if isinstance(arg, str):
@@ -178,10 +259,13 @@ class MemeGen(commands.Cog):
                 else:
                     url = str(arg.url)
 
-                imagebytes = await self.Hamood.ahttp.bytes_download(url)
-                kwargs[f"image{i+1}"] = (
-                    Image.open(imagebytes) if imagebytes is not None else str(arg)
-                )
+                if url not in cache:
+                    imagebytes = await self.Hamood.ahttp.bytes_download(url)
+                    pil = Image.open(imagebytes) if imagebytes is not None else str(arg)
+                    cache[url] = pil
+                else:
+                    pil = cache[url]
+                kwargs[f"image{i+1}"] = pil
 
         return kwargs
 
@@ -236,44 +320,189 @@ class MemeGen(commands.Cog):
         """<text|@mention|:emoji:>, [text|@mention|:emoji:], [text|@mention|:emoji:]|||Look back at it."""
         await self.send_meme(ctx, content, self.LOOKBACK)
 
-    @commands.command(aliases=["qoute"])
+    @commands.command()
     @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
     @commands.bot_has_permissions(attach_files=True, embed_links=True)
-    async def quote(
-        self, ctx, member: discord.Member, *, content: commands.clean_content
+    async def coffin(
+        self, ctx, content: Union[discord.Member, discord.PartialEmoji] = None
     ):
-        """<@member> <text>|||Generates a fake message from the given user."""
-        av = await self.fetch_av(member)
-        color = member.color.to_rgb()
-        if color == (0, 0, 0):
-            color = (255, 255, 255)
-        img, dt = await self.Hamood.run_async_t(
-            discord_quote,
-            *(av, member.display_name, color, content),
-        )
-        await self.Hamood.quick_embed(ctx, pil_image=img, stats=dt)
+        """[@mention|:emoji:]|||Okay, get in."""
+        content = ctx.author if content is None else content
+        await self.send_meme(ctx, [content], self.COFFIN)
 
     @commands.command()
     @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
     @commands.bot_has_permissions(attach_files=True, embed_links=True)
-    async def what(self, ctx, *, content: commands.clean_content = None):
-        """[text1], [text2]|||What?, How?"""
-        if content is None:
-            content = "what, how"
-        if "," not in content:
-            content += ", "
+    async def grab(
+        self, ctx, content: Union[discord.Member, discord.PartialEmoji] = None
+    ):
+        """[@mention|:emoji:]|||You belong to it now."""
+        content = ctx.author if content is None else content
+        await self.send_meme(ctx, [content], self.GRAB)
 
-        av = await self.search_for_image(ctx, 50)
-        if av:
+    @commands.command()
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def worthless(
+        self, ctx, content: Union[discord.Member, discord.PartialEmoji] = None
+    ):
+        """[@mention|:emoji:]|||That's worthless."""
+        content = ctx.author if content is None else content
+        await self.send_meme(ctx, [content, content], self.WORTHLESS)
+
+    @commands.command()
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def present(self, ctx, *, content: StrMemberEmoji(n=1, require=True) = None):
+        """<text|@mention|:emoji:|||Yeah this is presentable."""
+        if content is None:
+            im = await self.search_for_image(ctx, 50)
+            if im:
+                img, dt = await self.Hamood.run_async_t(
+                    self.PRESENT.generate,
+                    image1=im,
+                )
+                await self.Hamood.quick_embed(ctx, pil_image=img, stats=dt)
+        else:
+            await self.send_meme(ctx, content, self.PRESENT)
+
+    @commands.command()
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def choices(self, ctx, *, content: StrMemberEmoji(n=3, require=True)):
+        """<text|@mention|:emoji:>, [text|@mention|:emoji:], [text|@mention|:emoji:]|||So many choices, so little time."""
+        await self.send_meme(ctx, content, self.CHOICES)
+
+    @commands.command()
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def disgusting(self, ctx):
+        """|||It speaks for itself."""
+        im = await self.search_for_image(ctx, 50)
+        if im:
             img, dt = await self.Hamood.run_async_t(
-                whatwhat, *(av, *content.split(","))
+                self.DISGUSTING.generate, image1=im, image2=self.DISGUSTING.image
             )
             await self.Hamood.quick_embed(ctx, pil_image=img, stats=dt)
 
     @commands.command()
     @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
     @commands.bot_has_permissions(attach_files=True, embed_links=True)
-    async def youtube(self, ctx, *, content: commands.clean_content = None):
+    async def swerve(self, ctx, *, content: StrMemberEmoji(n=3, require=True)):
+        """<text|@mention|:emoji:>, [text|@mention|:emoji:], [text|@mention|:emoji:]|||Which way are you gonna go."""
+        await self.send_meme(ctx, content, self.SWERVE)
+
+    @commands.command()
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def snipe(
+        self, ctx, content: Union[discord.Member, discord.PartialEmoji] = None
+    ):
+        """[@mention|:emoji:]|||Snipe someone or something."""
+        if content is None:
+            im = await self.search_for_image(ctx, 50)
+            if im:
+                img, dt = await self.Hamood.run_async_t(
+                    self.SNIPE.generate, image1=im, image2=self.SNIPE.image
+                )
+                await self.Hamood.quick_embed(ctx, pil_image=img, stats=dt)
+        else:
+            await self.send_meme(ctx, content, self.SNIPE)
+
+    @commands.command()
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def stonks(
+        self, ctx, content: Union[discord.Member, discord.PartialEmoji] = None
+    ):
+        """[@mention|:emoji:]|||Stonks!"""
+        content = ctx.author if content is None else content
+        await self.send_meme(ctx, [content], self.STONKS)
+
+    @commands.command()
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def uno(self, ctx, *, content: StrMemberEmoji):
+        """<text|@mention|:emoji:>, [text|@mention|:emoji:]|||Draw 25 or..."""
+        await self.send_meme(ctx, content, self.UNO)
+
+    @commands.command()
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def stepped(
+        self, ctx, content: Union[discord.Member, discord.PartialEmoji] = None
+    ):
+        """[@mention|:emoji:]|||Just stepped in sh#$&."""
+        content = ctx.author if content is None else content
+        await self.send_meme(ctx, [content], self.STEPPED)
+
+    @commands.command()
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def note(self, ctx, *, content: StrMemberEmoji(n=1, require=True) = None):
+        """<text|@mention|:emoji:|||What is this."""
+        if content is None:
+            im = await self.search_for_image(ctx, 50)
+            if im:
+                img, dt = await self.Hamood.run_async_t(
+                    self.NOTE.generate,
+                    image1=im,
+                )
+                await self.Hamood.quick_embed(ctx, pil_image=img, stats=dt)
+        else:
+            await self.send_meme(ctx, content, self.NOTE)
+
+    @commands.command(aliases=["shirt", "tradam"])
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def tshirt(self, ctx, *, content: StrMemberEmoji(n=1, require=True) = None):
+        """<text|@mention|:emoji:|||Put it on a tshirt."""
+        if content is None:
+            im = await self.search_for_image(ctx, 50)
+            if im:
+                img, dt = await self.Hamood.run_async_t(
+                    self.TSHIRT.generate,
+                    image1=im,
+                )
+                await self.Hamood.quick_embed(ctx, pil_image=img, stats=dt)
+        else:
+            await self.send_meme(ctx, content, self.TSHIRT)
+
+    @commands.command(aliases=["gay", "pride"])
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def rainbow(self, ctx, content: Union[discord.Member] = None):
+        """[@member]|||Rainbow hmmm."""
+        if content is None:
+            im = await self.search_for_image(ctx, 50)
+        else:
+            im = await self.fetch_av(content)
+
+        if im:
+            img, dt = await self.Hamood.run_async_t(rainbowfy, image=im)
+            await self.Hamood.quick_embed(ctx, pil_image=img, stats=dt)
+
+    @commands.command()
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def stepped(
+        self, ctx, content: Union[discord.Member, discord.PartialEmoji] = None
+    ):
+        """[@mention|:emoji:]|||Just stepped in sh#$&."""
+        content = ctx.author if content is None else content
+        await self.send_meme(ctx, [content], self.STEPPED)
+
+    @commands.command()
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def youtube(
+        self,
+        ctx,
+        *,
+        content: commands.clean_content(
+            use_nicknames=True, fix_channel_mentions=True, remove_markdown=True
+        ) = None,
+    ):
         """[text1], [text2]|||What?, How?"""
         if content is None:
             content = (
@@ -294,6 +523,92 @@ class MemeGen(commands.Cog):
                 username=str(ctx.author),
                 views=f"{random.randint(1, 10000000):,} views",
                 pfp=av,
+            )
+            await self.Hamood.quick_embed(ctx, pil_image=img, stats=dt)
+
+    @commands.command()
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def ascii(self, ctx, content: Union[discord.Member] = None):
+        """[@member]|||Converts images to text."""
+        if content is None:
+            im = await self.search_for_image(ctx, 50)
+        else:
+            im = await self.fetch_av(content)
+
+        if im:
+            img, dt = await self.Hamood.run_async_t(image_to_ascii, image=im)
+            await ctx.reply(content=f"```{img}```", mention_author=False)
+
+    @commands.command()
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def meme(
+        self,
+        ctx,
+        *,
+        content: commands.clean_content(
+            use_nicknames=True, fix_channel_mentions=True, remove_markdown=True
+        ) = None,
+    ):
+        """[toptext], [bottomtext]|||Your standard meme format."""
+        if content is None:
+            content = "TOPTEXT, BOTTOMTEXT"
+        if "," not in content:
+            content += ", "
+
+        im = await self.search_for_image(ctx, 50)
+        if im:
+            img, dt = await self.Hamood.run_async_t(
+                standardmeme, *(im, *content.split(","))
+            )
+            if img:
+                await self.Hamood.quick_embed(ctx, pil_image=img, stats=dt)
+            else:
+                await self.Hamood.quick_embed(
+                    ctx,
+                    title="Could Not Generate Meme :(",
+                    description="Image dimensions could have been too weird.",
+                )
+
+    @commands.command(aliases=["qoute"])
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def quote(
+        self, ctx, member: discord.Member, *, content: commands.clean_content
+    ):
+        """<@member> <text>|||Generates a fake message from the given user."""
+        av = await self.fetch_av(member)
+        color = member.color.to_rgb()
+        if color == (0, 0, 0):
+            color = (255, 255, 255)
+        img, dt = await self.Hamood.run_async_t(
+            discord_quote,
+            *(av, member.display_name, color, content),
+        )
+        await self.Hamood.quick_embed(ctx, pil_image=img, stats=dt)
+
+    @commands.command()
+    @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
+    @commands.bot_has_permissions(attach_files=True, embed_links=True)
+    async def what(
+        self,
+        ctx,
+        *,
+        content: commands.clean_content(
+            use_nicknames=True, fix_channel_mentions=True, remove_markdown=True
+        ) = None,
+    ):
+        """[text1], [text2]|||What?, How?"""
+        if content is None:
+            content = "what, how"
+        if "," not in content:
+            content += ", "
+
+        av = await self.search_for_image(ctx, 50)
+        if av:
+            img, dt = await self.Hamood.run_async_t(
+                whatwhat, *(av, *content.split(","))
             )
             await self.Hamood.quick_embed(ctx, pil_image=img, stats=dt)
 

@@ -174,7 +174,8 @@ class About(commands.Cog):
 
             if query in cog_names:
                 cog_name = cog_names[query]
-                commands = self.bot.get_cog(cog_name).get_commands()
+                _cog = self.bot.get_cog(cog_name)
+                commands = _cog.get_commands()
                 embed.description += (
                     f"```yaml\nUse {p}help <command> to find out more about it.```"
                 )
@@ -182,9 +183,12 @@ class About(commands.Cog):
                 embed.title = f"`{cog_name}` Commands"
 
                 val = [f"`{c.name}`" for c in commands]
-                embed.add_field(
-                    name=f"{len(commands)} Commands", value=", ".join(val), inline=False
-                )
+                if val:
+                    embed.add_field(
+                        name=f"{len(commands)} Commands",
+                        value=", ".join(val),
+                        inline=False,
+                    )
             elif query in command_names:
                 embed.title = f"`{p}{query}`"
 

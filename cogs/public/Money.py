@@ -44,7 +44,7 @@ class Money(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(3, 5, commands.BucketType.user)
     async def checkbalance(self, ctx, member: discord.Member):
-        """``checkbalance [@member]`` Lets you check a members bank balance"""
+        """<@member>|||Lets you check a members bank balance."""
         bal = await self.Hamood.Currency.get_currency(ctx.guild.id, member.id)
         if bal is None:
             bal = {"bank": 0, "bank_max": 500}
@@ -61,7 +61,7 @@ class Money(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(3, 5, commands.BucketType.user)
     async def balance(self, ctx, upgrade="nah"):
-        """``balance`` get your current balance."""
+        """|||Get your current balance."""
         bal = await self.Hamood.Currency.get_currency(ctx.guild.id, ctx.author.id)
         if upgrade.lower() == "upgrade":
             if bal is not None:
@@ -115,7 +115,7 @@ class Money(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def cheque(self, ctx):
-        """``cheque`` Claims a cheque if you have one."""
+        """|||Claims a cheque if you have one."""
         items = await self.Hamood.Inventories.get_items(ctx.guild.id, ctx.author.id)
         if items is not None:
             if items.get("cheque") is not None:
@@ -148,7 +148,7 @@ class Money(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def deposit(self, ctx, amount):
-        """``deposit [amount]`` deposit money into the bank for safe keeping."""
+        """<amount>|||Deposit money into the bank for safe keeping."""
         if amount == "all" or amount == "max":
             amount = 100000000000000000000000000
 
@@ -181,7 +181,7 @@ class Money(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def withdraw(self, ctx, amount):
-        """``withdraw [amount]`` withdraws money from the bank into your wallet."""
+        """<amount>|||Withdraws money from the bank into your wallet."""
         if amount == "all" or amount == "max":
             amount = 100000000000000000000000000
 
@@ -207,7 +207,7 @@ class Money(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 900, commands.BucketType.user)
     async def transfer(self, ctx, recipient: discord.Member = None, amount=1):
-        """``transfer [@member] [amount]`` Transfer funds to another member. There is a 10% tax on transfering."""
+        """<@member> <amount>|||Transfer funds to another member. There is a 10% tax on transfering."""
         if recipient is not None and recipient.id != ctx.author.id:
             amount = abs(int(amount))
             sender = ctx.author
@@ -249,7 +249,7 @@ class Money(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def richest(self, ctx):
-        """``richest`` See the richest members in the server."""
+        """|||See the richest members in the server."""
         server = await self.Hamood.Currency.get(ctx.guild.id)
         gdp = 0
 

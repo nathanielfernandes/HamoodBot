@@ -512,32 +512,6 @@ class Modify_Gif(Modify):
         return self.gif
 
 
-EMOJI = re.compile(r"(<a?:\w+:?\d+>)")
-
-
-def betterText(text, font, color):
-    with Image.new("RGBA", (0, 0), (0, 0, 0, 0)) as placeholder:
-        pdraw = ImageDraw.Draw(placeholder)
-        all_es = EMOJI.findall(text)
-        nt = str(text)
-        for e in all_es:
-            nt = nt.replace(e, "O")
-        w, h = pdraw.textsize(nt, font)
-        with Image.new("RGBA", (w + 40, h + 30), (0, 0, 0, 0)) as img:
-            with Pilmoji(img) as pilmoji:
-                pilmoji.text(
-                    xy=(10, 10),
-                    text=text,
-                    fill=color,
-                    font=font,
-                    anchor=None,
-                    spacing=0,
-                    align="left",
-                    emoji_size_factor=0.8,
-                )
-    return img
-
-
 # needs work
 def makeText(content, font, font_size, colour, final):
     """turns text from text into an image of the text"""

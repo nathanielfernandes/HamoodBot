@@ -7,6 +7,7 @@ import modules.checks as checks
 ## TODO
 # Rework this entire thing
 
+
 class Items(commands.Cog):
     """Commands to manage your inventory :warning: `Rework In Progress`"""
 
@@ -100,7 +101,7 @@ class Items(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def inventory(self, ctx, sort_by="price", page=1):
-        """``inventory [sorting] [page]`` view your current inventory."""
+        """[sorting] [page]|||View your current inventory."""
         items = await self.Hamood.Inventories.get_items(ctx.guild.id, ctx.author.id)
 
         if sort_by.lower() == "upgrade":
@@ -122,7 +123,9 @@ class Items(commands.Cog):
                     )
 
                     await self.Hamood.Inventories.incr_item_max(
-                        ctx.guild.id, ctx.author.id, n - c,
+                        ctx.guild.id,
+                        ctx.author.id,
+                        n - c,
                     )
 
                     embed = discord.Embed(
@@ -194,7 +197,7 @@ class Items(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(5, 10, commands.BucketType.user)
     async def iteminfo(self, ctx, *, name: commands.clean_content):
-        """``iteminfo [item name]`` get information on an item."""
+        """<item name>|||Get information on an item."""
         if self.valid_item(name):
             name = self.to_id(name)
             desc = "\n".join([f"{self.Hamood.market.all_items[name]['info']}"])
@@ -221,7 +224,7 @@ class Items(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(5, 10, commands.BucketType.user)
     async def itemlist(self, ctx, sort_by="price", page=1):
-        """``itemlist [sorting] [page]`` View all the items that you could get."""
+        """[sorting] [page]|||View all the items that you could get."""
         if sort_by.isdigit():
             page = int(sort_by)
             sort_by = "price"
@@ -244,7 +247,7 @@ class Items(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def open(self, ctx, item_id):
-        """``open [crate_id]`` used to open crates"""
+        """<crate_id>|||Used to open crates."""
         item_id = self.to_id(item_id)
         if item_id in self.Hamood.market.crates:
             inv = await self.Hamood.Inventories.get_items(ctx.guild.id, ctx.author.id)
@@ -318,7 +321,7 @@ class Items(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def buy(self, ctx, item_id, amount=1):
-        """``buy [item_id] [amount]`` buy an item using your bank's funds."""
+        """<item_id> <amount>|||Buy an item using your bank's funds."""
         amount = abs(int(amount))
         if amount == 0:
             amount = 1
@@ -373,7 +376,7 @@ class Items(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def sell(self, ctx, item_id, amount=1):
-        """``sell [item_id] [amount]`` sell your items for cash."""
+        """<item_id> <amount>|||Sell your items for cash."""
         if isinstance(amount, str) and amount.lower() == "all":
             amount = abs(int(amount))
             if amount == 0:
@@ -420,7 +423,7 @@ class Items(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def trash(self, ctx, item_id, amount=1):
-        """``trash [item_id] [amount]`` Throw out unwanted items."""
+        """<item_id> <amount>|||Throw out unwanted items."""
         if isinstance(amount, str) and amount.lower() == "all":
             amount = abs(int(amount))
         if self.valid_item(item_id):
@@ -460,7 +463,7 @@ class Items(commands.Cog):
     async def gift(
         self, ctx, recipient: discord.Member = None, item_id="1234", amount=1
     ):
-        """``gift [@member] [item_id] [amount]`` Gift items to other members. 5 items max."""
+        """<@member> <item_id> [amount]|||Gift items to other members. 5 items max."""
         if recipient is not None and recipient.id != ctx.author.id:
             if self.valid_item(item_id):
                 amount = abs(int(amount))
@@ -516,7 +519,7 @@ class Items(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(5, 10, commands.BucketType.user)
     async def shop(self, ctx, page=1):
-        """``shop [page]`` view the current items you can buy."""
+        """[page]|||View the current items you can buy."""
         items, n = await self.sort_items("shop", "shop", page)
         p = self.Hamood.find_prefix(ctx.guild.id)
         embed = discord.Embed(

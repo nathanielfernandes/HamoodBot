@@ -1,0 +1,29 @@
+{
+    "LAYERS": {
+        "image1": {
+            "name": "image1",
+            "x": 273,
+            "y": 583,
+            "width": 221,
+            "height": 217,
+            "rotation": 40,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "image",
+            "constant": null
+        }
+    },
+    "POSTFILTERS": {
+        "sharpness": 1.0,
+        "contrast": 1.0,
+        "color": 1.0,
+        "brightness": 1.0
+    },
+    "LAYERORDER": [
+        "image1"
+    ]
+}

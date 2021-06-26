@@ -100,7 +100,7 @@ class Fun(commands.Cog):
         random_word = random.choice(self.Hamood.RANDOMWORDS)
         await self.Hamood.quick_embed(
             ctx,
-            description=f"{member.mention} your vibe checked out to be **{random_word}**",
+            description=f"{member.mention} your vibe checked out to be **{random_word}** {random.choice(self.Hamood.RANDOMEMOJIS)}",
         )
 
     @commands.command()
@@ -111,7 +111,10 @@ class Fun(commands.Cog):
         member = ctx.author if not member else member
         fonts = self.bot.get_cog("Fonts")
         img, color = await fonts.gen_text(
-            ctx, random.choice(self.Hamood.RANDOMWORDS), ("random", "random", ""), False
+            ctx,
+            f"{random.choice(self.Hamood.RANDOMWORDS)} {random.choice(self.Hamood.RANDOMEMOJIS)}",
+            ("random", "random", ""),
+            False,
         )
         await self.Hamood.quick_embed(
             ctx=ctx,

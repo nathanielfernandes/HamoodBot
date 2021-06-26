@@ -19,9 +19,9 @@
         "title": {
             "name": "title",
             "x": 40,
-            "y": 504,
+            "y": 500,
             "width": 843,
-            "height": 89,
+            "height": 100,
             "rotation": 0,
             "filters": {
                 "sharpness": 1.0,
@@ -34,9 +34,9 @@
             "fontname": "fonts/Whitney-Semibold.ttf",
             "fontsize": 40,
             "color": [
-                0,
-                0,
-                0
+                1,
+                1,
+                1
             ],
             "align": "left"
         },
@@ -61,7 +61,7 @@
             "x": 631,
             "y": 606,
             "width": 234,
-            "height": 46,
+            "height": 55,
             "rotation": 0,
             "filters": {
                 "sharpness": 1.0,
@@ -83,9 +83,9 @@
         "username": {
             "name": "username",
             "x": 100,
-            "y": 584,
+            "y": 580,
             "width": 181,
-            "height": 34,
+            "height": 40,
             "rotation": 0,
             "filters": {
                 "sharpness": 1.0,

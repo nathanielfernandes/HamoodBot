@@ -1,0 +1,54 @@
+{
+    "LAYERS": {
+        "image1": {
+            "name": "image1",
+            "x": 408,
+            "y": 428,
+            "width": 161,
+            "height": 151,
+            "rotation": 34,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "image",
+            "constant": null
+        },
+        "text1": {
+            "name": "text1",
+            "x": 357,
+            "y": 394,
+            "width": 197,
+            "height": 170,
+            "rotation": 20,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "text",
+            "constant": null,
+            "fontname": "fonts/Whitney-Semibold.ttf",
+            "fontsize": 27,
+            "color": [
+                0,
+                0,
+                0
+            ],
+            "align": "center"
+        }
+    },
+    "POSTFILTERS": {
+        "sharpness": 1.0,
+        "contrast": 1.0,
+        "color": 1.0,
+        "brightness": 1.0
+    },
+    "LAYERORDER": [
+        "image1",
+        "text1"
+    ]
+}

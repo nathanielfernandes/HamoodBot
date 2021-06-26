@@ -1,0 +1,46 @@
+{
+    "LAYERS": {
+        "image2": {
+            "name": "image2",
+            "x": 903,
+            "y": 1425,
+            "width": 179,
+            "height": 74,
+            "rotation": 164,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "image",
+            "constant": null
+        },
+        "image1": {
+            "name": "image1",
+            "x": 421,
+            "y": 205,
+            "width": 508,
+            "height": 495,
+            "rotation": 6,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "image",
+            "constant": null
+        }
+    },
+    "POSTFILTERS": {
+        "sharpness": 1.0,
+        "contrast": 1.0,
+        "color": 1.0,
+        "brightness": 1.0
+    },
+    "LAYERORDER": [
+        "image2",
+        "image1"
+    ]
+}

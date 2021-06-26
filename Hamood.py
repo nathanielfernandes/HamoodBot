@@ -39,6 +39,7 @@ class Hamood:
         self.bot.on_message = self.on_message
         self.bot.on_ready = self.on_ready
         self.bot.add_check(self.spam_prev, call_once=True)
+        self.bot.add_check(self.allowed_check, call_once=True)
 
         self.prefixes_list = {}
         self.find_prefix = lambda guild_id: self.prefixes_list.get(guild_id, ".")
@@ -68,7 +69,6 @@ class Hamood:
         self.Currency = Currency(self.MONGO)
         self.Members = Members(self.MONGO)
         self.PremiumUsers = []
-        self.PremiumGuilds = []
         print(ANSI.ENDC, end="")
         self.cprint(
             f"----------------------------- {self.deltaT():0.2f}s",
@@ -99,7 +99,7 @@ class Hamood:
         self.load_cogs()
         self.STARTUP = datetime.datetime.now()
         self.market.update_items.start()
-        # self.clear_temp.start()
+        self.update_premiums.start()
         self.bot.run(self.TOKEN)
 
     def deltaT(self):
@@ -200,6 +200,12 @@ class Hamood:
         name = self.save_name(ext)
         return f"{self.filepath}/temp/{name}", f"{self.CDN_URL}/{name}"
 
+    async def allowed_check(self, ctx):
+        self.command_invocations += 1
+        if ctx.cog.public:
+            self.cog_invokes[ctx.cog.qualified_name] += 1
+        return True
+
     async def spam_prev(self, ctx):
         self.command_invocations += 1
         if ctx.cog.public:
@@ -227,26 +233,39 @@ class Hamood:
         else:
             return False
 
-    async def user_is_premium(self, user_id: int):
+    async def user_is_premium(self, user_id):
         return user_id in self.PremiumUsers
 
-    # @tasks.loop(hours=1, reconnect=True)
-    # async def clear_temp(self):
-    #     files = os.listdir(f"{self.filepath}/temp")
-    #     s, e = 0, 0
-    #     for f in files:
-    #         clean = f.split(".")[0]
-    #         if clean.isdigit():
-    #             if int(clean) < int(self.start_tstamp):
-    #                 try:
-    #                     os.remove(f"{self.filepath}/temp/{f}")
-    #                 except:
-    #                     e += 1
-    #                 else:
-    #                     s += 1
+    @tasks.loop(minutes=30, reconnect=True)
+    async def update_premiums(self):
+        await self.bot.wait_until_ready()
+        supporter = self.bot.get_guild(854249588341080104)
+        self.PremiumUsers = []
+        for m in supporter.members:
+            if any(r.name == "supporter" for r in m.roles):
+                self.PremiumUsers.append(m.id)
+        print(
+            f"{ANSI.WARNING}Updated Premium Members: {ANSI.ENDC} {ANSI.OKGREEN}{len(self.PremiumUsers)}{ANSI.ENDC}"
+        )
 
-    #     self.start_tstamp = self.tstamp()
-    #     print(
-    #         f"{ANSI.WARNING}Cleared Temp:{ANSI.ENDC} \t {ANSI.OKGREEN}{s} files deleted{ANSI.ENDC}"
-    #         + (f"\t {ANSI.FAIL}{e} files failed{ANSI.ENDC}" if e > 0 else "")
-    #     )
+
+# @tasks.loop(hours=1, reconnect=True)
+# async def clear_temp(self):
+#     files = os.listdir(f"{self.filepath}/temp")
+#     s, e = 0, 0
+#     for f in files:
+#         clean = f.split(".")[0]
+#         if clean.isdigit():
+#             if int(clean) < int(self.start_tstamp):
+#                 try:
+#                     os.remove(f"{self.filepath}/temp/{f}")
+#                 except:
+#                     e += 1
+#                 else:
+#                     s += 1
+
+#     self.start_tstamp = self.tstamp()
+#     print(
+#         f"{ANSI.WARNING}Cleared Temp:{ANSI.ENDC} \t {ANSI.OKGREEN}{s} files deleted{ANSI.ENDC}"
+#         + (f"\t {ANSI.FAIL}{e} files failed{ANSI.ENDC}" if e > 0 else "")
+#     )

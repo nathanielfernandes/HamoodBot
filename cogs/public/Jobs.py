@@ -10,6 +10,7 @@ from games.trivia_functions import _Trivia
 ## TODO
 # Rework this entire thing
 
+
 class Jobs(commands.Cog):
     """Make some money :warning: `Rework In Progress`"""
 
@@ -57,7 +58,7 @@ class Jobs(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 15, commands.BucketType.user)
     async def work(self, ctx):
-        """``work`` earn some money"""
+        """|||Earn some money"""
         await self.Hamood.Currency.add_member(ctx.guild.id, ctx.author.id)
 
         payout = await self.Hamood.Currency.get_currency(ctx.guild.id, ctx.author.id)
@@ -177,7 +178,7 @@ class Jobs(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 1800, commands.BucketType.user)
     async def steal(self, ctx, member: discord.Member = None):
-        """``steal [@member]`` stealing isn't very nice"""
+        """<@member>|||Stealing isn't very nice."""
         if member is not None and member.id != ctx.author.id:
             if member.id == self.bot.user.id:
                 await self.Hamood.Currency.add_member(ctx.guild.id, ctx.author.id)
@@ -274,8 +275,8 @@ class Jobs(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def daily(self, ctx):
-        """``daily`` Get your daily reward."""
-        p = self.bot.prefixes_list.get(ctx.guild.id, ".")
+        """|||Get your daily reward."""
+        p = str(ctx.prefix)
         ready, time, streak = await self.Hamood.Members.is_daily_ready(ctx.author.id)
         if ready:
             await self.Hamood.Inventories.add_member(ctx.guild.id, ctx.author.id)
@@ -308,7 +309,7 @@ class Jobs(commands.Cog):
     @checks.isAllowedCommand()
     @commands.cooldown(1, 180, commands.BucketType.user)
     async def fish(self, ctx):
-        """``fish`` Maybe you'll catch something"""
+        """|||Maybe you'll catch something."""
         items = await self.Hamood.Inventories.get_items(ctx.guild.id, ctx.author.id)
         if items is not None:
             if items.get("fishing_rod") is not None:

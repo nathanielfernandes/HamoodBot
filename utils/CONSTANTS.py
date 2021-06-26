@@ -89,8 +89,8 @@ def load_constants(self):
         "🆒",
         "🎶",
     ]
-    self.CDN_URL = "https://dev.hamood.app"
-    self.URL = "https://dev.hamood.app"
+    self.CDN_URL = "https://cdn.hamood.app"
+    self.URL = "https://hamood.app"
 
 
 def add_regexes(self):

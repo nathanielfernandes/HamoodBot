@@ -4,6 +4,7 @@ import random
 import discord
 import asyncio
 from discord.ext import commands
+from urllib.parse import urlparse
 
 from utils.Premium import PremiumCooldown
 from modules.image_functions import randomFile, makeColor
@@ -228,11 +229,51 @@ class General(commands.Cog):
 
         return await ctx.send(embed=embed)
 
-    @commands.command(aliases=["soggs"])
+    @commands.command(aliases=["ray"])
     @commands.check(PremiumCooldown(prem=(3, 5, "user"), reg=(1, 5, "user")))
     @commands.bot_has_permissions(embed_links=True)
     async def define(self, ctx, *, content: commands.clean_content):
-        """<word or phrase>|||Get a difinition of a word or phrase from urban dictionary"""
+        """<word or phrase>|||Get a difinition of a word or phrase from Free Dictionary Api."""
+        content = content[:200]
+        url = urlparse(
+            f"https://api.dictionaryapi.dev/api/v2/entries/en_US/{content}"
+        ).geturl()
+
+        response = await self.Hamood.ahttp.get_json(url=url)
+        if isinstance(response, list):
+            d = response[0]
+
+            fields = []
+            for m in d.get("meanings", []):
+                fields.append(
+                    {
+                        "name": m["partOfSpeech"].title(),
+                        "value": m["definitions"][0]["definition"],
+                    }
+                )
+
+            await self.Hamood.quick_embed(
+                ctx=ctx,
+                title=f'***{d["word"]}***',
+                url=url,
+                fields=fields,
+                author={
+                    "name": "Dictionary",
+                    "icon_url": "https://cdn.discordapp.com/attachments/829072008733261834/858162599807680572/books-icon.png",
+                },
+                footer={"text": f"requested by {ctx.author}"},
+                color=discord.Color.from_rgb(219, 24, 50),
+            )
+        else:
+            await self.Hamood.quick_embed(
+                ctx, description=f"Could Not Find Results for: `{content}`"
+            )
+
+    @commands.command(aliases=["soggs"])
+    @commands.check(PremiumCooldown(prem=(3, 5, "user"), reg=(1, 5, "user")))
+    @commands.bot_has_permissions(embed_links=True)
+    async def urban(self, ctx, *, content: commands.clean_content):
+        """<word or phrase>|||Get a difinition of a word or phrase from urban dictionary."""
 
         def fix_desc(desc):
             links = self.bracketed.findall(desc)
