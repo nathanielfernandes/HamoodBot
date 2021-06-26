@@ -395,19 +395,18 @@ class MemeGen(commands.Cog):
     @commands.command()
     @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
     @commands.bot_has_permissions(attach_files=True, embed_links=True)
-    async def snipe(
-        self, ctx, content: Union[discord.Member, discord.PartialEmoji] = None
-    ):
+    async def snipe(self, ctx, content: Union[discord.Member] = None):
         """[@mention|:emoji:]|||Snipe someone or something."""
         if content is None:
             im = await self.search_for_image(ctx, 50)
-            if im:
-                img, dt = await self.Hamood.run_async_t(
-                    self.SNIPE.generate, image1=im, image2=self.SNIPE.image
-                )
-                await self.Hamood.quick_embed(ctx, pil_image=img, stats=dt)
         else:
-            await self.send_meme(ctx, content, self.SNIPE)
+            im = await self.fetch_av(content)
+
+        if im:
+            img, dt = await self.Hamood.run_async_t(
+                self.SNIPE.generate, image1=im, image2=self.SNIPE.image
+            )
+            await self.Hamood.quick_embed(ctx, pil_image=img, stats=dt)
 
     @commands.command()
     @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
