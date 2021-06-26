@@ -1,0 +1,96 @@
+{
+    "LAYERS": {
+        "image2": {
+            "name": "image2",
+            "x": 508,
+            "y": 3,
+            "width": 277,
+            "height": 282,
+            "rotation": 10,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "image",
+            "constant": null
+        },
+        "image1": {
+            "name": "image1",
+            "x": 186,
+            "y": 151,
+            "width": 276,
+            "height": 275,
+            "rotation": -29,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "image",
+            "constant": null
+        },
+        "text2": {
+            "name": "text2",
+            "x": 503,
+            "y": -8,
+            "width": 298,
+            "height": 125,
+            "rotation": 0,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "text",
+            "constant": null,
+            "fontname": "fonts/Whitney-Semibold.ttf",
+            "fontsize": 40,
+            "color": [
+                255,
+                255,
+                255
+            ],
+            "align": "center"
+        },
+        "text1": {
+            "name": "text1",
+            "x": 176,
+            "y": 182,
+            "width": 273,
+            "height": 124,
+            "rotation": 0,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "text",
+            "constant": null,
+            "fontname": "fonts/Whitney-Semibold.ttf",
+            "fontsize": 40,
+            "color": [
+                255,
+                255,
+                255
+            ],
+            "align": "center"
+        }
+    },
+    "POSTFILTERS": {
+        "sharpness": 1.0,
+        "contrast": 1.0,
+        "color": 1.0,
+        "brightness": 1.0
+    },
+    "LAYERORDER": [
+        "image2",
+        "image1",
+        "text2",
+        "text1"
+    ]
+}

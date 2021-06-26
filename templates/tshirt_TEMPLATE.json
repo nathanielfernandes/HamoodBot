@@ -1,0 +1,54 @@
+{
+    "LAYERS": {
+        "text1": {
+            "name": "text1",
+            "x": 219,
+            "y": 76,
+            "width": 367,
+            "height": 299,
+            "rotation": 0,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "text",
+            "constant": null,
+            "fontname": "fonts/Whitney-Semibold.ttf",
+            "fontsize": 60,
+            "color": [
+                2,
+                2,
+                2
+            ],
+            "align": "center"
+        },
+        "image1": {
+            "name": "image1",
+            "x": 237,
+            "y": 142,
+            "width": 333,
+            "height": 286,
+            "rotation": 0,
+            "filters": {
+                "sharpness": 1.0,
+                "contrast": 1.0,
+                "color": 1.0,
+                "brightness": 1.0
+            },
+            "type": "image",
+            "constant": null
+        }
+    },
+    "POSTFILTERS": {
+        "sharpness": 1.0,
+        "contrast": 1.0,
+        "color": 1.0,
+        "brightness": 1.0
+    },
+    "LAYERORDER": [
+        "text1",
+        "image1"
+    ]
+}

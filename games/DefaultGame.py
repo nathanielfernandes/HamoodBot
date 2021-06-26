@@ -8,7 +8,6 @@ class DefaultGame:
         game_name: str,
         thumbnail: str,
         ctx,
-        bot,
         playerTwo=None,
         reactions: dict = {},
         solo: bool = False,
@@ -22,10 +21,11 @@ class DefaultGame:
         self.thumbnail = thumbnail
 
         self.ctx = ctx
-        self.bot = bot
-        self.games = self.bot.games
+        self.bot = ctx.bot
+        self.Hamood = self.bot.Hamood
+        self.games = self.Hamood.active_games
 
-        self.prefix = self.bot.find_prefix(ctx.guild.id)
+        self.prefix = self.Hamood.find_prefix(ctx.guild.id)
         self.guild_id = ctx.guild.id
         self.playerOne = ctx.author
 
@@ -59,9 +59,9 @@ class DefaultGame:
 
     async def load_game(self):
         """Called automatically once a player accepts and invite or a solo game is started.\n
-           Adds all the reactions required for the game and deducts the wager from the joined
-           player if the game is not solo.\n
-           Calls the self.game_start() method which needs to be implemented by the game.
+        Adds all the reactions required for the game and deducts the wager from the joined
+        player if the game is not solo.\n
+        Calls the self.game_start() method which needs to be implemented by the game.
         """
         half = str(self.playerOne)
         if not self.solo:
@@ -69,7 +69,7 @@ class DefaultGame:
 
         embed = discord.Embed(
             title=f"{self.game_name.title()} | {half}",
-            description="Loading... <a:load:822030219924733992>",
+            description="Loading... <a:loading:856302946274246697>",
             color=discord.Color.blue(),
         )
         embed.set_thumbnail(url=self.thumbnail)
@@ -77,11 +77,11 @@ class DefaultGame:
             self.message = await self.ctx.send(embed=embed)
         else:
             if self.wager > 0:
-                playerTwoBal = await self.bot.currency.get_currency(
+                playerTwoBal = await self.Hamood.Currency.get_currency(
                     self.guild_id, self.playerTwo.id
                 )
                 if playerTwoBal["bank"] >= self.wager:
-                    await self.bot.currency.update_bank(
+                    await self.Hamood.Currency.update_bank(
                         self.guild_id, self.playerTwo.id, -1 * self.wager
                     )
                 else:
@@ -100,7 +100,7 @@ class DefaultGame:
 
     async def create_invite(self):
         """Called automatically if the game is not a solo game.\n
-           Creates an invite message for another player to accept.
+        Creates an invite message for another player to accept.
         """
         wager_msg = f"\n**Wager:** {self.cash(self.wager)}" if self.wager > 0 else ""
         embed = discord.Embed(
@@ -116,7 +116,7 @@ class DefaultGame:
 
     async def setup_game(self):
         """Sets up the game, checking for duplicate games and insufficient funds.\n
-           Creates an invite if the game is not solo, otherwise just loads the game.
+        Creates an invite if the game is not solo, otherwise just loads the game.
         """
 
         if self.game_id_1 in self.games:
@@ -140,7 +140,7 @@ class DefaultGame:
                 return False
 
         if self.wager > 0:
-            playerOneBal = await self.bot.currency.get_currency(
+            playerOneBal = await self.Hamood.Currency.get_currency(
                 self.guild_id, self.playerOne.id
             )
 
@@ -151,7 +151,7 @@ class DefaultGame:
                 return False
 
             if not solo:
-                playerTwoBal = await self.bot.currency.get_currency(
+                playerTwoBal = await self.Hamood.Currency.get_currency(
                     self.guild_id, self.playerTwo.id
                 )
 
@@ -161,7 +161,7 @@ class DefaultGame:
                     )
                     return False
 
-            await self.bot.currency.update_bank(
+            await self.Hamood.Currency.update_bank(
                 self.guild_id, self.playerOne.id, -1 * self.wager
             )
 
@@ -176,44 +176,44 @@ class DefaultGame:
 
     async def update_leaderboards(self, winner=None, loser=None, tie=False):
         """Updates the leaderboard database given a tie, winner or a loser or both.\n
-           Handles the win/loss counter as well has wager winnings/losings.
+        Handles the win/loss counter as well has wager winnings/losings.
         """
         if tie:
             if self.wager > 0:
-                await self.bot.currency.update_wallet(
+                await self.Hamood.Currency.update_wallet(
                     self.guild_id, self.playerOne.id, self.wager
                 )
                 if not self.solo:
-                    await self.bot.currency.update_wallet(
+                    await self.Hamood.Currency.update_wallet(
                         self.guild_id, self.playerTwo.id, self.wager
                     )
         else:
-            await self.bot.leaderboards.add_leaderboard(self.guild_id)
+            await self.Hamood.Leaderboards.add_leaderboard(self.guild_id)
             if winner:
                 if self.wager > 0:
-                    await self.bot.currency.update_wallet(
+                    await self.Hamood.Currency.update_wallet(
                         self.guild_id, winner.id, self.wager * 2
                     )
 
-                await self.bot.leaderboards.add_member(self.guild_id, winner.id)
-                await self.bot.leaderboards.add_game(
+                await self.Hamood.Leaderboards.add_member(self.guild_id, winner.id)
+                await self.Hamood.Leaderboards.add_game(
                     self.guild_id, winner.id, self.game_name
                 )
-                await self.bot.leaderboards.incr_game_won(
+                await self.Hamood.Leaderboards.incr_game_won(
                     self.guild_id, winner.id, self.game_name
                 )
             if loser:
-                await self.bot.leaderboards.add_member(self.guild_id, loser.id)
-                await self.bot.leaderboards.add_game(
+                await self.Hamood.Leaderboards.add_member(self.guild_id, loser.id)
+                await self.Hamood.Leaderboards.add_game(
                     self.guild_id, loser.id, self.game_name
                 )
-                await self.bot.leaderboards.incr_game_lost(
+                await self.Hamood.Leaderboards.incr_game_lost(
                     self.guild_id, loser.id, self.game_name
                 )
 
     async def clear_game(self):
         """Removes a game from the existsing games dict, deleting player keys.\n
-           Clears all the reactions from a game too.
+        Clears all the reactions from a game too.
         """
         try:
             del self.games[self.game_id_1]
@@ -231,16 +231,16 @@ class DefaultGame:
 
     async def end_game(self, winner=None, loser=None, tie=False):
         """Ends the game without removing the existing messsage.\n
-           Should be used when a win, loss, or tie occurs.
+        Should be used when a win, loss, or tie occurs.
         """
         await self.clear_game()
         await self.update_leaderboards(winner, loser, tie)
         await self.kill_timer()
 
-    async def delete_game(self, member=None, custom_msg=None):
+    async def delete_game(self, member=None, custom_msg=""):
         """Called automatically when a user decides to leave a game.\n
-           Should only be used when there has been a player forfiet.\n
-           Use self.end_game() if the game just needs to be ended.
+        Should only be used when there has been a player forfiet.\n
+        Use self.end_game() if the game just needs to be ended.
         """
         await self.clear_game()
         if not self.solo:
@@ -265,7 +265,7 @@ class DefaultGame:
 
             else:
                 if self.wager > 0:
-                    await self.bot.currency.update_wallet(
+                    await self.Hamood.Currency.update_wallet(
                         self.guild_id, self.playerOne.id, self.wager
                     )
                 custom_msg = "No Winner"
@@ -276,7 +276,7 @@ class DefaultGame:
                 custom_msg = f"{self.playerOne} forfeited!"
             else:
                 if self.wager > 0:
-                    await self.bot.currency.update_wallet(
+                    await self.Hamood.Currency.update_wallet(
                         self.guild_id, self.playerOne.id, self.wager
                     )
                 custom_msg = f"Game Cancelled"
@@ -307,7 +307,7 @@ class DefaultGame:
 
     async def reset_timer(self):
         """Resets the 5 minute game timer.\n
-           Called automatically, but can be called if necessary.
+        Called automatically, but can be called if necessary.
         """
         try:
             self.timer.cancel()
@@ -317,15 +317,15 @@ class DefaultGame:
 
     async def game_timer(self):
         """Automatic game deletetion timer.
-           Called automatically and should not be used.
+        Called automatically and should not be used.
         """
         await asyncio.sleep(120)
         await self.delete_game()
 
     async def on_reaction(self, payload):
         """Called on every reaction event to the game.\n
-           Calls self.update_game with the 'move' the player moved.\n
-           Handles leaving games automatically.
+        Calls self.update_game with the 'move' the player moved.\n
+        Handles leaving games automatically.
         """
         if payload.message_id == self.message.id and (
             payload.member == self.playerOne
@@ -352,7 +352,7 @@ class DefaultGame:
 
     async def add_reactions(self):
         """Adds all the reactions in self.reactions to the game message.\n
-           Called automatically.
+        Called automatically.
         """
         if self.reactions is not None:
             for emoji in self.reactions:
@@ -361,16 +361,15 @@ class DefaultGame:
         return True
 
     async def update_message(self, embed=None, content=None):
-        """Resets the game timer and edits the game message with the embed and content specified.
-        """
+        """Resets the game timer and edits the game message with the embed and content specified."""
         if not self.gameover:
             await self.reset_timer()
         await self.message.edit(embed=embed, content=content)
 
     def swap_turns(self):
         """Swaps self.current_turn and self.off_turn.\n
-           Must be used if the game is turn based.\n
-           Should only be used when the game is not solo.
+        Must be used if the game is turn based.\n
+        Should only be used when the game is not solo.
         """
         self.current_turn = (
             self.playerOne if self.current_turn == self.playerTwo else self.playerTwo
@@ -382,15 +381,15 @@ class DefaultGame:
     # TODO
     async def update_game(self, member, move, emoji):
         """interface method\n
-           Called on a player reaction.\n
-           Needs to be implemented by the game.
+        Called on a player reaction.\n
+        Needs to be implemented by the game.
         """
         pass
 
     # TODO
     async def game_start(self):
         """interface method\n
-           Called on a player reaction.\n
-           Needs to be implemented by the game.
+        Called on a player reaction.\n
+        Needs to be implemented by the game.
         """
         pass

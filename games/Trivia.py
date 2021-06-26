@@ -6,7 +6,6 @@ class Trivia(DefaultGame):
     def __init__(
         self,
         ctx,
-        bot,
         playerTwo=None,
         category="any",
         # difficulty="any",
@@ -17,7 +16,6 @@ class Trivia(DefaultGame):
 
         super().__init__(
             ctx=ctx,
-            bot=bot,
             playerTwo=playerTwo,
             wager=wager,
             game_name="trivia",
@@ -108,7 +106,9 @@ class Trivia(DefaultGame):
             color = discord.Color.red()
 
         embed = discord.Embed(
-            title=msg, description=f"***{ans}*** was the correct answer.", color=color,
+            title=msg,
+            description=f"***{ans}*** was the correct answer.",
+            color=color,
         )
         embed.set_thumbnail(url=img)
 
@@ -132,7 +132,8 @@ class Trivia(DefaultGame):
         diff = ""
         if desc is not None:
             embed.add_field(
-                name="Choices", value=f"{self.current_question['options_str']}",
+                name="Choices",
+                value=f"{self.current_question['options_str']}",
             )
             diff = f"\nDifficulty: {self.current_question['difficulty'].capitalize()}"
 
@@ -164,7 +165,7 @@ class Trivia(DefaultGame):
         }
 
     async def get_questions(self, category=None, difficulty=None, amount=10):
-        jr = await self.bot.ahttp.get(
+        jr = await self.Hamood.ahttp.get(
             url=f"https://opentdb.com/api.php?amount={amount}{'&category='+ self.category[0] if self.category[0] != 'any' else ''}{'&difficulty='+self.difficulty if self.difficulty != 'any' else ''}&type=multiple",
             return_type="json",
         )
@@ -216,4 +217,3 @@ class Trivia(DefaultGame):
     #         return diff.lower()
     #     else:
     #         return "any"
-

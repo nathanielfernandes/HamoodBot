@@ -5,11 +5,13 @@ from games.DefaultGame import DefaultGame
 
 class Filler(DefaultGame):
     def __init__(
-        self, ctx, bot, playerTwo=None, wager: int = 0,
+        self,
+        ctx,
+        playerTwo=None,
+        wager: int = 0,
     ):
         super().__init__(
             ctx=ctx,
-            bot=bot,
             playerTwo=playerTwo,
             wager=wager,
             game_name="filler",
@@ -170,7 +172,7 @@ class Filler(DefaultGame):
             title=title, description=f"{self.grid_str(end)}", color=color
         )
 
-        value = f"wager: {self.cash(self.wager)}" if self.wager > 0 else "."
+        value = f"wager: {self.cash(self.wager)}" if self.wager > 0 else "\u200b"
         embed.add_field(
             name=f"{self.emojis[self.players[self.playerOne.id]['i']]} {self.playerOne}: {self.players[self.playerOne.id]['t']}    {self.emojis[self.players[self.playerTwo.id]['i']]} {self.playerTwo}: {self.players[self.playerTwo.id]['t']}",
             value=value,
@@ -198,4 +200,3 @@ class Filler(DefaultGame):
                 for y in range(len(self.grid))
             ]
         )
-

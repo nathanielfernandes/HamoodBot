@@ -1,142 +1,173 @@
 {
     "awk": {
         "name": "AWK",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805328599237394482/kQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAEv4DqEFyk7UwA4gAAAAASUVORK5CYII.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805328599237394482/kQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAEv4DqEFyk7UwA4gAAAAASUVORK5CYII.png",
+        "aliases": []
     },
     "bash": {
         "name": "Bash",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805328845447364608/1FEE98iWinlZBYkxBAG8MvA.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805328845447364608/1FEE98iWinlZBYkxBAG8MvA.png",
+        "aliases": []
     },
     "brainfuck": {
         "name": "Brainfuck",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805329181247930378/com.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805329181247930378/com.png",
+        "aliases": []
     },
     "c": {
         "name": "C",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805329319500054548/logo-c-1.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805329319500054548/logo-c-1.png",
+        "aliases": []
     },
     "cpp": {
         "name": "C++",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805329463541235733/1200px-ISO_C2B2B_Logo.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805329463541235733/1200px-ISO_C2B2B_Logo.png",
+        "aliases": [
+            "c++"
+        ]
     },
     "crystal": {
         "name": "Crystal",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805330420375093278/iXHOD-1_400x400.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805330420375093278/iXHOD-1_400x400.png",
+        "aliases": []
     },
     "csharp": {
         "name": "C#",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805330623711150080/1200px-C_Sharp_logo.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805330623711150080/1200px-C_Sharp_logo.png",
+        "aliases": [
+            "c#"
+        ]
     },
     "d": {
         "name": "D",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805330772335525919/large.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805330772335525919/large.png",
+        "aliases": []
     },
     "dash": {
         "name": "Dash",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805331433094381588/465785357977.png"
-    },
-    "deno": {
-        "name": "Deno",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805331579617542174/1200px-Deno.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805331433094381588/465785357977.png",
+        "aliases": []
     },
     "elixer": {
         "name": "Elixer",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805331809050165298/images.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805331809050165298/images.png",
+        "aliases": []
     },
     "emacs": {
         "name": "Emacs",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805332098084765726/1200px-EmacsIcon.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805332098084765726/1200px-EmacsIcon.png",
+        "aliases": []
     },
     "elisp": {
         "name": "Emacs Lisp",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805332098084765726/1200px-EmacsIcon.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805332098084765726/1200px-EmacsIcon.png",
+        "aliases": []
     },
     "go": {
         "name": "Go",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805332421604147260/golang.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805332421604147260/golang.png",
+        "aliases": []
     },
     "haskell": {
         "name": "Haskell",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805332600314527786/haskell.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805332600314527786/haskell.png",
+        "aliases": []
     },
     "java": {
         "name": "Java",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805326563020898314/java-4-logo.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805326563020898314/java-4-logo.png",
+        "aliases": []
     },
     "jelly": {
         "name": "Jelly",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805333111172628490/Microsoft.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805333111172628490/Microsoft.png",
+        "aliases": []
     },
     "julia": {
         "name": "Julia",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805333429490286602/AAUvwngOsU1tjydArGKBlEJltwGV5kuOvsunc9ZIQI6SlQs900-c-k-c0x00ffffff-no-rj.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805333429490286602/AAUvwngOsU1tjydArGKBlEJltwGV5kuOvsunc9ZIQI6SlQs900-c-k-c0x00ffffff-no-rj.png",
+        "aliases": []
     },
     "kotlin": {
         "name": "Kotlin",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805333498072006657/kotlin_250x250.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805333498072006657/kotlin_250x250.png",
+        "aliases": []
     },
     "lisp": {
         "name": "Lisp",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805333606750093312/1200px-Lisp_logo.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805333606750093312/1200px-Lisp_logo.png",
+        "aliases": []
     },
     "lua": {
         "name": "Lua",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805333735481540618/1200px-Lua-Logo.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805333735481540618/1200px-Lua-Logo.png",
+        "aliases": []
     },
     "nasm": {
         "name": "NASM",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805333938830180362/nasm-logo.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805333938830180362/nasm-logo.png",
+        "aliases": []
     },
     "nasm64": {
         "name": "NASM64",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805333938830180362/nasm-logo.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805333938830180362/nasm-logo.png",
+        "aliases": []
     },
     "nim": {
         "name": "Nim",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805334154820190228/Nim-logo.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805334154820190228/Nim-logo.png",
+        "aliases": []
     },
     "node": {
         "name": "Node",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805334344373370880/node-js-1174925.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805334344373370880/node-js-1174925.png",
+        "aliases": []
     },
     "osabie": {
         "name": "05AB1E",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805334454990012457/68747470733a2f2f692e737461636b2e696d6775722e636f6d2f6b55444d722e706e67.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805334454990012457/68747470733a2f2f692e737461636b2e696d6775722e636f6d2f6b55444d722e706e67.png",
+        "aliases": []
     },
     "paradoc": {
         "name": "Paradoc",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805334828798705664/824183759526.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805334828798705664/824183759526.png",
+        "aliases": []
     },
     "perl": {
         "name": "Perl",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805334995816284170/perlflat550x550075f.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805334995816284170/perlflat550x550075f.png",
+        "aliases": []
     },
     "php": {
         "name": "PHP",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335078430965790/new-php-logo.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335078430965790/new-php-logo.png",
+        "aliases": []
     },
     "python": {
         "name": "Python",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335225038929920/1200px-Python-logo-notext.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335225038929920/1200px-Python-logo-notext.png",
+        "aliases": [
+            "py"
+        ]
     },
     "ruby": {
         "name": "Ruby",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335331108552704/1024px-Ruby_logo.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335331108552704/1024px-Ruby_logo.png",
+        "aliases": []
     },
     "rust": {
         "name": "Rust",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335432270184458/1200px-Rust_programming_language_black_logo.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335432270184458/1200px-Rust_programming_language_black_logo.png",
+        "aliases": []
     },
     "swift": {
         "name": "Swift",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335532384288789/swift-og.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335532384288789/swift-og.png",
+        "aliases": []
     },
     "typescript": {
         "name": "TypeScript",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335605847261254/1200px-Typescript_logo_2020.png"
-    },
-    "zip": {
-        "name": "Zip",
-        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335870764613632/775986415551.png"
+        "logo": "https://cdn.discordapp.com/attachments/749779629643923548/805335605847261254/1200px-Typescript_logo_2020.png",
+        "aliases": []
     }
 }
