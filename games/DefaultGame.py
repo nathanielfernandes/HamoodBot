@@ -121,7 +121,7 @@ class DefaultGame:
 
         if self.game_id_1 in self.games:
             await self.ctx.send(
-                f"You are currently in a game! Use `{self.prefix}leave` to leave ur current game."
+                f"You are currently in a game! Use `{self.prefix}leavegame` to leave ur current game."
             )
             return False
 

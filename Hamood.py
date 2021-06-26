@@ -239,14 +239,17 @@ class Hamood:
     @tasks.loop(minutes=30, reconnect=True)
     async def update_premiums(self):
         await self.bot.wait_until_ready()
-        supporter = self.bot.get_guild(854249588341080104)
-        self.PremiumUsers = []
-        for m in supporter.members:
-            if any(r.name == "supporter" for r in m.roles):
-                self.PremiumUsers.append(m.id)
-        print(
-            f"{ANSI.WARNING}Updated Premium Members: {ANSI.ENDC} {ANSI.OKGREEN}{len(self.PremiumUsers)}{ANSI.ENDC}"
-        )
+        try:
+            supporter = self.bot.get_guild(854249588341080104)
+            self.PremiumUsers = []
+            for m in supporter.members:
+                if any(r.name == "supporter" for r in m.roles):
+                    self.PremiumUsers.append(m.id)
+            print(
+                f"{ANSI.WARNING}Updated Premium Members: {ANSI.ENDC} {ANSI.OKGREEN}{len(self.PremiumUsers)}{ANSI.ENDC}"
+            )
+        except:
+            self.printc("Could not update premiums", ANSI.FAIL)
 
 
 # @tasks.loop(hours=1, reconnect=True)
