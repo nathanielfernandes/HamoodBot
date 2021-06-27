@@ -248,8 +248,9 @@ class Hamood:
             print(
                 f"{ANSI.WARNING}Updated Premium Members: {ANSI.ENDC} {ANSI.OKGREEN}{len(self.PremiumUsers)}{ANSI.ENDC}"
             )
+
         except:
-            self.printc("Could not update premiums", ANSI.FAIL)
+            self.cprint("Could Not Update Premium Members", ANSI.FAIL)
 
 
 # @tasks.loop(hours=1, reconnect=True)

@@ -34,16 +34,17 @@ def standardmeme(image, toptext, bottomtext):
 
     wt = WriteText(image)
     try:
-        wt.write_text(
-            "center",
-            0,
-            toptext[:40],
-            "fonts/impact.ttf",
-            "fill",
-            mw,
-            mh,
-            (255, 255, 255),
-        )
+        if toptext != "":
+            wt.write_text(
+                "center",
+                0,
+                toptext[:40],
+                "fonts/impact.ttf",
+                "fill",
+                mw,
+                mh,
+                (255, 255, 255),
+            )
         fs = wt.get_font_size(bottomtext[:40], "fonts/impact.ttf", mw, mh)
         y2 = wt.get_text_size("fonts/impact.ttf", fs, bottomtext[:40])
         wt.write_text(
