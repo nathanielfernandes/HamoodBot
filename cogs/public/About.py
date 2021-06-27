@@ -215,7 +215,7 @@ class About(commands.Cog):
 
         embed.add_field(
             name="\u200b",
-            value="[`Command List`](https://hamood.app/commands) [`Website`](https://hamood.app/) [`Support Server`](https://discord.gg/MeAz4dpVzK)",
+            value="[`Command List`](https://hamood.app/#commands) [`Website`](https://hamood.app/) [`Support Server`](https://discord.gg/MeAz4dpVzK)",
             inline=False,
         )
         await ctx.reply(embed=embed, mention_author=False)
