@@ -76,6 +76,7 @@ class Hamood:
             680164554952671234,
             616148871499874310,
             616148871499874310,
+            302565282373697537,
         ]
         print(ANSI.ENDC, end="")
         self.cprint(
@@ -107,7 +108,7 @@ class Hamood:
         self.load_cogs()
         self.STARTUP = datetime.datetime.now()
         self.market.update_items.start()
-        self.update_premiums.start()
+        # self.update_premiums.start()
         self.bot.run(self.TOKEN)
 
     def deltaT(self):
