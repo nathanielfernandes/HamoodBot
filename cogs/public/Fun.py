@@ -75,7 +75,7 @@ class Fun(commands.Cog):
 
         await self.Hamood.quick_embed(
             ctx,
-            author={"name": f"{member.name}'s pp size", "icon_url": member.avatar_url},
+            author={"name": f"{member.name}'s pp size", "icon_url": member.avatar.url},
             description=f"**{pepe}**",
             footer={"text": f"{len(pepe)-2} inches"},
             color=discord.Color.purple(),
@@ -144,7 +144,7 @@ class Fun(commands.Cog):
             )
 
             embed.set_footer(
-                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
+                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar.url
             )
 
             embed.add_field(
@@ -195,7 +195,7 @@ class Fun(commands.Cog):
             embed.set_image(url=pokemon["image"])
 
             embed.set_footer(
-                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
+                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar.url
             )
             await ctx.send(embed=embed)
 
@@ -218,7 +218,7 @@ class Fun(commands.Cog):
             embed.set_image(url=pokemon["image"])
 
             embed.set_footer(
-                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
+                text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar.url
             )
             await ctx.send(embed=embed)
         else:

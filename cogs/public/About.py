@@ -48,7 +48,7 @@ class About(commands.Cog):
             value="You can message me on discord\n`nathan#3724`",
         )
         embed.set_thumbnail(
-            url=self.bot.user.avatar_url,
+            url=self.bot.user.avatar.url,
         )
         embed.set_footer(
             text="created by Nathaniel Fernandes",
@@ -121,7 +121,7 @@ class About(commands.Cog):
             color=discord.Color.blue(),
             url="https://discord.com/api/oauth2/authorize?client_id=699510311018823680&permissions=8&scope=bot",
         )
-        embed.set_thumbnail(url=self.bot.user.avatar_url)
+        embed.set_thumbnail(url=self.bot.user.avatar.url)
         embed.add_field(
             name=f"Hamood is currently in **{len(self.bot.guilds)}** servers",
             value="make it one more!",
@@ -147,7 +147,7 @@ class About(commands.Cog):
             url="https://hamood.app/",
         )
         # embed.set_footer(
-        #     text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url
+        #     text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar.url
         # )
 
         if query is None:

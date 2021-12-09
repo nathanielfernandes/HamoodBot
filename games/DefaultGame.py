@@ -283,7 +283,7 @@ class DefaultGame:
 
         embed = discord.Embed(
             title=self.game_name.title(),
-            decription=f"\n**Wager:** {self.cash(self.wager)}"
+            description=f"\n**Wager:** {self.cash(self.wager)}"
             if self.wager > 0
             else "",
         )

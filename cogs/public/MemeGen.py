@@ -254,7 +254,7 @@ class MemeGen(commands.Cog):
             else:
                 if isinstance(arg, discord.Member):
                     url = str(
-                        arg.avatar_url_as(format="png", static_format="png", size=512)
+                        arg.avatar.url_as(format="png", static_format="png", size=512)
                     )
                 else:
                     url = str(arg.url)
@@ -275,7 +275,7 @@ class MemeGen(commands.Cog):
         await self.Hamood.quick_embed(ctx=ctx, reply=True, pil_image=img, stats=dt)
 
     async def fetch_av(self, member: discord.Member) -> Image:
-        aBytes = await member.avatar_url.read()
+        aBytes = await member.avatar.url.read()
         return Image.open(BytesIO(aBytes))
 
     @commands.command()
@@ -395,7 +395,9 @@ class MemeGen(commands.Cog):
     @commands.command()
     @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
     @commands.bot_has_permissions(attach_files=True, embed_links=True)
-    async def snipe(self, ctx, content: Union[discord.Member] = None):
+    async def snipe(
+        self, ctx, content: Union[discord.Member, discord.PartialEmoji] = None
+    ):
         """[@mention|:emoji:]|||Snipe someone or something."""
         if content is None:
             im = await self.search_for_image(ctx, 50)
@@ -470,7 +472,7 @@ class MemeGen(commands.Cog):
     @commands.command(aliases=["gay", "pride"])
     @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
     @commands.bot_has_permissions(attach_files=True, embed_links=True)
-    async def rainbow(self, ctx, content: Union[discord.Member] = None):
+    async def rainbow(self, ctx, content: discord.Member = None):
         """[@member]|||Rainbow hmmm."""
         if content is None:
             im = await self.search_for_image(ctx, 50)
@@ -528,7 +530,7 @@ class MemeGen(commands.Cog):
     @commands.command()
     @commands.check(PremiumCooldown(prem=(2, 5, "user"), reg=(2, 10, "channel")))
     @commands.bot_has_permissions(attach_files=True, embed_links=True)
-    async def ascii(self, ctx, content: Union[discord.Member] = None):
+    async def ascii(self, ctx, content: discord.Member = None):
         """[@member]|||Converts images to text."""
         if content is None:
             im = await self.search_for_image(ctx, 50)

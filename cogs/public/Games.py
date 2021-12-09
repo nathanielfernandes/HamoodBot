@@ -52,10 +52,19 @@ class Games(commands.Cog):
     @commands.check(PremiumCooldown(prem=(1, 30, "user"), reg=(2, 60, "channel")))
     @commands.bot_has_permissions(embed_links=True)
     async def trivia(
-        self, ctx, member: discord.Member = None, category="any", wager: int = 0,
+        self,
+        ctx,
+        member: discord.Member = None,
+        category="any",
+        wager: int = 0,
     ):
         """<@opponent> [category] [wager]|||Play a game of trivia with someone!\n \n**Categories include:** `any`, `general`, `books`, `film`, `music`, `musicals`, `theatres`, `tv`, `video games`, `board games`, `nature`, `computers`, `mathematics`, `mythology`, `sports`, `geography`, `history`, `politics`, `art`, `celebrities`, `animals`, `vehicles`, `comics`, `gadgets`, `anime`, `manga`, `cartoon`, `animation`"""
-        game = Trivia(playerTwo=member, ctx=ctx, category=category, wager=wager,)
+        game = Trivia(
+            playerTwo=member,
+            ctx=ctx,
+            category=category,
+            wager=wager,
+        )
         await game.setup_game()
 
     @commands.command()
@@ -175,7 +184,7 @@ class Games(commands.Cog):
                 author={"name": f"{member}'s {game.capitalize()} Stats"},
                 description=f"**Wins:** {stat['won']}\n**Losses:** {stat['lost']}\n**SR:** {self.calc_sr(stat)}",
                 timestamp=ctx.message.created_at,
-                thumbnail=member.avatar_url,
+                thumbnail=member.avatar.url,
             )
 
     @commands.command(aliases=["leaderboards"])
