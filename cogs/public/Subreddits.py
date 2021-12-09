@@ -49,7 +49,7 @@ class Subreddits(commands.Cog):
             "pics": ("pics", True, []),
             "egg": ("egg", True, []),
             "bikinibottomtwitter": ("BikiniBottomTwitter", True, ["bbt"]),
-            "mildlyinteresting": ("midlyinteresting", True, []),
+            "mildlyinteresting": ("mildlyinteresting", True, []),
         }
         self.allSubs = [value[0] for value in self.RedditCommands.values()]
         self.calm_down = []

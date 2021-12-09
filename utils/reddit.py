@@ -102,7 +102,7 @@ class Reddit:
                 )
             ]
 
-            if len(_ids) >= 1:
+            if len(_ids) >= 3:
                 post_id = random.choice(_ids)
                 return self.SubredditCache[subreddit].pop(post_id)
 
