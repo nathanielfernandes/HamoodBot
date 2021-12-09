@@ -1,5 +1,6 @@
 import aiohttp, asyncio
 from io import BytesIO
+from typing import Union
 
 
 class HTTP:
@@ -9,7 +10,7 @@ class HTTP:
         self.image_types = ["image/png", "image/pjpeg", "image/jpeg", "image/x-icon"]
         self.media_types = self.image_types + ["image/gif"]
 
-    async def is_image(self, url: str):
+    async def is_image(self, url: str) -> bool:
         try:
             async with self.session.head(url) as resp:
                 if resp.status == 200:
@@ -21,7 +22,7 @@ class HTTP:
         except:
             return False
 
-    async def is_media(self, url: str):
+    async def is_media(self, url: str) -> bool:
         try:
             async with self.session.head(url) as resp:
                 if resp.status == 200:
@@ -33,7 +34,7 @@ class HTTP:
         except:
             return False
 
-    async def is_safe(self, url: str, max_bytes: int = 8388608):
+    async def is_safe(self, url: str, max_bytes: int = 8388608) -> bool:
         try:
             async with self.session.head(url) as resp:
                 if resp.status == 200:
@@ -42,7 +43,7 @@ class HTTP:
         except:
             return False
 
-    async def is_gif(self, url: str):
+    async def is_gif(self, url: str) -> bool:
         try:
             async with self.session.head(url) as resp:
                 if resp.status == 200:
@@ -54,7 +55,7 @@ class HTTP:
         except:
             return False
 
-    async def download(self, url: str, path: str):
+    async def download(self, url: str, path: str) -> None:
         try:
             async with self.session.get(url) as resp:
                 data = await resp.read()
@@ -63,7 +64,9 @@ class HTTP:
         except:
             return
 
-    async def bytes_download(self, url: str, no_io: bool = False):
+    async def bytes_download(
+        self, url: str, no_io: bool = False
+    ) -> Union[BytesIO, bytes]:
         try:
             async with self.session.get(url) as resp:
                 data = await resp.read()
@@ -74,7 +77,7 @@ class HTTP:
         except:
             return
 
-    async def get_json(self, url: str):
+    async def get_json(self, url: str) -> Union[dict, None]:
         try:
             async with self.session.get(url) as resp:
                 try:
@@ -85,7 +88,7 @@ class HTTP:
         except:
             return {}
 
-    async def get_text(self, url: str):
+    async def get_text(self, url: str) -> Union[str, None]:
         try:
             async with self.session.get(url) as resp:
                 try:
@@ -124,7 +127,7 @@ class HTTP:
                         return {}
                 elif return_type == "bytes":
                     try:
-                        load = await res.read()
+                        load = await resp.read()
                         return BytesIO(load)
                     except:
                         return None

@@ -54,7 +54,7 @@ class Money(commands.Cog):
             timestamp=ctx.message.created_at,
             color=member.color,
         )
-        embed.set_thumbnail(url=member.avatar_url)
+        embed.set_thumbnail(url=member.avatar.url)
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["bal", "bank", "wallet"])
@@ -108,7 +108,7 @@ class Money(commands.Cog):
                     timestamp=ctx.message.created_at,
                     color=ctx.author.color,
                 )
-            embed.set_thumbnail(url=ctx.author.avatar_url)
+            embed.set_thumbnail(url=ctx.author.avatar.url)
             await ctx.send(embed=embed)
 
     @commands.command()

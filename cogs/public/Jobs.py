@@ -77,7 +77,7 @@ class Jobs(commands.Cog):
             color=ctx.author.color,
         )
 
-        embed.set_thumbnail(url=ctx.author.avatar_url)
+        embed.set_thumbnail(url=ctx.author.avatar.url)
 
         embed.add_field(name=f"Options", value=f"{game['options_str']}", inline=False)
         embed.add_field(
@@ -108,7 +108,7 @@ class Jobs(commands.Cog):
                 color=discord.Color.red(),
                 timestamp=ctx.message.created_at,
             )
-            embed.set_thumbnail(url=ctx.author.avatar_url)
+            embed.set_thumbnail(url=ctx.author.avatar.url)
             embed.set_footer(text="You can work again soon")
 
             try:
@@ -156,7 +156,7 @@ class Jobs(commands.Cog):
                             color=color,
                             timestamp=work["msg"].created_at,
                         )
-                        embed.set_thumbnail(url=work["member"].avatar_url)
+                        embed.set_thumbnail(url=work["member"].avatar.url)
                         embed.set_footer(text=tim)
 
                         try:
@@ -301,7 +301,7 @@ class Jobs(commands.Cog):
             )
 
         embed.set_footer(text=f"Streak: {streak} Days")
-        embed.set_thumbnail(url=ctx.author.avatar_url)
+        embed.set_thumbnail(url=ctx.author.avatar.url)
 
         await ctx.send(embed=embed)
 

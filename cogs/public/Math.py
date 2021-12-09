@@ -102,7 +102,7 @@ class Math(commands.Cog):
                 ctx,
                 author={
                     "name": f"{ctx.author}'s Graph",
-                    "icon_url": ctx.author.avatar_url,
+                    "icon_url": ctx.author.avatar.url,
                 },
                 bimage=done,
             )

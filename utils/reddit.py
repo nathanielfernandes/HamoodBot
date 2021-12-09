@@ -90,7 +90,7 @@ class Reddit:
             )
             return True
 
-    async def get_random_post(self, subreddit, image_only=False):
+    async def get_random_post(self, subreddit, image_only=False, stop=False):
         if subreddit in self.SubredditCache:
             _ids = [
                 post_id
@@ -102,12 +102,16 @@ class Reddit:
                 )
             ]
 
-            if len(_ids) >= 1:
+            if len(_ids) >= 3:
                 post_id = random.choice(_ids)
                 return self.SubredditCache[subreddit].pop(post_id)
-
-        cached = await self.cache_posts(subreddit)
-        return await self.get_random_post(subreddit, image_only) if cached else None
+        if not stop:
+            cached = await self.cache_posts(subreddit)
+            return (
+                await self.get_random_post(subreddit, image_only, True)
+                if cached
+                else None
+            )
 
     async def fetch_post(self, post_id: str):
         if post_id in self.TempPostCache:

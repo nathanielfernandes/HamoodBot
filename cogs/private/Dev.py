@@ -275,7 +275,7 @@ class Dev(commands.Cog):
             description=msg,
         )
 
-        embed.set_thumbnail(url=member.avatar_url)
+        embed.set_thumbnail(url=member.avatar.url)
         await content.edit(embed=embed, content=None)
 
     @commands.command()

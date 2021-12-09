@@ -100,7 +100,7 @@ class General(commands.Cog):
             color=discord.Color.from_rgb(245, 245, 220),
         )
         embed.set_footer(
-            text=f"Hang in there {ctx.author}.", icon_url=ctx.author.avatar_url
+            text=f"Hang in there {ctx.author}.", icon_url=ctx.author.avatar.url
         )
 
         today = datetime.datetime.now()

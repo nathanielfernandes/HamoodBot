@@ -27,7 +27,7 @@ class ErrorHandling(commands.Cog):
         # embed.set_author(name=f"{ctx.command.name.title()} | {title}")
         # embed.set_footer(
         #     text=f"{ctx.author}",
-        #     icon_url=ctx.author.avatar_url,
+        #     icon_url=ctx.author.avatar.url,
         # )
         if c:
             embed.set_footer(text="supporters get reduced cooldowns ;)")
@@ -51,7 +51,7 @@ class ErrorHandling(commands.Cog):
             #     ctx,
             #     author={"name": "Command on Cooldown"},
             #     description=f"Please retry after: ```{self.Hamood.pretty_dt(error.retry_after)}```",
-            #     # footer={"text": f"{ctx.author}", "icon_url": ctx.author.avatar_url},
+            #     # footer={"text": f"{ctx.author}", "icon_url": ctx.author.avatar.url},
             # )
             await self.error_embed(
                 ctx,

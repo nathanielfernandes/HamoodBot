@@ -68,7 +68,15 @@ class Hamood:
         self.Inventories = Inventories(self.MONGO)
         self.Currency = Currency(self.MONGO)
         self.Members = Members(self.MONGO)
-        self.PremiumUsers = []
+        self.PremiumUsers = [
+            485138947115057162,
+            248909528387551233,
+            222865938771345408,
+            555085307431747584,
+            680164554952671234,
+            616148871499874310,
+            616148871499874310,
+        ]
         print(ANSI.ENDC, end="")
         self.cprint(
             f"----------------------------- {self.deltaT():0.2f}s",
@@ -196,7 +204,7 @@ class Hamood:
     def tstamp(self) -> str:
         return f"{datetime.datetime.now().timestamp():0.3f}".replace(".", "")
 
-    def cdnsave(self, ext: str = "png") -> [str, str]:
+    def cdnsave(self, ext: str = "png") -> tuple[str, str]:
         name = self.save_name(ext)
         return f"{self.filepath}/temp/{name}", f"{self.CDN_URL}/{name}"
 
@@ -236,21 +244,21 @@ class Hamood:
     async def user_is_premium(self, user_id):
         return user_id in self.PremiumUsers
 
-    @tasks.loop(minutes=30, reconnect=True)
-    async def update_premiums(self):
-        await self.bot.wait_until_ready()
-        try:
-            supporter = self.bot.get_guild(854249588341080104)
-            self.PremiumUsers = []
-            for m in supporter.members:
-                if any(r.name == "supporter" for r in m.roles):
-                    self.PremiumUsers.append(m.id)
-            print(
-                f"{ANSI.WARNING}Updated Premium Members: {ANSI.ENDC} {ANSI.OKGREEN}{len(self.PremiumUsers)}{ANSI.ENDC}"
-            )
+    # @tasks.loop(minutes=30, reconnect=True)
+    # async def update_premiums(self):
+    #     await self.bot.wait_until_ready()
+    #     try:
+    #         supporter = self.bot.get_guild(854249588341080104)
+    #         self.PremiumUsers = []
+    #         for m in supporter.members:
+    #             if any(r.name == "supporter" for r in m.roles):
+    #                 self.PremiumUsers.append(m.id)
+    #         print(
+    #             f"{ANSI.WARNING}Updated Premium Members: {ANSI.ENDC} {ANSI.OKGREEN}{len(self.PremiumUsers)}{ANSI.ENDC}"
+    #         )
 
-        except:
-            self.cprint("Could Not Update Premium Members", ANSI.FAIL)
+    #     except:
+    #         self.cprint("Could Not Update Premium Members", ANSI.FAIL)
 
 
 # @tasks.loop(hours=1, reconnect=True)

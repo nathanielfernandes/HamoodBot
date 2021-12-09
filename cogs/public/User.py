@@ -17,7 +17,7 @@ class User(commands.Cog):
         member = ctx.author if not member else member
         await self.Hamood.quick_embed(
             ctx,
-            author={"name": str(member), "icon_url": member.avatar_url},
+            author={"name": str(member), "icon_url": member.avatar.url},
             description=f'Joined **{ctx.guild.name}** on:```yaml\n{member.joined_at.strftime("%a, %d %B %Y, %I:%M %p UTC")}```\n**Total time here**:\n{self.Hamood.pretty_dt((datetime.datetime.now() - member.joined_at).total_seconds())}',
         )
 
@@ -28,8 +28,8 @@ class User(commands.Cog):
         member = ctx.author if not member else member
         await self.Hamood.quick_embed(
             ctx,
-            author={"name": f"{member}'s avatar", "url": member.avatar_url},
-            image_url=member.avatar_url,
+            author={"name": f"{member}'s avatar", "url": member.avatar.url},
+            image_url=member.avatar.url,
         )
 
     @commands.command()
@@ -41,7 +41,7 @@ class User(commands.Cog):
         await self.Hamood.quick_embed(
             ctx,
             author={"name": f"{member}'s roles"},
-            thumbnail=member.avatar_url,
+            thumbnail=member.avatar.url,
             fields=[
                 {
                     "name": "Top Role",
@@ -65,7 +65,7 @@ class User(commands.Cog):
 
         await self.Hamood.quick_embed(
             ctx,
-            author={"name": f"{member}'s permissions", "icon_url": member.avatar_url},
+            author={"name": f"{member}'s permissions", "icon_url": member.avatar.url},
             description=perms,
         )
 
@@ -87,7 +87,7 @@ class User(commands.Cog):
             ctx,
             author={"name": f"User Info - {member}"},
             description=f"**Nick Name:** {member.display_name}\n**ID:** {member.id}\n**Is Bot:** {member.bot}\n**Vibe:** {random.choice(self.Hamood.RANDOMWORDS)} {random.choice(self.Hamood.RANDOMEMOJIS)}\u200b",
-            thumbnail=member.avatar_url,
+            thumbnail=member.avatar.url,
             fields=[
                 {
                     "name": "Top Role",
