@@ -190,7 +190,7 @@ class Items(commands.Cog):
 
                 embed.set_footer(text=f"Go get some items.")
 
-            embed.set_thumbnail(url=ctx.author.avatar_url)
+            embed.set_thumbnail(url=ctx.author.avatar.url)
             await ctx.send(embed=embed)
 
     @commands.command()
