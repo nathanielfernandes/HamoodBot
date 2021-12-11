@@ -70,7 +70,8 @@ class ErrorHandling(commands.Cog):
         elif isinstance(error, commands.CheckFailure):
             if isinstance(error, commands.MissingPermissions):
                 perms = "\n".join(
-                    f"• {str(p).replace('_', ' ').title()}" for p in error.missing_perms
+                    f"• {str(p).replace('_', ' ').title()}"
+                    for p in error.missing_permissions
                 )
                 await self.error_embed(
                     ctx,
@@ -80,7 +81,8 @@ class ErrorHandling(commands.Cog):
 
             elif isinstance(error, commands.BotMissingPermissions):
                 perms = "\n".join(
-                    f"• {str(p).replace('_', ' ').title()}" for p in error.missing_perms
+                    f"• {str(p).replace('_', ' ').title()}"
+                    for p in error.missing_permissions
                 )
                 if "Send Messages" in perms:
                     return
