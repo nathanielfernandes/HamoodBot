@@ -19,6 +19,8 @@ def load_constants(self):
     self.URBANDICTKEY = os.environ.get("URBANDICTKEY")
     self.URBANDICTHOST = os.environ.get("URBANDICTHOST")
     self.DISCORDSUBHUB = os.environ.get("DISCORDSUBHUB")
+    self.GOOGLE_SEARCH_LINK = os.environ.get("GOOGLE_SEARCH")
+
     self.BADWORDS = [
         badword.strip("\n")
         for badword in open(f"data/profanity.txt", "r", encoding="utf-8").readlines()

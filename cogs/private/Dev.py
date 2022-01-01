@@ -4,13 +4,17 @@ from discord.ext import commands
 import asyncio
 import re, json
 
+from urllib.parse import quote
+
 
 class Dev(commands.Cog):
     """Dev Commands"""
 
     def __init__(self, bot):
+        from Hamood import Hamood
+
         self.bot = bot
-        self.Hamood = bot.Hamood
+        self.Hamood: Hamood = bot.Hamood
 
     #  self.courses = json.load(open("junk/aggrCourses.json"))
     @commands.is_owner()
@@ -291,6 +295,82 @@ class Dev(commands.Cog):
         await ctx.send(
             "**jali-clarke** is *sussy*\nhttps://github.com/nathanielfernandes/HamoodBot/pull/42"
         )
+
+    _cache_ = {}
+
+    @commands.command()
+    async def img(self, ctx, *, content: commands.clean_content):
+        """<search term>|||searches for images off google"""
+        if links := self._cache_.get(content):
+            link = links.pop()
+
+            # while not await self.Hamood.ahttp.is_media(link):
+            #     if len(links) == 0:
+            #         break
+
+            #     link = links.pop()
+
+            if len(links) == 0:
+                del self._cache_[content]
+
+            return await self.Hamood.quick_embed(
+                ctx,
+                image_url=link,
+                footer={"text": f"search term: {content}"},
+                color=0x2F3136,
+            )
+
+        links = await self.Hamood.ahttp.get_json(
+            self.Hamood.GOOGLE_SEARCH_LINK + quote(content)
+        )
+        self._cache_[content] = links
+
+        return await self.Hamood.quick_embed(
+            ctx,
+            image_url=links.pop(),
+            footer={"text": f"search term: {content}"},
+            color=0x2F3136,
+        )
+
+    @commands.command()
+    async def nimg(self, ctx, n: int, *, content: commands.clean_content):
+        """<number of images (max 5)> <search term>|||searches for images off google"""
+        if links := self._cache_.get(content):
+
+            # while not await self.Hamood.ahttp.is_media(link):
+            #     if len(links) == 0:
+            #         break
+
+            #     link = links.pop()
+
+            if len(links) == 0:
+                del self._cache_[content]
+
+            n = min(max(n, 1), min(5, len(links)))
+            for _ in range(n):
+                await self.Hamood.quick_embed(
+                    ctx,
+                    image_url=links.pop(),
+                    footer={"text": f"search term: {content}"},
+                    color=0x2F3136,
+                )
+            return
+
+        links = await self.Hamood.ahttp.get_json(
+            self.Hamood.GOOGLE_SEARCH_LINK + quote(content)
+        )
+        self._cache_[content] = links
+
+        n = min(max(n, 1), min(5, len(links)))
+        for _ in range(n):
+            await self.Hamood.quick_embed(
+                ctx,
+                image_url=links.pop(),
+                footer={"text": f"search term: {content}"},
+                color=0x2F3136,
+            )
+
+    # @commands.command()
 
     # @commands.command()
     # async def mac(self, ctx, *, course: commands.clean_content):
