@@ -6,6 +6,8 @@ import re, json
 
 from urllib.parse import quote
 
+from utils.components import EasyPaginator
+
 
 class Dev(commands.Cog):
     """Dev Commands"""
@@ -296,79 +298,118 @@ class Dev(commands.Cog):
             "**jali-clarke** is *sussy*\nhttps://github.com/nathanielfernandes/HamoodBot/pull/42"
         )
 
-    _cache_ = {}
+    # _cache_ = {}
 
     @commands.command()
     async def img(self, ctx, *, content: commands.clean_content):
         """<search term>|||searches for images off google"""
-        if links := self._cache_.get(content):
-            link = links.pop()
-
-            # while not await self.Hamood.ahttp.is_media(link):
-            #     if len(links) == 0:
-            #         break
-
-            #     link = links.pop()
-
-            if len(links) == 0:
-                del self._cache_[content]
-
-            return await self.Hamood.quick_embed(
-                ctx,
-                image_url=link,
-                footer={"text": f"search term: {content}"},
-                color=0x2F3136,
-            )
 
         links = await self.Hamood.ahttp.get_json(
             self.Hamood.GOOGLE_SEARCH_LINK + quote(content)
         )
-        self._cache_[content] = links
 
-        return await self.Hamood.quick_embed(
-            ctx,
-            image_url=links.pop(),
-            footer={"text": f"search term: {content}"},
-            color=0x2F3136,
-        )
-
-    @commands.command()
-    async def nimg(self, ctx, n: int, *, content: commands.clean_content):
-        """<number of images (max 5)> <search term>|||searches for images off google"""
-        if links := self._cache_.get(content):
-
-            # while not await self.Hamood.ahttp.is_media(link):
-            #     if len(links) == 0:
-            #         break
-
-            #     link = links.pop()
-
-            if len(links) == 0:
-                del self._cache_[content]
-
-            n = min(max(n, 1), min(5, len(links)))
-            for _ in range(n):
-                await self.Hamood.quick_embed(
-                    ctx,
-                    image_url=links.pop(),
-                    footer={"text": f"search term: {content}"},
-                    color=0x2F3136,
-                )
-            return
-
-        links = await self.Hamood.ahttp.get_json(
-            self.Hamood.GOOGLE_SEARCH_LINK + quote(content)
-        )
-        self._cache_[content] = links
-
-        n = min(max(n, 1), min(5, len(links)))
-        for _ in range(n):
-            await self.Hamood.quick_embed(
-                ctx,
-                image_url=links.pop(),
-                footer={"text": f"search term: {content}"},
-                color=0x2F3136,
+        if links == {} or len(links) == 0:
+            return await self.Hamod.quick_embed(
+                ctx, title="No Results Found", color=0x2F3136
             )
+
+        pages = [
+            discord.Embed(color=0x2F3136)
+            .set_image(url=link)
+            .set_author(
+                name=f"{ctx.author}'s image search: {content}",
+                icon_url=ctx.author.avatar.url,
+            )
+            .set_footer(text=f"result {i+1}/{len(links)}")
+            for i, link in enumerate(links)
+        ]
+
+        paginator = EasyPaginator(ctx, pages)
+        await paginator.start()
+
+    # @commands.command()
+    # async def img(self, ctx, *, content: commands.clean_content):
+    #     """<search term>|||searches for images off google"""
+
+    # number = 1
+    # if "," in content:
+    #     stuff = content.split(",")
+    #     content = ",".join(stuff[:-1])
+    #     number = max(
+    #         min(int(stuff[-1].strip()) if stuff[-1].strip().isdigit() else 1, 10), 1
+    #     )
+
+    # print(number, type(number), stuff[-1].strip().isdigit())
+    # print(stuff)
+
+    # if links := self._cache_.get(content):
+    #     link = links.pop()
+
+    #     # while not await self.Hamood.ahttp.is_media(link):
+    #     #     if len(links) == 0:
+    #     #         break
+
+    #     #     link = links.pop()
+
+    #     if len(links) == 0:
+    #         del self._cache_[content]
+
+    #     return await self.Hamood.quick_embed(
+    #         ctx,
+    #         image_url=link,
+    #         footer={"text": f"search term: {content}"},
+    #         color=0x2F3136,
+    #     )
+
+    # links = await self.Hamood.ahttp.get_json(
+    #     self.Hamood.GOOGLE_SEARCH_LINK + quote(content)
+    # )
+    # self._cache_[content] = links
+
+    # return await self.Hamood.quick_embed(
+    #     ctx,
+    #     image_url=links.pop(),
+    #     footer={"text": f"search term: {content}"},
+    #     color=0x2F3136,
+    # )
+
+    # @commands.command()
+    # async def nimg(self, ctx, n: int, *, content: commands.clean_content):
+    #     """<number of images (max 5)> <search term>|||searches for images off google"""
+    #     if links := self._cache_.get(content):
+
+    #         # while not await self.Hamood.ahttp.is_media(link):
+    #         #     if len(links) == 0:
+    #         #         break
+
+    #         #     link = links.pop()
+
+    #         if len(links) == 0:
+    #             del self._cache_[content]
+
+    #         n = min(max(n, 1), min(5, len(links)))
+    #         for _ in range(n):
+    #             await self.Hamood.quick_embed(
+    #                 ctx,
+    #                 image_url=links.pop(),
+    #                 footer={"text": f"search term: {content}"},
+    #                 color=0x2F3136,
+    #             )
+    #         return
+
+    #     links = await self.Hamood.ahttp.get_json(
+    #         self.Hamood.GOOGLE_SEARCH_LINK + quote(content)
+    #     )
+    #     self._cache_[content] = links
+
+    #     n = min(max(n, 1), min(5, len(links)))
+    #     for _ in range(n):
+    #         await self.Hamood.quick_embed(
+    #             ctx,
+    #             image_url=links.pop(),
+    #             footer={"text": f"search term: {content}"},
+    #             color=0x2F3136,
+    #         )
 
     # @commands.command()
 
