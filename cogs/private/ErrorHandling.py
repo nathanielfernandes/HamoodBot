@@ -47,16 +47,10 @@ class ErrorHandling(commands.Cog):
             return
 
         if isinstance(error, commands.CommandOnCooldown):
-            # await self.Hamood.quick_embed(
-            #     ctx,
-            #     author={"name": "Command on Cooldown"},
-            #     description=f"Please retry after: ```{self.Hamood.pretty_dt(error.retry_after)}```",
-            #     # footer={"text": f"{ctx.author}", "icon_url": ctx.author.avatar.url},
-            # )
             await self.error_embed(
                 ctx,
                 "Command on Cooldown",
-                f"Limit: `{error.cooldown.rate} times` every `{self.Hamood.pretty_dt(error.cooldown.per)}` {self.bTypes[error.cooldown.type]}\nPlease retry after: ```{self.Hamood.pretty_dt(error.retry_after)}```",
+                f"Limit: `{error.cooldown.rate} times` every `{self.Hamood.pretty_dt(error.cooldown.per)}` {self.bTypes[error.type]}\nPlease retry after: ```{self.Hamood.pretty_dt(error.retry_after)}```",
                 True,
             )
 
@@ -101,12 +95,12 @@ class ErrorHandling(commands.Cog):
                 await self.error_embed(
                     ctx, "Owner Only", "This command is resereved for owners of Hamood."
                 )
-            # else:
-            #     await self.error_embed(
-            #         ctx,
-            #         "Restricted",
-            #         f"You do not have access to this command.",
-            #     )
+            else:
+                await self.error_embed(
+                    ctx,
+                    "Restricted",
+                    f"You do not have access to this command.",
+                )
 
         elif isinstance(error, commands.UserInputError):
             if isinstance(error, commands.MemberNotFound):
@@ -114,6 +108,18 @@ class ErrorHandling(commands.Cog):
                     ctx,
                     "Member Not Found",
                     f"I could not find the member: `{error.argument}`",
+                )
+            elif isinstance(error, commands.RoleNotFound):
+                await self.error_embed(
+                    ctx,
+                    "Could Not Find Role",
+                    f"I could not find the role: {error.argument}",
+                )
+            elif isinstance(error, commands.ChannelNotFound):
+                await self.error_embed(
+                    ctx,
+                    "Could Not Find Channel",
+                    f"I could not find the channel: {error.argument}",
                 )
 
             elif isinstance(error, commands.PartialEmojiConversionFailure):
@@ -140,7 +146,6 @@ class ErrorHandling(commands.Cog):
                 )
 
         elif isinstance(error, commands.CommandInvokeError):
-
             if isinstance(error.__cause__, discord.Forbidden):
                 await self.error_embed(
                     ctx,
@@ -151,7 +156,7 @@ class ErrorHandling(commands.Cog):
                 await self.error_embed(
                     ctx,
                     "Whoops!",
-                    f"Something went wrong with this command, try it again later.\n\nThe error has been reported:\n> `{error}`",
+                    f"Something went wrong with this command, try it again later.\n\nThe error has been reported",
                 )
                 errorMsg = f"{self.Hamood.cstr('Uncaught Error:', ANSI.FAIL)}\nCommand: {ctx.command.name}\nError: {type(error).__name__}:\n\t{error}"
                 print(
