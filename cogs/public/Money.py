@@ -149,6 +149,10 @@ class Money(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def deposit(self, ctx, amount):
         """<amount>|||Deposit money into the bank for safe keeping."""
+
+        if not str(amount).isdigit():
+            await ctx.send("Amount needs to be an integer value")
+
         if amount == "all" or amount == "max":
             amount = 100000000000000000000000000
 
@@ -182,6 +186,9 @@ class Money(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def withdraw(self, ctx, amount):
         """<amount>|||Withdraws money from the bank into your wallet."""
+        if not str(amount).isdigit():
+            await ctx.send("Amount needs to be an integer value")
+
         if amount == "all" or amount == "max":
             amount = 100000000000000000000000000
 
