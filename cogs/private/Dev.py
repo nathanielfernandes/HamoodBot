@@ -9,6 +9,8 @@ from urllib.parse import quote
 from utils.components import EasyPaginator
 from modules.image_functions import Modify, Modify_Gif, makeColorImg
 
+import inspect
+
 
 class Dev(commands.Cog):
     """Dev Commands"""
@@ -447,6 +449,28 @@ class Dev(commands.Cog):
     #         await ctx.reply(embed=embed)
     #     else:
     #         await ctx.reply(f"Could not find information on the course `{course}`")
+
+    @commands.command()
+    async def source(self, ctx: commands.Context, command: str):
+        """<command>|||Returns the source for a given command."""
+        source_url = "https://github.com/nathanielfernandes/HamoodBot"
+        branch = "master"
+
+        if not (cmd := self.bot.get_command(command.replace(".", " "))):
+            return await ctx.reply(content=f"Could not find command.")
+
+        src = cmd.callback.__code__
+        module = cmd.callback.__module__
+
+        s = inspect.getsource(cmd.callback)
+
+        lines, firstlineno = inspect.getsourcelines(src)
+        location = module.replace(".", "/") + ".py"
+
+        return await ctx.reply(
+            content=f"<{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}>```py\n{s.replace('```', '`')[:1900]}```",
+            mention_author=False,
+        )
 
     async def meme_prep(
         self,
