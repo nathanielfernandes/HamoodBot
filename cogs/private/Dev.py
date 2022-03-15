@@ -7,6 +7,7 @@ import re, json
 from urllib.parse import quote
 
 from utils.components import EasyPaginator
+from modules.image_functions import Modify, Modify_Gif, makeColorImg
 
 
 class Dev(commands.Cog):
@@ -17,6 +18,8 @@ class Dev(commands.Cog):
 
         self.bot = bot
         self.Hamood: Hamood = bot.Hamood
+        self.memes = f"{self.Hamood.filepath}/memePics"
+        self.save_location = f"{self.Hamood.filepath}/temp"
 
     #  self.courses = json.load(open("junk/aggrCourses.json"))
     @commands.is_owner()
@@ -444,6 +447,109 @@ class Dev(commands.Cog):
     #         await ctx.reply(embed=embed)
     #     else:
     #         await ctx.reply(f"Could not find information on the course `{course}`")
+
+    async def meme_prep(
+        self,
+        ctx,
+        meme_image,
+        members,
+        positions,
+        size,
+        delete_og=False,
+        bytes_image=None,
+    ):
+        async with ctx.typing():
+            members = list(members)
+            if len(members) == 0:
+                members.append(ctx.author)
+
+            ext = meme_image[-3:]
+            meme_save = f"{self.memes}/{meme_image}"
+
+            if ext == "gif":
+                meme = Modify_Gif(gif_location=meme_save)
+            else:
+                meme = Modify(image_location=meme_save)
+                ext = "image"
+
+            for i in range(len(members)):
+                avatar = Modify(
+                    image_url=str(members[i].display_avatar.url).replace(
+                        ".webp", ".png"
+                    )
+                )
+
+                getattr(meme, f"{ext}_add_image")(
+                    top_image=avatar.image,
+                    coordinates=positions[i][0],
+                    top_image_size=size,
+                    top_image_rotation=positions[i][1],
+                )
+
+            meme = getattr(meme, f"save_{ext}")(location=self.save_location)
+
+            await self.Hamood.quick_embed(
+                ctx=ctx,
+                reply=True,
+                image=meme,
+                footer={"text": f"Requested by {ctx.author}"},
+            )
+        if delete_og:
+            os.remove(meme_save)
+
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(attach_files=True)
+    async def compare(self, ctx, *avamember: discord.Member):
+        """compare [@user1] [@user2]|||compares discord avatars"""
+        if len(avamember) > 9:
+            avamember = avamember[:9]
+
+        l = len(avamember)
+        scale = 200 * (10 - l)
+        square = l ** 0.5
+        half = l / 2
+        if square.is_integer():
+            x = scale * int(square)
+            y = scale * int(square)
+            dim = int(square)
+        elif half.is_integer():
+            if int(half) == 1:
+                x = scale * 2
+                y = scale
+                dim = l
+            else:
+                x = scale * int(half)
+                y = scale * 2
+                dim = int(half)
+        else:
+            x = l * scale
+            y = scale
+            dim = l
+
+        plate = makeColorImg(
+            rgba=(255, 255, 255, 255), path=self.memes + "/", size=(x, y)
+        )
+        plate = plate.strip(self.memes + "/")
+
+        coords = []
+        j = 0
+        k = 0
+        for i in range(l):
+            if i == dim or i == dim * (j + 1):
+                j += 1
+                k = i
+
+            coords.append([(((i - k) * scale), j * scale), 0])
+
+        await self.meme_prep(
+            ctx,
+            plate,
+            avamember,
+            coords,
+            (scale, scale),
+            delete_og=True,
+        )
 
 
 def setup(bot):
