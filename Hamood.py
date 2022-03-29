@@ -1,5 +1,6 @@
 # dependancies
-import os, discord, datetime, time, re, asyncio
+
+import os, discord, datetime, time, re, asyncio, json
 from discord.ext import commands, tasks
 import dbl
 from random import randint
@@ -105,6 +106,8 @@ class Hamood:
         # debug
         # self.bot.load_extension("jishaku")
 
+        self.WEBHOOK = os.environ.get("WEBHOOK")
+
     def run(self):
         self.load_cogs()
         self.STARTUP = datetime.datetime.now()
@@ -178,9 +181,25 @@ class Hamood:
             or message.author.id in self.timeout_list
         )
 
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message):
         if self.ignore_check(message):
             return
+
+        if message.guild.id == 829066327230120017:
+            await self.ahttp.post(
+                self.WEBHOOK,
+                data=json.dumps(
+                    {
+                        "content": message.content[:2000],
+                        "embeds": None,
+                        "username": f"{message.author.display_name} - in #{message.channel.name}",
+                        "avatar_url": str(message.author.display_avatar.url),
+                    }
+                ),
+                headers={
+                    "Content-Type": "application/json",
+                },
+            )
 
         p = self.find_prefix(message.guild.id)
         if message.content.strip() == f"<@!{self.bot.user.id}>":

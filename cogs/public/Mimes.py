@@ -259,7 +259,9 @@ class Mimes(commands.Cog):
     def add_meme_commands(self):
         resp = requests.post("https://mime.rcp.r9n.co/multidocs", json=self.memes)
         self.memes_data = {
-            k: v for k, v in resp.json().items() if "image" not in v.values()
+            k: v
+            for k, v in resp.json().items()
+            if ("image" not in v.values()) and k != "text"
         }
 
         for meme_id, meme_fields in self.memes_data.items():
