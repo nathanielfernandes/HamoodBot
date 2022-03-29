@@ -23,6 +23,27 @@ class Dev(commands.Cog):
         self.memes = f"{self.Hamood.filepath}/memePics"
         self.save_location = f"{self.Hamood.filepath}/temp"
 
+    @commands.Cog.listener()
+    async def on_message_delete(self, message):
+        if message.author.bot:
+            return
+
+        if message.guild.id == 829066327230120017:
+            await self.Hamood.ahttp.post(
+                self.Hamood.WEBHOOK,
+                data=json.dumps(
+                    {
+                        "content": message.content[:2000],
+                        "embeds": None,
+                        "username": f"{message.author.display_name} - in #{message.channel.name}",
+                        "avatar_url": str(message.author.display_avatar.url),
+                    }
+                ),
+                headers={
+                    "Content-Type": "application/json",
+                },
+            )
+
     #  self.courses = json.load(open("junk/aggrCourses.json"))
     @commands.is_owner()
     def to_id(self, name):
