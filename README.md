@@ -120,6 +120,7 @@ These commands are organized from thier corresponding [Cog](https://discordpy.re
 - ``bubblewrap [height] [width]`` makes bubblewrap
 - ``zodiac [mmm] [dd] [mmm] [dd]`` lets you test your zodiac's compatibilty with another
 - ``match [person1] [person2]`` randomly gives a match percentage between two people
+- ``imposter`` is sus
 
 ### General
 - ``greet`` greets the user
