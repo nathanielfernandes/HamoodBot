@@ -2,7 +2,7 @@ asyncpraw==7.1.1
 asyncio==3.4.3
 # discord.py==1.7.1
 git+https://github.com/Rapptz/discord.py
-Pillow==8.2.0
+Pillow==9.3.0
 sympy==1.6.2
 matplotlib==3.3.1
 chempy==0.7.12
